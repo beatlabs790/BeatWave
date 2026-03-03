@@ -380,14 +380,19 @@ fun AccountSettings(
             }
         }
 
-        Spacer(Modifier.height(4.dp))
-
-
+        Spacer(Modifier.height(12.dp))
 
         if (isLoggedIn) {
+            Text(
+                text = "Account Settings",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
+            )
+
             SwitchPreference(
                 title = { Text(stringResource(R.string.more_content)) },
-                description = null,
+                description = "Load personalised content using your account",
                 icon = { Icon(painterResource(R.drawable.add_circle), null) },
                 checked = useLoginForBrowse,
                 onCheckedChange = {
@@ -396,8 +401,11 @@ fun AccountSettings(
                 }
             )
 
+            Spacer(Modifier.height(4.dp))
+
             SwitchPreference(
                 title = { Text(stringResource(R.string.yt_sync)) },
+                description = "Sync likes, playlists and history with your account",
                 icon = { Icon(painterResource(R.drawable.cached), null) },
                 checked = ytmSync,
                 onCheckedChange = onYtmSyncChange

@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -35,8 +34,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -57,8 +54,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -78,9 +73,6 @@ import iad1tya.echo.music.constants.DefaultOpenTabKey
 import iad1tya.echo.music.constants.DensityScale
 import iad1tya.echo.music.constants.DensityScaleKey
 import iad1tya.echo.music.constants.DynamicThemeKey
-import iad1tya.echo.music.constants.EnableDynamicIconKey
-import iad1tya.echo.music.constants.MaterialYouKey
-import iad1tya.echo.music.constants.SelectedThemeColorKey
 import iad1tya.echo.music.constants.GridItemSize
 import iad1tya.echo.music.constants.GridItemsSizeKey
 import iad1tya.echo.music.constants.LibraryFilter
@@ -93,7 +85,6 @@ import iad1tya.echo.music.constants.UseNewPlayerDesignKey
 import iad1tya.echo.music.constants.UseNewMiniPlayerDesignKey
 import iad1tya.echo.music.constants.PlayerBackgroundStyle
 import iad1tya.echo.music.constants.PlayerBackgroundStyleKey
-import iad1tya.echo.music.constants.PureBlackKey
 import iad1tya.echo.music.constants.PlayerButtonsStyle
 import iad1tya.echo.music.constants.PlayerButtonsStyleKey
 import iad1tya.echo.music.constants.SliderStyle
@@ -117,8 +108,6 @@ import iad1tya.echo.music.ui.component.PreferenceEntry
 import iad1tya.echo.music.ui.component.PreferenceGroupTitle
 import iad1tya.echo.music.ui.component.SwitchPreference
 import iad1tya.echo.music.ui.utils.backToMain
-import iad1tya.echo.music.ui.theme.DefaultThemeColor
-import iad1tya.echo.music.utils.IconUtils
 import iad1tya.echo.music.utils.rememberEnumPreference
 import iad1tya.echo.music.utils.rememberPreference
 import me.saket.squiggles.SquigglySlider
@@ -137,77 +126,21 @@ fun AppearanceSettings(
         defaultValue = DarkMode.ON
     )
     
-    val (materialYou, onMaterialYouChange) = rememberPreference(
-        MaterialYouKey,
-        defaultValue = false
-    )
-
-    val (enableDynamicIcon, onEnableDynamicIconChange) = rememberPreference(
-        EnableDynamicIconKey, defaultValue = true
-    )
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
-    fun handleIconChange(enabled: Boolean) {
-        onEnableDynamicIconChange(enabled)
-        IconUtils.setIcon(context, enabled)
-        coroutineScope.launch {
-            val result = snackbarHostState.showSnackbar(
-                message = "Icon updated, restart to apply",
-                actionLabel = "Restart"
-            )
-            if (result == SnackbarResult.ActionPerformed) {
-                val packageManager = context.packageManager
-                val intent = packageManager.getLaunchIntentForPackage(context.packageName)
-                val componentName = intent?.component
-                val mainIntent = Intent.makeRestartActivityTask(componentName)
-                context.startActivity(mainIntent)
-                Runtime.getRuntime().exit(0)
-            }
-        }
-    }
-    
-    val (selectedThemeColorInt, onSelectedThemeColorChange) = rememberPreference(
-        SelectedThemeColorKey, defaultValue = DefaultThemeColor.toArgb()
+    // Dynamic theme, theme colour palette, dynamic icon, and material you removed
+    val (useNewPlayerDesign, onUseNewPlayerDesignChange) = rememberPreference(
+        UseNewPlayerDesignKey, defaultValue = false
     )
-
-    val paletteColors = listOf(
-        "Default" to DefaultThemeColor,
-        "Crimson" to Color(0xFFEC5464),
-        "Rose" to Color(0xFFD81B60),
-        "Purple" to Color(0xFF8E24AA),
-        "Deep Purple" to Color(0xFF6A1B9A),
-        "Indigo" to Color(0xFF3949AB),
-        "Blue" to Color(0xFF1E88E5),
-        "Light Blue" to Color(0xFF039BE5),
-        "Cyan" to Color(0xFF00ACC1),
-        "Teal" to Color(0xFF00897B),
-        "Green" to Color(0xFF43A047),
-        "Light Green" to Color(0xFF7CB342),
-        "Lime" to Color(0xFFC0CA33),
-        "Yellow" to Color(0xFFFDD835),
-        "Amber" to Color(0xFFFFB300),
-        "Orange" to Color(0xFFFB8C00),
-        "Deep Orange" to Color(0xFFF4511E),
-        "Brown" to Color(0xFF6D4C41),
-        "Blue Grey" to Color(0xFF546E7A),
-        "Grey" to Color(0xFF757575),
+    val (useNewMiniPlayerDesign, onUseNewMiniPlayerDesignChange) = rememberPreference(
+        UseNewMiniPlayerDesignKey, defaultValue = true
     )
-
-    // Dynamic theme removed - always disabled
-    // Dark mode forced on - removed theme settings
-    // New player design removed - always use old design
-    // New mini player design removed - always use old design
     val (playerBackground, onPlayerBackgroundChange) =
         rememberEnumPreference(
             PlayerBackgroundStyleKey,
             defaultValue = PlayerBackgroundStyle.DEFAULT,
         )
-    // Pure black removed - handled by theme
-    // Pure black removed - handled by theme
-    
-    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
 
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(
         DefaultOpenTabKey,
@@ -473,91 +406,6 @@ fun AppearanceSettings(
             },
         )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.material_you)) },
-            icon = { Icon(painterResource(R.drawable.palette), null) },
-            checked = materialYou,
-            onCheckedChange = onMaterialYouChange,
-        )
-
-        AnimatedVisibility(visible = materialYou) {
-            SwitchPreference(
-                title = { Text(stringResource(R.string.pure_black)) },
-                icon = { Icon(painterResource(R.drawable.contrast), null) },
-                checked = pureBlack,
-                onCheckedChange = onPureBlackChange,
-            )
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            SwitchPreference(
-                title = { Text(stringResource(R.string.enable_dynamic_icon)) },
-                description = stringResource(R.string.enable_dynamic_icon_description),
-                icon = { Icon(painterResource(R.drawable.palette), null) },
-                checked = enableDynamicIcon,
-                onCheckedChange = { handleIconChange(it) },
-            )
-        }
-
-        // Theme Color Palette
-        PreferenceGroupTitle(title = stringResource(R.string.theme_color))
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        ) {
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            items(paletteColors) { (name, color) ->
-                val isSelected = color.toArgb() == selectedThemeColorInt
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .then(
-                            if (isSelected) Modifier.border(
-                                3.dp,
-                                MaterialTheme.colorScheme.onSurface,
-                                CircleShape
-                            ) else Modifier
-                        )
-                        .clickable {
-                            onSelectedThemeColorChange(color.toArgb())
-                            if (color == DefaultThemeColor) {
-                                // Reset to default (no custom color)
-                                onMaterialYouChange(true)
-                            } else {
-                                onMaterialYouChange(false)
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (isSelected) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            contentDescription = null,
-                            tint = if (color.luminance() > 0.5f) Color.Black else Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            }
-        }
-        } // end Card
-
-        Spacer(Modifier.height(8.dp))
-
         PreferenceEntry(
             title = { Text("UI Density Scale") },
             description = "Current: ${DensityScale.fromValue(densityScale).label}",
@@ -626,6 +474,22 @@ fun AppearanceSettings(
 
         PreferenceGroupTitle(
             title = stringResource(R.string.player),
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.new_player_design)) },
+            description = stringResource(R.string.new_player_design_desc),
+            icon = { Icon(painterResource(R.drawable.play), null) },
+            checked = useNewPlayerDesign,
+            onCheckedChange = onUseNewPlayerDesignChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.new_mini_player_design)) },
+            description = stringResource(R.string.new_mini_player_design_desc),
+            icon = { Icon(painterResource(R.drawable.play), null) },
+            checked = useNewMiniPlayerDesign,
+            onCheckedChange = onUseNewMiniPlayerDesignChange,
         )
 
         // Player background style option hidden per user request

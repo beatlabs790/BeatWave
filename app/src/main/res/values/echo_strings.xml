@@ -92,7 +92,9 @@
     <string name="follow_theme">Dark</string>
     <string name="gradient">Music Accent</string>
     <string name="new_player_design">New player design</string>
+    <string name="new_player_design_desc">Enable the redesigned full player layout</string>
     <string name="new_mini_player_design">New mini player design</string>
+    <string name="new_mini_player_design_desc">Enable the redesigned mini player bar</string>
     <string name="player_background_blur">Blur</string>
     <string name="player_buttons_style">Player button colors</string>
     <string name="default_style">Default</string>

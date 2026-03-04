@@ -101,6 +101,7 @@ class InnerTube {
             append("X-YouTube-Client-Version", client.clientVersion)
             append("X-Origin", YouTubeClient.ORIGIN_YOUTUBE_MUSIC)
             append("Referer", YouTubeClient.REFERER_YOUTUBE_MUSIC)
+            visitorData?.let { append("X-Goog-Visitor-Id", it) }
             if (setLogin && client.loginSupported) {
                 cookie?.let { cookie ->
                     append("cookie", cookie)
@@ -142,6 +143,7 @@ class InnerTube {
         videoId: String,
         playlistId: String?,
         signatureTimestamp: Int?,
+        poToken: String? = null,
     ) = httpClient.post("player") {
         ytClient(client, setLogin = true)
         setBody(
@@ -163,6 +165,9 @@ class InnerTube {
                             signatureTimestamp
                         )
                     )
+                } else null,
+                serviceIntegrityDimensions = if (client.useWebPoTokens && poToken != null) {
+                    PlayerBody.ServiceIntegrityDimensions(poToken)
                 } else null,
             )
         )

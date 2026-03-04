@@ -43,6 +43,7 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import androidx.media3.datasource.cache.SimpleCache
+import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
@@ -275,8 +276,18 @@ class MusicService :
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
     private var consecutivePlaybackErr = 0
+    private var retryJob: Job? = null
 
     private val songUrlCache = java.util.concurrent.ConcurrentHashMap<String, Pair<String, Long>>()
+
+    // Enhanced error tracking for strict retry management
+    private var currentMediaIdRetryCount = mutableMapOf<String, Int>()
+    private val MAX_RETRY_PER_SONG = 3
+    private val RETRY_DELAY_MS = 1000L
+
+    // Track failed songs to prevent infinite retry loops
+    private val recentlyFailedSongs = mutableSetOf<String>()
+    private var failedSongsClearJob: Job? = null
 
     // Pause on mute state
     private var wasPlayingBeforeVolumeMute = false
@@ -1510,6 +1521,10 @@ class MusicService :
         // Reset consecutive error counter when playback is successful
         if (playbackState == Player.STATE_READY) {
             consecutivePlaybackErr = 0
+            // Reset retry count for current song on successful playback
+            player.currentMediaItem?.mediaId?.let { mediaId ->
+                resetRetryCount(mediaId)
+            }
         }
         
         // Update widget
@@ -1652,74 +1667,285 @@ class MusicService :
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         Log.e("MusicService", "Playback error: ${error.message}", error)
-        
+
         try {
-        val mediaId = player.currentMediaItem?.mediaId
+            val mediaId = player.currentMediaItem?.mediaId
 
-        val isConnectionError = (error.cause?.cause is PlaybackException) &&
-                (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
-        
-        // Check if it's a URL expiration or HTTP 403/410 error
-        val isUrlExpiredError = error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ||
-                error.errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE ||
-                error.message?.contains("403") == true ||
-                error.message?.contains("410") == true
-
-        if (!isNetworkConnected.value || isConnectionError) {
-            waitOnNetworkError()
-            return
-        }
-        
-        // If URL expired, try to refresh and continue playback automatically
-        if (isUrlExpiredError) {
-            // Clear the cached URL so ResolvingDataSource fetches a new one
-            if (mediaId != null) {
-                songUrlCache.remove(mediaId)
+            // Check if this song has failed too many times
+            if (mediaId != null && hasExceededRetryLimit(mediaId)) {
+                markSongAsFailed(mediaId)
+                handleFinalFailure()
+                return
             }
 
-            val currentPosition = player.currentPosition
-            val currentIndex = player.currentMediaItemIndex
-            
-            scope.launch {
-                try {
-                    delay(100) // Brief delay before retry
-                    
-                    // Re-prepare the player which will force URL refresh
-                    if (currentIndex >= 0 && currentIndex < player.mediaItemCount) {
-                        // Seek to current position and retry
-                        player.seekTo(currentIndex, currentPosition.coerceAtLeast(0))
-                        player.prepare()
-                        player.play()
-                        
-                        // Reset error counter on successful retry
-                        consecutivePlaybackErr = 0
-                    }
-                } catch (e: Exception) {
-                    // If retry fails, handle normally
-                    if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
-                        skipOnError()
-                    } else {
-                        stopOnError()
-                    }
+            // Aggressive cache clearing for all playback errors
+            if (mediaId != null) {
+                performAggressiveCacheClear(mediaId)
+            }
+
+            // Handle specific error types with targeted strategies
+            when {
+                isAudioRendererError(error) -> {
+                    handleAudioRendererError(mediaId)
+                    return
+                }
+                isRangeNotSatisfiableError(error) -> {
+                    handleRangeNotSatisfiableError(mediaId)
+                    return
+                }
+                isPageReloadError(error) -> {
+                    handlePageReloadError(mediaId)
+                    return
+                }
+                isExpiredUrlError(error) -> {
+                    handleExpiredUrlError(mediaId)
+                    return
+                }
+                !isNetworkConnected.value || isNetworkRelatedError(error) -> {
+                    waitOnNetworkError()
+                    return
                 }
             }
-            return
-        }
 
-        if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
-            skipOnError()
-        } else {
-            stopOnError()
-        }
+            // IO_UNSPECIFIED and IO_BAD_HTTP_STATUS fallback
+            if (error.errorCode == PlaybackException.ERROR_CODE_IO_UNSPECIFIED ||
+                error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS
+            ) {
+                handleGenericIOError(mediaId)
+                return
+            }
+
+            // Final fallback
+            if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
+                skipOnError()
+            } else {
+                stopOnError()
+            }
         } catch (e: Exception) {
             Log.e("MusicService", "Exception in error handler", e)
             reportException(e)
-            // Fallback: just stop the player
             try {
                 player.pause()
             } catch (fallbackError: Exception) {
                 Log.e("MusicService", "Failed to pause player in fallback", fallbackError)
             }
+        }
+    }
+
+    // ── Error detection helpers ──────────────────────────────────────────────
+
+    private fun getHttpResponseCode(error: PlaybackException): Int? {
+        var cause: Throwable? = error.cause
+        while (cause != null) {
+            if (cause is HttpDataSource.InvalidResponseCodeException) {
+                return cause.responseCode
+            }
+            cause = cause.cause
+        }
+        return null
+    }
+
+    private fun isExpiredUrlError(error: PlaybackException): Boolean {
+        val responseCode = getHttpResponseCode(error)
+        return responseCode == 403
+    }
+
+    private fun isRangeNotSatisfiableError(error: PlaybackException): Boolean {
+        val responseCode = getHttpResponseCode(error)
+        return responseCode == 416
+    }
+
+    private fun isPageReloadError(error: PlaybackException): Boolean {
+        val errorMessage = error.message?.lowercase() ?: ""
+        val causeMessage = error.cause?.message?.lowercase() ?: ""
+        val innerCauseMessage = error.cause?.cause?.message?.lowercase() ?: ""
+
+        val reloadKeywords = listOf(
+            "page needs to be reloaded",
+            "page must be reloaded",
+            "reload"
+        )
+
+        return reloadKeywords.any { keyword ->
+            errorMessage.contains(keyword) ||
+                causeMessage.contains(keyword) ||
+                innerCauseMessage.contains(keyword)
+        }
+    }
+
+    private fun isNetworkRelatedError(error: PlaybackException): Boolean {
+        if (isExpiredUrlError(error) || isRangeNotSatisfiableError(error) || isPageReloadError(error)) {
+            return false
+        }
+        return error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
+            error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ||
+            error.cause is java.net.ConnectException ||
+            error.cause is java.net.UnknownHostException ||
+            (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+    }
+
+    private fun isAudioRendererError(error: PlaybackException): Boolean {
+        return error.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_WRITE_FAILED ||
+            error.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED ||
+            (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_WRITE_FAILED ||
+            (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED
+    }
+
+    // ── Per-song retry tracking ─────────────────────────────────────────────
+
+    private fun performAggressiveCacheClear(mediaId: String) {
+        Log.d("MusicService", "Performing aggressive cache clear for $mediaId")
+        songUrlCache.remove(mediaId)
+        try {
+            playerCache.removeResource(mediaId)
+        } catch (e: Exception) {
+            Log.e("MusicService", "Failed to clear player cache for $mediaId", e)
+        }
+        try {
+            YTPlayerUtils.forceRefreshForVideo(mediaId)
+        } catch (e: Exception) {
+            Log.e("MusicService", "Failed to refresh for $mediaId", e)
+        }
+    }
+
+    private fun hasExceededRetryLimit(mediaId: String): Boolean {
+        val currentRetries = currentMediaIdRetryCount[mediaId] ?: 0
+        return currentRetries >= MAX_RETRY_PER_SONG
+    }
+
+    private fun incrementRetryCount(mediaId: String) {
+        val currentRetries = currentMediaIdRetryCount[mediaId] ?: 0
+        currentMediaIdRetryCount[mediaId] = currentRetries + 1
+        Log.d("MusicService", "Retry count for $mediaId: ${currentRetries + 1}/$MAX_RETRY_PER_SONG")
+    }
+
+    private fun resetRetryCount(mediaId: String) {
+        currentMediaIdRetryCount.remove(mediaId)
+        recentlyFailedSongs.remove(mediaId)
+    }
+
+    private fun markSongAsFailed(mediaId: String) {
+        recentlyFailedSongs.add(mediaId)
+        currentMediaIdRetryCount.remove(mediaId)
+        failedSongsClearJob?.cancel()
+        failedSongsClearJob = scope.launch {
+            delay(5 * 60 * 1000L) // 5 minutes
+            recentlyFailedSongs.clear()
+            Log.d("MusicService", "Cleared recently failed songs list")
+        }
+    }
+
+    // ── Error type handlers ─────────────────────────────────────────────────
+
+    private fun handleAudioRendererError(mediaId: String?) {
+        if (mediaId == null) { handleFinalFailure(); return }
+        incrementRetryCount(mediaId)
+
+        retryJob?.cancel()
+        retryJob = scope.launch {
+            try {
+                player.pause()
+                delay(RETRY_DELAY_MS * 3) // 3s for audio renderer to settle
+
+                val currentIndex = player.currentMediaItemIndex
+                if (currentIndex != C.INDEX_UNSET) {
+                    val currentPosition = player.currentPosition
+                    player.seekTo(currentIndex, currentPosition)
+                    player.prepare()
+                    delay(500)
+                    player.play()
+                } else {
+                    handleFinalFailure()
+                }
+            } catch (e: Exception) {
+                Log.e("MusicService", "AudioRenderer error recovery failed", e)
+                handleFinalFailure()
+            }
+        }
+    }
+
+    private fun handleRangeNotSatisfiableError(mediaId: String?) {
+        if (mediaId == null) { handleFinalFailure(); return }
+        incrementRetryCount(mediaId)
+
+        retryJob?.cancel()
+        retryJob = scope.launch {
+            performAggressiveCacheClear(mediaId)
+            delay(RETRY_DELAY_MS)
+
+            // Force re-prepare from position 0 to avoid range issues
+            val currentIndex = player.currentMediaItemIndex
+            player.seekTo(currentIndex, 0)
+            player.prepare()
+            Log.d("MusicService", "Retrying playback for $mediaId after 416 error (from position 0)")
+        }
+    }
+
+    private fun handlePageReloadError(mediaId: String?) {
+        if (mediaId == null) { handleFinalFailure(); return }
+        incrementRetryCount(mediaId)
+
+        retryJob?.cancel()
+        retryJob = scope.launch {
+            performAggressiveCacheClear(mediaId)
+            delay(RETRY_DELAY_MS * 2) // Extra delay for page reload errors
+
+            val currentPosition = player.currentPosition
+            val currentIndex = player.currentMediaItemIndex
+            player.seekTo(currentIndex, currentPosition)
+            player.prepare()
+            Log.d("MusicService", "Retrying playback for $mediaId after page reload error")
+        }
+    }
+
+    private fun handleExpiredUrlError(mediaId: String?) {
+        if (mediaId == null) { handleFinalFailure(); return }
+        incrementRetryCount(mediaId)
+
+        songUrlCache.remove(mediaId)
+        try {
+            YTPlayerUtils.forceRefreshForVideo(mediaId)
+        } catch (e: Exception) {
+            Log.e("MusicService", "Failed to clear decryption caches", e)
+        }
+
+        retryJob?.cancel()
+        retryJob = scope.launch {
+            delay(RETRY_DELAY_MS)
+
+            val currentPosition = player.currentPosition
+            val currentIndex = player.currentMediaItemIndex
+            player.seekTo(currentIndex, currentPosition)
+            player.prepare()
+            player.play()
+            Log.d("MusicService", "Retrying playback for $mediaId after 403 error")
+        }
+    }
+
+    private fun handleGenericIOError(mediaId: String?) {
+        if (mediaId == null) { handleFinalFailure(); return }
+        incrementRetryCount(mediaId)
+
+        retryJob?.cancel()
+        retryJob = scope.launch {
+            if (mediaId != null) performAggressiveCacheClear(mediaId)
+            delay(RETRY_DELAY_MS)
+
+            val currentPosition = player.currentPosition
+            val currentIndex = player.currentMediaItemIndex
+            player.seekTo(currentIndex, currentPosition)
+            player.prepare()
+            Log.d("MusicService", "Retrying playback for $mediaId after generic IO error")
+        }
+    }
+
+    private fun handleFinalFailure() {
+        if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
+            Log.d("MusicService", "All recovery attempts exhausted, auto-skipping to next track")
+            skipOnError()
+        } else {
+            Log.d("MusicService", "All recovery attempts exhausted, stopping playback")
+            stopOnError()
         }
     }
 
@@ -1792,9 +2018,14 @@ class MusicService :
             }
 
             // Need to fetch a new URL - either first time or URL expired
+            // Check if this is an uploaded song that needs special handling
+            val isUploadedSong = runBlocking(Dispatchers.IO) {
+                database.song(mediaId).first()?.song?.isUploaded == true
+            }
             val playbackData = runBlocking(Dispatchers.IO) {
                 YTPlayerUtils.playerResponseForPlayback(
                     mediaId,
+                    playlistId = if (isUploadedSong) "MLPT" else null,
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                 )
@@ -2151,8 +2382,10 @@ class MusicService :
         
         // Resolve URL if not cached
         return try {
+            val isUploadedSong = database.song(mediaId).first()?.song?.isUploaded == true
             val playbackData = YTPlayerUtils.playerResponseForPlayback(
                 videoId = mediaId,
+                playlistId = if (isUploadedSong) "MLPT" else null,
                 audioQuality = audioQuality,
                 connectivityManager = connectivityManager
             ).getOrNull()

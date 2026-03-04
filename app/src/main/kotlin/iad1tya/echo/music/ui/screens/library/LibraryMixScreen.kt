@@ -163,12 +163,14 @@ private fun QuickAccessSection(
     val strTop = stringResource(R.string.my_top) + " $topSize"
     val strCached = stringResource(R.string.cached_playlist)
     val strOffline = stringResource(R.string.offline)
+    val strUploaded = stringResource(R.string.uploaded_playlist)
 
     val cards = buildList {
         if (showLiked) add(Triple(strLiked, R.drawable.favorite, Color(0xFFE91E63)))
         if (showTop) add(Triple(strTop, R.drawable.trending_up, Color(0xFFFFC107)))
         if (showCached) add(Triple(strCached, R.drawable.cached, Color(0xFF26C6DA)))
         if (showDownloaded) add(Triple(strOffline, R.drawable.download, Color(0xFF66BB6A)))
+        if (showUploaded) add(Triple(strUploaded, R.drawable.backup, Color(0xFFAB47BC)))
     }
     if (cards.isEmpty()) return
 
@@ -193,6 +195,7 @@ private fun QuickAccessSection(
                                 strLiked -> navController.navigate("auto_playlist/liked")
                                 strOffline -> navController.navigate("auto_playlist/downloaded")
                                 strCached -> navController.navigate("cache_playlist/cached")
+                                strUploaded -> navController.navigate("auto_playlist/uploaded")
                                 else -> navController.navigate("top_playlist/$topSize")
                             }
                         },
@@ -284,7 +287,7 @@ fun LibraryMixScreen(
     val (showDownloaded) = rememberPreference(ShowDownloadedPlaylistKey, true)
     val (showTop) = rememberPreference(ShowTopPlaylistKey, true)
     val (showCached) = rememberPreference(ShowCachedPlaylistKey, true)
-    val (showUploaded) = rememberPreference(ShowUploadedPlaylistKey, false)
+    val (showUploaded) = rememberPreference(ShowUploadedPlaylistKey, true)
 
     val albums = viewModel.albums.collectAsState()
     val artist = viewModel.artists.collectAsState()
@@ -509,7 +512,7 @@ fun LibraryMixScreen(
                         }
                     }
 
-                    if (false) {
+                    if (showUploaded) {
                         item(
                             key = "uploadedPlaylist",
                             contentType = { CONTENT_TYPE_PLAYLIST },
@@ -799,7 +802,7 @@ fun LibraryMixScreen(
                         }
                     }
 
-                    if (false) {
+                    if (showUploaded) {
                         item(
                             key = "uploadedPlaylist",
                             contentType = { CONTENT_TYPE_PLAYLIST },

@@ -39,7 +39,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Universal Debug APK
-        run: ./gradlew assembleUniversalDebug
+        run: ./gradlew assembleUniversalDebug --no-daemon --stacktrace 2>&1 | grep -E "error:|FAILED|Exception|What went wrong" | head -50
+        env:
+          GRADLE_OPTS: "-Xmx4g -XX:MaxMetaspaceSize=512m"
+
+      - name: Build Universal Debug APK (actual)
+        run: ./gradlew assembleUniversalDebug --no-daemon
+        env:
+          GRADLE_OPTS: "-Xmx4g -XX:MaxMetaspaceSize=512m"
 
       - name: Upload Universal APK
         uses: actions/upload-artifact@v4

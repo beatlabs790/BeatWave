@@ -1115,6 +1115,30 @@ fun ItemThumbnail(
                     shape = shape
                 )
         )
+
+        AnimatedVisibility(
+            visible = isSelected,
+            enter = fadeIn(tween(180)),
+            exit = fadeOut(tween(120)),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(6.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.check),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(12.dp)
+                )
+            }
+        }
     }
 }
 

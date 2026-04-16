@@ -57,7 +57,6 @@ import iad1tya.echo.music.constants.ScrobbleMinSongDurationKey
 import iad1tya.echo.music.ui.component.DefaultDialog
 import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.component.PreferenceEntry
-import iad1tya.echo.music.ui.component.PreferenceGroupTitle
 import iad1tya.echo.music.ui.component.SwitchPreference
 import iad1tya.echo.music.ui.utils.backToMain
 import iad1tya.echo.music.utils.makeTimeString
@@ -241,8 +240,6 @@ fun LastFMSettings(
             )
         )
 
-        PreferenceGroupTitle(title = stringResource(R.string.account))
-
         PreferenceEntry(
             title = {
                 Text(
@@ -266,8 +263,6 @@ fun LastFMSettings(
             },
         )
 
-        PreferenceGroupTitle(title = stringResource(R.string.options))
-
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_scrobbling)) },
             checked = lastfmScrobbling,
@@ -289,8 +284,6 @@ fun LastFMSettings(
             onCheckedChange = onUseSendLikes,
             isEnabled = isLoggedIn,
         )
-
-        PreferenceGroupTitle(title = stringResource(R.string.scrobbling_configuration))
 
         // Min track duration dialog
         var showMinTrackDurationDialog by rememberSaveable { mutableStateOf(false) }

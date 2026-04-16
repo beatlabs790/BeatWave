@@ -27,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -95,7 +96,7 @@ import iad1tya.echo.music.constants.SeekExtraSeconds
 import iad1tya.echo.music.ui.component.EnumListPreference
 import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.component.ListPreference
-import iad1tya.echo.music.ui.component.PreferenceGroupTitle
+import iad1tya.echo.music.ui.component.PreferenceEntry
 import iad1tya.echo.music.ui.component.SliderPreference
 import iad1tya.echo.music.ui.component.SwitchPreference
 import iad1tya.echo.music.ui.component.ButtonPreference
@@ -280,6 +281,9 @@ fun PlayerSettings(
         DownloadRetryLimitKey,
         defaultValue = 2
     )
+    var showPlayerAudioSection by remember { mutableStateOf(false) }
+    var showQueueDownloadsSection by remember { mutableStateOf(false) }
+    var showMiscControlsSection by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -294,9 +298,20 @@ fun PlayerSettings(
             )
         )
 
-        PreferenceGroupTitle(
-            title = stringResource(R.string.player)
+        PreferenceEntry(
+            title = { Text("Player & Audio") },
+            icon = { Icon(painterResource(R.drawable.graphic_eq), null) },
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showPlayerAudioSection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null
+                )
+            },
+            onClick = { showPlayerAudioSection = !showPlayerAudioSection }
         )
+
+        AnimatedVisibility(visible = showPlayerAudioSection) {
+            Column {
 
         EnumListPreference(
             title = { Text(stringResource(R.string.audio_quality)) },
@@ -495,9 +510,23 @@ fun PlayerSettings(
             onCheckedChange = onSeekExtraSeconds
         )
 
-        PreferenceGroupTitle(
-            title = stringResource(R.string.queue)
+            }
+        }
+
+        PreferenceEntry(
+            title = { Text("Queue & Downloads") },
+            icon = { Icon(painterResource(R.drawable.queue_music), null) },
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showQueueDownloadsSection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null
+                )
+            },
+            onClick = { showQueueDownloadsSection = !showQueueDownloadsSection }
         )
+
+        AnimatedVisibility(visible = showQueueDownloadsSection) {
+            Column {
 
         SwitchPreference(
             title = { Text(stringResource(R.string.persistent_queue)) },
@@ -598,9 +627,23 @@ fun PlayerSettings(
             onCheckedChange = onAutoSkipNextOnErrorChange
         )
 
-        PreferenceGroupTitle(
-            title = stringResource(R.string.misc)
+            }
+        }
+
+        PreferenceEntry(
+            title = { Text("Misc Controls") },
+            icon = { Icon(painterResource(R.drawable.tune), null) },
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showMiscControlsSection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null
+                )
+            },
+            onClick = { showMiscControlsSection = !showMiscControlsSection }
         )
+
+        AnimatedVisibility(visible = showMiscControlsSection) {
+            Column {
 
         SwitchPreference(
             title = { Text("Tap album art for lyrics") },
@@ -664,6 +707,8 @@ fun PlayerSettings(
             checked = forceStopOnTaskClear,
             onCheckedChange = onForceStopOnTaskClearChange
         )
+            }
+        }
     }
 
     Box {

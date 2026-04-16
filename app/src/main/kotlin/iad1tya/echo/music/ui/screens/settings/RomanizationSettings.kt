@@ -115,7 +115,6 @@ fun RomanizationSettings(
             onCheckedChange = onLyricsRomanizeOtherLanguagesChange,
         )
 
-        PreferenceGroupTitle(title = stringResource(R.string.lyrics_romanization_cyrillic))
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_russian)) },
             icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },

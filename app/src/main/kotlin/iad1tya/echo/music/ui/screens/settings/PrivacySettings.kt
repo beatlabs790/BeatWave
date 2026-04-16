@@ -30,6 +30,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,7 +65,6 @@ import iad1tya.echo.music.constants.PauseSearchHistoryKey
 import iad1tya.echo.music.ui.component.DefaultDialog
 import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.component.PreferenceEntry
-import iad1tya.echo.music.ui.component.PreferenceGroupTitle
 import iad1tya.echo.music.ui.component.SwitchPreference
 import iad1tya.echo.music.ui.utils.backToMain
 import iad1tya.echo.music.utils.rememberPreference
@@ -127,6 +127,9 @@ fun PrivacySettings(
     var showClearSearchHistoryDialog by remember {
         mutableStateOf(false)
     }
+    var showHistorySection by remember { mutableStateOf(false) }
+    var showPermissionsSection by remember { mutableStateOf(false) }
+    var showMiscSection by remember { mutableStateOf(false) }
 
     if (showClearSearchHistoryDialog) {
         DefaultDialog(
@@ -172,41 +175,60 @@ fun PrivacySettings(
             )
         )
 
-        PreferenceGroupTitle(
-            title = stringResource(R.string.listen_history)
-        )
-
-        SwitchPreference(
-            title = { Text(stringResource(R.string.pause_listen_history)) },
+        PreferenceEntry(
+            title = { Text("History") },
             icon = { Icon(painterResource(R.drawable.history), null) },
-            checked = pauseListenHistory,
-            onCheckedChange = onPauseListenHistoryChange,
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showHistorySection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null
+                )
+            },
+            onClick = { showHistorySection = !showHistorySection }
         )
+
+        AnimatedVisibility(visible = showHistorySection) {
+            Column {
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.pause_listen_history)) },
+                    icon = { Icon(painterResource(R.drawable.history), null) },
+                    checked = pauseListenHistory,
+                    onCheckedChange = onPauseListenHistoryChange,
+                )
+                PreferenceEntry(
+                    title = { Text(stringResource(R.string.clear_listen_history)) },
+                    icon = { Icon(painterResource(R.drawable.delete_history), null) },
+                    onClick = { showClearListenHistoryDialog = true },
+                )
+
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.pause_search_history)) },
+                    icon = { Icon(painterResource(R.drawable.search_off), null) },
+                    checked = pauseSearchHistory,
+                    onCheckedChange = onPauseSearchHistoryChange,
+                )
+                PreferenceEntry(
+                    title = { Text(stringResource(R.string.clear_search_history)) },
+                    icon = { Icon(painterResource(R.drawable.clear_all), null) },
+                    onClick = { showClearSearchHistoryDialog = true },
+                )
+            }
+        }
+
         PreferenceEntry(
-            title = { Text(stringResource(R.string.clear_listen_history)) },
-            icon = { Icon(painterResource(R.drawable.delete_history), null) },
-            onClick = { showClearListenHistoryDialog = true },
+            title = { Text("Permissions") },
+            icon = { Icon(painterResource(R.drawable.settings_outlined), null) },
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showPermissionsSection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null
+                )
+            },
+            onClick = { showPermissionsSection = !showPermissionsSection }
         )
 
-        PreferenceGroupTitle(
-            title = stringResource(R.string.search_history)
-        )
-
-        SwitchPreference(
-            title = { Text(stringResource(R.string.pause_search_history)) },
-            icon = { Icon(painterResource(R.drawable.search_off), null) },
-            checked = pauseSearchHistory,
-            onCheckedChange = onPauseSearchHistoryChange,
-        )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.clear_search_history)) },
-            icon = { Icon(painterResource(R.drawable.clear_all), null) },
-            onClick = { showClearSearchHistoryDialog = true },
-        )
-
-        PreferenceGroupTitle(
-            title = "Permissions"
-        )
+        AnimatedVisibility(visible = showPermissionsSection) {
+            Column {
 
         val context = androidx.compose.ui.platform.LocalContext.current
         
@@ -365,18 +387,32 @@ fun PrivacySettings(
                 }
             }
         }
+            }
+        }
 
-        PreferenceGroupTitle(
-            title = stringResource(R.string.misc),
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.misc)) },
+            icon = { Icon(painterResource(R.drawable.tune), null) },
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showMiscSection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null
+                )
+            },
+            onClick = { showMiscSection = !showMiscSection }
         )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.disable_screenshot)) },
-            description = stringResource(R.string.disable_screenshot_desc),
-            icon = { Icon(painterResource(R.drawable.screenshot), null) },
-            checked = disableScreenshot,
-            onCheckedChange = onDisableScreenshotChange,
-        )
+        AnimatedVisibility(visible = showMiscSection) {
+            Column {
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.disable_screenshot)) },
+                    description = stringResource(R.string.disable_screenshot_desc),
+                    icon = { Icon(painterResource(R.drawable.screenshot), null) },
+                    checked = disableScreenshot,
+                    onCheckedChange = onDisableScreenshotChange,
+                )
+            }
+        }
     }
 
     Box {

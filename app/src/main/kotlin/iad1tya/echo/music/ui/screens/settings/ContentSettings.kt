@@ -143,9 +143,12 @@ fun ContentSettings(
     var showProxyConfigurationDialog by rememberSaveable {
         mutableStateOf(false)
     }
+    var showContentPlaybackSection by rememberSaveable { mutableStateOf(false) }
+    var showLanguageNetworkSection by rememberSaveable { mutableStateOf(false) }
     var showLyricsOptions by rememberSaveable {
         mutableStateOf(false)
     }
+    var showMiscContentSection by rememberSaveable { mutableStateOf(false) }
 
     if (showProxyConfigurationDialog) {
         var expandedDropdown by remember { mutableStateOf(false) }
@@ -370,7 +373,20 @@ fun ContentSettings(
             )
         )
         
-        PreferenceGroupTitle(title = stringResource(R.string.general))
+        PreferenceEntry(
+            title = { Text("Content & Playback") },
+            icon = { Icon(painterResource(R.drawable.play), null) },
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showContentPlaybackSection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null,
+                )
+            },
+            onClick = { showContentPlaybackSection = !showContentPlaybackSection }
+        )
+
+        AnimatedVisibility(visible = showContentPlaybackSection) {
+            Column {
         ListPreference(
             title = { Text(stringResource(R.string.content_language)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
@@ -437,7 +453,6 @@ fun ContentSettings(
             onCheckedChange = onHideYoutubeShortsChange,
         )
 
-        PreferenceGroupTitle(title = stringResource(R.string.playback_client))
         ListPreference(
             title = { Text(stringResource(R.string.preferred_playback_client)) },
             icon = { Icon(painterResource(R.drawable.play), null) },
@@ -460,6 +475,7 @@ fun ContentSettings(
             },
             onValueSelected = onPlayerStreamClientChange,
         )
+
         PreferenceEntry(
             title = { Text(stringResource(R.string.po_token_generation)) },
             description = if (webClientPoTokenEnabled) {
@@ -470,8 +486,9 @@ fun ContentSettings(
             icon = { Icon(painterResource(R.drawable.token), null) },
             onClick = { navController.navigate("settings/content/po_token") },
         )
+            }
+        }
 
-        PreferenceGroupTitle(title = stringResource(R.string.app_language))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.app_language)) },
@@ -509,7 +526,6 @@ fun ContentSettings(
             )
         }
 
-        PreferenceGroupTitle(title = stringResource(R.string.proxy))
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_proxy)) },
             icon = { Icon(painterResource(R.drawable.wifi_proxy), null) },
@@ -524,7 +540,6 @@ fun ContentSettings(
             )
         }
 
-        PreferenceGroupTitle(title = stringResource(R.string.sponsor_block))
         val creditText = androidx.compose.ui.text.buildAnnotatedString {
             append("Built and maintained by ")
             pushStringAnnotation(tag = "URL", annotation = "https://ajay.app/")
@@ -568,7 +583,6 @@ fun ContentSettings(
             }
         )
 
-        PreferenceGroupTitle(title = stringResource(R.string.lyrics))
         PreferenceEntry(
             title = { Text(stringResource(R.string.lyrics)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
@@ -697,7 +711,20 @@ fun ContentSettings(
 
 
 
-        PreferenceGroupTitle(title = stringResource(R.string.misc))
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.misc)) },
+            icon = { Icon(painterResource(R.drawable.tune), null) },
+            trailingContent = {
+                Icon(
+                    painter = painterResource(if (showMiscContentSection) R.drawable.expand_less else R.drawable.expand_more),
+                    contentDescription = null,
+                )
+            },
+            onClick = { showMiscContentSection = !showMiscContentSection }
+        )
+
+        AnimatedVisibility(visible = showMiscContentSection) {
+            Column {
         EditTextPreference(
             title = { Text(stringResource(R.string.top_length)) },
             icon = { Icon(painterResource(R.drawable.trending_up), null) },
@@ -718,6 +745,8 @@ fun ContentSettings(
             },
             onValueSelected = onQuickPicksChange,
         )
+            }
+        }
     }
 
     Box {

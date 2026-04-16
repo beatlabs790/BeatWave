@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -55,6 +56,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.background
 import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.R
 import iad1tya.echo.music.constants.EqualizerBandLevelsMbKey
@@ -237,48 +240,88 @@ fun EqualizerDialog(onDismiss: () -> Unit) {
     }
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 TopAppBar(
-                    title = { Text(text = "Equalizer") },
+                    title = {
+                        Text(
+                            text = "Equalizer",
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = onDismiss) {
                             Icon(painter = painterResource(R.drawable.close), contentDescription = null)
                         }
                     },
                     actions = {
-                        Switch(
-                            checked = eqEnabled,
-                            onCheckedChange = {
-                                setEqEnabled(it)
-                                if (it && selectedProfileId.isBlank()) setSelectedProfileId("manual")
-                            },
-                            thumbContent = {
-                                Icon(painter = painterResource(id = if (eqEnabled) R.drawable.check else R.drawable.close), contentDescription = null, modifier = Modifier.size(SwitchDefaults.IconSize))
-                            },
-                        )
-                        Spacer(Modifier.width(8.dp))
+                        Surface(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+                            color = MaterialTheme.colorScheme.surfaceContainerHigh
+                        ) {
+                            Switch(
+                                checked = eqEnabled,
+                                onCheckedChange = {
+                                    setEqEnabled(it)
+                                    if (it && selectedProfileId.isBlank()) setSelectedProfileId("manual")
+                                },
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(id = if (eqEnabled) R.drawable.check else R.drawable.close),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                },
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        }
+                        Spacer(Modifier.width(12.dp))
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface, scrolledContainerColor = MaterialTheme.colorScheme.surface),
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        scrolledContainerColor = MaterialTheme.colorScheme.background
+                    ),
                 )
 
                 Column(
-                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 24.dp),
                 ) {
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(16.dp))
 
                     if (caps == null || bandCount <= 0) {
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                            shape = RoundedCornerShape(24.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            ),
+                            shape = RoundedCornerShape(20.dp),
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(24.dp)
+                            ) {
                                 CircularProgressIndicator()
                                 Spacer(Modifier.height(16.dp))
-                                Text(text = "Open a track to load equalizer bands.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+                                Text(
+                                    text = "Open a track to load equalizer bands.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center
+                                )
                                 Spacer(Modifier.height(16.dp))
-                                Button(onClick = onDismiss) { Text(text = "OK") }
+                                Button(
+                                    onClick = onDismiss,
+                                    shape = RoundedCornerShape(12.dp)
+                                ) { Text(text = "OK") }
                             }
                         }
                         Spacer(Modifier.height(24.dp))
@@ -288,10 +331,22 @@ fun EqualizerDialog(onDismiss: () -> Unit) {
                     SectionCard(
                         title = "Presets",
                         trailing = {
-                            TextButton(onClick = { showImportProfilesDialog = true }) { Text(text = "Import") }
+                            TextButton(
+                                onClick = { showImportProfilesDialog = true },
+                                colors = ButtonDefaults.textButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(text = "Import", style = MaterialTheme.typography.labelMedium)
+                            }
                         },
                     ) {
-                            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp).horizontalScroll(rememberScrollState())) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
+                                .horizontalScroll(rememberScrollState())
+                        ) {
                             FilterChip(
                                 selected = selectedProfileId == "flat",
                                 onClick = {
@@ -325,7 +380,14 @@ fun EqualizerDialog(onDismiss: () -> Unit) {
                     SectionCard(
                         title = "Profiles",
                         trailing = {
-                            TextButton(onClick = { showManageProfilesDialog = true }) { Text(text = "Manage") }
+                            TextButton(
+                                onClick = { showManageProfilesDialog = true },
+                                colors = ButtonDefaults.textButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(text = "Manage", style = MaterialTheme.typography.labelMedium)
+                            }
                         },
                     ) {
                         val subtitle = when {
@@ -335,27 +397,73 @@ fun EqualizerDialog(onDismiss: () -> Unit) {
                             else -> "Manual"
                         }
 
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
+                        ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(text = subtitle, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Text(text = "Current preset", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(
+                                    text = subtitle,
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = "Current preset",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
-                            TextButton(onClick = { showSaveProfileDialog = true }) { Text(text = "Save") }
+                            TextButton(
+                                onClick = { showSaveProfileDialog = true },
+                                colors = ButtonDefaults.textButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(text = "Save", style = MaterialTheme.typography.labelMedium)
+                            }
                         }
                     }
 
                     Spacer(Modifier.height(12.dp))
 
-                    SectionCard(title = "Bands", trailing = {
-                        TextButton(onClick = {
-                            setSelectedProfileId("manual")
-                            setBandLevelsRaw(encodeBandLevelsMb(List(bandCount) { 0 }))
-                        }) { Text(text = "Reset") }
-                    }) {
+                    SectionCard(
+                        title = "Bands",
+                        trailing = {
+                            TextButton(
+                                onClick = {
+                                    setSelectedProfileId("manual")
+                                    setBandLevelsRaw(encodeBandLevelsMb(List(bandCount) { 0 }))
+                                },
+                                colors = ButtonDefaults.textButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(text = "Reset", style = MaterialTheme.typography.labelMedium)
+                            }
+                        }
+                    ) {
                         caps.centerFreqHz.forEachIndexed { band, hz ->
                             val value = bandLevelsMb.getOrNull(band) ?: 0
-                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 10.dp)) {
-                                Text(text = formatHz(hz), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(64.dp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 10.dp)
+                            ) {
+                                Text(
+                                    text = formatHz(hz),
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    modifier = Modifier.width(64.dp),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                                 Slider(
                                     value = value.toFloat().coerceIn(minMb.toFloat(), maxMb.toFloat()),
                                     onValueChange = { newValue ->
@@ -371,17 +479,27 @@ fun EqualizerDialog(onDismiss: () -> Unit) {
                                         setEqEnabled(true)
                                     },
                                     valueRange = minMb.toFloat()..maxMb.toFloat(),
-                                    colors = SliderDefaults.colors(activeTrackColor = MaterialTheme.colorScheme.primary, inactiveTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest),
+                                    colors = SliderDefaults.colors(
+                                        activeTrackColor = MaterialTheme.colorScheme.primary,
+                                        inactiveTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                                    ),
                                     modifier = Modifier.weight(1f),
                                 )
-                                Text(text = formatDb(value / 100f), style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.End, modifier = Modifier.width(72.dp))
+                                Text(
+                                    text = formatDb(value / 100f),
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    textAlign = TextAlign.End,
+                                    modifier = Modifier.width(72.dp)
+                                )
                             }
                         }
                     }
 
                     Spacer(Modifier.height(12.dp))
 
-                    SectionCard(title = "Output gain") {
+                    SectionCard(title = "Output Gain") {
                         ToggleSliderRow(
                             enabled = outputGainEnabled,
                             onEnabledChange = {
@@ -401,7 +519,7 @@ fun EqualizerDialog(onDismiss: () -> Unit) {
 
                     Spacer(Modifier.height(12.dp))
 
-                    SectionCard(title = "Bass boost") {
+                    SectionCard(title = "Bass Boost") {
                         ToggleSliderRow(
                             enabled = bassBoostEnabled,
                             onEnabledChange = {
@@ -421,7 +539,7 @@ fun EqualizerDialog(onDismiss: () -> Unit) {
 
                     Spacer(Modifier.height(12.dp))
 
-                    SectionCard(title = "Virtualizer") {
+                    SectionCard(title = "Virtualizer Effect") {
                         ToggleSliderRow(
                             enabled = virtualizerEnabled,
                             onEnabledChange = {
@@ -451,16 +569,26 @@ private fun SectionCard(
     content: @Composable () -> Unit,
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(vertical = 16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             ) {
-                Text(text = title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
                 trailing?.invoke()
             }
             content()
@@ -478,14 +606,33 @@ private fun ToggleSliderRow(
     formatValue: (Int) -> String,
     onValueChangeFinished: (() -> Unit)? = null,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp)) {
-        Switch(
-            checked = enabled,
-            onCheckedChange = onEnabledChange,
-            thumbContent = {
-                Icon(painter = painterResource(id = if (enabled) R.drawable.check else R.drawable.close), contentDescription = null, modifier = Modifier.size(SwitchDefaults.IconSize))
-            },
-        )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+    ) {
+        Surface(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainer),
+            color = MaterialTheme.colorScheme.surfaceContainer
+        ) {
+            Switch(
+                checked = enabled,
+                onCheckedChange = onEnabledChange,
+                thumbContent = {
+                    Icon(
+                        painter = painterResource(
+                            id = if (enabled) R.drawable.check else R.drawable.close
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                    )
+                },
+                modifier = Modifier.padding(4.dp)
+            )
+        }
         Spacer(Modifier.width(12.dp))
         Slider(
             value = value.toFloat().coerceIn(valueRange.first.toFloat(), valueRange.last.toFloat()),
@@ -493,11 +640,21 @@ private fun ToggleSliderRow(
             onValueChangeFinished = { onValueChangeFinished?.invoke() },
             valueRange = valueRange.first.toFloat()..valueRange.last.toFloat(),
             enabled = enabled,
-            colors = SliderDefaults.colors(activeTrackColor = MaterialTheme.colorScheme.primary, inactiveTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest),
+            colors = SliderDefaults.colors(
+                activeTrackColor = MaterialTheme.colorScheme.primary,
+                inactiveTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+            ),
             modifier = Modifier.weight(1f),
         )
         Spacer(Modifier.width(12.dp))
-        Text(text = formatValue(value), style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.End, modifier = Modifier.width(72.dp))
+        Text(
+            text = formatValue(value),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            textAlign = TextAlign.End,
+            modifier = Modifier.width(72.dp)
+        )
     }
 }
 

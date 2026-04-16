@@ -41,7 +41,6 @@ import iad1tya.echo.music.constants.WebClientPoTokenEnabledKey
 import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.component.EditTextPreference
 import iad1tya.echo.music.ui.component.PreferenceEntry
-import iad1tya.echo.music.ui.component.PreferenceGroupTitle
 import iad1tya.echo.music.ui.component.SwitchPreference
 import iad1tya.echo.music.ui.utils.backToMain
 import iad1tya.echo.music.utils.rememberPreference
@@ -116,8 +115,6 @@ fun PoTokenScreen(
         )
 
         if (webClientPoTokenEnabled) {
-            PreferenceGroupTitle(title = stringResource(R.string.token_settings))
-
             SwitchPreference(
                 title = { Text(stringResource(R.string.use_visitor_data)) },
                 description = stringResource(R.string.use_visitor_data_desc),
@@ -151,8 +148,6 @@ fun PoTokenScreen(
                     extractionLauncher.launch(intent)
                 }
             )
-
-            PreferenceGroupTitle(title = stringResource(R.string.generated_tokens))
 
             TokenEntry(
                 title = stringResource(R.string.po_token_gvs),

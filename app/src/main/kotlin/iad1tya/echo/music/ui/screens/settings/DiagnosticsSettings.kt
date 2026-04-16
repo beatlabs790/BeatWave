@@ -43,7 +43,6 @@ import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.R
 import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.component.PreferenceEntry
-import iad1tya.echo.music.ui.component.PreferenceGroupTitle
 import iad1tya.echo.music.ui.component.SwitchPreference
 import iad1tya.echo.music.ui.utils.backToMain
 import iad1tya.echo.music.utils.DiagnosticsCenter
@@ -91,8 +90,6 @@ fun DiagnosticsSettings(
                 LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)
             )
         )
-
-        PreferenceGroupTitle(title = "Diagnostics")
 
         SwitchPreference(
             title = { Text("Update notifications") },

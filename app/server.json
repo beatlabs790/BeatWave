@@ -1,5 +1,5 @@
 {
-  "name": "Hugging Face Sync",
-  "region": "Global - VIVIDH",
-  "serverUrl": "wss://devilmi-vivi-music-listen-together.hf.space"
+  "name": "Echo Music Server",
+  "region": "Global",
+  "serverUrl": "wss://iad1tya-echomusic.hf.space/ws"
 }

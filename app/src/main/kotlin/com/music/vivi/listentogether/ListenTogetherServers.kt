@@ -26,8 +26,8 @@ object ListenTogetherServers {
     private val _servers = MutableStateFlow(
         listOf(
             ListenTogetherServer(
-                name = "Hugging Face Sync",
-                url = "wss://devilmi-vivi-music-listen-together.hf.space",
+                name = "Echo Music Server",
+                url = "wss://iad1tya-echomusic.hf.space/ws",
                 location = "Global",
                 operator = "VIVIDH"
             )

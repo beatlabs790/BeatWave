@@ -1,6 +1,3 @@
-# Echo Music v5.1.5 - Beta Release
+# Echo Music v5.1.6 - Beta Release
 
-- Refactored build targets and separated FOSS and GMS compile variants.
-- Scoped Firebase dependencies to GMS builds only to ensure a clean FOSS variant.
-- Configured automated GitHub Actions build pipelines with split artifact ZIP outputs.
-- Integrated automated Discord notification system for development updates.
+- Migrated default Listen Together server to Echo Music Server on Hugging Face (wss://iad1tya-echomusic.hf.space/ws). To modify or verify the URL, navigate to Listen Together > Settings > Server URL.

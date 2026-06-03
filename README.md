@@ -3,7 +3,8 @@
 
   <h1>Echo Music</h1>
 
-  <p><strong>A robust, open-source music streaming client offering an ad-free experience, offline capabilities, and advanced music discovery.</strong></p>
+  <p><strong>A modern Android music app with ad-free streaming, synced lyrics, offline playback, and an intuitive user experience.
+</strong></p>
 
   [![GitHub Release](https://img.shields.io/github/v/release/iad1tya/Echo-Music?style=for-the-badge&color=6f42c1)](https://github.com/iad1tya/Echo-Music/releases)
   [![GitHub Stars](https://img.shields.io/github/stars/iad1tya/Echo-Music?style=for-the-badge&color=e3b341)](https://github.com/iad1tya/Echo-Music/stargazers)

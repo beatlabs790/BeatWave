@@ -716,8 +716,6 @@ private fun ThumbnailItem(
                         val songTitle = normalizeCanvasSongTitle(songTitleRaw)
                         val artistName = normalizeCanvasArtistName(artistNameRaw)
                         
-                        println("CanvasFetch: Song='$songTitle' (raw='$songTitleRaw'), Artist='$artistName' (raw='$artistNameRaw'), Album='$albumName'")
-                        
                         linkedSetOf(
                             songTitle to artistName,
                             songTitleRaw to artistName,
@@ -813,7 +811,6 @@ private fun ThumbnailItem(
                         if (artistMatches && titleMatches) {
                             artwork
                         } else {
-                            println("CanvasFetch: Validation failed artistMatch=$artistMatches, titleMatches=$titleMatches for '${artwork.name}' by '${artwork.artist}'")
                             null
                         }
                     }

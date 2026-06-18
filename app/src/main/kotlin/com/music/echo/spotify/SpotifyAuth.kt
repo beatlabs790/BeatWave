@@ -72,11 +72,10 @@ object SpotifyAuth {
         val serverTimeSec = fetchServerTime()
         val totp = generateTotp(nuance.s, serverTimeSec)
 
-        val tokenUrl = buildString {
-            append(TOKEN_URL)
-            append("?reason=transport")
-            append("&productType=web-player")
-            append("&totp=$totp")
+        val tokenUrl = "$TOKEN_URL?reason=transport&productType=web-player"
+
+        val postBody = buildString {
+            append("totp=$totp")
             append("&totpServer=$totp")
             append("&totpVer=${nuance.v}")
         }
@@ -89,7 +88,7 @@ object SpotifyAuth {
         }
 
         val body = withContext(Dispatchers.IO) {
-            httpGet(tokenUrl, mapOf("Cookie" to cookieHeader))
+            httpPost(tokenUrl, postBody, mapOf("Cookie" to cookieHeader))
         }
 
         val token = json.decodeFromString<SpotifyInternalToken>(body)
@@ -200,6 +199,39 @@ object SpotifyAuth {
             for ((key, value) in extraHeaders) {
                 connection.setRequestProperty(key, value)
             }
+
+            val responseCode = connection.responseCode
+            if (responseCode !in 200..299) {
+                val errorBody = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: ""
+                throw Spotify.SpotifyException(
+                    responseCode,
+                    "HTTP $responseCode: $errorBody",
+                )
+            }
+
+            return connection.inputStream.bufferedReader().use { it.readText() }
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    private fun httpPost(urlString: String, body: String, extraHeaders: Map<String, String>): String {
+        val connection = URL(urlString).openConnection() as HttpURLConnection
+        try {
+            connection.requestMethod = "POST"
+            connection.instanceFollowRedirects = true
+            connection.doOutput = true
+            connection.connectTimeout = 15_000
+            connection.readTimeout = 15_000
+            connection.setRequestProperty("User-Agent", USER_AGENT)
+            connection.setRequestProperty("Accept", "application/json, text/plain, */*")
+            connection.setRequestProperty("Accept-Language", "en")
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            for ((key, value) in extraHeaders) {
+                connection.setRequestProperty(key, value)
+            }
+
+            connection.outputStream.bufferedWriter().use { it.write(body) }
 
             val responseCode = connection.responseCode
             if (responseCode !in 200..299) {

@@ -1,5 +1,5 @@
-# Echo Music v5.2.22 Changelog
+# Echo Music v5.2.22
 
-- Fixed proxy settings dialog causing the app to freeze when saved.
-- Made the play all button consistent in size with the library button on the artist page.
+- Fixed proxy settings dialog freezing the app on save.
 - Fixed overlapping play and library buttons on the artist page when a song is liked.
+- Aligned play and library button sizes on the artist page.

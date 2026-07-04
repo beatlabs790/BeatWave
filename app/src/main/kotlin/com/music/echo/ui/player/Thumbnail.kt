@@ -471,6 +471,7 @@ fun Thumbnail(
                                 onSeek = onSeekCallback,
                                 playerConnection = playerConnection,
                                 context = context,
+                                lazyGridState = thumbnailLazyGridState,
                                 isLandscape = isLandscape,
                                 isListenTogetherGuest = isListenTogetherGuest,
                                 currentMediaId = mediaMetadata?.id,
@@ -574,6 +575,7 @@ private fun ThumbnailItem(
     onSeek: (String, Boolean) -> Unit,
     playerConnection: iad1tya.echo.music.playback.PlayerConnection,
     context: android.content.Context,
+    lazyGridState: androidx.compose.foundation.lazy.grid.LazyGridState,
     isLandscape: Boolean = false,
     isListenTogetherGuest: Boolean = false,
     currentMediaId: String? = null,
@@ -615,8 +617,20 @@ private fun ThumbnailItem(
             )
             .padding(horizontal = PlayerHorizontalPadding)
             .graphicsLayer {
-                
-                
+                val layoutInfo = lazyGridState.layoutInfo
+                val itemKey = item.mediaId.ifEmpty { "unknown_${item.hashCode()}" }
+                val visibleItem = layoutInfo.visibleItemsInfo.find { it.key == itemKey }
+                if (visibleItem != null) {
+                    val center = layoutInfo.viewportEndOffset / 2f
+                    val itemCenter = visibleItem.offset.x + (visibleItem.size.width / 2f)
+                    val distance = kotlin.math.abs(itemCenter - center)
+                    val fraction = (distance / visibleItem.size.width.toFloat()).coerceIn(0f, 1f)
+                    
+                    val targetScale = androidx.compose.ui.util.lerp(1f, 0.85f, fraction)
+                    scaleX = targetScale
+                    scaleY = targetScale
+                    alpha = androidx.compose.ui.util.lerp(1f, 0.3f, fraction)
+                }
             }
             .pointerInput(Unit) {
                 detectTapGestures(

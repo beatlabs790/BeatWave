@@ -303,6 +303,7 @@
     <string name="keep_screen_on_when_player_is_expanded">Keep screen on when player is expanded</string>
 
     <string name="crossfade">Crossfade</string>
+    <string name="crossfading">Crossfading</string>
     <string name="crossfade_desc">Crossfade between songs</string>
     <string name="crossfade_duration">Crossfade duration</string>
     <string name="crossfade_gapless">Disable for gapless albums</string>

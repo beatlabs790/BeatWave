@@ -336,19 +336,21 @@ fun BottomSheetPlayer(
         }
     }
     val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isCrossfading by playerConnection.isCrossfading.collectAsState()
     
     var currentAudioFormat by remember { mutableStateOf<androidx.media3.common.Format?>(null) }
-    DisposableEffect(playerConnection) {
+    DisposableEffect(playerConnection, isCrossfading) {
+        val playerToListen = playerConnection.player
         val listener = object : Player.Listener {
             override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
                 val audioTrack = tracks.groups.firstOrNull { it.type == C.TRACK_TYPE_AUDIO }
                 currentAudioFormat = audioTrack?.getTrackFormat(0)
             }
         }
-        playerConnection.player.addListener(listener)
-        currentAudioFormat = playerConnection.player.currentTracks.groups.firstOrNull { it.type == C.TRACK_TYPE_AUDIO }?.getTrackFormat(0)
+        playerToListen.addListener(listener)
+        currentAudioFormat = playerToListen.currentTracks.groups.firstOrNull { it.type == C.TRACK_TYPE_AUDIO }?.getTrackFormat(0)
         onDispose {
-            playerConnection.player.removeListener(listener)
+            playerToListen.removeListener(listener)
         }
     }
     val swipeLyrics by rememberPreference(SwipeLyricsKey, false)
@@ -2052,7 +2054,7 @@ fun BottomSheetPlayer(
                     }
 
                     val isBuffering = playbackState == androidx.media3.common.Player.STATE_BUFFERING
-                    val shouldShowCodecBox = showCodecOnPlayer && (formatText.isNotEmpty() || isBuffering)
+                    val shouldShowCodecBox = showCodecOnPlayer && (formatText.isNotEmpty() || isBuffering) || isCrossfading
                     if (sleepTimerEnabled || shouldShowCodecBox) {
                         Box(
                             modifier = Modifier
@@ -2063,45 +2065,82 @@ fun BottomSheetPlayer(
                                     color = TextBackgroundColor.copy(alpha = 0.12f),
                                     shape = RoundedCornerShape(4.dp)
                                 )
-                                .clickable {
-                                    if (sleepTimerEnabled) {
-                                        showSleepTimerDialog = true
-                                    }
+                                .clickable(enabled = sleepTimerEnabled) {
+                                    showSleepTimerDialog = true
                                 }
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
+                            val codecBoxState = when {
+                                sleepTimerEnabled -> 0
+                                isCrossfading -> 1
+                                isBuffering -> 2
+                                else -> 3
+                            }
                             AnimatedContent(
-                                targetState = sleepTimerEnabled,
+                                targetState = codecBoxState,
                                 transitionSpec = {
-                                    fadeIn(animationSpec = tween(300)) togetherWith
-                                            fadeOut(animationSpec = tween(300))
+                                    fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
                                 },
                                 label = "QualityTimerSwitcher"
-                            ) { isTimerActive ->
-                                if (isTimerActive) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.sleep_timer),
-                                            contentDescription = null,
-                                            tint = TextBackgroundColor.copy(alpha = 0.8f),
-                                            modifier = Modifier.size(12.dp)
-                                        )
-                                        Text(
-                                            text = makeTimeString(sleepTimerTimeLeft.coerceAtLeast(0)),
-                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                fontSize = 10.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                letterSpacing = 1.5.sp
-                                            ),
-                                            color = TextBackgroundColor.copy(alpha = 0.8f),
-                                            maxLines = 1,
-                                        )
+                            ) { state ->
+                                when (state) {
+                                    0 -> {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.sleep_timer),
+                                                contentDescription = null,
+                                                tint = TextBackgroundColor.copy(alpha = 0.8f),
+                                                modifier = Modifier.size(12.dp)
+                                            )
+                                            Text(
+                                                text = makeTimeString(sleepTimerTimeLeft.coerceAtLeast(0)),
+                                                style = MaterialTheme.typography.labelSmall.copy(
+                                                    fontSize = 10.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    letterSpacing = 1.5.sp
+                                                ),
+                                                color = TextBackgroundColor.copy(alpha = 0.8f),
+                                                maxLines = 1,
+                                            )
+                                        }
                                     }
-                                } else if (shouldShowCodecBox) {
-                                    if (isBuffering) {
+                                    1 -> {
+                                        val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "ShiningCrossfade")
+                                        val alpha by infiniteTransition.animateFloat(
+                                            initialValue = 0.3f,
+                                            targetValue = 1f,
+                                            animationSpec = infiniteRepeatable(
+                                                animation = tween(800, easing = LinearEasing),
+                                                repeatMode = RepeatMode.Reverse
+                                            ),
+                                            label = "CrossfadeAlpha"
+                                        )
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.sync),
+                                                contentDescription = "Crossfading",
+                                                tint = TextBackgroundColor.copy(alpha = alpha),
+                                                modifier = Modifier.size(12.dp)
+                                            )
+                                            Text(
+                                                text = stringResource(R.string.crossfading),
+                                                style = MaterialTheme.typography.labelSmall.copy(
+                                                    fontSize = 10.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    letterSpacing = 1.sp
+                                                ),
+                                                color = TextBackgroundColor.copy(alpha = alpha),
+                                                maxLines = 1,
+                                            )
+                                        }
+                                    }
+                                    2 -> {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -2122,7 +2161,8 @@ fun BottomSheetPlayer(
                                                 maxLines = 1,
                                             )
                                         }
-                                    } else {
+                                    }
+                                    3 -> {
                                         Text(
                                             text = formatText,
                                             style = MaterialTheme.typography.labelSmall.copy(

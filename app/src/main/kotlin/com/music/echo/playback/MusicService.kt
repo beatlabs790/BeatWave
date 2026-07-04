@@ -337,7 +337,7 @@ class MusicService :
         private set
     private var secondaryPlayer: ExoPlayer? = null
     private var fadingPlayer: ExoPlayer? = null
-    private var isCrossfading = false
+    val isCrossfading = MutableStateFlow(false)
     private var crossfadeJob: Job? = null
 
     private lateinit var mediaSession: MediaLibrarySession
@@ -3217,7 +3217,7 @@ class MusicService :
     }
 
     private fun startCrossfade() {
-        if (isCrossfading) return
+        if (isCrossfading.value) return
 
         
         
@@ -3265,7 +3265,7 @@ class MusicService :
     }
 
     private fun performCrossfadeSwap() {
-        isCrossfading = true
+        isCrossfading.value = true
         val nextPlayer = secondaryPlayer ?: return
         val currentPlayer = player
 
@@ -3280,7 +3280,7 @@ class MusicService :
         
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
-                if (isCrossfading && fadingPlayer != null) {
+                if (isCrossfading.value && fadingPlayer != null) {
                     try {
                         if (isPlaying) {
                             fadingPlayer?.play()
@@ -3348,7 +3348,7 @@ class MusicService :
         fadingPlayer?.clearMediaItems()
         fadingPlayer?.release()
         fadingPlayer = null
-        isCrossfading = false
+        isCrossfading.value = false
         sleepTimer.notifySongTransition()
     }
 

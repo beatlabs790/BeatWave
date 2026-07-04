@@ -155,7 +155,8 @@ class PlayerConnection(
     val isMuted = service.isMuted
 
     val waitingForNetworkConnection = service.waitingForNetworkConnection
-    
+    val isCrossfading: kotlinx.coroutines.flow.StateFlow<Boolean> = service.isCrossfading
+
     
     var shouldBlockPlaybackChanges: (() -> Boolean)? = null
     

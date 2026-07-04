@@ -1,5 +1,7 @@
 # Echo Music v5.2.4
 
+- Added an Apple Music-style dynamic zoom and fade transition for album art when changing songs.
+- Added a dynamic crossfade indicator with a shining animation on the player screen to visually indicate when songs are crossfading.
 - Fixed an issue where searching for settings and clicking a result would navigate to the wrong setting highlight.
 - Fixed an issue where settings with spaces in their name would fail to highlight when clicked from search results.
 - Added a proper visual background highlight to the matching setting card so it is clearly visible.

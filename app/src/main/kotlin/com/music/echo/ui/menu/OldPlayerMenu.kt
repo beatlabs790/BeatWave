@@ -35,6 +35,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -62,6 +66,7 @@ import iad1tya.echo.music.constants.ListItemHeight
 import iad1tya.echo.music.extensions.toggleRepeatMode
 import iad1tya.echo.music.listentogether.RoomRole
 import iad1tya.echo.music.models.MediaMetadata
+import iad1tya.echo.music.models.toMediaMetadata
 import iad1tya.echo.music.playback.ExoDownloadService
 import iad1tya.echo.music.ui.component.BottomSheetState
 import iad1tya.echo.music.ui.component.ListDialog
@@ -127,6 +132,12 @@ fun OldPlayerMenu(
     var showListenTogetherDialog by rememberSaveable { mutableStateOf(false) }
     var showSelectArtistDialog by rememberSaveable { mutableStateOf(false) }
     var showPitchTempoDialog by rememberSaveable { mutableStateOf(false) }
+    var refetchIconDegree by remember { mutableFloatStateOf(0f) }
+    val rotationAnimation by animateFloatAsState(
+        targetValue = refetchIconDegree,
+        animationSpec = tween(durationMillis = 800, easing = LinearEasing),
+        label = ""
+    )
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
@@ -208,26 +219,8 @@ fun OldPlayerMenu(
                 )
             }
         }
-
-        VolumeSlider(
-            value = if (isCasting) castVolume else playerVolume.value,
-            onValueChange = { volume ->
-                if (isCasting) {
-                    castHandler?.setVolume(volume)
-                } else {
-                    playerConnection.service.playerVolume.value = volume
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            accentColor = MaterialTheme.colorScheme.primary
-        )
     }
 
-    Spacer(modifier = Modifier.height(20.dp))
-
-    HorizontalDivider()
-
-    Spacer(modifier = Modifier.height(12.dp))
 
     LazyColumn(
         contentPadding = PaddingValues(
@@ -516,6 +509,38 @@ fun OldPlayerMenu(
                             )
                         )
                     }
+
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(text = stringResource(R.string.refetch)) },
+                            description = { Text(text = stringResource(R.string.refetch_desc)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.sync),
+                                    contentDescription = null,
+                                    modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation)
+                                )
+                            },
+                            onClick = {
+                                refetchIconDegree -= 360
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    YouTube.queue(listOf(mediaMetadata.id)).onSuccess {
+                                        val newSong = it.firstOrNull()
+                                        if (newSong != null) {
+                                            database.transaction {
+                                                val songToUpdate = librarySong
+                                                if (songToUpdate != null) {
+                                                    update(songToUpdate, newSong.toMediaMetadata())
+                                                } else {
+                                                    insert(newSong.toMediaMetadata())
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    )
                 }
             )
         }

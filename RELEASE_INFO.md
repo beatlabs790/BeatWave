@@ -13,3 +13,10 @@
 - Redesigned the ListenBrainz integration icon to use a clean, typographic "LB" style.
 - Updated the Music Recognizer Quick Settings tile to use the custom Echo Music logo instead of the default microphone.
 - Merge pull request #703 from jester-sys/fix-699
+- Added ability for Listen Together hosts to toggle participant music control (#729 by adarsh-279).
+- Fixed an issue affecting liked playlist songs (#731 by nikobitan1).
+- Removed the volume slider from the player menus for a cleaner look.
+- Added a Refetch button to the player menu to manually reload songs in Opus format.
+- Restored JioSaavn as an option for audio and download quality settings.
+- Fixed a layout issue where the touch ripple effect bled out of bounds when selecting a song in lists.
+- Removed extra spacing and the horizontal border above the player menu action buttons.

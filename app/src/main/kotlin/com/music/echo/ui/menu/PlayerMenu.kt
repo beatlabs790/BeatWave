@@ -252,14 +252,13 @@ fun PlayerMenu(
     }
 
     if (isQueueTrigger != true) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(top = 24.dp, bottom = 6.dp),
-        ) {
-            
-            if (isCasting && castDeviceName != null) {
+        if (isCasting && castDeviceName != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 24.dp, bottom = 6.dp),
+            ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
@@ -281,21 +280,6 @@ fun PlayerMenu(
                     )
                 }
             }
-            
-            VolumeSlider(
-                value = if (isCasting) castVolume else (systemVolume / maxSystemVolume.coerceAtLeast(1f)),
-                onValueChange = { volume ->
-                    if (isCasting) {
-                        castHandler?.setVolume(volume)
-                    } else {
-                        val newSystemVolume = (volume * maxSystemVolume).toInt()
-                        audioManager.setStreamVolume(android.media.AudioManager.STREAM_MUSIC, newSystemVolume, 0)
-                        systemVolume = newSystemVolume.toFloat()
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                accentColor = MaterialTheme.colorScheme.primary
-            )
         }
     }
 

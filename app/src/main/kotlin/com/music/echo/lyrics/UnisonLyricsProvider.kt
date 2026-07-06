@@ -24,7 +24,7 @@ object UnisonLyricsProvider : LyricsProvider {
         artist = artist,
         album = album,
         durationSeconds = duration
-    )
+    ).map { convertIfTTML(it) }
 
     override suspend fun getAllLyrics(
         id: String,
@@ -40,7 +40,16 @@ object UnisonLyricsProvider : LyricsProvider {
             artist = artist,
             album = album,
             durationSeconds = duration,
-            callback = callback
+            callback = { callback(convertIfTTML(it)) }
         )
+    }
+
+    private fun convertIfTTML(content: String): String {
+        return if (content.trimStart().startsWith("<tt", ignoreCase = true)) {
+            val parsedLines = iad1tya.echo.music.betterlyrics.TTMLParser.parseTTML(content)
+            iad1tya.echo.music.betterlyrics.TTMLParser.toLRC(parsedLines)
+        } else {
+            content
+        }
     }
 }

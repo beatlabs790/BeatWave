@@ -313,6 +313,7 @@
     <string name="automix_debug">Automix debug overlay</string>
     <string name="automix_debug_desc">Show live beat analysis and transition plan on the player</string>
     <string name="automix_desc">Beat-matched transitions: align downbeats and tempo of songs during the crossfade</string>
+    <string name="automix_mix_in">MIX IN %1$d</string>
     <string name="crossfade_beta_title">Beta Feature</string>
     <string name="crossfade_beta_message">Crossfade is a new feature and may have bugs. If you experience any issues, please report them.\n\nThis feature disables audio offload due to technical limitations.</string>
 

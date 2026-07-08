@@ -249,16 +249,15 @@ class EchoBrainEngine @Inject constructor(
                     val existingUpcomingIds = mutableSetOf<String>()
                     for (i in currentIndex + 1 until player.mediaItemCount) {
                         val item = player.getMediaItemAt(i)
-                        val metadata = item.metadata
-                        if (metadata?.source == QueueItemSource.ECHO_BRAIN) {
-                            existingUpcomingIds.add(metadata.id)
-                            if (metadata.id !in topIds) {
-                                indicesToRemove.add(i)
-                            }
+                        val metadata = item.metadata ?: continue
+                        existingUpcomingIds.add(metadata.id)
+                        if (metadata.source == QueueItemSource.ECHO_BRAIN && metadata.id !in topIds) {
+                            indicesToRemove.add(i)
                         }
                     }
 
-                    // Identify completely new tracks to inject against the current queue state.
+                    // Identify completely new tracks to inject, excluding anything already
+                    // upcoming in the queue regardless of who queued it (user or Echo Brain).
                     val itemsToInject = topCandidates
                         .filter { it.id !in existingUpcomingIds }
                         .shuffled()

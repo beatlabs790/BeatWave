@@ -3755,7 +3755,9 @@ class MusicService :
                 try {
                     fadingPlayer?.volume = 0f
                     player.volume = startVolume
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    Timber.tag(TAG).d(e, "Crossfade volume reset skipped, player likely released")
+                }
                 cleanupCrossfade()
                 rampTempoToNormal()
             }
@@ -3783,7 +3785,9 @@ class MusicService :
             } finally {
                 try {
                     player.playbackParameters = base
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    Timber.tag(TAG).d(e, "Tempo ramp-back skipped, player likely released")
+                }
             }
         }
     }

@@ -2207,7 +2207,7 @@ fun BottomSheetPlayer(
                                                 modifier = Modifier.size(12.dp)
                                             )
                                             Text(
-                                                text = "MIX IN ${mixBeatsLeft ?: 0}",
+                                                text = stringResource(R.string.automix_mix_in, mixBeatsLeft ?: 0),
                                                 style = MaterialTheme.typography.labelSmall.copy(
                                                     fontSize = 10.sp,
                                                     fontWeight = FontWeight.Bold,

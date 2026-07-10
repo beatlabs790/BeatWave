@@ -1,7 +1,8 @@
 package iad1tya.echo.music.utils
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
+import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.decodeFromString
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
@@ -35,7 +36,9 @@ object FundingRepository {
         withContext(Dispatchers.IO) {
             try {
                 val url = "https://raw.githubusercontent.com/EchoMusicApp/Echo-Music/funding-data/funding.json"
-                val data: FundingData = client.get(url).body()
+                val jsonString = client.get(url).bodyAsText()
+                val jsonParser = Json { ignoreUnknownKeys = true }
+                val data = jsonParser.decodeFromString<FundingData>(jsonString)
                 _fundingState.value = data
             } catch (e: Exception) {
                 e.printStackTrace()

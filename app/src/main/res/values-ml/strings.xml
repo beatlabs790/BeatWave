@@ -279,25 +279,18 @@
     <string name="new_version_available">പുതിയ വേർഷൻ ലഭ്യമാണ്</string>
     <string name="translation_models">വിവർത്തന പദ്ധതികൾ</string>
     <string name="clear_translation_models">വിവർത്തന പദ്ധതികൾ കളയുക</string>
-
-
     <!-- Bottom navigation -->
     <string name="music">സംഗീതം</string>
-
     <!-- Search -->
     <string name="filter_local">പ്രാദേശികം</string>
-
     <!-- Album screen -->
     <string name="album_description_placeholder">ആൽബത്തിനായുള്ള ഒരു പ്ലെയ്സ്ഹോൾഡർ വിവരണമാണിത്. ചുവടെയുള്ള ട്രാക്കുകൾ ആസ്വദിക്കൂ!</string>
-
     <!-- Playlist -->
     <string name="you_might_also_like">ബന്ധപ്പെട്ട പ്ലേലിസ്റ്റ്</string>
-
     <!-- Button -->
     <string name="shuffle_content_desc">ഷഫിൾ</string>
     <string name="shuffle_label">ഷഫിൾ</string>
     <string name="pause">താൽക്കാലികമായി നിർത്തുക</string>
-
     <!-- Menu -->
     <string name="saving">സംരക്ഷിക്കുന്നു</string>
     <string name="saved">സംരക്ഷിച്ചു</string>
@@ -305,7 +298,6 @@
     <string name="add_to_an_playlist">ചേർക്കുക</string>
     <string name="more_label">കൂടുതൽ</string>
     <string name="releases_for_you">നിങ്ങൾക്കായുള്ള പുറത്തിറക്കലുകൾ</string>
-
     <!-- Dialog -->
     <string name="hide_status_bar_on_fullscreen">ഫുൾസ്ക്രീനിൽ സ്റ്റാറ്റസ് ബാർ മറയ്ക്കുക</string>
     <string name="hide_status_bar_on_fullscreen_desc">ഗാനരചന ഫുൾസ്ക്രീൻ മോഡ് സജീവമാകുമ്പോൾ സ്റ്റാറ്റസ് ബാർ മറയ്ക്കുക</string>
@@ -314,13 +306,11 @@
     <string name="lyrics_thumbnail_play_pause">തംബ്നെയിലിൽ പ്ലേ/പോസ് കാണിക്കുക</string>
     <string name="lyrics_thumbnail_play_pause_desc">ഫുൾസ്ക്രീൻ ഗാനരചനയിൽ ഗാനത്തിന്റെ തംബ്നെയിലിന് മുകളിൽ പ്ലേ/പോസ് ബട്ടൺ ഓവർലേ കാണിക്കുക</string>
     <string name="picker_not_available">ഈ ഉപകരണത്തിൽ ഡോക്യുമെന്റ് പിക്കർ ലഭ്യമല്ല. ആപ്പിന്റെ സ്ഥിരസ്ഥിതി എക്സ്പോർട്ട് ഡയറക്ടറി ഉപയോഗിക്കുന്നു.</string>
-
     <!-- Plurals -->
     <plurals name="n_apk_found">
         <item quantity="one">%d എപികെ കണ്ടെത്തി</item>
         <item quantity="other">%d എപികെകൾ കണ്ടെത്തി</item>
     </plurals>
-
     <!-- Settings -->
     <string name="theme_desc">നിങ്ങളുടെ ആപ്പ് തീം ഇഷ്ടാനുസൃതമാക്കുക</string>
     <string name="theme_colors">തീം &amp; നിറങ്ങൾ</string>
@@ -351,8 +341,6 @@
     <string name="standard_lyrics_blur">സ്റ്റാൻഡേർഡ് ഗാനരചന മങ്ങൽ</string>
     <string name="listen_together_smart_resync">സ്മാർട്ട് നെറ്റ്‌വർക്ക് വീണ്ടും സമന്വയിപ്പിക്കൽ</string>
     <string name="listen_together_smart_resync_desc">കണക്ഷൻ തകർന്നതിന് ശേഷം ഹോസ്റ്റുമായി യാന്ത്രികമായി പൊരുത്തപ്പെടുക</string>
-
-
     <string name="spotify_import_title">Spotify-ൽ നിന്ന് ഇറക്കുമതി ചെയ്യുക</string>
     <string name="spotify_import_desc">Spotify കണക്റ്റുചെയ്യുക, പ്ലേലിസ്റ്റുകൾ തിരഞ്ഞെടുക്കുക, അവ പ്രാദേശിക Echo Music പ്ലേലിസ്റ്റുകളിലേക്ക് മിറർ ചെയ്യുക.</string>
     <string name="spotify_connect">Spotify കണക്റ്റുചെയ്യുക</string>
@@ -379,4 +367,117 @@
     <string name="spotify_account">Spotify അക്കൗണ്ട്</string>
     <string name="spotify_waiting_for_login">Spotify ലോഗിനായി കാത്തിരിക്കുന്നു</string>
     <string name="export_directory_unavailable">Unable to access an export directory on this device.</string>
+    <string name="loading">ലോഡ് ചെയ്യുന്നു</string>
+    <string name="added_to_playlist">%s-ലേക്ക് ചേർത്തു</string>
+    <string name="more_options">കൂടുതൽ ഓപ്ഷനുകൾ</string>
+    <string name="export_as_csv">CSV ആയി എക്‌സ്‌പോർട്ട് ചെയ്യുക</string>
+    <string name="export_playlist_desc">പ്ലേലിസ്റ്റിലെ ഗാനങ്ങൾ ഒരു CSV ഫയലിലേക്ക് എക്‌സ്‌പോർട്ട് ചെയ്യുക</string>
+    <string name="export_successful">പ്ലേലിസ്റ്റ് വിജയകരമായി എക്‌സ്‌പോർട്ട് ചെയ്തു</string>
+    <string name="activity_history">ശ്രവണ സംഗ്രഹം</string>
+    <string name="total_listening_time">ആകെ ശ്രവണ സമയം</string>
+    <string name="unique_songs">വ്യത്യസ്ത ഗാനങ്ങൾ</string>
+    <string name="unique_artists">വ്യത്യസ്ത കലാകാരന്മാർ</string>
+    <string name="unique_albums">വ്യത്യസ്ത ആൽബങ്ങൾ</string>
+    <string name="selected_period">തിരഞ്ഞെടുത്ത കാലയളവ്</string>
+    <string name="hours_minutes_format">%1$d മ. %2$d മി.</string>
+    <string name="content_sponsor_block">SponsorBlock (സ്വയമേവ ഒഴിവാക്കൽ)</string>
+    <string name="content_sponsor_block_desc">വീഡിയോകളിലെ സ്പോൺസർഷിപ്പുകൾ, ആമുഖങ്ങൾ, സംഗീതേതര ഭാഗങ്ങൾ എന്നിവ സ്വയമേവ ഒഴിവാക്കുക</string>
+    <string name="spotify_import_by_link">ലിങ്ക് ഉപയോഗിച്ച് പ്ലേലിസ്റ്റ് ഇറക്കുമതി ചെയ്യുക</string>
+    <string name="spotify_import_by_link_desc">ഒരു Spotify പ്ലേലിസ്റ്റ് ഇറക്കുമതി ചെയ്യാൻ അതിന്റെ ലിങ്ക് ഒട്ടിക്കുക, നിങ്ങളുടെ ഉടമസ്ഥതയിലല്ലാത്ത പ്ലേലിസ്റ്റുകളും ഇറക്കുമതി ചെയ്യാം</string>
+    <string name="spotify_import_by_link_hint">https://open.spotify.com/playlist/…</string>
+    <string name="spotify_add">ചേർക്കുക</string>
+    <string name="spotify_invalid_playlist_link">ഇത് ഒരു Spotify പ്ലേലിസ്റ്റ് ലിങ്കാണെന്ന് തോന്നുന്നില്ല. https://open.spotify.com/playlist/… പോലുള്ള ഒരു ലിങ്ക് ഉപയോഗിക്കുക</string>
+    <string name="service_uptime">സേവന പ്രവർത്തനസമയം</string>
+    <string name="service_uptime_desc">സംഗീത ദാതാക്കളുടെ നില പരിശോധിക്കുക</string>
+    <string name="music_providers">സംഗീത ദാതാക്കൾ</string>
+    <string name="canvas_providers">കാൻവാസ് ദാതാക്കൾ</string>
+    <string name="lyrics_providers">വരികൾ നൽകുന്ന സേവനങ്ങൾ</string>
+    <string name="other_services">മറ്റ് സേവനങ്ങൾ</string>
+    <string name="status_online">ഓൺലൈൻ</string>
+    <string name="status_offline">ഓഫ്‌ലൈൻ</string>
+    <string name="status_checking">പരിശോധിക്കുന്നു...</string>
+    <string name="recognition_notification_channel_name">സംഗീതം തിരിച്ചറിയൽ</string>
+    <string name="recognition_notification_channel_desc">ദ്രുത ക്രമീകരണങ്ങളിൽ നിന്ന് ഒരു ഗാനം തിരിച്ചറിയുമ്പോൾ അറിയിപ്പ് കാണിക്കുന്നു</string>
+    <string name="recognition_notification_listening">സംഗീതത്തിനായി ശ്രവിക്കുന്നു…</string>
+    <string name="recognition_notification_processing">തിരിച്ചറിയുന്നു…</string>
+    <string name="recognition_notification_no_match">പൊരുത്തമൊന്നും കണ്ടെത്തിയില്ല</string>
+    <string name="recognition_notification_failed">തിരിച്ചറിയൽ പരാജയപ്പെട്ടു</string>
+    <string name="listen_on_echo_music">Echo Music-ൽ കേൾക്കുക</string>
+    <string name="qs_tile_music_recognizer">സംഗീതം തിരിച്ചറിയുക</string>
+    <string name="echo_brain_beta">Echo Brain (ബീറ്റ)</string>
+    <string name="echo_brain_enable">Echo Brain പ്രവർത്തനക്ഷമമാക്കുക</string>
+    <string name="echo_brain_enable_desc">നിങ്ങളുടെ ശ്രവണ ശീലങ്ങളെ അടിസ്ഥാനമാക്കി AI ശുപാർശകൾ സ്വയമേവ ഉൾപ്പെടുത്തുക</string>
+    <string name="echo_brain_profile_statistics">പ്രൊഫൈൽ സ്ഥിതിവിവരക്കണക്കുകൾ</string>
+    <string name="echo_brain_learning_level">പഠന നില</string>
+    <string name="echo_brain_initiate">ആരംഭിക്കുക</string>
+    <string name="echo_brain_total_interactions">ആകെ ഇടപെടലുകൾ</string>
+    <string name="echo_brain_interactions_tracked">%1$d ഇടപെടലുകൾ നിരീക്ഷിച്ചു</string>
+    <string name="echo_brain_discovered_genres">കണ്ടെത്തിയ സംഗീത വിഭാഗങ്ങൾ</string>
+    <string name="echo_brain_distinct_genres_identified">%1$d വ്യത്യസ്ത സംഗീത വിഭാഗങ്ങൾ തിരിച്ചറിഞ്ഞു</string>
+    <string name="echo_brain_analyzed_artists">വിശകലനം ചെയ്ത കലാകാരന്മാർ</string>
+    <string name="echo_brain_artists_mapped">%1$d കലാകാരന്മാരെ മാപ്പ് ചെയ്തു</string>
+    <string name="echo_brain_data_management">ഡാറ്റ മാനേജ്മെന്റ്</string>
+    <string name="echo_brain_export_profile">പ്രൊഫൈൽ എക്‌സ്‌പോർട്ട് ചെയ്യുക</string>
+    <string name="echo_brain_export_profile_desc">നിങ്ങളുടെ ന്യൂറൽ മാപ്പ് ഒരു ഫയലിലേക്ക് സംരക്ഷിക്കുക</string>
+    <string name="echo_brain_import_profile">പ്രൊഫൈൽ ഇറക്കുമതി ചെയ്യുക</string>
+    <string name="echo_brain_import_profile_desc">മുമ്പ് സംരക്ഷിച്ച ന്യൂറൽ മാപ്പ് ലോഡ് ചെയ്യുക</string>
+    <string name="echo_brain_reset_profile">പ്രൊഫൈൽ പുനഃസജ്ജമാക്കുക</string>
+    <string name="echo_brain_reset_profile_desc">പഠിച്ച എല്ലാ ഡാറ്റയും മായ്ച്ച് വീണ്ടും ആരംഭിക്കുക</string>
+    <string name="echo_brain_reset_neural_profile">ന്യൂറൽ പ്രൊഫൈൽ പുനഃസജ്ജമാക്കുക</string>
+    <string name="echo_brain_reset_neural_profile_desc">ഇത് പഠിച്ച എല്ലാ മുൻഗണനകളും ശാശ്വതമായി ഇല്ലാതാക്കും. എഞ്ചിൻ ആദ്യം മുതൽ പഠിക്കാൻ തുടങ്ങും.</string>
+    <string name="echo_brain_profile_exported_successfully">പ്രൊഫൈൽ വിജയകരമായി എക്‌സ്‌പോർട്ട് ചെയ്തു</string>
+    <string name="echo_brain_export_failed">എക്‌സ്‌പോർട്ട് പരാജയപ്പെട്ടു</string>
+    <string name="echo_brain_profile_imported_successfully">പ്രൊഫൈൽ വിജയകരമായി ഇറക്കുമതി ചെയ്തു</string>
+    <string name="echo_brain_import_failed_invalid_file">ഇറക്കുമതി പരാജയപ്പെട്ടു: അസാധുവായ ഫയൽ</string>
+    <string name="listenbrainz_scrobbling">ListenBrainz സ്ക്രോബ്ലിംഗ്</string>
+    <string name="listenbrainz_scrobbling_description">നിങ്ങൾ കേട്ട ട്രാക്കുകൾ സ്വയമേവ ListenBrainz-ലേക്ക് സമർപ്പിക്കുക</string>
+    <string name="set_listenbrainz_token">ListenBrainz ടോക്കൺ സജ്ജമാക്കുക</string>
+    <string name="youtube_decryption_settings">Echo Extractor</string>
+    <string name="youtube_decryption_desc">എക്‌സ്‌ട്രാക്ടർ ക്രമീകരണങ്ങൾ സജ്ജമാക്കുക</string>
+    <string name="youtube_decryption_support">Echo Extractor</string>
+    <string name="youtube_decryption_support_desc">YouTube പ്ലേബാക്ക് കോൺഫിഗറേഷനുകൾ സ്വയമേവ വേർതിരിച്ചെടുക്കുന്നു. സജീവ നിലയിൽ ലോക്ക് ചെയ്തിരിക്കുന്നു.</string>
+    <string name="force_update_cipher">കോൺഫിഗറേഷനുകൾ നിർബന്ധമായി അപ്‌ഡേറ്റ് ചെയ്യുക</string>
+    <string name="force_update_cipher_desc">ഏറ്റവും പുതിയ എക്‌സ്‌ട്രാക്ടർ ഓവർറൈഡ് മാപ്പിങ്ങുകൾ ഡൗൺലോഡ് ചെയ്യുക. പ്രതിദിനം 3 അപ്‌ഡേറ്റുകളായി പരിമിതപ്പെടുത്തിയിരിക്കുന്നു.</string>
+    <string name="youtube_decryption_info">എക്‌സ്‌ട്രാക്ടർ മാപ്പിങ്ങുകൾ നിങ്ങളുടെ സ്വയം ഹോസ്റ്റ് ചെയ്ത നോഡിൽ നിന്ന് ചലനാത്മകമായി ലഭ്യമാക്കുന്നു. മുകളിലെ കൗണ്ട്ഡൗൺ അടുത്ത സ്വയമേവയുള്ള സമന്വയ പരിശോധന വരെയുള്ള ശേഷിക്കുന്ന സമയം കാണിക്കുന്നു. മാനുവൽ അപ്‌ഡേറ്റുകൾ 3 തവണയിൽ കൂടുതൽ ആവശ്യപ്പെട്ടാൽ, അവ ഒരു ദിവസത്തേക്ക് തടയപ്പെടും.</string>
+    <string name="last_updated">അവസാനം അപ്‌ഡേറ്റ് ചെയ്തത്</string>
+    <string name="last_updated_never">ഒരിക്കലുമില്ല</string>
+    <string name="cipher_update_success">എക്‌സ്‌ട്രാക്ടർ മാപ്പിങ്ങുകൾ അപ്‌ഡേറ്റ് ചെയ്തു! %d പ്ലെയറുകൾ ലോഡ് ചെയ്തു.</string>
+    <string name="cipher_update_failed">എക്‌സ്‌ട്രാക്ടർ മാപ്പിങ്ങുകൾ അപ്‌ഡേറ്റ് ചെയ്യാനായില്ല: %s</string>
+    <string name="cipher_updating">എക്‌സ്‌ട്രാക്ടർ കോൺഫിഗറേഷനുകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു…</string>
+    <string name="hours_label">മണിക്കൂറുകൾ</string>
+    <string name="minutes_label">മിനിറ്റുകൾ</string>
+    <string name="seconds_label">സെക്കൻഡുകൾ</string>
+    <string name="liquid_glass">ലിക്വിഡ് ഗ്ലാസ് (ബീറ്റ)</string>
+    <string name="player_background_liquid_glass">ലിക്വിഡ് ഗ്ലാസ്</string>
+    <string name="liquid_glass_settings">ലിക്വിഡ് ഗ്ലാസ് (ബീറ്റ)</string>
+    <string name="liquid_glass_global_enabled">ലിക്വിഡ് ഗ്ലാസ് പ്രവർത്തനക്ഷമമാക്കുക</string>
+    <string name="liquid_glass_effects">ഇഫക്റ്റുകൾ</string>
+    <string name="liquid_glass_appearance">രൂപഭാവം</string>
+    <string name="liquid_glass_per_component">ഓരോ ഘടകത്തിനും</string>
+    <string name="liquid_glass_vibrancy">വർണ്ണതീവ്രത</string>
+    <string name="liquid_glass_vibrancy_desc">ഗ്ലാസ് പശ്ചാത്തലത്തിന്റെ വർണ്ണസാന്ദ്രത വർധിപ്പിക്കുക</string>
+    <string name="liquid_glass_blur_radius">മങ്ങൽ പരിധി</string>
+    <string name="liquid_glass_blur_radius_desc">ഗ്ലാസ് പ്രതലത്തിലെ മങ്ങലിന്റെ അളവ്</string>
+    <string name="liquid_glass_lens_height">ലെൻസ് അപവർത്തന ഉയരം</string>
+    <string name="liquid_glass_lens_amount">ലെൻസ് അപവർത്തന അളവ്</string>
+    <string name="liquid_glass_chromatic_aberration">വർണ്ണ വ്യതിയാനം</string>
+    <string name="liquid_glass_depth_effect">ആഴത്തിന്റെ ഇഫക്റ്റ്</string>
+    <string name="liquid_glass_surface_opacity">പ്രതല അതാര്യത</string>
+    <string name="liquid_glass_surface_opacity_desc">വായനാസൗകര്യത്തിനായുള്ള ഗ്ലാസ് വർണ്ണ ഓവർലേയുടെ അതാര്യത</string>
+    <string name="liquid_glass_surface_tint">പ്രതല വർണ്ണഛായ</string>
+    <string name="liquid_glass_surface_tint_desc">ഗ്ലാസ് പ്രതലത്തിൽ പ്രയോഗിക്കുന്ന വർണ്ണഛായ</string>
+    <string name="liquid_glass_text_color">ഗ്ലാസിലെ വാചകത്തിന്റെ നിറം</string>
+    <string name="liquid_glass_text_color_desc">ഗ്ലാസ് പ്രതലങ്ങളിൽ ഉപയോഗിക്കുന്ന വാചകത്തിന്റെ നിറം</string>
+    <string name="liquid_glass_player">ഗ്ലാസ് പ്ലെയർ</string>
+    <string name="liquid_glass_mini_player">ഗ്ലാസ് മിനി പ്ലെയർ</string>
+    <string name="liquid_glass_nav_bar">ഗ്ലാസ് നാവിഗേഷൻ ബാർ</string>
+    <string name="nav_bar_style">നാവിഗേഷൻ ബാർ ശൈലി</string>
+    <string name="floating_nav_bar">ഫ്ലോട്ടിംഗ് നാവിഗേഷൻ ബാർ</string>
+    <string name="floating_nav_bar_desc">സ്ക്രോൾ ചെയ്യുമ്പോൾ ചുരുങ്ങുന്ന iOS ശൈലിയിലുള്ള ഫ്ലോട്ടിംഗ് ടാബ് ബാർ</string>
+    <string name="liquid_glass_performance_warning">ലിക്വിഡ് ഗ്ലാസ് റെൻഡർ ചെയ്യുന്നതിന് കൂടുതൽ പ്രകടനശേഷി ആവശ്യമാണ്. ചില ഉപകരണങ്ങളിൽ ഇത് സുഗമതയും ബാറ്ററി ആയുസ്സും കുറച്ചേക്കാം</string>
+    <string name="liquid_glass_requires_floating_nav_bar">ഫ്ലോട്ടിംഗ് നാവിഗേഷൻ ബാർ പ്രവർത്തനക്ഷമമാക്കിയിരിക്കണം</string>
+    <string name="color_picker_hex">ഹെക്‌സ്</string>
+    <string name="color_white">വെള്ള</string>
+    <string name="color_light_gray">ഇളം ചാരനിറം</string>
+    <string name="color_black">കറുപ്പ്</string>
 </resources>

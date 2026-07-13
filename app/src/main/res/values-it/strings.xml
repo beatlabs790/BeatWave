@@ -288,25 +288,18 @@
     <string name="enable_discord_rpc">Abilita Rich Presence</string>
     <string name="dismiss">Ignorare</string>
     <string name="action_login">Accedi</string>
-
-
     <!-- Bottom navigation -->
     <string name="music">Musica</string>
-
     <!-- Search -->
     <string name="filter_local">Locale</string>
-
     <!-- Album screen -->
     <string name="album_description_placeholder">Questa è una descrizione segnaposto per l’album. Goditi l’ascolto dei brani qui sotto!</string>
-
     <!-- Playlist -->
     <string name="you_might_also_like">Playlist correlate</string>
-
     <!-- Button -->
     <string name="shuffle_content_desc">Riproduzione casuale</string>
     <string name="shuffle_label">Casuale</string>
     <string name="pause">Pausa</string>
-
     <!-- Menu -->
     <string name="saving">Salvataggio in corso</string>
     <string name="saved">Salvato</string>
@@ -314,7 +307,6 @@
     <string name="add_to_an_playlist">Aggiungi</string>
     <string name="more_label">Altro</string>
     <string name="releases_for_you">Novità per te</string>
-
     <!-- Dialog -->
     <string name="hide_status_bar_on_fullscreen">Nascondi la barra di stato a schermo intero</string>
     <string name="hide_status_bar_on_fullscreen_desc">Nasconde la barra di stato quando è attiva la modalità a schermo intero del testo</string>
@@ -322,14 +314,12 @@
     <string name="lyrics_swipe_to_change_song_desc">Scorri a sinistra o a destra nella sezione artista e titolo del brano nel testo a schermo intero per cambiare canzone</string>
     <string name="lyrics_thumbnail_play_pause">Mostra riproduzione/pausa sulla miniatura</string>
     <string name="lyrics_thumbnail_play_pause_desc">Mostra un sovrappiù del pulsante riproduzione/pausa sulla miniatura del brano nel testo a schermo intero</string>
-
     <!-- Plurals -->
     <plurals name="n_apk_found">
         <item quantity="one">%d APK trovato</item>
         <item quantity="many">%d APK trovati</item>
         <item quantity="other">%d APK trovati</item>
     </plurals>
-
     <!-- Settings -->
     <string name="theme_desc">Personalizza il tema dell’app</string>
     <string name="theme_colors">Tema e colori</string>
@@ -360,8 +350,6 @@
     <string name="standard_lyrics_blur">Sfocatura testo standard</string>
     <string name="listen_together_smart_resync">Risincronizzazione intelligente della rete</string>
     <string name="listen_together_smart_resync_desc">Raggiungi automaticamente l’host dopo una caduta di connessione</string>
-
-
     <string name="spotify_import_title">Importa da Spotify</string>
     <string name="spotify_import_desc">Collega Spotify, scegli le playlist e specchiale in playlist Echo Music locali.</string>
     <string name="spotify_connect">Collega Spotify</string>
@@ -388,4 +376,118 @@
     <string name="spotify_account">Account Spotify</string>
     <string name="spotify_waiting_for_login">In attesa dell’accesso a Spotify</string>
     <string name="export_directory_unavailable">Unable to access an export directory on this device.</string>
+    <string name="loading">Caricamento</string>
+    <string name="added_to_playlist">Aggiunto a %s</string>
+    <string name="more_options">Altre opzioni</string>
+    <string name="picker_not_available">Il selettore di documenti non è disponibile su questo dispositivo. Verrà utilizzata la cartella di esportazione predefinita dell\'app.</string>
+    <string name="export_as_csv">Esporta come CSV</string>
+    <string name="export_playlist_desc">Esporta i brani della playlist in un file CSV</string>
+    <string name="export_successful">Playlist esportata correttamente</string>
+    <string name="activity_history">Riepilogo degli ascolti</string>
+    <string name="total_listening_time">Tempo di ascolto totale</string>
+    <string name="unique_songs">Brani unici</string>
+    <string name="unique_artists">Artisti unici</string>
+    <string name="unique_albums">Album unici</string>
+    <string name="selected_period">Periodo selezionato</string>
+    <string name="hours_minutes_format">%1$dh %2$dmin</string>
+    <string name="content_sponsor_block">SponsorBlock (salto automatico)</string>
+    <string name="content_sponsor_block_desc">Salta automaticamente le sponsorizzazioni, le introduzioni e le sezioni non musicali dei video</string>
+    <string name="spotify_import_by_link">Importa playlist tramite link</string>
+    <string name="spotify_import_by_link_desc">Incolla il link di una playlist Spotify per importarla, anche se non è di tua proprietà</string>
+    <string name="spotify_import_by_link_hint">https://open.spotify.com/playlist/…</string>
+    <string name="spotify_add">Aggiungi</string>
+    <string name="spotify_invalid_playlist_link">Questo non sembra essere il link di una playlist Spotify. Usa un link come https://open.spotify.com/playlist/…</string>
+    <string name="service_uptime">Disponibilità dei servizi</string>
+    <string name="service_uptime_desc">Controlla lo stato dei provider musicali</string>
+    <string name="music_providers">Provider musicali</string>
+    <string name="canvas_providers">Provider Canvas</string>
+    <string name="lyrics_providers">Provider dei testi</string>
+    <string name="other_services">Altri servizi</string>
+    <string name="status_online">Online</string>
+    <string name="status_offline">Offline</string>
+    <string name="status_checking">Verifica in corso...</string>
+    <string name="recognition_notification_channel_name">Riconoscimento musicale</string>
+    <string name="recognition_notification_channel_desc">Mostra una notifica durante l\'identificazione di un brano dalle impostazioni rapide</string>
+    <string name="recognition_notification_listening">Ascolto della musica in corso…</string>
+    <string name="recognition_notification_processing">Identificazione in corso…</string>
+    <string name="recognition_notification_no_match">Nessuna corrispondenza trovata</string>
+    <string name="recognition_notification_failed">Riconoscimento non riuscito</string>
+    <string name="listen_on_echo_music">Ascolta su Echo Music</string>
+    <string name="qs_tile_music_recognizer">Riconosci la musica</string>
+    <string name="echo_brain_beta">Echo Brain (Beta)</string>
+    <string name="echo_brain_enable">Abilita Echo Brain</string>
+    <string name="echo_brain_enable_desc">Inserisce automaticamente consigli dell\'IA basati sulle tue abitudini di ascolto</string>
+    <string name="echo_brain_profile_statistics">Statistiche del profilo</string>
+    <string name="echo_brain_learning_level">Livello di apprendimento</string>
+    <string name="echo_brain_initiate">Avvia</string>
+    <string name="echo_brain_total_interactions">Interazioni totali</string>
+    <string name="echo_brain_interactions_tracked">%1$d interazioni monitorate</string>
+    <string name="echo_brain_discovered_genres">Generi scoperti</string>
+    <string name="echo_brain_distinct_genres_identified">%1$d generi distinti identificati</string>
+    <string name="echo_brain_analyzed_artists">Artisti analizzati</string>
+    <string name="echo_brain_artists_mapped">%1$d artisti mappati</string>
+    <string name="echo_brain_data_management">Gestione dei dati</string>
+    <string name="echo_brain_export_profile">Esporta profilo</string>
+    <string name="echo_brain_export_profile_desc">Salva la tua mappa neurale in un file</string>
+    <string name="echo_brain_import_profile">Importa profilo</string>
+    <string name="echo_brain_import_profile_desc">Carica una mappa neurale salvata in precedenza</string>
+    <string name="echo_brain_reset_profile">Reimposta profilo</string>
+    <string name="echo_brain_reset_profile_desc">Cancella tutti i dati appresi e ricomincia</string>
+    <string name="echo_brain_reset_neural_profile">Reimposta profilo neurale</string>
+    <string name="echo_brain_reset_neural_profile_desc">Questa operazione eliminerà definitivamente tutte le preferenze apprese. Il motore ricomincerà l\'apprendimento da zero.</string>
+    <string name="echo_brain_profile_exported_successfully">Profilo esportato correttamente</string>
+    <string name="echo_brain_export_failed">Esportazione non riuscita</string>
+    <string name="echo_brain_profile_imported_successfully">Profilo importato correttamente</string>
+    <string name="echo_brain_import_failed_invalid_file">Importazione non riuscita: file non valido</string>
+    <string name="listenbrainz_scrobbling">Scrobbling di ListenBrainz</string>
+    <string name="listenbrainz_scrobbling_description">Invia automaticamente a ListenBrainz i brani che hai ascoltato</string>
+    <string name="set_listenbrainz_token">Imposta il token di ListenBrainz</string>
+    <string name="youtube_decryption_settings">Echo Extractor</string>
+    <string name="youtube_decryption_desc">Configura le impostazioni dell\'estrattore</string>
+    <string name="youtube_decryption_support">Echo Extractor</string>
+    <string name="youtube_decryption_support_desc">Estrae automaticamente le configurazioni di riproduzione di YouTube. L\'opzione è bloccata su Attivo.</string>
+    <string name="force_update_cipher">Forza aggiornamento delle configurazioni</string>
+    <string name="force_update_cipher_desc">Scarica le mappature di sostituzione più recenti dell\'estrattore. Limite di 3 aggiornamenti al giorno.</string>
+    <string name="youtube_decryption_info">Le mappature dell\'estrattore vengono recuperate dinamicamente dal tuo nodo self-hosted. Il conto alla rovescia in alto mostra il tempo rimanente fino al prossimo controllo automatico della sincronizzazione. Se vengono richiesti più di 3 aggiornamenti manuali, questi vengono bloccati per 1 giorno.</string>
+    <string name="last_updated">Ultimo aggiornamento</string>
+    <string name="last_updated_never">Mai</string>
+    <string name="cipher_update_success">Mappature dell\'estrattore aggiornate! Caricati %d player.</string>
+    <string name="cipher_update_failed">Impossibile aggiornare le mappature dell\'estrattore: %s</string>
+    <string name="cipher_updating">Aggiornamento delle configurazioni dell\'estrattore…</string>
+    <string name="hours_label">Ore</string>
+    <string name="minutes_label">Minuti</string>
+    <string name="seconds_label">Secondi</string>
+    <string name="liquid_glass">Vetro liquido (Beta)</string>
+    <string name="player_background_liquid_glass">Vetro liquido</string>
+    <string name="liquid_glass_settings">Vetro liquido (Beta)</string>
+    <string name="liquid_glass_global_enabled">Abilita Vetro liquido</string>
+    <string name="liquid_glass_effects">Effetti</string>
+    <string name="liquid_glass_appearance">Aspetto</string>
+    <string name="liquid_glass_per_component">Per componente</string>
+    <string name="liquid_glass_vibrancy">Vividezza</string>
+    <string name="liquid_glass_vibrancy_desc">Aumenta la saturazione dello sfondo in vetro</string>
+    <string name="liquid_glass_blur_radius">Raggio di sfocatura</string>
+    <string name="liquid_glass_blur_radius_desc">Intensità della sfocatura sulla superficie in vetro</string>
+    <string name="liquid_glass_lens_height">Altezza della rifrazione della lente</string>
+    <string name="liquid_glass_lens_amount">Intensità della rifrazione della lente</string>
+    <string name="liquid_glass_chromatic_aberration">Aberrazione cromatica</string>
+    <string name="liquid_glass_depth_effect">Effetto profondità</string>
+    <string name="liquid_glass_surface_opacity">Opacità della superficie</string>
+    <string name="liquid_glass_surface_opacity_desc">Opacità della sovrapposizione colorata del vetro per migliorare la leggibilità</string>
+    <string name="liquid_glass_surface_tint">Tinta della superficie</string>
+    <string name="liquid_glass_surface_tint_desc">Colore della tinta applicata alla superficie in vetro</string>
+    <string name="liquid_glass_text_color">Colore del testo sul vetro</string>
+    <string name="liquid_glass_text_color_desc">Colore del testo utilizzato sulle superfici in vetro</string>
+    <string name="liquid_glass_player">Player in vetro</string>
+    <string name="liquid_glass_mini_player">Mini player in vetro</string>
+    <string name="liquid_glass_nav_bar">Barra di navigazione in vetro</string>
+    <string name="nav_bar_style">Stile della barra di navigazione</string>
+    <string name="floating_nav_bar">Barra di navigazione mobile</string>
+    <string name="floating_nav_bar_desc">Barra delle schede mobile in stile iOS che si riduce durante lo scorrimento</string>
+    <string name="liquid_glass_performance_warning">Il rendering del vetro liquido richiede molte risorse e su alcuni dispositivi può ridurre la fluidità e la durata della batteria</string>
+    <string name="liquid_glass_requires_floating_nav_bar">Richiede l\'attivazione della barra di navigazione mobile</string>
+    <string name="color_picker_hex">Esadecimale</string>
+    <string name="color_white">Bianco</string>
+    <string name="color_light_gray">Grigio chiaro</string>
+    <string name="color_black">Nero</string>
 </resources>

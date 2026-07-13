@@ -279,25 +279,18 @@
         <item quantity="other">%d தேர்ந்தெடுக்கப்பட்டன</item>
     </plurals>
     <string name="action_login">புகுபதிகை</string>
-
-
     <!-- Bottom navigation -->
     <string name="music">இசை</string>
-
     <!-- Search -->
     <string name="filter_local">உள்ளூர்</string>
-
     <!-- Album screen -->
     <string name="album_description_placeholder">இது ஆல்பத்திற்கான ஒரு விளக்கமாகும். கீழே உள்ள டிராக்குகளை ரசியுங்கள்!</string>
-
     <!-- Playlist -->
     <string name="you_might_also_like">தொடர்புடைய பிளேலிஸ்ட்</string>
-
     <!-- Button -->
     <string name="shuffle_content_desc">கலக்கு</string>
     <string name="shuffle_label">கலக்கு</string>
     <string name="pause">இடைநிறுத்து</string>
-
     <!-- Menu -->
     <string name="saving">சேமிக்கப்படுகிறது</string>
     <string name="saved">சேமிக்கப்பட்டது</string>
@@ -305,7 +298,6 @@
     <string name="add_to_an_playlist">சேர்</string>
     <string name="more_label">மேலும்</string>
     <string name="releases_for_you">உங்களுக்கான வெளியீடுகள்</string>
-
     <!-- Dialog -->
     <string name="hide_status_bar_on_fullscreen">முழுத்திரையில் நிலைப் பட்டையை மறைக்க</string>
     <string name="hide_status_bar_on_fullscreen_desc">பாடல் வரிகள் முழுத்திரை பயன்முறையில் இருக்கும்போது நிலைப் பட்டையை மறைக்கும்</string>
@@ -314,13 +306,11 @@
     <string name="lyrics_thumbnail_play_pause">சிறுபடத்தில் இயக்கு/இடைநிறுத்து காட்டு</string>
     <string name="lyrics_thumbnail_play_pause_desc">முழுத்திரை பாடல் வரிகளில் பாடலின் சிறுபடத்தின் மேல் இயக்கு/இடைநிறுத்து பொத்தானைக் காட்டும்</string>
     <string name="picker_not_available">இந்த சாதனத்தில் ஆவணத் தேர்வி கிடைக்கவில்லை. பயன்பாட்டின் இயல்புநிலை ஏற்றுமதி கோப்பகத்தைப் பயன்படுத்துகிறது.</string>
-
     <!-- Plurals -->
     <plurals name="n_apk_found">
         <item quantity="one">%d APK காணப்பட்டது</item>
         <item quantity="other">%d APK கள் காணப்பட்டன</item>
     </plurals>
-
     <!-- Settings -->
     <string name="theme_desc">உங்கள் பயன்பாட்டு கருப்பொருளைத் தனிப்பயனாக்குங்கள்</string>
     <string name="theme_colors">கருப்பொருள் மற்றும் வண்ணங்கள்</string>
@@ -351,8 +341,6 @@
     <string name="standard_lyrics_blur">நிலையான பாடல் வரி மங்கல்</string>
     <string name="listen_together_smart_resync">ஸ்மார்ட் நெட்வொர்க் மறு ஒத்திசைவு</string>
     <string name="listen_together_smart_resync_desc">இணைப்பு துண்டிக்கப்பட்ட பிறகு தானாகவே ஹோஸ்டுடன் இணைந்து கொள்ளுங்கள்</string>
-
-
     <string name="spotify_import_title">Spotify இலிருந்து இறக்குமதி செய்க</string>
     <string name="spotify_import_desc">Spotify ஐ இணைக்கவும், பிளேலிஸ்ட்களைத் தேர்வுசெய்க மற்றும் அவற்றை உள்ளூர் Echo Music பிளேலிஸ்ட்களில் பிரதிபலிக்கவும்.</string>
     <string name="spotify_connect">Spotify ஐ இணை</string>
@@ -379,4 +367,117 @@
     <string name="spotify_account">Spotify கணக்கு</string>
     <string name="spotify_waiting_for_login">Spotify உள்நுழைவுக்காக காத்திருக்கிறது</string>
     <string name="export_directory_unavailable">Unable to access an export directory on this device.</string>
+    <string name="loading">ஏற்றுகிறது</string>
+    <string name="added_to_playlist">%s இல் சேர்க்கப்பட்டது</string>
+    <string name="more_options">மேலும் விருப்பங்கள்</string>
+    <string name="export_as_csv">CSV ஆக ஏற்றுமதி செய்</string>
+    <string name="export_playlist_desc">பிளேலிஸ்ட் பாடல்களை CSV கோப்பிற்கு ஏற்றுமதி செய்</string>
+    <string name="export_successful">பிளேலிஸ்ட் வெற்றிகரமாக ஏற்றுமதி செய்யப்பட்டது</string>
+    <string name="activity_history">கேட்புச் சுருக்கம்</string>
+    <string name="total_listening_time">மொத்தக் கேட்பு நேரம்</string>
+    <string name="unique_songs">தனித்துவமான பாடல்கள்</string>
+    <string name="unique_artists">தனித்துவமான கலைஞர்கள்</string>
+    <string name="unique_albums">தனித்துவமான ஆல்பங்கள்</string>
+    <string name="selected_period">தேர்ந்தெடுக்கப்பட்ட காலம்</string>
+    <string name="hours_minutes_format">%1$dமணி %2$dநிமி</string>
+    <string name="content_sponsor_block">SponsorBlock (தானாகத் தவிர்த்தல்)</string>
+    <string name="content_sponsor_block_desc">காணொளிகளில் உள்ள விளம்பர ஆதரவுப் பகுதிகள், அறிமுகங்கள் மற்றும் இசையற்ற பகுதிகளைத் தானாகத் தவிர்</string>
+    <string name="spotify_import_by_link">இணைப்பு மூலம் பிளேலிஸ்ட்டை இறக்குமதி செய்</string>
+    <string name="spotify_import_by_link_desc">Spotify பிளேலிஸ்ட் இணைப்பை ஒட்டி அதை இறக்குமதி செய்யுங்கள், உங்களுக்குச் சொந்தமில்லாத பிளேலிஸ்ட்களையும் இறக்குமதி செய்யலாம்</string>
+    <string name="spotify_import_by_link_hint">https://open.spotify.com/playlist/…</string>
+    <string name="spotify_add">சேர்</string>
+    <string name="spotify_invalid_playlist_link">இது Spotify பிளேலிஸ்ட் இணைப்பைப் போல் தெரியவில்லை. https://open.spotify.com/playlist/… போன்ற இணைப்பைப் பயன்படுத்துங்கள்</string>
+    <string name="service_uptime">சேவை இயக்கநிலை</string>
+    <string name="service_uptime_desc">இசை வழங்குநர்களின் நிலையைச் சரிபார்</string>
+    <string name="music_providers">இசை வழங்குநர்கள்</string>
+    <string name="canvas_providers">கேன்வாஸ் வழங்குநர்கள்</string>
+    <string name="lyrics_providers">பாடல்வரிகள் வழங்குநர்கள்</string>
+    <string name="other_services">பிற சேவைகள்</string>
+    <string name="status_online">இணைப்பில் உள்ளது</string>
+    <string name="status_offline">இணைப்பில் இல்லை</string>
+    <string name="status_checking">சரிபார்க்கிறது...</string>
+    <string name="recognition_notification_channel_name">இசை அடையாளம் காணல்</string>
+    <string name="recognition_notification_channel_desc">விரைவு அமைப்புகளிலிருந்து பாடலை அடையாளம் காணும்போது அறிவிப்பைக் காட்டும்</string>
+    <string name="recognition_notification_listening">இசையைக் கேட்கிறது…</string>
+    <string name="recognition_notification_processing">அடையாளம் காண்கிறது…</string>
+    <string name="recognition_notification_no_match">பொருத்தம் எதுவும் கிடைக்கவில்லை</string>
+    <string name="recognition_notification_failed">அடையாளம் காண முடியவில்லை</string>
+    <string name="listen_on_echo_music">Echo Music இல் கேளுங்கள்</string>
+    <string name="qs_tile_music_recognizer">இசையை அடையாளம் காண்</string>
+    <string name="echo_brain_beta">Echo Brain (பீட்டா)</string>
+    <string name="echo_brain_enable">Echo Brain ஐ இயக்கு</string>
+    <string name="echo_brain_enable_desc">உங்கள் கேட்புப் பழக்கங்களின் அடிப்படையில் AI பரிந்துரைகளைத் தானாகச் சேர்க்கும்</string>
+    <string name="echo_brain_profile_statistics">சுயவிவரப் புள்ளிவிவரங்கள்</string>
+    <string name="echo_brain_learning_level">கற்றல் நிலை</string>
+    <string name="echo_brain_initiate">தொடங்கு</string>
+    <string name="echo_brain_total_interactions">மொத்த ஊடாடல்கள்</string>
+    <string name="echo_brain_interactions_tracked">%1$d ஊடாடல்கள் கண்காணிக்கப்பட்டன</string>
+    <string name="echo_brain_discovered_genres">கண்டறியப்பட்ட இசை வகைகள்</string>
+    <string name="echo_brain_distinct_genres_identified">%1$d தனித்துவமான இசை வகைகள் அடையாளம் காணப்பட்டன</string>
+    <string name="echo_brain_analyzed_artists">பகுப்பாய்வு செய்யப்பட்ட கலைஞர்கள்</string>
+    <string name="echo_brain_artists_mapped">%1$d கலைஞர்கள் வரைபடமாக்கப்பட்டனர்</string>
+    <string name="echo_brain_data_management">தரவு மேலாண்மை</string>
+    <string name="echo_brain_export_profile">சுயவிவரத்தை ஏற்றுமதி செய்</string>
+    <string name="echo_brain_export_profile_desc">உங்கள் நரம்பியல் வரைபடத்தைக் கோப்பில் சேமி</string>
+    <string name="echo_brain_import_profile">சுயவிவரத்தை இறக்குமதி செய்</string>
+    <string name="echo_brain_import_profile_desc">முன்பு சேமிக்கப்பட்ட நரம்பியல் வரைபடத்தை ஏற்று</string>
+    <string name="echo_brain_reset_profile">சுயவிவரத்தை மீட்டமை</string>
+    <string name="echo_brain_reset_profile_desc">கற்றுக்கொண்ட எல்லாத் தரவையும் அழித்துவிட்டு மீண்டும் தொடங்கு</string>
+    <string name="echo_brain_reset_neural_profile">நரம்பியல் சுயவிவரத்தை மீட்டமை</string>
+    <string name="echo_brain_reset_neural_profile_desc">இது கற்றுக்கொண்ட அனைத்து விருப்பங்களையும் நிரந்தரமாக நீக்கும். இயந்திரம் ஆரம்பத்திலிருந்து மீண்டும் கற்கத் தொடங்கும்.</string>
+    <string name="echo_brain_profile_exported_successfully">சுயவிவரம் வெற்றிகரமாக ஏற்றுமதி செய்யப்பட்டது</string>
+    <string name="echo_brain_export_failed">ஏற்றுமதி தோல்வியடைந்தது</string>
+    <string name="echo_brain_profile_imported_successfully">சுயவிவரம் வெற்றிகரமாக இறக்குமதி செய்யப்பட்டது</string>
+    <string name="echo_brain_import_failed_invalid_file">இறக்குமதி தோல்வியடைந்தது, செல்லாத கோப்பு</string>
+    <string name="listenbrainz_scrobbling">ListenBrainz ஸ்க்ராப்ளிங்</string>
+    <string name="listenbrainz_scrobbling_description">நீங்கள் கேட்ட பாடல்களை ListenBrainz க்குத் தானாகச் சமர்ப்பிக்கும்</string>
+    <string name="set_listenbrainz_token">ListenBrainz டோக்கனை அமை</string>
+    <string name="youtube_decryption_settings">Echo Extractor</string>
+    <string name="youtube_decryption_desc">பிரித்தெடுப்பான் அமைப்புகளை உள்ளமை</string>
+    <string name="youtube_decryption_support">Echo Extractor</string>
+    <string name="youtube_decryption_support_desc">YouTube இயக்க உள்ளமைவுகளைத் தானாகப் பிரித்தெடுக்கும். செயலில் இருக்கும் நிலையில் பூட்டப்பட்டுள்ளது.</string>
+    <string name="force_update_cipher">உள்ளமைவுகளை வலுக்கட்டாயமாகப் புதுப்பி</string>
+    <string name="force_update_cipher_desc">சமீபத்திய பிரித்தெடுப்பான் மேலெழுதல் வரைபடங்களைப் பதிவிறக்கு. நாளொன்றுக்கு 3 புதுப்பிப்புகள் மட்டுமே அனுமதிக்கப்படும்.</string>
+    <string name="youtube_decryption_info">பிரித்தெடுப்பான் வரைபடங்கள் உங்கள் சுயமாக ஹோஸ்ட் செய்யப்பட்ட முனையத்திலிருந்து மாறும் வகையில் பெறப்படுகின்றன. மேலேயுள்ள கவுண்ட்டவுன் அடுத்த தானியங்கி ஒத்திசைவுச் சரிபார்ப்பிற்கு மீதமுள்ள நேரத்தைக் காட்டுகிறது. கைமுறைப் புதுப்பிப்புகள் 3 முறைக்கு மேல் கோரப்பட்டால், அவை ஒரு நாளுக்குத் தடுக்கப்படும்.</string>
+    <string name="last_updated">கடைசியாகப் புதுப்பிக்கப்பட்டது</string>
+    <string name="last_updated_never">ஒருபோதும் இல்லை</string>
+    <string name="cipher_update_success">பிரித்தெடுப்பான் வரைபடங்கள் புதுப்பிக்கப்பட்டன! %d இயக்கிகள் ஏற்றப்பட்டன.</string>
+    <string name="cipher_update_failed">பிரித்தெடுப்பான் வரைபடங்களைப் புதுப்பிக்க முடியவில்லை: %s</string>
+    <string name="cipher_updating">பிரித்தெடுப்பான் உள்ளமைவுகள் புதுப்பிக்கப்படுகின்றன…</string>
+    <string name="hours_label">மணிநேரம்</string>
+    <string name="minutes_label">நிமிடங்கள்</string>
+    <string name="seconds_label">விநாடிகள்</string>
+    <string name="liquid_glass">திரவக் கண்ணாடி (பீட்டா)</string>
+    <string name="player_background_liquid_glass">திரவக் கண்ணாடி</string>
+    <string name="liquid_glass_settings">திரவக் கண்ணாடி (பீட்டா)</string>
+    <string name="liquid_glass_global_enabled">திரவக் கண்ணாடியை இயக்கு</string>
+    <string name="liquid_glass_effects">விளைவுகள்</string>
+    <string name="liquid_glass_appearance">தோற்றம்</string>
+    <string name="liquid_glass_per_component">ஒவ்வொரு கூறுக்கும்</string>
+    <string name="liquid_glass_vibrancy">வண்ணச் செறிவு</string>
+    <string name="liquid_glass_vibrancy_desc">கண்ணாடிப் பின்னணியின் வண்ணச் செறிவை அதிகரி</string>
+    <string name="liquid_glass_blur_radius">மங்கல் ஆரம்</string>
+    <string name="liquid_glass_blur_radius_desc">கண்ணாடி மேற்பரப்பின் மங்கல் அளவு</string>
+    <string name="liquid_glass_lens_height">லென்ஸ் ஒளிவிலகல் உயரம்</string>
+    <string name="liquid_glass_lens_amount">லென்ஸ் ஒளிவிலகல் அளவு</string>
+    <string name="liquid_glass_chromatic_aberration">நிறப் பிறழ்வு</string>
+    <string name="liquid_glass_depth_effect">ஆழ விளைவு</string>
+    <string name="liquid_glass_surface_opacity">மேற்பரப்பு ஒளிபுகாமை</string>
+    <string name="liquid_glass_surface_opacity_desc">எளிதாகப் படிப்பதற்கான கண்ணாடி நிற மேலடுக்கின் ஒளிபுகாமை</string>
+    <string name="liquid_glass_surface_tint">மேற்பரப்பு நிறச்சாயல்</string>
+    <string name="liquid_glass_surface_tint_desc">கண்ணாடி மேற்பரப்பிற்குப் பயன்படுத்தப்படும் நிறச்சாயல்</string>
+    <string name="liquid_glass_text_color">கண்ணாடி உரை நிறம்</string>
+    <string name="liquid_glass_text_color_desc">கண்ணாடி மேற்பரப்புகளில் பயன்படுத்தப்படும் உரை நிறம்</string>
+    <string name="liquid_glass_player">கண்ணாடி இயக்கி</string>
+    <string name="liquid_glass_mini_player">கண்ணாடி சிற்றியக்கி</string>
+    <string name="liquid_glass_nav_bar">கண்ணாடி வழிசெலுத்தல் பட்டை</string>
+    <string name="nav_bar_style">வழிசெலுத்தல் பட்டைப் பாணி</string>
+    <string name="floating_nav_bar">மிதக்கும் வழிசெலுத்தல் பட்டை</string>
+    <string name="floating_nav_bar_desc">உருட்டும்போது சுருங்கும் iOS பாணி மிதக்கும் தாவல் பட்டை</string>
+    <string name="liquid_glass_performance_warning">திரவக் கண்ணாடியை வரைவது அதிகச் செயல்திறனைப் பயன்படுத்துவதால் சில சாதனங்களில் இயக்க மென்மையையும் மின்கல ஆயுளையும் குறைக்கக்கூடும்</string>
+    <string name="liquid_glass_requires_floating_nav_bar">மிதக்கும் வழிசெலுத்தல் பட்டை இயக்கப்பட்டிருக்க வேண்டும்</string>
+    <string name="color_picker_hex">ஹெக்ஸ்</string>
+    <string name="color_white">வெள்ளை</string>
+    <string name="color_light_gray">வெளிர் சாம்பல்</string>
+    <string name="color_black">கருப்பு</string>
 </resources>

@@ -2,7 +2,6 @@ package iad1tya.echo.music.echomusic.updater.downloadmanager
 
 import android.app.Notification
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.media3.common.Player
@@ -15,7 +14,7 @@ import com.google.common.collect.ImmutableList
 
 @OptIn(UnstableApi::class)
 class EchoNotificationProvider(
-    private val context: Context,
+    context: Context,
     notificationIdProvider: DefaultMediaNotificationProvider.NotificationIdProvider,
     channelId: String,
     channelNameResourceId: Int,
@@ -51,34 +50,16 @@ class EchoNotificationProvider(
             player.playbackState != Player.STATE_IDLE &&
             player.playbackState != Player.STATE_ENDED
 
-        val updatedNotification = Notification.Builder
-            .recoverBuilder(context, mediaNotification.notification)
-            .setOngoing(shouldBeOngoing)
-            .build()
+        val notification = mediaNotification.notification
+        if (shouldBeOngoing) {
+            notification.flags = notification.flags or Notification.FLAG_ONGOING_EVENT
+        } else {
+            notification.flags = notification.flags and Notification.FLAG_ONGOING_EVENT.inv()
+        }
 
-        copyMediaSessionToken(mediaNotification.notification, updatedNotification)
-
-        return MediaNotification(mediaNotification.notificationId, updatedNotification)
+        return MediaNotification(mediaNotification.notificationId, notification)
     }
 
     override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean =
         defaultProvider.handleCustomCommand(session, action, extras)
-
-    private fun copyMediaSessionToken(source: Notification, target: Notification) {
-        if (Build.VERSION.SDK_INT >= 33) {
-            source.extras.getParcelable(
-                Notification.EXTRA_MEDIA_SESSION,
-                android.media.session.MediaSession.Token::class.java
-            )?.let {
-                target.extras.putParcelable(Notification.EXTRA_MEDIA_SESSION, it)
-            }
-        } else {
-            @Suppress("DEPRECATION")
-            source.extras.getParcelable<android.media.session.MediaSession.Token>(
-                Notification.EXTRA_MEDIA_SESSION
-            )?.let {
-                target.extras.putParcelable(Notification.EXTRA_MEDIA_SESSION, it)
-            }
-        }
-    }
 }

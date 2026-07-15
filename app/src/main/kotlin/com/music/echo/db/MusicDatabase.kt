@@ -142,7 +142,6 @@ class MusicDatabase(
         AutoMigration(from = 26, to = 27),
         AutoMigration(from = 27, to = 28),
         AutoMigration(from = 30, to = 31),
-        AutoMigration(from = 31, to = 32),
         AutoMigration(from = 32, to = 33),
         AutoMigration(from = 33, to = 34),
         AutoMigration(from = 34, to = 35),
@@ -172,6 +171,7 @@ abstract class InternalDatabase : RoomDatabase() {
                             MIGRATION_27_28,
                             MIGRATION_28_29,
                             MIGRATION_29_30,
+                            MIGRATION_31_32,
                             MIGRATION_36_37,
                             MIGRATION_37_38,
                             MIGRATION_38_39,
@@ -476,6 +476,42 @@ val MIGRATION_22_24 =
         }
     }
 
+val MIGRATION_31_32 = object : Migration(31, 32) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+
+        if (!hasColumn(db, "lyrics", "provider")) {
+            try {
+                db.execSQL("ALTER TABLE lyrics ADD COLUMN provider TEXT NOT NULL DEFAULT 'Unknown'")
+            } catch (e: Exception) {
+                Timber.tag("MIGRATION_31_32").w(e, "Column provider may already exist")
+            }
+        }
+
+        if (!hasColumn(db, "lyrics", "translatedLyrics")) {
+            try {
+                db.execSQL("ALTER TABLE lyrics ADD COLUMN translatedLyrics TEXT NOT NULL DEFAULT ''")
+            } catch (e: Exception) {
+                Timber.tag("MIGRATION_31_32").w(e, "Column translatedLyrics may already exist")
+            }
+        }
+
+        if (!hasColumn(db, "lyrics", "translationLanguage")) {
+            try {
+                db.execSQL("ALTER TABLE lyrics ADD COLUMN translationLanguage TEXT NOT NULL DEFAULT ''")
+            } catch (e: Exception) {
+                Timber.tag("MIGRATION_31_32").w(e, "Column translationLanguage may already exist")
+            }
+        }
+
+        if (!hasColumn(db, "lyrics", "translationMode")) {
+            try {
+                db.execSQL("ALTER TABLE lyrics ADD COLUMN translationMode TEXT NOT NULL DEFAULT ''")
+            } catch (e: Exception) {
+                Timber.tag("MIGRATION_31_32").w(e, "Column translationMode may already exist")
+            }
+        }
+    }
+}
 
 
 @DeleteColumn.Entries(

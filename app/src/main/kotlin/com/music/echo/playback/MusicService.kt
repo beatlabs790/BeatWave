@@ -2895,7 +2895,6 @@ class MusicService :
                 
                 val cacheMatchesTarget = when (lockedQuality) {
                     iad1tya.echo.music.constants.AudioQuality.LOSSLESS -> isLosslessCache
-                    iad1tya.echo.music.constants.AudioQuality.SAAVN -> isSaavnCache
                     iad1tya.echo.music.constants.AudioQuality.OPUS -> !isLosslessCache && !isSaavnCache
                 }
                 

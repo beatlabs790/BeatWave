@@ -234,9 +234,7 @@ highlightKey: String? = null) {
 
     var showAudioQualityDialog by remember { mutableStateOf(false) }
     var showDownloadQualityDialog by remember { mutableStateOf(false) }
-    var showSaavnAudioWarning by remember { mutableStateOf(false) }
     var showLosslessAudioWarning by remember { mutableStateOf(false) }
-    var showSaavnDownloadWarning by remember { mutableStateOf(false) }
     var showLosslessDownloadWarning by remember { mutableStateOf(false) }
 
     val (downloadQuality, onDownloadQualityChange) = rememberEnumPreference(
@@ -250,8 +248,6 @@ highlightKey: String? = null) {
             onSelect = {
                 if (it == AudioQuality.LOSSLESS) {
                     showLosslessAudioWarning = true
-                } else if (it == AudioQuality.SAAVN) {
-                    showSaavnAudioWarning = true
                 } else {
                     onAudioQualityChange(it)
                 }
@@ -259,19 +255,15 @@ highlightKey: String? = null) {
             },
             title = stringResource(R.string.audio_quality),
             current = audioQuality,
-            values = listOf(AudioQuality.OPUS, AudioQuality.SAAVN, AudioQuality.LOSSLESS),
+            values = listOf(AudioQuality.OPUS, AudioQuality.LOSSLESS),
             valueText = {
                 when (it) {
                     AudioQuality.OPUS -> "Opus"
-                    AudioQuality.SAAVN -> "Saavn (320kbps)"
                     AudioQuality.LOSSLESS -> "Lossless"
                 }
             },
             valueDescription = {
-                when (it) {
-                    AudioQuality.SAAVN -> "Server keeps getting down - not consistent"
-                    else -> ""
-                }
+                ""
             }
         )
     }
@@ -282,8 +274,6 @@ highlightKey: String? = null) {
             onSelect = {
                 if (it == iad1tya.echo.music.constants.DownloadQuality.LOSSLESS) {
                     showLosslessDownloadWarning = true
-                } else if (it == iad1tya.echo.music.constants.DownloadQuality.SAAVN) {
-                    showSaavnDownloadWarning = true
                 } else {
                     onDownloadQualityChange(it)
                 }
@@ -291,11 +281,10 @@ highlightKey: String? = null) {
             },
             title = stringResource(R.string.download_quality_title),
             current = downloadQuality,
-            values = listOf(iad1tya.echo.music.constants.DownloadQuality.YOUTUBE, iad1tya.echo.music.constants.DownloadQuality.SAAVN, iad1tya.echo.music.constants.DownloadQuality.LOSSLESS),
+            values = listOf(iad1tya.echo.music.constants.DownloadQuality.YOUTUBE, iad1tya.echo.music.constants.DownloadQuality.LOSSLESS),
             valueText = {
                 when (it) {
                     iad1tya.echo.music.constants.DownloadQuality.YOUTUBE -> "YouTube Music (AAC/Default)"
-                    iad1tya.echo.music.constants.DownloadQuality.SAAVN -> "Saavn (320kbps)"
                     iad1tya.echo.music.constants.DownloadQuality.LOSSLESS -> "Lossless"
                 }
             }
@@ -334,25 +323,6 @@ highlightKey: String? = null) {
             }
         }
 
-        if (showSaavnAudioWarning) {
-            DefaultDialog(
-                onDismiss = { showSaavnAudioWarning = false },
-                title = { Text("Enable Saavn (320kbps)?") },
-                buttons = {
-                    TextButton(onClick = { showSaavnAudioWarning = false }) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                    TextButton(onClick = {
-                        showSaavnAudioWarning = false
-                        onAudioQualityChange(AudioQuality.SAAVN)
-                    }) {
-                        Text(stringResource(R.string.enable))
-                    }
-                }
-            ) {
-                Text("Saavn (320kbps) streams run through Echo Music's servers. The server keeps getting down and is not consistent.\n\nNote: If Saavn playback fails, the app automatically falls back to YouTube Music's Opus stream.")
-            }
-        }
 
         if (showLosslessAudioWarning) {
             DefaultDialog(
@@ -380,25 +350,6 @@ highlightKey: String? = null) {
             }
         }
 
-        if (showSaavnDownloadWarning) {
-            DefaultDialog(
-                onDismiss = { showSaavnDownloadWarning = false },
-                title = { Text("Enable Saavn (320kbps) Downloads?") },
-                buttons = {
-                    TextButton(onClick = { showSaavnDownloadWarning = false }) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                    TextButton(onClick = {
-                        showSaavnDownloadWarning = false
-                        onDownloadQualityChange(iad1tya.echo.music.constants.DownloadQuality.SAAVN)
-                    }) {
-                        Text(stringResource(R.string.enable))
-                    }
-                }
-            ) {
-                Text("Saavn (320kbps) servers keep getting down and are not consistent.\n\nNote: If Saavn download fails, the app automatically falls back to YouTube Music's AAC stream.")
-            }
-        }
 
         if (showLosslessDownloadWarning) {
             DefaultDialog(
@@ -452,7 +403,6 @@ highlightKey: String? = null) {
                         Text(
                             when (audioQuality) {
                                 AudioQuality.OPUS -> "Opus"
-                                AudioQuality.SAAVN -> "Saavn (320kbps)"
                                 AudioQuality.LOSSLESS -> "Lossless"
                             }
                         )
@@ -490,7 +440,6 @@ highlightKey: String? = null) {
                         Text(
                             when (downloadQuality) {
                                 iad1tya.echo.music.constants.DownloadQuality.YOUTUBE -> "YouTube Music (AAC/Default)"
-                                iad1tya.echo.music.constants.DownloadQuality.SAAVN -> "Saavn (320kbps)"
                                 iad1tya.echo.music.constants.DownloadQuality.LOSSLESS -> "Lossless"
                             }
                         )

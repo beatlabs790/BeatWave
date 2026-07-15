@@ -1,5 +1,6 @@
 # Echo Music v5.2.6
 
+- Removed the Saavn 320kbps music quality and download quality options entirely from the app due to server inconsistency.
 - Added a "Contribute in Lossless" option in the Account Dialog (below AI Lyrics Translation) that appears only when the music quality is set to Lossless.
 - Added "Lossless" music provider to the Service Uptime screen.
 - Added a new "Our Services" section to the About screen with links to Echo Canvas, Echo Lossless, and Echo Charts.

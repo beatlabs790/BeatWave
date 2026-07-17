@@ -509,4 +509,7 @@
     <string name="ai_recommendations">AI-рекомендации</string>
     <string name="ai_recommendations_desc">Ежедневное обновление персонального плейлиста на основе ваших предпочтений</string>
     <string name="ai_recommendations_refresh">Обновить рекомендации</string>
+    <string name="modify_with_ai">Изменить с помощью ИИ</string>
+    <string name="modify_with_ai_desc">Изменить плейлист с помощью инструкций ИИ</string>
+    <string name="ai_modify_prompt_hint">например, удалить грустные песни, добавить хиты 90-х</string>
 </resources>

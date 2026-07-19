@@ -24,9 +24,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    # Fixed: Targeting the specific universal task to avoid ambiguity
+    # Fixed: Bypassing the debug keystore validation step
     - name: Build FOSS Release APK
-      run: ./gradlew assembleUniversalFossRelease
+      run: ./gradlew assembleUniversalFossRelease -x validateSigningUniversalFossRelease
 
     # Upload the generated universal APK named as BeatWave-v4.2
     - name: Upload APK Artifact

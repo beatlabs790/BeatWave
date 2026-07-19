@@ -24,14 +24,14 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    # Syncs dependencies and builds the specific FOSS unsigned release APK
+    # Fixed: Targeting the specific universal task to avoid ambiguity
     - name: Build FOSS Release APK
-      run: ./gradlew assembleFossRelease
+      run: ./gradlew assembleUniversalFossRelease
 
-    # Upload the generated APK named as BeatWave-v4.2
+    # Upload the generated universal APK named as BeatWave-v4.2
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: BeatWave-v4.2
-        path: app/build/outputs/apk/foss/release/*-unsigned.apk
+        path: app/build/outputs/apk/universal/release/*-unsigned.apk
         retention-days: 7

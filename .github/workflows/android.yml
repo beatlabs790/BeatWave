@@ -52,17 +52,18 @@ jobs:
             echo "Automated compilation build." > release-body.md
           fi
 
-      # Build FOSS Variant and explicitly bypass validation checks for all variants to force an unsigned build
+      # Fixed: Passing dummy signing parameters overrides the missing local debug.keystore check
       - name: Build FOSS Release APK
         env:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
           ./gradlew assembleUniversalFossRelease \
-            -x validateSigningUniversalFossRelease \
-            -x validateSigningUniversalGmsRelease
+            -Pandroid.injected.signing.store.file="" \
+            -Pandroid.injected.signing.store.password="" \
+            -Pandroid.injected.signing.key.alias="" \
+            -Pandroid.injected.signing.key.password=""
 
-      # Gathers all compiled APKs, renames them, and stages them for deployment
       - name: Rename and Organize APKs
         run: |
           VERSION_NAME=$(grep "versionName =" app/build.gradle.kts | head -n 1 | awk -F '"' '{print $2}')

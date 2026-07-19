@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/Echo-new.png" alt="Echo Music Logo" width="140"/>
 
-  <h1>Echo Music</h1>
+  <h1>BeatWave</h1>
 
   <p><strong>A modern Android music app with ad-free streaming, synced lyrics, offline playback, and an intuitive user experience.
 </strong></p>
@@ -32,7 +32,7 @@
 
 ## Overview
 
-Echo Music delivers a seamless, premium listening experience by leveraging YouTube Music's vast library — without the ads. It adds powerful extras including offline downloads, real-time synchronized lyrics, and environment-aware music recognition.
+BeatWave delivers a seamless, premium listening experience by leveraging YouTube Music's vast library — without the ads. It adds powerful extras including offline downloads, real-time synchronized lyrics, and environment-aware music recognition.
 
 ---
 

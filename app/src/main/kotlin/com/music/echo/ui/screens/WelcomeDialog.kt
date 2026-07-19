@@ -100,8 +100,8 @@ fun WelcomeDialog(
                     WelcomeActionRow(
                         icon = painterResource(R.drawable.ic_patreon_new),
                         title = "Patreon",
-                        subtitle = "patreon.com/cw/iad1tya",
-                        onClick = { uriHandler.openUri("https://www.patreon.com/cw/iad1tya") }
+                        subtitle = "beatwavy.vercel.app",
+                        onClick = { uriHandler.openUri("https://beatwavy.vercel.app") }
                     )
                     WelcomeDivider()
                     WelcomeActionRow(

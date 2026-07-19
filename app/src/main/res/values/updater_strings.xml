@@ -35,7 +35,7 @@
     <string name="mobile_network_warning">Downloading updates over a mobile network or while roaming may cause additional charges.</string>
     <string name="update_size">Update size: %1$s MB</string>
     <string name="check_internet_connection">Check your internet connection and try again.</string>
-    <string name="echo_music_version">Echo Music version %1$s</string>
+    <string name="echo_music_version">BeatWave version %1$s</string>
     <string name="last_checked">Last checked: %1$s</string>
     <string name="install">Install</string>
     <string name="check_for_update">Check for update</string>

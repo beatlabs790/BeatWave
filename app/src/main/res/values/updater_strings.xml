@@ -20,7 +20,7 @@
     <string name="installing_system_update">Installing system\nupdate…</string>
     <string name="making_update_ready">Making Update ready, this may take a while</string>
     <string name="your_app_getting_better">Your App is getting even better…</string>
-    <string name="update_includes_features">This update includes new features and the latest from Echo Music %1$s, making your app even more helpful. Learn more at %2$s.</string>
+    <string name="update_includes_features">This update includes new features and the latest from BeatWave %1$s, making your app even more helpful. Learn more at %2$s.</string>
     <string name="whats_new">What\'s new?</string>
     <string name="update_available">Update</string>
     <string name="checking_for_updates">Checking for updates…</string>
@@ -53,7 +53,7 @@
     <string name="later">Later</string>
 
 
-    <string name="echo_music_title">Echo Music</string>
+    <string name="echo_music_title">BeatWave</string>
     <string name="developer_section">DEVELOPER</string>
     <string name="collaborator_section">COLLABORATOR</string>
     <string name="app_info_section">APP INFO</string>

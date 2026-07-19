@@ -329,12 +329,6 @@ highlightKey: String? = null) {
                 onDismiss = { showLosslessAudioWarning = false },
                 title = { Text("Enable Lossless Audio?") },
                 buttons = {
-                    TextButton(onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://echomusic.fun/donate"))
-                        context.startActivity(intent)
-                    }) {
-                        Text("Donate")
-                    }
                     TextButton(onClick = { showLosslessAudioWarning = false }) {
                         Text(stringResource(R.string.cancel))
                     }
@@ -346,7 +340,7 @@ highlightKey: String? = null) {
                     }
                 }
             ) {
-                Text("Lossless is uncompressed music which is higher in size and requires significant server load. Continuous maintenance requires funding. We have a monthly goal of $100 to keep this active.\n\nPlease consider donating!")
+                Text("Lossless is uncompressed music which is higher in size and requires significant server load and data usage.")
             }
         }
 
@@ -356,12 +350,6 @@ highlightKey: String? = null) {
                 onDismiss = { showLosslessDownloadWarning = false },
                 title = { Text("Enable Lossless Downloads?") },
                 buttons = {
-                    TextButton(onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://echomusic.fun/donate"))
-                        context.startActivity(intent)
-                    }) {
-                        Text("Donate")
-                    }
                     TextButton(onClick = { showLosslessDownloadWarning = false }) {
                         Text(stringResource(R.string.cancel))
                     }
@@ -373,7 +361,7 @@ highlightKey: String? = null) {
                     }
                 }
             ) {
-                Text("Lossless downloads require significant server load and bandwidth. Continuous maintenance requires funding. We have a monthly goal of $100 to keep this active.\n\nPlease consider donating!")
+                Text("Lossless downloads require significant server load, bandwidth and storage space.")
             }
         }
 
@@ -389,8 +377,6 @@ highlightKey: String? = null) {
                 )
             )
         )
-
-        iad1tya.echo.music.ui.component.FundingProgressCard()
 
         Material3SettingsGroup(scrollState = scrollState, 
             title = stringResource(R.string.player),

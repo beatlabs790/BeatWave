@@ -35,7 +35,7 @@ object FundingRepository {
     suspend fun fetchFundingProgress() {
         withContext(Dispatchers.IO) {
             try {
-                val url = "https://raw.githubusercontent.com/EchoMusicApp/Echo-Music/funding-data/funding.json"
+                val url = "https://raw.githubusercontent.com/akshanshsinha890/BeatWave/funding-data/funding.json"
                 val jsonString = client.get(url).bodyAsText()
                 val jsonParser = Json { ignoreUnknownKeys = true }
                 val data = jsonParser.decodeFromString<FundingData>(jsonString)

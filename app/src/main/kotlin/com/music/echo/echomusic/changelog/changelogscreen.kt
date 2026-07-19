@@ -144,7 +144,7 @@ fun ChangelogScreen(
                         showingCached = true
                     }
                 } else {
-                    val changelogUrl = URL("https://github.com/EchoMusicApp/Echo-Music/releases/download/$tag/changelog.json")
+                    val changelogUrl = URL("https://github.com/akshanshsinha890/BeatWave/releases/download/$tag/changelog.json")
                     val connection = changelogUrl.openConnection() as HttpURLConnection
                     connection.setRequestProperty("User-Agent", "echomusic-Changelog-App")
                     connection.setRequestProperty("Accept", "application/json")
@@ -217,7 +217,7 @@ fun ChangelogScreen(
         isFetchingOldReleases = true
         coroutineScope.launch(Dispatchers.IO) {
             try {
-                val releasesUrl = URL("https://api.github.com/repos/EchoMusicApp/Echo-Music/releases")
+                val releasesUrl = URL("https://api.github.com/repos/akshanshsinha890/BeatWave/releases")
                 val connection = releasesUrl.openConnection() as HttpURLConnection
                 connection.setRequestProperty("User-Agent", "echomusic-Changelog-App")
                 connection.setRequestProperty("Accept", "application/vnd.github+json")

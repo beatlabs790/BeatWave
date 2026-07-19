@@ -120,22 +120,22 @@ highlightKey: String? = null) {
                     AboutActionRow(
                         icon = painterResource(R.drawable.website),
                         title = "Website",
-                        subtitle = "iad1tya.cyou",
-                        onClick = { uriHandler.openUri("https://iad1tya.cyou") },
+                        subtitle = "beatlabss.vercel.app",
+                        onClick = { uriHandler.openUri("https://beatlabss.vercel.app/") },
                     )
                     AboutDivider()
                     AboutActionRow(
                         icon = painterResource(R.drawable.ic_instagram_new),
                         title = "Instagram",
-                        subtitle = "@iad1tya",
-                        onClick = { uriHandler.openUri("https://instagram.com/iad1tya") },
+                        subtitle = "@_beat_labs",
+                        onClick = { uriHandler.openUri("https://instagram.com/_beat_labs") },
                     )
                     AboutDivider()
                     AboutActionRow(
                         icon = painterResource(R.drawable.ic_x_new),
                         title = "X (Twitter)",
-                        subtitle = "@xad1tya",
-                        onClick = { uriHandler.openUri("https://x.com/xad1tya") },
+                        subtitle = "@beatlabs10",
+                        onClick = { uriHandler.openUri("https://x.com/beatlabs10") },
                     )
                 }
             }
@@ -144,23 +144,23 @@ highlightKey: String? = null) {
                 AboutSectionCard(title = "Support") {
                     AboutActionRow(
                         icon = painterResource(R.drawable.coffee),
-                        title = "Buy Me a Coffee",
-                        subtitle = "buymeacoffee.com/iad1tya",
-                        onClick = { uriHandler.openUri("https://buymeacoffee.com/iad1tya") },
+                        title = "Inspired By ECHO MUSIC",
+                        subtitle = "github.com/echomusicapp/echo-music",
+                        onClick = { uriHandler.openUri("https://github.com/echomusicapp/echo-music") },
                     )
                     AboutDivider()
                     AboutActionRow(
                         icon = painterResource(R.drawable.ic_patreon_new),
-                        title = "Patreon",
-                        subtitle = "patreon.com/cw/iad1tya",
-                        onClick = { uriHandler.openUri("https://www.patreon.com/cw/iad1tya") },
+                        title = "Website",
+                        subtitle = "beatwavy.vercel.app",
+                        onClick = { uriHandler.openUri("https://beatwavy.vercel.app") },
                     )
                     AboutDivider()
                     AboutActionRow(
                         icon = painterResource(R.drawable.upi_new),
                         title = "UPI",
-                        subtitle = "iad1tya@upi",
-                        onClick = { uriHandler.openUri("https://intradeus.github.io/http-protocol-redirector/?r=upi://pay?pa=iad1tya@upi&pn=Aditya%20Yadav&am=&tn=Thank%20You%20so%20much%20for%20this%20support") },
+                        subtitle = "akshanshsinha67@axl",
+                        onClick = { uriHandler.openUri("https://support-akshansh.vercel.app") },
                     )
                 }
             }
@@ -170,23 +170,18 @@ highlightKey: String? = null) {
                     AboutActionRow(
                         icon = painterResource(R.drawable.github),
                         title = "GitHub",
-                        subtitle = "EchoMusicApp/Echo-Music",
-                        onClick = { uriHandler.openUri("https://github.com/EchoMusicApp/Echo-Music") },
+                        subtitle = "akshanshsinha890/BeatWave",
+                        onClick = { uriHandler.openUri("https://github.com/akshanshsinha890/BeatWave") },
                     )
                     AboutDivider()
                     AboutActionRow(
                         icon = painterResource(R.drawable.ic_discord_new),
                         title = "Discord",
-                        subtitle = "discord.gg/EcfV3AxH5c",
-                        onClick = { uriHandler.openUri("https://discord.gg/EcfV3AxH5c") },
+                        subtitle = "discord.gg/jx4YVfH2Jh",
+                        onClick = { uriHandler.openUri("https://discord.gg/jx4YVfH2Jh") },
                     )
                     AboutDivider()
-                    AboutActionRow(
-                        icon = painterResource(R.drawable.ic_telegram_new),
-                        title = "Telegram",
-                        subtitle = "t.me/EchoMusicApp",
-                        onClick = { uriHandler.openUri("https://t.me/EchoMusicApp") },
-                    )
+
                 }
             }
 
@@ -194,22 +189,22 @@ highlightKey: String? = null) {
                 AboutSectionCard(title = "Our Services") {
                     AboutActionRow(
                         icon = painterResource(R.drawable.website),
-                        title = "Echo Canvas",
-                        subtitle = "canvas.echomusic.fun",
-                        onClick = { uriHandler.openUri("https://canvas.echomusic.fun/") },
+                        title = "BeatWave Canvas",
+                        subtitle = "Coming Soon...",
+                        onClick = { uriHandler.openUri("https://Beatwavy.vercel.app") },
                     )
                     AboutDivider()
                     AboutActionRow(
                         icon = painterResource(R.drawable.website),
-                        title = "Echo Lossless",
-                        subtitle = "lossless.echomusic.fun",
+                        title = "BeatWave Lossless",
+                        subtitle = "lossless.BeatWave",
                         onClick = { uriHandler.openUri("https://lossless.echomusic.fun/") },
                     )
                     AboutDivider()
                     AboutActionRow(
                         icon = painterResource(R.drawable.website),
-                        title = "Echo Charts",
-                        subtitle = "charts.echomusic.fun",
+                        title = "BeatWave Charts",
+                        subtitle = "charts.beatwave.fun",
                         onClick = { uriHandler.openUri("https://charts.echomusic.fun/") },
                     )
                 }
@@ -286,7 +281,7 @@ private fun AboutAppCard() {
                     )
                 } else {
                     coil3.compose.AsyncImage(
-                        model = "https://avatars.githubusercontent.com/u/147871321?v=4",
+                        model = "https://i.ibb.co/tp0rjtRB/image.png",
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
@@ -299,7 +294,7 @@ private fun AboutAppCard() {
             Spacer(Modifier.height(4.dp))
             
             Text(
-                text = if (rotation <= 90f) "Echo Music" else "Developed by Aditya",
+                text = if (rotation <= 90f) "BeatWave" else "Developed by BeatLabs",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,

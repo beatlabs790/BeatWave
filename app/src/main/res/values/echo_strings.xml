@@ -796,7 +796,7 @@
     <string name="delete_from_history">Delete from history</string>
     <string name="re_listen">Re-listen</string>
     <string name="hold_to_recognize">Hold search icon to recognize music</string>
-    <string name="play_on_app">Play on Echo Music</string>
+    <string name="play_on_app">Play on BeatWave</string>
     <string name="recognized_track">Recognized Track</string>
 
     <!-- CSV Import Strings -->

@@ -30,8 +30,8 @@ jobs:
       - name: Setup local.properties
         run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
-      - name: Build Unsigned Release APK
-        run: ./gradlew assembleFossRelease -x validateSigningUniversalFossRelease --stacktrace
+      - name: Build Unsigned APK
+        run: ./gradlew assembleUniversalFossRelease -Pandroid.injected.signing.store.file="" --stacktrace
 
       - name: Upload Unsigned APK Artifact
         uses: actions/upload-artifact@v4

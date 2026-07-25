@@ -28,16 +28,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Setup local.properties
-        run: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-          echo "injected.signing.store.file=" >> local.properties
+        run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
       - name: Build Unsigned Release APK
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assembleRelease -x validateSigningRelease --stacktrace
 
       - name: Upload Unsigned APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BeatWave-Unsigned-Release-APK
+          name: BeatWave-Release-v4.3.0-APK
           path: app/build/outputs/apk/**/*.apk
           retention-days: 7

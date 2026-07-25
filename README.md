@@ -100,6 +100,9 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 ## Features
 
 ### What's New
+- **Lossless Music Hub** — Stream and contribute 16-bit/24-bit FLAC files directly to the Echo Music ecosystem.
+- **Data Saver Mode (Beta)** — Automatically reduces data usage during playback for limited connections.
+- **Settings Search Index** — Quickly find and navigate to any settings option instantly.
 - **Redesigned UI** — Cleaner, faster, and more intuitive interface from the ground up.
 - **Import from Spotify** — Bring your playlists and tracks over with ease.
 - **Listen Together** — Sync music in real time, similar to Spotify Jam.
@@ -109,6 +112,8 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 
 ### Streaming & Playback
 - **Ad-Free** — Stream without any interruptions.
+- **Lossless Audio** — Support for 16-bit and 24-bit high fidelity FLAC audio.
+- **Data Saver Mode** — Reduce data consumption when streaming on cellular networks.
 - **Seamless Playback** — Switch effortlessly between audio-only and video modes.
 - **Background Playback** — Listen while using other apps or with the screen off.
 - **Offline Mode** — Download tracks, albums, and playlists via a dedicated download manager.
@@ -238,12 +243,6 @@ Echo Music stands on the shoulders of several excellent open-source projects. Si
 | [Music Recognizer](https://github.com/aleksey-saenko/MusicRecognizer) | Audio recognition (Echo Find) |
 | [Flow](https://github.com/a-edev/Flow) | AI queue generation engine (Echo Brain) |
 | [zemer-cipher](hhttps://github.com/ZemerTeam/zemer-cipher) | YouTube cipher deobfuscation and PoToken generation |
-
----
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=EchoMusicApp/Echo-Music&type=timeline&legend=top-left)](https://www.star-history.com/#EchoMusicApp/Echo-Music&type=timeline&legend=top-left)
 
 ---
 

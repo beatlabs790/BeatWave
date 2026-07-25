@@ -87,7 +87,7 @@ fun FundingProgressCard() {
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                text = "$$raisedInt / $100 raised",
+                                text = "$$raisedInt / $200 raised",
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
@@ -95,7 +95,7 @@ fun FundingProgressCard() {
                         }
 
                         val progress by animateFloatAsState(
-                            targetValue = (raisedInt / 100f).coerceIn(0f, 1f),
+                            targetValue = (raisedInt / 200f).coerceIn(0f, 1f),
                             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
                             label = "FundingProgress"
                         )

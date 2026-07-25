@@ -188,6 +188,7 @@ highlightKey: String? = null) {
             item {
                 AboutSectionCard(title = "Our Services") {
                     AboutActionRow(
+<<<<<<< HEAD
                         icon = painterResource(R.drawable.website),
                         title = "BeatWave Canvas",
                         subtitle = "Coming Soon...",
@@ -198,13 +199,31 @@ highlightKey: String? = null) {
                         icon = painterResource(R.drawable.website),
                         title = "BeatWave Lossless",
                         subtitle = "lossless.BeatWave",
+=======
+                        icon = painterResource(R.drawable.ic_canvas),
+                        title = "Echo Canvas",
+                        subtitle = "canvas.echomusic.fun",
+                        onClick = { uriHandler.openUri("https://canvas.echomusic.fun/") },
+                    )
+                    AboutDivider()
+                    AboutActionRow(
+                        icon = painterResource(R.drawable.ic_apple_lossless),
+                        title = "Echo Lossless",
+                        subtitle = "lossless.echomusic.fun",
+>>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
                         onClick = { uriHandler.openUri("https://lossless.echomusic.fun/") },
                     )
                     AboutDivider()
                     AboutActionRow(
+<<<<<<< HEAD
                         icon = painterResource(R.drawable.website),
                         title = "BeatWave Charts",
                         subtitle = "charts.beatwave.fun",
+=======
+                        icon = painterResource(R.drawable.ic_chart),
+                        title = "Echo Charts",
+                        subtitle = "charts.echomusic.fun",
+>>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
                         onClick = { uriHandler.openUri("https://charts.echomusic.fun/") },
                     )
                 }

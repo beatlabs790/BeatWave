@@ -119,20 +119,18 @@ object YTPlayerUtils {
         knownDurationMs: Long? = null,
         isDownload: Boolean = false
     ): Result<PlaybackData> {
-        val showFallbackToast = context?.let { 
-            it.dataStore.data.first()[iad1tya.echo.music.constants.ShowAudioFallbackToastKey] 
-        } ?: true
+        val showFallbackToast = false
 
         var hasShownLosslessToast = false
         var hasShownOpusToast = false
 
         suspend fun tryOpus(): Result<PlaybackData> {
-            val firstAttempt = resolvePlaybackData(videoId, playlistId, audioQuality, connectivityManager)
+            val firstAttempt = resolvePlaybackData(videoId, playlistId, audioQuality, connectivityManager, context, knownArtist, knownTitle)
             if (firstAttempt.isFailure && YouTube.cookie == null) {
                 Timber.tag(TAG).w("Playback failed for guest. Rotating session and retrying...")
                 PlaybackLogManager.log(PlaybackLogLevel.BOT, "Playback failed for guest", "Triggering bot detection mitigation (rotating guest session)")
                 BotDetectionMitigator.rotateGuestSession()
-                val retryResult = resolvePlaybackData(videoId, playlistId, audioQuality, connectivityManager)
+                val retryResult = resolvePlaybackData(videoId, playlistId, audioQuality, connectivityManager, context, knownArtist, knownTitle)
                 retryResult.onSuccess { BotDetectionMitigator.notifyPlaybackSuccess() }
                 return retryResult
             }
@@ -233,6 +231,9 @@ object YTPlayerUtils {
         playlistId: String? = null,
         audioQuality: AudioQuality,
         connectivityManager: ConnectivityManager,
+        context: android.content.Context? = null,
+        knownArtist: String? = null,
+        knownTitle: String? = null
     ): Result<PlaybackData> = runCatching {
         Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId")
         PlaybackLogManager.log(PlaybackLogLevel.INFO, "Resolving playback data", "Video: $videoId")
@@ -308,7 +309,7 @@ object YTPlayerUtils {
             "AGE_CHECK_REQUIRED",
             "AGE_VERIFICATION_REQUIRED",
             "CONTENT_CHECK_REQUIRED"
-        )
+        ) || (mainStatus == "LOGIN_REQUIRED" && mainPlayerResponse.playabilityStatus.reason?.contains("age", ignoreCase = true) == true)
         wasOriginallyAgeRestricted = isAgeRestrictedFromResponse
 
         if (isAgeRestrictedFromResponse && isLoggedIn) {
@@ -349,14 +350,59 @@ object YTPlayerUtils {
         var isAgeRestricted = currentStatus in listOf(
             "AGE_CHECK_REQUIRED",
             "AGE_VERIFICATION_REQUIRED",
-            "CONTENT_CHECK_REQUIRED"
+            "CONTENT_CHECK_REQUIRED",
+            "UNPLAYABLE",
+            "LOGIN_REQUIRED"
         )
 
         if (isAgeRestricted) {
-            Timber.tag(logTag).d("Content is still age-restricted (status: $currentStatus), will try fallback clients")
-            Log.i(TAG, "Age-restricted content detected: videoId=$videoId, status=$currentStatus")
-        }
+            Timber.tag(logTag).d("Content needs fallback (status: $currentStatus), trying JioSaavn")
+            android.util.Log.i("YTPlayerUtils", "Unplayable content detected: videoId=$videoId, status=$currentStatus")
 
+            if (context != null) {
+                val rawTitle = videoDetails?.title ?: knownTitle ?: ""
+                val rawArtist = videoDetails?.author ?: knownArtist ?: ""
+                val cleanTitle = rawTitle.replace(Regex("\\(.*?\\)"), "").replace(Regex("\\[.*?\\]"), "").trim()
+                val cleanArtist = rawArtist.replace(Regex("(?i)\\s*-\\s*Topic"), "").trim()
+                Timber.tag(logTag).d("JioSaavn query: '$cleanTitle' / '$cleanArtist'")
+                if (cleanTitle.isNotEmpty()) {
+                    val fallbackUrl = iad1tya.echo.music.utils.JioSaavnFallback.resolveAgeRestrictedSong(context, cleanTitle, cleanArtist)
+                    if (fallbackUrl != null) {
+                        Timber.tag(logTag).d("JioSaavn fallback successful!")
+                        val mockFormat = com.music.innertube.models.response.PlayerResponse.StreamingData.Format(
+                            itag = 140,
+                            url = fallbackUrl,
+                            mimeType = "audio/mp4; codecs=\"mp4a.40.2\"",
+                            bitrate = 160000,
+                            width = null,
+                            height = null,
+                            contentLength = null,
+                            quality = "tiny",
+                            fps = null,
+                            qualityLabel = null,
+                            averageBitrate = null,
+                            audioQuality = "AUDIO_QUALITY_MEDIUM",
+                            approxDurationMs = null,
+                            audioSampleRate = 44100,
+                            audioChannels = 2,
+                            loudnessDb = null,
+                            lastModified = null,
+                            signatureCipher = null,
+                            cipher = null,
+                            audioTrack = null
+                        )
+                        return@runCatching PlaybackData(
+                            audioConfig = audioConfig,
+                            videoDetails = videoDetails,
+                            playbackTracking = playbackTracking,
+                            format = mockFormat,
+                            streamUrl = fallbackUrl,
+                            streamExpiresInSeconds = (System.currentTimeMillis() / 1000).toInt() + 3600
+                        )
+                    }
+                }
+            }
+        }
         
         val isPrivateTrack = mainPlayerResponse.videoDetails?.musicVideoType == "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK"
 

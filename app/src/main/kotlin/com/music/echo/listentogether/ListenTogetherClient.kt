@@ -200,7 +200,10 @@ class ListenTogetherClient @Inject constructor(
     val logs: StateFlow<List<LogEntry>> = _logs.asStateFlow()
 
     
-    private val _events = MutableSharedFlow<ListenTogetherEvent>()
+    private val _events = MutableSharedFlow<ListenTogetherEvent>(
+        extraBufferCapacity = 64,
+        onBufferOverflow = kotlinx.coroutines.channels.BufferOverflow.DROP_OLDEST
+    )
     val events: SharedFlow<ListenTogetherEvent> = _events.asSharedFlow()
     
     private val _rtt = MutableStateFlow(0L)
@@ -350,7 +353,7 @@ class ListenTogetherClient @Inject constructor(
     
     private val codec = MessageCodec(MessageFormat.JSON, false)
 
-    private var webSocket: WebSocket? = null
+    @Volatile private var webSocket: WebSocket? = null
     private var pingJob: Job? = null
     private var pingSentTime: Long = 0L
     private var reconnectAttempts = 0
@@ -449,6 +452,7 @@ class ListenTogetherClient @Inject constructor(
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 log(LogLevel.INFO, "Connected to server")
+                this@ListenTogetherClient.webSocket = webSocket
                 _connectionState.value = ConnectionState.CONNECTED
                 reconnectAttempts = 0
                 startPingJob()
@@ -1208,7 +1212,9 @@ class ListenTogetherClient @Inject constructor(
                 _connectionState.value == ConnectionState.ERROR) {
                 connect()
             }
-            
+            if (_connectionState.value == ConnectionState.CONNECTED) {
+                executePendingAction()
+            }
         }
     }
 
@@ -1231,7 +1237,9 @@ class ListenTogetherClient @Inject constructor(
                 _connectionState.value == ConnectionState.ERROR) {
                 connect()
             }
-            
+            if (_connectionState.value == ConnectionState.CONNECTED) {
+                executePendingAction()
+            }
         }
     }
 

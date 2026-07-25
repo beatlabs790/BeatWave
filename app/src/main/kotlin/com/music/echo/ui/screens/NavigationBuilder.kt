@@ -390,6 +390,10 @@ fun NavGraphBuilder.navigationBuilder(
         AiSettings(navController, scrollBehavior, highlightKey = backStackEntry.arguments?.getString("highlightKey"))
     }
     
+    composable("settings/lossless") {
+        iad1tya.echo.music.ui.screens.settings.LosslessContributeScreen(navController, scrollBehavior)
+    }
+    
     composable(
         route = "settings/player?highlightKey={highlightKey}",
         arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true })

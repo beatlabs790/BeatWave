@@ -14,6 +14,7 @@ import java.time.ZoneOffset
 import com.music.innertube.models.IpVersion
 
 val IsFirstRunKey = booleanPreferencesKey("isFirstRun")
+val DataSaverEnabledKey = booleanPreferencesKey("dataSaverEnabled")
 val SpotifySpDcKey = stringPreferencesKey("spotify_sp_dc")
 val SpotifySpKeyKey = stringPreferencesKey("spotify_sp_key")
 val SpotifyAccountNameKey = stringPreferencesKey("spotify_account_name")
@@ -247,6 +248,10 @@ val LastAlbumSyncKey = longPreferencesKey("last_album_sync")
 val LastArtistSyncKey = longPreferencesKey("last_artist_sync")
 val LastPlaylistSyncKey = longPreferencesKey("last_playlist_sync")
 val LastFullSyncKey = longPreferencesKey("last_full_sync")
+val LastLosslessSyncKey = longPreferencesKey("lastLosslessSync")
+val LosslessGithubTokenKey = stringPreferencesKey("losslessGithubToken")
+val LosslessGithubUsernameKey = stringPreferencesKey("losslessGithubUsername")
+val LosslessGithubAvatarKey = stringPreferencesKey("losslessGithubAvatar")
 
 
 const val SYNC_COOLDOWN = 30 * 60L

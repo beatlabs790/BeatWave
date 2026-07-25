@@ -72,6 +72,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -594,8 +595,7 @@ private fun OnlinePlaylistHeader(
         OnlineBlur(
             thumbnailUrl = playlist.thumbnail,
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
+                .matchParentSize()
                 .offset { IntOffset(0, headerOffset) }
         )
 
@@ -611,15 +611,18 @@ private fun OnlinePlaylistHeader(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 48.dp)
+                    .padding(horizontal = 48.dp),
+                contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current).data(playlist.thumbnail)
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
+                        .then(
+                            if (LocalConfiguration.current.screenWidthDp > 600) Modifier.size(300.dp)
+                            else Modifier.fillMaxWidth().aspectRatio(1f)
+                        )
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )

@@ -149,6 +149,9 @@ fun ListenTogetherScreen(
     }
 
     LaunchedEffect(listenTogetherManager) {
+        if (connectionState == ConnectionState.DISCONNECTED || connectionState == ConnectionState.ERROR) {
+            listenTogetherManager.connect()
+        }
         listenTogetherManager.events.collect { event ->
             when (event) {
                 is ListenTogetherEvent.JoinRejected -> {
@@ -342,6 +345,7 @@ fun ListenTogetherScreen(
                     onRoomCodeChange = { roomCodeInput = it },
                     savedUsername = savedUsername,
                     isJoiningRoom = isJoiningRoom,
+                    isCreatingRoom = isCreatingRoom,
                     joinErrorMessage = joinErrorMessage,
                     waitingForApprovalText = waitingForApprovalText,
                     bringIntoViewRequester = bringIntoViewRequester,
@@ -354,8 +358,18 @@ fun ListenTogetherScreen(
                             isCreatingRoom = true
                             isJoiningRoom = false
                             joinErrorMessage = null
+                            
                             listenTogetherManager.connect()
                             listenTogetherManager.createRoom(finalUsername)
+                            
+                            // Simulate a second click in the background to handle dropped first messages
+                            coroutineScope.launch {
+                                kotlinx.coroutines.delay(600)
+                                if (isCreatingRoom) {
+                                    listenTogetherManager.connect()
+                                    listenTogetherManager.createRoom(finalUsername)
+                                }
+                            }
                         } else {
                             Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                         }
@@ -363,18 +377,30 @@ fun ListenTogetherScreen(
                     onJoinRoom = {
                         val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
                         val finalUsername = username.trim()
-                        if (finalUsername.isNotBlank()) {
+                        val finalRoomCode = roomCodeInput.trim()
+                        
+                        if (finalUsername.isNotBlank() && finalRoomCode.length == 8) {
                             savedUsername = finalUsername
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.joining_room, roomCodeInput),
+                                context.getString(R.string.joining_room, finalRoomCode),
                                 Toast.LENGTH_SHORT
                             ).show()
                             isJoiningRoom = true
                             isCreatingRoom = false
                             joinErrorMessage = null
+                            
                             listenTogetherManager.connect()
-                            listenTogetherManager.joinRoom(roomCodeInput, finalUsername)
+                            listenTogetherManager.joinRoom(finalRoomCode, finalUsername)
+                            
+                            // Simulate a second click in the background to handle dropped first messages
+                            coroutineScope.launch {
+                                kotlinx.coroutines.delay(600)
+                                if (isJoiningRoom) {
+                                    listenTogetherManager.connect()
+                                    listenTogetherManager.joinRoom(finalRoomCode, finalUsername)
+                                }
+                            }
                         } else {
                             Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                         }
@@ -1069,6 +1095,7 @@ private fun JoinCreateRoomSection(
     onRoomCodeChange: (String) -> Unit,
     savedUsername: String,
     isJoiningRoom: Boolean,
+    isCreatingRoom: Boolean,
     joinErrorMessage: String?,
     waitingForApprovalText: String,
     bringIntoViewRequester: BringIntoViewRequester,
@@ -1285,7 +1312,7 @@ private fun JoinCreateRoomSection(
                 Button(
                     onClick = onCreateRoom,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = hasUsername,
+                    enabled = hasUsername && !isCreatingRoom && !isJoiningRoom,
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
@@ -1303,7 +1330,7 @@ private fun JoinCreateRoomSection(
                 Button(
                     onClick = onJoinRoom,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = hasUsername && hasRoomCode,
+                    enabled = hasUsername && hasRoomCode && !isCreatingRoom && !isJoiningRoom,
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
@@ -1318,15 +1345,6 @@ private fun JoinCreateRoomSection(
                     Text(stringResource(R.string.join_room), fontWeight = FontWeight.SemiBold)
                 }
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Note: You may have to click create or join button twice. It will be fixed in a future update.",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }

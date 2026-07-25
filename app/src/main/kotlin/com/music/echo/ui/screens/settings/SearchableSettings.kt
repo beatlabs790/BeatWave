@@ -372,7 +372,7 @@ fun getAllSearchableSettings(): List<Triple<String, String, String>> {
             Triple(stringResource(R.string.lastfm_integration), "Account", "settings/account"),
             Triple(stringResource(R.string.listenbrainz_scrobbling), "Account", "settings/account"),
             Triple(stringResource(R.string.set_listenbrainz_token), "Account", "settings/account"),
-            Triple("Show audio fallback notifications", "Player and audio", "settings/player"),
+
             Triple("Preload Next Song", "Player and audio", "settings/player"),
             Triple("Preload Limit", "Player and audio", "settings/player"),
             Triple("Preload Lyrics", "Player and audio", "settings/player"),
@@ -452,6 +452,7 @@ fun getAllSearchableSettings(): List<Triple<String, String, String>> {
             Triple(stringResource(R.string.listen_together_view_logs), "Listen Together", "settings/integrations/listen_together"),
             Triple(stringResource(R.string.listen_together), "Listen Together", "settings/integrations/listen_together"),
             Triple(stringResource(R.string.listen_together_logs), "Listen Together", "settings/integrations/listen_together"),
-            Triple(stringResource(R.string.listen_together_choose_server), "Listen Together", "settings/integrations/listen_together")
+            Triple(stringResource(R.string.listen_together_choose_server), "Listen Together", "settings/integrations/listen_together"),
+            Triple("Data Saver Mode (Beta)", "Player and audio", "settings/player")
     )
 }

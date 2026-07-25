@@ -74,6 +74,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -155,8 +156,11 @@ fun AlbumScreen(
     val description by viewModel.description.collectAsState()
     val descriptionRuns by viewModel.descriptionRuns.collectAsState()
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
-    val hideVideoSongs by rememberPreference(key = HideVideoSongsKey, defaultValue = false)
-    val albumCanvasEnabled by rememberPreference(key = AlbumCanvasEnabledKey, defaultValue = false)
+    val dataSaverEnabled by rememberPreference(key = iad1tya.echo.music.constants.DataSaverEnabledKey, defaultValue = false)
+    val hideVideoSongsPref by rememberPreference(key = HideVideoSongsKey, defaultValue = false)
+    val hideVideoSongs = if (dataSaverEnabled) true else hideVideoSongsPref
+    val albumCanvasEnabledPref by rememberPreference(key = AlbumCanvasEnabledKey, defaultValue = false)
+    val albumCanvasEnabled = if (dataSaverEnabled) false else albumCanvasEnabledPref
 
     val canvasArtwork = rememberAlbumCanvas(
         albumTitle = albumWithSongs?.album?.title,
@@ -248,14 +252,19 @@ fun AlbumScreen(
                     -(systemBarsTopPadding + AppBarHeight).roundToPx()
                 }
 
+                val configuration = LocalConfiguration.current
+                val isTablet = configuration.screenWidthDp > 600
+                val artSizeDp = if (isTablet) 300.dp else configuration.screenWidthDp.dp
+                val artSizePx = with(density) { artSizeDp.toPx() }
+
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter
                 ) {
                     
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
+                            .matchParentSize()
                             .offset {
                                 IntOffset(x = 0, y = headerOffset)
                             }
@@ -301,10 +310,8 @@ fun AlbumScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
-                                top = LocalContext.current.resources.displayMetrics.widthPixels.let { screenWidth ->
-                                    with(density) {
-                                        ((screenWidth / 1.2f) - 144).toDp()
-                                    }
+                                top = with(density) {
+                                    ((artSizePx / 1.2f) - 144).toDp()
                                 }
                             )
                             .padding(bottom = 24.dp),

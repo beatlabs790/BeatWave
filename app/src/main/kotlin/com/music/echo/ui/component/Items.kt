@@ -433,7 +433,7 @@ fun SongListItem(
     color: Color = MaterialTheme.colorScheme.surfaceContainer,
     horizontalPadding: Dp = 16.dp,
 ) {
-    val swipeEnabled by rememberPreference(SwipeToSongKey, defaultValue = false)
+    val swipeEnabled by rememberPreference(SwipeToSongKey, defaultValue = true)
 
     val content: @Composable () -> Unit = {
         ListItem(
@@ -1077,7 +1077,7 @@ fun YouTubeListItem(
     shape: Shape = RectangleShape,
     drawHighlight: Boolean = true,
 ) {
-    val swipeEnabled by rememberPreference(SwipeToSongKey, defaultValue = false)
+    val swipeEnabled by rememberPreference(SwipeToSongKey, defaultValue = true)
 
     val content: @Composable () -> Unit = {
         ListItem(

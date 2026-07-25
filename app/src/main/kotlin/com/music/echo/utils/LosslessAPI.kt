@@ -41,7 +41,7 @@ object LosslessAPI {
 
         try {
             val request = Request.Builder()
-                .url("https://lossless.echomusic.fun/music.json")
+                .url("https://raw.githubusercontent.com/EchoMusicApp/Lossless-Database/refs/heads/main/music.json")
                 .get()
                 .build()
 
@@ -60,6 +60,16 @@ object LosslessAPI {
         }
         
         return@withContext cachedIndex ?: emptyList()
+    }
+
+    suspend fun getRecentTracks(limit: Int = 10): List<LosslessTrack> {
+        val list = fetchMusicList()
+        return list.take(limit)
+    }
+
+    suspend fun getTotalTracksCount(): Int {
+        val list = fetchMusicList()
+        return list.size
     }
 
     suspend fun search(queryTitle: String, queryArtist: String): LosslessTrack? {
@@ -92,7 +102,7 @@ object LosslessAPI {
         return track?.let {
             val resolvedUrl = it.url.replace(
                 "https://lossless.echomusic.fun/Music/",
-                "https://raw.githubusercontent.com/EchoMusicApp/Lossless/main/Music/"
+                "https://raw.githubusercontent.com/EchoMusicApp/Lossless-Database/main/Music/"
             )
             it.copy(url = resolvedUrl)
         }

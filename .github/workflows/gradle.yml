@@ -63,10 +63,16 @@ jobs:
         env:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
+<<<<<<< HEAD
         run: |
           ./gradlew assembleUniversalFossRelease \
             -x validateSigningUniversalFossRelease \
             -x validateSigningUniversalGmsRelease
+=======
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+        run: ./gradlew assembleUniversalGmsRelease
+>>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
 
       - name: Rename and Organize APKs
         run: |

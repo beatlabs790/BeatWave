@@ -60,7 +60,7 @@ import iad1tya.echo.music.constants.ResumeOnBluetoothConnectKey
 import iad1tya.echo.music.constants.SeekExtraSeconds
 import iad1tya.echo.music.constants.ShufflePlaylistFirstKey
 import iad1tya.echo.music.constants.SimilarContent
-import iad1tya.echo.music.constants.ShowAudioFallbackToastKey
+
 import iad1tya.echo.music.constants.SkipSilenceInstantKey
 import iad1tya.echo.music.constants.SkipSilenceKey
 import iad1tya.echo.music.constants.StopMusicOnTaskClearKey
@@ -96,10 +96,7 @@ highlightKey: String? = null) {
         AudioQualityKey,
         defaultValue = AudioQuality.OPUS
     )
-    val (showAudioFallbackToast, onShowAudioFallbackToastChange) = rememberPreference(
-        ShowAudioFallbackToastKey,
-        defaultValue = true
-    )
+
     val (crossfadeEnabled, onCrossfadeEnabledChange) = rememberPreference(
         CrossfadeEnabledKey,
         defaultValue = false
@@ -156,6 +153,11 @@ highlightKey: String? = null) {
     val (preloadLyricsEnabled, onPreloadLyricsEnabledChange) = rememberPreference(
         key = PreloadLyricsEnabledKey,
         defaultValue = true
+    )
+
+    val (dataSaverEnabled, onDataSaverEnabledChange) = rememberPreference(
+        key = iad1tya.echo.music.constants.DataSaverEnabledKey,
+        defaultValue = false
     )
 
     val (enableExportAsMp3, onEnableExportAsMp3Change) = rememberPreference(
@@ -340,7 +342,11 @@ highlightKey: String? = null) {
                     }
                 }
             ) {
+<<<<<<< HEAD
                 Text("Lossless is uncompressed music which is higher in size and requires significant server load and data usage.")
+=======
+                Text("Lossless is uncompressed music which is higher in size and requires significant server load. Continuous maintenance requires funding. We have a monthly goal of $200 to keep this active.\n\nPlease consider donating!")
+>>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
             }
         }
 
@@ -361,7 +367,11 @@ highlightKey: String? = null) {
                     }
                 }
             ) {
+<<<<<<< HEAD
                 Text("Lossless downloads require significant server load, bandwidth and storage space.")
+=======
+                Text("Lossless downloads require significant server load and bandwidth. Continuous maintenance requires funding. We have a monthly goal of $200 to keep this active.\n\nPlease consider donating!")
+>>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
             }
         }
 
@@ -378,6 +388,40 @@ highlightKey: String? = null) {
             )
         )
 
+<<<<<<< HEAD
+=======
+        iad1tya.echo.music.ui.component.FundingProgressCard()
+
+        Material3SettingsGroup(
+            scrollState = scrollState,
+            title = "Data Saver",
+            items = buildList {
+                add(Material3SettingsItem(
+                    isHighlighted = (highlightKey == "Data Saver Mode (Beta)"),
+                    icon = painterResource(R.drawable.offline),
+                    title = { Text("Data Saver Mode (Beta)") },
+                    description = { Text("Disable lyrics, videos, preloading, background syncs, and force Opus audio to save data.") },
+                    trailingContent = {
+                        Switch(
+                            checked = dataSaverEnabled,
+                            onCheckedChange = onDataSaverEnabledChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (dataSaverEnabled) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onDataSaverEnabledChange(!dataSaverEnabled) }
+                ))
+            }
+        )
+
+>>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
         Material3SettingsGroup(scrollState = scrollState, 
             title = stringResource(R.string.player),
             items = buildList {
@@ -396,28 +440,6 @@ highlightKey: String? = null) {
                     onClick = { showAudioQualityDialog = true }
                 ))
                 
-                add(Material3SettingsItem(
-    isHighlighted = (highlightKey == "Show audio fallback notifications"),
-                    icon = painterResource(R.drawable.notification),
-                    title = { Text("Show audio fallback notifications") },
-                    description = {
-                        Text("Show a toast notification when falling back to a lower stream quality")
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = showAudioFallbackToast,
-                            onCheckedChange = onShowAudioFallbackToastChange,
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                                checkedTrackColor = androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer,
-                                uncheckedThumbColor = androidx.compose.material3.MaterialTheme.colorScheme.outline,
-                                uncheckedTrackColor = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
-                            )
-                        )
-                    },
-                    onClick = { onShowAudioFallbackToastChange(!showAudioFallbackToast) }
-                ))
-
                 add(Material3SettingsItem(
     isHighlighted = (highlightKey == stringResource(R.string.download_quality_title)),
                     icon = painterResource(R.drawable.download),

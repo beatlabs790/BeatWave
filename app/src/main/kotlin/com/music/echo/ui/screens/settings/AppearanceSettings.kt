@@ -153,7 +153,7 @@ highlightKey: String? = null) {
     )
     val (enableHaptics, onEnableHapticsChange) = rememberPreference(
         iad1tya.echo.music.constants.EnableHapticsKey,
-        defaultValue = true
+        defaultValue = false
     )
     val (selectedThemeColorInt) = rememberPreference(
         SelectedThemeColorKey,
@@ -299,7 +299,7 @@ highlightKey: String? = null) {
 
     val (swipeToSong, onSwipeToSongChange) = rememberPreference(
         SwipeToSongKey,
-        defaultValue = false
+        defaultValue = true
     )
 
     val (swipeToRemoveSong, onSwipeToRemoveSongChange) = rememberPreference(

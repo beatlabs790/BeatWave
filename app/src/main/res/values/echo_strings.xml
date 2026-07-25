@@ -700,6 +700,20 @@
 
     <!-- AI Lyrics Translation -->
     <string name="ai_lyrics_translation">AI Hub</string>
+    <string name="contribute_to_lossless">Contribute to Lossless Music</string>
+    <string name="lossless_music_hub">Lossless Music Hub</string>
+    <string name="lossless_desc">Add high-fidelity lossless .flac audio to the Echo Music ecosystem. Max file size: 99MB.</string>
+    <string name="login_with_github">Log in with GitHub</string>
+    <string name="lossless_audio_file">Lossless Audio File</string>
+    <string name="choose_file">Choose .flac file (Max 99MB)</string>
+    <string name="song_title_hint">Song title</string>
+    <string name="artist_name_hint">Artist name</string>
+    <string name="submit_to_github">Submit to GitHub</string>
+    <string name="uploading_track">Uploading Track...</string>
+    <string name="upload_success">Submission Sent! We have automatically created a Pull Request.</string>
+    <string name="upload_failed">Submission Failed</string>
+    <string name="file_size_error">File size must be under 99MB.</string>
+    <string name="file_format_error">Only .flac files are accepted.</string>
     <string name="ai_translating_lyrics">Translating lyrics...</string>
     <string name="ai_lyrics_translated">Lyrics translated</string>
     <string name="ai_provider">Provider</string>

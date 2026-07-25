@@ -65,6 +65,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -618,8 +619,7 @@ private fun AutoPlaylistHeader(
             iad1tya.echo.music.ui.component.OnlineBlur(
                 thumbnailUrl = songs.getOrNull(0)?.thumbnailUrl ?: "",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .matchParentSize()
                     .offset { IntOffset(0, headerOffset) }
             )
         }
@@ -636,14 +636,17 @@ private fun AutoPlaylistHeader(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 48.dp)
+                .padding(horizontal = 48.dp),
+            contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = songs[0].thumbnailUrl,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .then(
+                        if (LocalConfiguration.current.screenWidthDp > 600) Modifier.size(300.dp)
+                        else Modifier.fillMaxWidth().aspectRatio(1f)
+                    )
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop
             )

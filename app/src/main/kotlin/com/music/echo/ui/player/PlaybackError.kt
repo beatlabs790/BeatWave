@@ -51,7 +51,7 @@ fun PlaybackError(
             error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS
     
     val errorMessage = if (isAgeRestricted) {
-        "This app does not support playing age-restricted songs. We are working on fixing this issue."
+        "This track is unplayable or age-restricted on YouTube Music. We are working on fixing this issue."
     } else {
         rawErrorMessage
     }

@@ -546,7 +546,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val (enableHaptics) = rememberPreference(iad1tya.echo.music.constants.EnableHapticsKey, defaultValue = true)
+        val (enableHaptics) = rememberPreference(iad1tya.echo.music.constants.EnableHapticsKey, defaultValue = false)
         val view = LocalView.current
         var lastScrollHapticTime by remember { mutableStateOf(0L) }
 

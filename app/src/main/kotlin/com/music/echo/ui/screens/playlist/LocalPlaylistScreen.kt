@@ -87,6 +87,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -1083,12 +1084,18 @@ fun LocalPlaylistHeader(
         
         Box(
             modifier = Modifier
-                .padding(horizontal = 48.dp)
-                .padding(bottom = 24.dp)
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(8.dp))
+                .padding(bottom = 24.dp),
+            contentAlignment = Alignment.Center
         ) {
+            Box(
+                modifier = Modifier
+                    .then(
+                        if (LocalConfiguration.current.screenWidthDp > 600) Modifier.size(300.dp)
+                        else Modifier.fillMaxWidth().padding(horizontal = 48.dp).aspectRatio(1f)
+                    )
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
             when (playlist.thumbnails.size) {
                 0 -> Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -1234,6 +1241,7 @@ fun LocalPlaylistHeader(
                     }
                 }
             }
+        }
         }
 
         

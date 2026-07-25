@@ -28,10 +28,12 @@ jobs:
         run: chmod +x gradlew
 
       - name: Setup local.properties
-        run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "injected.signing.store.file=" >> local.properties
 
-      - name: Build Unsigned APK
-        run: ./gradlew assembleUniversalFossRelease -Pandroid.injected.signing.store.file="" --stacktrace
+      - name: Build Unsigned Release APK
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload Unsigned APK Artifact
         uses: actions/upload-artifact@v4

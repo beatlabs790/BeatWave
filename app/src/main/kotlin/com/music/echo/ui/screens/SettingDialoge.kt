@@ -44,7 +44,7 @@ fun SettingDialoge(
     homeViewModel: HomeViewModel
 ) {
     val uriHandler = LocalUriHandler.current
-    val (audioQuality) = rememberEnumPreference(
+    rememberEnumPreference(
         AudioQualityKey,
         defaultValue = AudioQuality.OPUS
     )
@@ -157,25 +157,6 @@ fun SettingDialoge(
                                 }
                             )
                         )
-                        if (audioQuality == AudioQuality.LOSSLESS) {
-                            add(
-                                Material3SettingsItem(
-                                    title = { Text("Donate for lossless music") },
-                                    customIcon = {
-                                        Text(
-                                            text = "$",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-                                        )
-                                    },
-                                    onClick = {
-                                        uriHandler.openUri("https://support.iad1tya.cyou")
-                                        onDismissRequest()
-                                    }
-                                )
-                            )
-                        }
                     }
                 )
 

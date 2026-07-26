@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -37,8 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.withStyle
 import androidx.navigation.NavController
 import iad1tya.echo.music.BuildConfig
 import iad1tya.echo.music.LocalPlayerAwareWindowInsets
@@ -47,12 +44,6 @@ import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.utils.backToMain
 
 import androidx.compose.ui.platform.LocalContext
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import android.os.Build
-import android.widget.Toast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -188,7 +179,7 @@ highlightKey: String? = null) {
             item {
                 AboutSectionCard(title = "Our Services") {
                     AboutActionRow(
-<<<<<<< HEAD
+
                         icon = painterResource(R.drawable.website),
                         title = "BeatWave Canvas",
                         subtitle = "Coming Soon...",
@@ -199,31 +190,17 @@ highlightKey: String? = null) {
                         icon = painterResource(R.drawable.website),
                         title = "BeatWave Lossless",
                         subtitle = "lossless.BeatWave",
-=======
-                        icon = painterResource(R.drawable.ic_canvas),
-                        title = "Echo Canvas",
-                        subtitle = "canvas.echomusic.fun",
-                        onClick = { uriHandler.openUri("https://canvas.echomusic.fun/") },
-                    )
-                    AboutDivider()
-                    AboutActionRow(
-                        icon = painterResource(R.drawable.ic_apple_lossless),
-                        title = "Echo Lossless",
-                        subtitle = "lossless.echomusic.fun",
->>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
                         onClick = { uriHandler.openUri("https://lossless.echomusic.fun/") },
                     )
                     AboutDivider()
                     AboutActionRow(
-<<<<<<< HEAD
                         icon = painterResource(R.drawable.website),
                         title = "BeatWave Charts",
                         subtitle = "charts.beatwave.fun",
-=======
+
                         icon = painterResource(R.drawable.ic_chart),
                         title = "Echo Charts",
                         subtitle = "charts.echomusic.fun",
->>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
                         onClick = { uriHandler.openUri("https://charts.echomusic.fun/") },
                     )
                 }

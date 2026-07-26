@@ -388,10 +388,6 @@ highlightKey: String? = null) {
             )
         )
 
-<<<<<<< HEAD
-=======
-        iad1tya.echo.music.ui.component.FundingProgressCard()
-
         Material3SettingsGroup(
             scrollState = scrollState,
             title = "Data Saver",

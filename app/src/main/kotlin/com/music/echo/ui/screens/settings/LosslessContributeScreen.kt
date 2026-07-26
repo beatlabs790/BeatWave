@@ -231,9 +231,6 @@ fun LosslessContributeScreen(
                             Text("Connect Account")
                         }
                         
-                        
-                        Spacer(modifier = Modifier.height(32.dp))
-                        LosslessHubGoalCard(totalTracks)
                         Spacer(modifier = Modifier.height(32.dp))
                         if (recentTracks.isNotEmpty()) {
                             Text(
@@ -725,90 +722,4 @@ fun LosslessContributeScreen(
     }
 }
 
-@Composable
-private fun LosslessHubGoalCard(totalTracks: Int) {
-    val context = LocalContext.current
-    val fundingState by iad1tya.echo.music.utils.FundingRepository.fundingState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        iad1tya.echo.music.utils.FundingRepository.fetchFundingProgress()
-    }
-
-    AnimatedVisibility(visible = fundingState != null) {
-        fundingState?.let { data ->
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                shape = RoundedCornerShape(24.dp),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(R.drawable.graphic_eq),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                text = "Server Funding",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                        Text(
-                            text = "$${data.raised.toInt()} / $200",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    val progress by androidx.compose.animation.core.animateFloatAsState(
-                        targetValue = (data.raised.toFloat() / 200f).coerceIn(0f, 1f),
-                        animationSpec = androidx.compose.animation.core.tween(durationMillis = 1000, easing = androidx.compose.animation.core.FastOutSlowInEasing)
-                    )
-
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                            .clip(RoundedCornerShape(4.dp)),
-                        color = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f)
-                    )
-
-                    FilledTonalButton(
-                        onClick = { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, Uri.parse("https://buymeacoffee.com/lossless"))) },
-                        modifier = Modifier.fillMaxWidth().height(48.dp),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Text("Support Lossless Music")
-                    }
-                    
-                    if (totalTracks > 0) {
-                        Text(
-                            text = "Currently, there are $totalTracks lossless songs available!",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 

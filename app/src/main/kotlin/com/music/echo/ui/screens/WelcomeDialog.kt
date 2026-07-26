@@ -89,28 +89,6 @@ fun WelcomeDialog(
                     )
                 }
 
-                WelcomeSectionCard(title = "Support Echo") {
-                    WelcomeActionRow(
-                        icon = painterResource(R.drawable.coffee),
-                        title = "Inspired By Echo-Music",
-                        subtitle = "github.com/echomusicapp/echo-music",
-                        onClick = { uriHandler.openUri("https://github.com/echomusicapp/echo-music") }
-                    )
-                    WelcomeDivider()
-                    WelcomeActionRow(
-                        icon = painterResource(R.drawable.ic_patreon_new),
-                        title = "Patreon",
-                        subtitle = "beatwavy.vercel.app",
-                        onClick = { uriHandler.openUri("https://beatwavy.vercel.app") }
-                    )
-                    WelcomeDivider()
-                    WelcomeActionRow(
-                        icon = painterResource(R.drawable.upi_new),
-                        title = "UPI",
-                        subtitle = "akshanshsinha67@axl",
-                        onClick = { uriHandler.openUri("https://support-akshansh.vercel.app") }
-                    )
-                }
 
                 WelcomeSectionCard(title = "Social Community") {
 

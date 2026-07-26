@@ -168,8 +168,8 @@ highlightKey: String? = null) {
                     AboutActionRow(
                         icon = painterResource(R.drawable.ic_discord_new),
                         title = "Discord",
-                        subtitle = "discord.gg/jx4YVfH2Jh",
-                        onClick = { uriHandler.openUri("https://discord.gg/jx4YVfH2Jh") },
+                        subtitle = "discord.gg/spbuDTePSR",
+                        onClick = { uriHandler.openUri("https://discord.gg/spbuDTePSR") },
                     )
                     AboutDivider()
 
@@ -193,16 +193,7 @@ highlightKey: String? = null) {
                         onClick = { uriHandler.openUri("https://lossless.echomusic.fun/") },
                     )
                     AboutDivider()
-                    AboutActionRow(
-                        icon = painterResource(R.drawable.website),
-                        title = "BeatWave Charts",
-                        subtitle = "charts.beatwave.fun",
-
-                        icon = painterResource(R.drawable.ic_chart),
-                        title = "Echo Charts",
-                        subtitle = "charts.echomusic.fun",
-                        onClick = { uriHandler.openUri("https://charts.echomusic.fun/") },
-                    )
+                    
                 }
             }
 

@@ -415,7 +415,6 @@ highlightKey: String? = null) {
             }
         )
 
->>>>>>> e6ab0a634c05fadee83e1fec6e45a218fa560065
         Material3SettingsGroup(scrollState = scrollState, 
             title = stringResource(R.string.player),
             items = buildList {

@@ -2,11 +2,9 @@ name: Build Android Release APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -22,24 +20,24 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Create Dummy Keystore
+        run: |
+          mkdir -p app/
+          keytool -genkey -v -keystore app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      # 1. Create the .android folder and place debug.keystore inside it
-      - name: Create Debug Keystore
-        run: |
-          mkdir -p ~/.android
-          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+      - name: Build Single Universal Release APK
+        run: ./gradlew assembleUniversalGmsRelease
 
-    - name: Build Android Release APK
-  run: ./gradlew assembleUniversalGmsRelease
-
-      # 3. Upload built APKs as artifacts
-      - name: Upload APK Artifacts
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BeatWave-v4.3-release
-          path: app/build/outputs/apk/**/*.apk
-          retention-days: 7
+          name: BeatWave-v4.3-Release-APK
+          path: app/build/outputs/apk/universalGms/release/*.apk

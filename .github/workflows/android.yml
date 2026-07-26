@@ -35,12 +35,12 @@ jobs:
 
       # 2. Run the build
       - name: Build Release APK
-        run: ./gradlew assembleRelease
+        run: assembleUniversalGmsRelease
 
       # 3. Upload built APKs as artifacts
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: release-apks
+          name: BeatWave-v4.3-release
           path: app/build/outputs/apk/**/*.apk
           retention-days: 7

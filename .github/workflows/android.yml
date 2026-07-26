@@ -33,9 +33,8 @@ jobs:
           mkdir -p ~/.android
           keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
-      # 2. Run the build
-      - name: Build Release APK
-        run: assembleUniversalGmsRelease
+    - name: Build Android Release APK
+  run: ./gradlew assembleUniversalGmsRelease
 
       # 3. Upload built APKs as artifacts
       - name: Upload APK Artifacts

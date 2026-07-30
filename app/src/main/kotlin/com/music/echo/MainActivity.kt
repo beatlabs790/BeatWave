@@ -153,7 +153,13 @@ import com.music.innertube.models.SongItem
 import com.music.innertube.models.WatchEndpoint
 import iad1tya.echo.music.constants.AppBarHeight
 import iad1tya.echo.music.constants.AiRecommendationsKey
+import iad1tya.echo.music.constants.AppFontKey
 import iad1tya.echo.music.constants.AppLanguageKey
+import iad1tya.echo.music.fonts.AppFont
+import iad1tya.echo.music.fonts.rememberFontFamily
+import iad1tya.echo.music.fonts.rememberInheritingFontFamily
+import iad1tya.echo.music.constants.LyricsFontKey
+import iad1tya.echo.music.constants.PlayerFontKey
 import iad1tya.echo.music.constants.DarkModeKey
 import iad1tya.echo.music.constants.DefaultOpenTabKey
 import iad1tya.echo.music.constants.DisableScreenshotKey
@@ -550,10 +556,21 @@ class MainActivity : ComponentActivity() {
         val view = LocalView.current
         var lastScrollHapticTime by remember { mutableStateOf(0L) }
 
+        val (appFontId) = rememberPreference(AppFontKey, defaultValue = AppFont.SYSTEM_ID)
+        val (lyricsFontId) = rememberPreference(LyricsFontKey, defaultValue = AppFont.INHERIT_ID)
+        val (playerFontId) = rememberPreference(PlayerFontKey, defaultValue = AppFont.INHERIT_ID)
+
+        val appFontFamily = rememberFontFamily(appFontId)
+        val lyricsFontFamily = rememberInheritingFontFamily(lyricsFontId, appFontFamily)
+        val playerFontFamily = rememberInheritingFontFamily(playerFontId, appFontFamily)
+
         echomusicTheme(
             darkTheme = useDarkTheme,
             pureBlack = pureBlack,
             themeColor = themeColor,
+            fontFamily = appFontFamily,
+            lyricsFontFamily = lyricsFontFamily,
+            playerFontFamily = playerFontFamily,
         ) {
             BoxWithConstraints(
                 modifier = Modifier
@@ -658,7 +675,11 @@ class MainActivity : ComponentActivity() {
                 val shouldShowNavigationBar = remember(currentRoute, navigationItemRoutes) {
                     currentRoute == null ||
                         navigationItemRoutes.contains(currentRoute) ||
-                        currentRoute!!.startsWith("search/")
+                        currentRoute!!.startsWith("search/") ||
+                        currentRoute!!.startsWith("album/") ||
+                        currentRoute!!.startsWith("online_playlist/") ||
+                        currentRoute!!.startsWith("local_playlist/") ||
+                        currentRoute!!.startsWith("artist/")
                 }
 
                 val isLandscape = configuration.containerDpSize.width > configuration.containerDpSize.height
@@ -900,7 +921,7 @@ class MainActivity : ComponentActivity() {
                 val (liquidGlassDepthEffect) = rememberPreference(LiquidGlassDepthEffectKey, defaultValue = true)
                 val (liquidGlassSurfaceTintColorInt) = rememberPreference(LiquidGlassSurfaceTintColorKey, defaultValue = 0)
                 val (liquidGlassSurfaceOpacity) = rememberPreference(LiquidGlassSurfaceOpacityKey, defaultValue = 0.4f)
-                val (liquidGlassTextColorInt) = rememberPreference(LiquidGlassTextColorKey, defaultValue = Color.White.toArgb())
+                val (liquidGlassTextColorInt) = rememberPreference(LiquidGlassTextColorKey, defaultValue = 0)
                 val (liquidGlassPlayerEnabled) = rememberPreference(LiquidGlassPlayerEnabledKey, defaultValue = true)
                 val (liquidGlassMiniPlayerEnabled) = rememberPreference(LiquidGlassMiniPlayerEnabledKey, defaultValue = true)
                 val (liquidGlassNavBarEnabled) = rememberPreference(LiquidGlassNavBarEnabledKey, defaultValue = true)
@@ -921,7 +942,7 @@ class MainActivity : ComponentActivity() {
                         depthEffect = liquidGlassDepthEffect,
                         surfaceTintColor = if (liquidGlassSurfaceTintColorInt == 0) Color.Unspecified else Color(liquidGlassSurfaceTintColorInt),
                         surfaceOpacity = liquidGlassSurfaceOpacity,
-                        textColor = Color(liquidGlassTextColorInt),
+                        textColor = if (liquidGlassTextColorInt == 0) Color.Unspecified else Color(liquidGlassTextColorInt),
                         playerEnabled = liquidGlassPlayerEnabled,
                         miniPlayerEnabled = liquidGlassMiniPlayerEnabled,
                         navBarEnabled = liquidGlassNavBarEnabled,

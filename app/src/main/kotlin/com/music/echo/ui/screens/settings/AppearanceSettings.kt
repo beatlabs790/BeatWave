@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -1045,6 +1047,15 @@ highlightKey: String? = null) {
                         title = { Text(stringResource(R.string.liquid_glass)) },
                         description = { Text(stringResource(R.string.liquid_glass_settings)) },
                         onClick = { navController.navigate("settings/appearance/liquidglass") }
+                    )
+                )
+                add(
+                    Material3SettingsItem(
+    isHighlighted = highlightKey == stringResource(R.string.fonts_title),
+                        customIcon = { SettingsIcon(Icons.Rounded.TextFields) },
+                        title = { Text(stringResource(R.string.fonts_title)) },
+                        description = { Text(stringResource(R.string.fonts_desc)) },
+                        onClick = { navController.navigate("settings/appearance/fonts") }
                     )
                 )
                 add(

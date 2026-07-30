@@ -122,3 +122,31 @@ val AppTypography = Typography(
         letterSpacing = 0.5.sp
     )
 )
+
+/**
+ * [AppTypography] with every text role rebound to [fontFamily].
+ *
+ * Passing `null` (the default, "system font") returns [AppTypography] untouched, so the app pays
+ * nothing when no custom font is installed.
+ */
+fun appTypography(fontFamily: FontFamily?): Typography {
+    if (fontFamily == null) return AppTypography
+
+    return AppTypography.copy(
+        displayLarge = AppTypography.displayLarge.copy(fontFamily = fontFamily),
+        displayMedium = AppTypography.displayMedium.copy(fontFamily = fontFamily),
+        displaySmall = AppTypography.displaySmall.copy(fontFamily = fontFamily),
+        headlineLarge = AppTypography.headlineLarge.copy(fontFamily = fontFamily),
+        headlineMedium = AppTypography.headlineMedium.copy(fontFamily = fontFamily),
+        headlineSmall = AppTypography.headlineSmall.copy(fontFamily = fontFamily),
+        titleLarge = AppTypography.titleLarge.copy(fontFamily = fontFamily),
+        titleMedium = AppTypography.titleMedium.copy(fontFamily = fontFamily),
+        titleSmall = AppTypography.titleSmall.copy(fontFamily = fontFamily),
+        bodyLarge = AppTypography.bodyLarge.copy(fontFamily = fontFamily),
+        bodyMedium = AppTypography.bodyMedium.copy(fontFamily = fontFamily),
+        bodySmall = AppTypography.bodySmall.copy(fontFamily = fontFamily),
+        labelLarge = AppTypography.labelLarge.copy(fontFamily = fontFamily),
+        labelMedium = AppTypography.labelMedium.copy(fontFamily = fontFamily),
+        labelSmall = AppTypography.labelSmall.copy(fontFamily = fontFamily),
+    )
+}

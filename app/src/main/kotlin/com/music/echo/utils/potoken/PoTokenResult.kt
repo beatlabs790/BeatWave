@@ -1,4 +1,4 @@
-package iad1tya.echo.music.utils.potoken
+package com.music.echo.utils.potoken
 
 class PoTokenResult(
     val playerRequestPoToken: String,

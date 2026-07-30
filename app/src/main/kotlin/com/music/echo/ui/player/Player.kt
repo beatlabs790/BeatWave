@@ -154,6 +154,7 @@ import coil3.toBitmap
 import iad1tya.echo.music.LocalDatabase
 import iad1tya.echo.music.LocalDownloadUtil
 import iad1tya.echo.music.LocalListenTogetherManager
+import iad1tya.echo.music.fonts.LocalPlayerFontFamily
 import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.R
 import iad1tya.echo.music.constants.AudioQuality
@@ -431,6 +432,7 @@ fun BottomSheetPlayer(
         }
     }
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
+    val castDeviceName by castHandler?.castDeviceName?.collectAsState() ?: remember { mutableStateOf(null) }
     val castPosition by castHandler?.castPosition?.collectAsState() ?: remember { mutableLongStateOf(0L) }
     val castDuration by castHandler?.castDuration?.collectAsState() ?: remember { mutableLongStateOf(0L) }
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
@@ -1412,7 +1414,8 @@ fun BottomSheetPlayer(
         collapsedContent = {
             MiniPlayer(
                 positionState = positionState,
-                durationState = durationState
+                durationState = durationState,
+                onClick = { state.expandSoft() }
             )
         },
     ) {
@@ -1517,7 +1520,9 @@ fun BottomSheetPlayer(
                     ) { title ->
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontFamily = LocalPlayerFontFamily.current
+                            ),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -1549,6 +1554,27 @@ fun BottomSheetPlayer(
 
                     Spacer(Modifier.height(4.dp))
 
+                    if (isCasting && castDeviceName != null) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 2.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.cast_connected),
+                                contentDescription = null,
+                                tint = TextBackgroundColor.copy(alpha = 0.7f),
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = "Casting to $castDeviceName",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = TextBackgroundColor.copy(alpha = 0.7f)
+                            )
+                        }
+                        Spacer(Modifier.height(2.dp))
+                    }
+
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
@@ -1578,7 +1604,10 @@ fun BottomSheetPlayer(
                                 var clickOffset by remember { mutableStateOf<Offset?>(null) }
                                 Text(
                                     text = annotatedString,
-                                    style = MaterialTheme.typography.titleMedium.copy(color = TextBackgroundColor),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        color = TextBackgroundColor,
+                                        fontFamily = LocalPlayerFontFamily.current,
+                                    ),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     onTextLayout = { layoutResult = it },
@@ -2632,7 +2661,6 @@ fun BottomSheetPlayer(
                                         if (isCasting) {
                                             castHandler?.setVolume(newVolume)
                                         } else {
-                                            
                                             scope.launch(Dispatchers.Default) {
                                                 val newStep = (newVolume * maxSystemVolume).roundToInt()
                                                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newStep, 0)

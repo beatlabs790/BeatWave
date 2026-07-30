@@ -109,9 +109,14 @@ fun GlassEffectSettings(
         LiquidGlassSurfaceOpacityKey, defaultValue = 0.4f
     )
     val (textColorInt, onTextColorChange) = rememberPreference(
-        LiquidGlassTextColorKey, defaultValue = Color.White.toArgb()
+        LiquidGlassTextColorKey, defaultValue = 0
     )
-    val textColor = remember(textColorInt) { Color(textColorInt) }
+    val adaptiveTextColor = if (MaterialTheme.colorScheme.surface.luminance() > 0.5f) {
+        Color.Black
+    } else {
+        Color.White
+    }
+    val textColor = if (textColorInt == 0) adaptiveTextColor else Color(textColorInt)
     val (playerEnabled, onPlayerEnabledChange) = rememberPreference(
         LiquidGlassPlayerEnabledKey, defaultValue = true
     )
@@ -508,7 +513,10 @@ fun GlassEffectSettings(
                 onTextColorChange(color.toArgb())
                 showTextColorDialog = false
             },
-            defaultColor = Color.White,
+            onReset = {
+                onTextColorChange(0)
+                showTextColorDialog = false
+            },
         )
     }
 

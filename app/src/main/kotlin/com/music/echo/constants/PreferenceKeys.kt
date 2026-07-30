@@ -34,6 +34,13 @@ val MiniPlayerOutlineKey = booleanPreferencesKey("miniPlayerOutline")
 val DensityScaleKey = floatPreferencesKey("density_scale_factor")
 val CustomDensityScaleKey = floatPreferencesKey("custom_density_scale_value")
 
+/** Id of the installed font applied app-wide; empty means the system font. */
+val AppFontKey = stringPreferencesKey("appFont")
+
+/** Fonts for the targets that can opt out of the app font; default is to inherit it. */
+val LyricsFontKey = stringPreferencesKey("lyricsFont")
+val PlayerFontKey = stringPreferencesKey("playerFont")
+
 enum class DensityScale(val value: Float, val label: String) {
     NATIVE(1.0f, "Native (100%)"),
     SLIGHTLY_COMPACT(0.85f, "Slightly Compact (85%)"),

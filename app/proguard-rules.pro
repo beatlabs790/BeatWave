@@ -9,15 +9,11 @@
 -keepclassmembers class iad1tya.echo.music.utils.sabr.EjsNTransformSolver$SolverWebView {
     @android.webkit.JavascriptInterface public *;
 }
--keepclassmembers class iad1tya.echo.music.utils.cipher.CipherWebView {
-    @android.webkit.JavascriptInterface public *;
-}
 -keepclassmembers class iad1tya.echo.music.utils.potoken.PoTokenWebView {
     @android.webkit.JavascriptInterface public *;
 }
 
 # Keep streaming utility classes
--keep class iad1tya.echo.music.utils.cipher.** { *; }
 -keep class iad1tya.echo.music.utils.sabr.** { *; }
 -keep class iad1tya.echo.music.utils.potoken.** { *; }
 

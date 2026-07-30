@@ -2930,11 +2930,10 @@ class MusicService :
 
             if (!shouldBypassCache && !isFullyDownloaded && dbFormat != null) {
                 val isLosslessCache = dbFormat.codecs == "flac"
-                val isSaavnCache = dbFormat.codecs == "mp4a.40.2" || dbFormat.mimeType.contains("mp4", ignoreCase = true)
                 
                 val cacheMatchesTarget = when (lockedQuality) {
                     iad1tya.echo.music.constants.AudioQuality.LOSSLESS -> isLosslessCache
-                    iad1tya.echo.music.constants.AudioQuality.OPUS -> !isLosslessCache && !isSaavnCache
+                    iad1tya.echo.music.constants.AudioQuality.OPUS -> !isLosslessCache
                 }
                 
                 if (!cacheMatchesTarget) {
@@ -3031,15 +3030,15 @@ class MusicService :
                 val format = nonNullPlayback.format
                 
                 val isFinalLossless = format.mimeType.contains("flac", ignoreCase = true)
-                val isFinalSaavn = format.mimeType.contains("mp4", ignoreCase = true) || format.mimeType.contains("m4a", ignoreCase = true)
+                val isFinalMp4 = format.mimeType.contains("mp4", ignoreCase = true) || format.mimeType.contains("m4a", ignoreCase = true)
                 
                 var targetCacheKey = mediaId
                 
                 if (dbFormat != null && !shouldBypassCache) {
                     val cacheIsLossless = dbFormat.codecs == "flac"
-                    val cacheIsSaavn = dbFormat.codecs == "mp4a.40.2" || dbFormat.mimeType.contains("mp4", ignoreCase = true)
+                    val cacheIsMp4 = dbFormat.codecs == "mp4a.40.2" || dbFormat.mimeType.contains("mp4", ignoreCase = true)
                     
-                    if (isFinalLossless != cacheIsLossless || isFinalSaavn != cacheIsSaavn) {
+                    if (isFinalLossless != cacheIsLossless || isFinalMp4 != cacheIsMp4) {
                         Timber.tag(TAG).w("Format fallback detected AFTER fetch. Clearing playerCache to prevent mismatch crash.")
                         playerCache.removeResource(mediaId)
                         
@@ -3055,9 +3054,9 @@ class MusicService :
                     }
                 } else if (dbFormat != null && shouldBypassCache) {
                     val cacheIsLossless = dbFormat.codecs == "flac"
-                    val cacheIsSaavn = dbFormat.codecs == "mp4a.40.2" || dbFormat.mimeType.contains("mp4", ignoreCase = true)
+                    val cacheIsMp4 = dbFormat.codecs == "mp4a.40.2" || dbFormat.mimeType.contains("mp4", ignoreCase = true)
                     
-                    if (isFinalLossless != cacheIsLossless || isFinalSaavn != cacheIsSaavn) {
+                    if (isFinalLossless != cacheIsLossless || isFinalMp4 != cacheIsMp4) {
                         Timber.tag(TAG).i("Bypassed cache and fetched different format. Using custom cache key to prevent intercept.")
                         targetCacheKey = "${mediaId}_diff"
                     } else {
@@ -3437,10 +3436,21 @@ class MusicService :
         if (dataStore.get(iad1tya.echo.music.constants.EnableGoogleCastKey, true)) {
             try {
                 castConnectionHandler = CastConnectionHandler(this, scope, this)
-                castConnectionHandler?.initialize()
-                timber.log.Timber.d("Google Cast initialized")
+                if (castConnectionHandler?.initialize() != true) {
+                    castConnectionHandler?.release()
+                    castConnectionHandler = null
+                    timber.log.Timber.w("Google Cast not available on this device")
+                } else {
+                    timber.log.Timber.d("Google Cast initialized")
+                }
+            } catch (e: RuntimeException) {
+                timber.log.Timber.e(e, "Google Play Services not available for Cast")
+                castConnectionHandler?.release()
+                castConnectionHandler = null
             } catch (e: Exception) {
                 timber.log.Timber.e(e, "Failed to initialize Google Cast")
+                castConnectionHandler?.release()
+                castConnectionHandler = null
             }
         }
     }

@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import iad1tya.echo.music.constants.AppleMusicLyricsBlurKey
+import iad1tya.echo.music.fonts.LocalLyricsFontFamily
 import iad1tya.echo.music.lyrics.LyricsEntry
 import iad1tya.echo.music.ui.screens.settings.LyricsPosition
 import iad1tya.echo.music.utils.rememberPreference
@@ -235,6 +236,8 @@ fun echomusicLyricsLine(
                     text = wordText,
                     fontSize = textSize.sp,
                     style = TextStyle(
+                        // A from-scratch style replaces the theme's, so the family is set here.
+                        fontFamily = LocalLyricsFontFamily.current,
                         brush = Brush.horizontalGradient(
                             0.0f to textColor,
                             (progress - 0.05f).coerceAtLeast(0f) to textColor,
@@ -260,6 +263,7 @@ fun echomusicLyricsLine(
                         color = textColor.copy(alpha = if (lineRelTime >= endRelative) 1f else 0.45f), 
                         lineHeight = (textSize * lineSpacing.coerceAtMost(1.3f)).sp,
                         style = TextStyle(
+                            fontFamily = LocalLyricsFontFamily.current,
                             shadow = if (lineRelTime >= endRelative) {
                                 androidx.compose.ui.graphics.Shadow(
                                     color = textColor.copy(alpha = 0.3f),

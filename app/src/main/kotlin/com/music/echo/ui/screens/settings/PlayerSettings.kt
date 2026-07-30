@@ -83,6 +83,12 @@ import iad1tya.echo.music.utils.rememberPreference
 import kotlin.math.roundToInt
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.music.echo.utils.cipher.PlayerConfigStore
+import com.music.echo.utils.cipher.PlayerDatesStore
+import kotlinx.coroutines.launch
+import android.text.format.DateUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -1155,12 +1161,16 @@ highlightKey: String? = null) {
                     onClick = { onEnableExportAsMp3Change(!enableExportAsMp3) }
                 ),
                 Material3SettingsItem(
-                    isHighlighted = (highlightKey == stringResource(R.string.youtube_decryption_settings)),
-                    icon = painterResource(R.drawable.settings),
-                    title = { Text(stringResource(R.string.youtube_decryption_settings)) },
-                    description = { Text(stringResource(R.string.youtube_decryption_desc)) },
-                    onClick = { navController.navigate("settings/echo_extractor") }
-                )
+                    isHighlighted = (highlightKey == "Echo Extractor"),
+                    icon = painterResource(R.drawable.sync),
+                    title = { Text("Echo Extractor") },
+                    description = { 
+                        Text("Manage cipher updates and view history") 
+                    },
+                    onClick = { 
+                        navController.navigate("settings/echo_extractor")
+                    }
+                ),
             )
         )
         Spacer(modifier = Modifier.height(16.dp))

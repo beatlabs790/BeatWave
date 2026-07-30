@@ -20,6 +20,26 @@ class CrashHandler private constructor(
         Thread.getDefaultUncaughtExceptionHandler()
 
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && throwable is android.app.ForegroundServiceStartNotAllowedException) {
+            Timber.e(throwable, "Suppressed ForegroundServiceStartNotAllowedException in CrashHandler")
+            if (thread == android.os.Looper.getMainLooper().thread) {
+                while (true) {
+                    try {
+                        android.os.Looper.loop()
+                    } catch (e: Throwable) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is android.app.ForegroundServiceStartNotAllowedException) {
+                            Timber.e(e, "Suppressed another ForegroundServiceStartNotAllowedException in CrashHandler")
+                        } else {
+                            uncaughtException(thread, e)
+                            break
+                        }
+                    }
+                }
+                return
+            }
+            return
+        }
+
         try {
             val crashLog = buildCrashLog(throwable)
             Timber.e(throwable, "App crashed")

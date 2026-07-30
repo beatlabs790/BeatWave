@@ -38,6 +38,10 @@ import iad1tya.echo.music.ui.screens.search.OnlineSearchResult
 import iad1tya.echo.music.ui.screens.search.SearchScreen
 import iad1tya.echo.music.ui.screens.settings.AboutScreen
 import iad1tya.echo.music.ui.screens.settings.AppearanceSettings
+import iad1tya.echo.music.ui.screens.settings.FONTS_BROWSE_ROUTE
+import iad1tya.echo.music.ui.screens.settings.FONTS_SETTINGS_ROUTE
+import iad1tya.echo.music.ui.screens.settings.FontsBrowseScreen
+import iad1tya.echo.music.ui.screens.settings.FontsSettings
 import iad1tya.echo.music.ui.screens.settings.GlassEffectSettings
 import iad1tya.echo.music.ui.screens.settings.BackupAndRestore
 import iad1tya.echo.music.ui.screens.settings.ContentSettings
@@ -47,7 +51,6 @@ import iad1tya.echo.music.ui.screens.settings.PlayerSettings
 import iad1tya.echo.music.ui.screens.settings.PrivacySettings
 import iad1tya.echo.music.ui.screens.settings.RomanizationSettings
 import iad1tya.echo.music.ui.screens.settings.SettingsScreen
-import iad1tya.echo.music.ui.screens.settings.EchoExtractorSettings
 import iad1tya.echo.music.ui.screens.settings.AccountSettingsScreen
 import iad1tya.echo.music.ui.screens.settings.StorageSettings
 import iad1tya.echo.music.ui.screens.settings.ThemeScreen
@@ -62,6 +65,7 @@ import iad1tya.echo.music.utils.rememberEnumPreference
 import iad1tya.echo.music.utils.rememberPreference
 import iad1tya.echo.music.echomusic.changelog.ChangelogScreen
 import iad1tya.echo.music.echomusic.commitscreen.CommitScreen
+import com.music.echo.ui.screens.settings.EchoExtractorScreen
 import iad1tya.echo.music.ui.screens.equalizer.axion.AxionEqScreen
 import iad1tya.echo.music.ui.screens.ambient.AmbientModeScreen
 
@@ -76,17 +80,8 @@ fun NavGraphBuilder.navigationBuilder(
         HomeScreen(navController = navController, snackbarHostState = snackbarHostState)
     }
 
-    composable("settings/echo_extractor") {
-        EchoExtractorSettings(navController, scrollBehavior)
-    }
 
-    composable("settings/echo_extractor") {
-        EchoExtractorSettings(navController, scrollBehavior)
-    }
 
-    composable("settings/echo_extractor") {
-        EchoExtractorSettings(navController, scrollBehavior)
-    }
 
     composable(Screens.Search.route) {
         val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
@@ -368,6 +363,14 @@ fun NavGraphBuilder.navigationBuilder(
         GlassEffectSettings(navController, scrollBehavior)
     }
 
+    composable(FONTS_SETTINGS_ROUTE) {
+        FontsSettings(navController, scrollBehavior, snackbarHostState)
+    }
+
+    composable(FONTS_BROWSE_ROUTE) {
+        FontsBrowseScreen(navController, scrollBehavior, snackbarHostState)
+    }
+
     composable(
         route = "settings/content?highlightKey={highlightKey}",
         arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true })
@@ -490,5 +493,9 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("settings/commits") {
         CommitScreen(navController, scrollBehavior)
+    }
+    
+    composable("settings/echo_extractor") {
+        EchoExtractorScreen(navController)
     }
 }

@@ -37,7 +37,7 @@ jobs:
         run: ./gradlew assembleUniversalGmsRelease
 
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BeatWave-Universal-Release-APK
           path: app/build/outputs/apk/universalGms/release/*.apk

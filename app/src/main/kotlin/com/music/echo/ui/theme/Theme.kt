@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
@@ -18,10 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.palette.graphics.Palette
-import iad1tya.echo.music.fonts.LocalLyricsFontFamily
-import iad1tya.echo.music.fonts.LocalPlayerFontFamily
 import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicColorScheme
@@ -34,9 +30,6 @@ fun echomusicTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     pureBlack: Boolean = false,
     themeColor: Color = DefaultThemeColor,
-    fontFamily: FontFamily? = null,
-    lyricsFontFamily: FontFamily? = null,
-    playerFontFamily: FontFamily? = null,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -66,20 +59,12 @@ fun echomusicTheme(
         }
     }
 
-    val typography = remember(fontFamily) { appTypography(fontFamily) }
-
+    
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = typography,
-    ) {
-        // Lyrics and the player build text styles from scratch, so Material's typography cannot
-        // reach them; they read these instead.
-        CompositionLocalProvider(
-            LocalLyricsFontFamily provides lyricsFontFamily,
-            LocalPlayerFontFamily provides playerFontFamily,
-            content = content,
-        )
-    }
+        typography = AppTypography, 
+        content = content
+    )
 }
 
 fun Bitmap.extractThemeColor(): Color {

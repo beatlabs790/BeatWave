@@ -36,20 +36,16 @@ import timber.log.Timber
 /**
  * Manages Google Cast connections and media playback on Cast devices.
  *
- * ## Connection model (Google-recommended)
+ * ## Connection model
  *
- * The app does **not** call `MediaRouter.selectRoute()` directly. Instead:
- * 1. The UI uses AndroidX [MediaRouteButton] which shows the system
- *    [MediaRouteChooserDialog] — the dialog handles route selection internally.
- * 2. Once a route is selected, [SessionManager] automatically starts a Cast
- *    session and fires the [SessionManagerListener] callbacks below.
- * 3. [CastContext] handles device discovery via MediaRouter; the app only
- *    needs to register the [SessionManagerListener] and react to session
- *    events.
+ * The app uses AndroidX [MediaRouteButton] to show the system Cast dialog
+ * for route discovery, and [MediaRouter.selectRoute] from
+ * [CastDevicePickerSheet] for custom device selection. Once a route is
+ * selected, [SessionManager] automatically starts a Cast session and fires
+ * the [SessionManagerListener] callbacks below.
  *
- * This avoids the "Ignoring attempt to select removed route" crash that
- * occurs on some OEM MediaRouter implementations (e.g. Xiaomi) when
- * `selectRoute()` is called manually.
+ * [CastContext] handles device discovery via MediaRouter; the app registers
+ * the [SessionManagerListener] and reacts to session events.
  */
 class CastConnectionHandler(
     private val context: Context,
@@ -94,7 +90,15 @@ class CastConnectionHandler(
     private var positionUpdateJob: Job? = null
     private var currentMediaId: String? = null
     private var lastCastItemId: Int = -1
+    @Volatile
     private var isReloadingQueue: Boolean = false
+
+    /**
+     * Tracks mediaIds that we've loaded/appended to the Cast queue.
+     * Needed because Cast SDK's mediaStatus.queueItems only reports ~3 items
+     * regardless of actual queue size, so we can't rely on it for extension.
+     */
+    private val castQueueMediaIds: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
 
     /** Flag to prevent reverse sync when Cast triggers local player update. */
     @Volatile
@@ -222,6 +226,7 @@ class CastConnectionHandler(
 
                 remoteMediaClient?.unregisterCallback(remoteMediaClientCallback)
                 remoteMediaClient = null
+                castQueueMediaIds.clear()
 
                 stopPositionUpdates()
 
@@ -522,15 +527,21 @@ class CastConnectionHandler(
     /** Handle when Cast changes to a different item (user pressed next/prev on Cast widget). */
     private fun handleCastItemChanged(mediaStatus: MediaStatus) {
         val queueItems = mediaStatus.queueItems
-        if (queueItems.isEmpty()) return
         val currentItemId = mediaStatus.currentItemId
+
+        // Queue exhausted: Cast has no current item (itemId=0) or queue is empty
+        if (currentItemId == 0 || queueItems.isEmpty()) {
+            Timber.d("Cast queue exhausted (currentItemId=$currentItemId)")
+            return
+        }
+
         val currentIndex = queueItems.indexOfFirst { it.itemId == currentItemId }
         if (currentIndex < 0) return
 
         val currentQueueItem = queueItems[currentIndex]
         val customData = currentQueueItem.media?.customData
         val castMediaId = customData?.optString("mediaId")
-        Timber.d("Cast switched to item: index=$currentIndex, mediaId=$castMediaId, queueSize=${queueItems.size}")
+        Timber.d("Cast item changed: index=$currentIndex, mediaId=$castMediaId, tracked=${castQueueMediaIds.size}")
 
         if (castMediaId != null && castMediaId != currentMediaId) {
             currentMediaId = castMediaId
@@ -543,15 +554,8 @@ class CastConnectionHandler(
                         player.pause()
                         player.seekTo(i, 0)
                         player.pause()
-                        val itemsAhead = queueItems.size - 1 - currentIndex
-                        val itemsBehind = currentIndex
-                        if (itemsAhead < 2 || itemsBehind < 2) {
-                            scope.launch {
-                                val metadata = mediaItem.metadata
-                                if (metadata != null) {
-                                    extendQueueIfNeeded(i, playerItemCount, queueItems)
-                                }
-                            }
+                        scope.launch {
+                            extendQueueIfNeeded(i, playerItemCount)
                         }
                         break
                     }
@@ -560,46 +564,88 @@ class CastConnectionHandler(
         }
     }
 
-    /** Extend the Cast queue by adding more items at the edges if needed. */
+    /**
+     * Extend the Cast queue by adding more items at the edges if needed.
+     *
+     * Cast SDK's mediaStatus.queueItems only reports ~3 items regardless of actual
+     * queue size, so we track loaded mediaIds in [castQueueMediaIds] and extend based
+     * on the local player's queue. Caps at [playerItemCount] to avoid unbounded growth.
+     */
     private suspend fun extendQueueIfNeeded(
         localPlayerIndex: Int,
-        playerItemCount: Int,
-        currentCastQueue: List<MediaQueueItem>
+        playerItemCount: Int
     ) {
         if (isReloadingQueue) return
         val client = remoteMediaClient ?: return
-        val currentCastIndex = currentCastQueue.indexOfFirst {
-            it.media?.customData?.optString("mediaId") == currentMediaId
-        }
-        if (currentCastIndex < 0) return
+        if (castQueueMediaIds.isEmpty()) return
 
         isReloadingQueue = true
         try {
-            val itemsAhead = currentCastQueue.size - 1 - currentCastIndex
-            if (itemsAhead < 2) {
-                val lastCastItem = currentCastQueue.lastOrNull()
-                val lastMediaId = lastCastItem?.media?.customData?.optString("mediaId")
-                var lastLocalIndex = -1
-                for (i in 0 until playerItemCount) {
-                    if (musicService.player.getMediaItemAt(i).mediaId == lastMediaId) {
-                        lastLocalIndex = i
-                        break
-                    }
-                }
-                if (lastLocalIndex >= 0 && lastLocalIndex < playerItemCount - 1) {
-                    val addCount = minOf(2, playerItemCount - lastLocalIndex - 1)
-                    for (i in 1..addCount) {
-                        val nextItem = musicService.player.getMediaItemAt(lastLocalIndex + i)
-                        nextItem.metadata?.let { metadata ->
-                            buildMediaInfo(metadata)?.let { mediaInfo ->
-                                val queueItem = MediaQueueItem.Builder(mediaInfo).build()
-                                withContext(Dispatchers.Main) {
-                                    client.queueAppendItem(queueItem, null)
-                                }
+            var forwardCount = 0
+
+            // Extend forward: append items after the current position
+            var nextLocalIndex = localPlayerIndex + 1
+            while (forwardCount < 2 && nextLocalIndex < playerItemCount) {
+                if (castQueueMediaIds.size >= playerItemCount) break
+
+                val nextItem = musicService.player.getMediaItemAt(nextLocalIndex)
+                val nextMediaId = nextItem.mediaId
+                if (nextMediaId !in castQueueMediaIds) {
+                    nextItem.metadata?.let { metadata ->
+                        buildMediaInfo(metadata)?.let { mediaInfo ->
+                            val queueItem = MediaQueueItem.Builder(mediaInfo).build()
+                            withContext(Dispatchers.Main) {
+                                client.queueAppendItem(queueItem, null)
                             }
+                            castQueueMediaIds.add(nextMediaId)
+                            forwardCount++
                         }
                     }
                 }
+                nextLocalIndex++
+            }
+
+            // Extend backward: insert items before the first Cast queue item.
+            // Collect items first, then insert from lowest local index to highest
+            // so the final order matches the local player queue.
+            var backwardCount = 0
+            if (localPlayerIndex > 0) {
+                val freshQueue = client.mediaStatus?.queueItems
+                val firstCastItemId = freshQueue?.firstOrNull()?.itemId ?: 0
+                if (firstCastItemId != 0) {
+                    val toInsert = mutableListOf<Pair<MediaQueueItem, String>>()
+                    var prevLocalIndex = localPlayerIndex - 1
+                    while (toInsert.size < 2 && prevLocalIndex >= 0) {
+                        val prevItem = musicService.player.getMediaItemAt(prevLocalIndex)
+                        val prevMediaId = prevItem.mediaId
+                        if (prevMediaId !in castQueueMediaIds) {
+                            prevItem.metadata?.let { metadata ->
+                                buildMediaInfo(metadata)?.let { mediaInfo ->
+                                    toInsert.add(MediaQueueItem.Builder(mediaInfo).build() to prevMediaId)
+                                }
+                            }
+                        }
+                        prevLocalIndex--
+                    }
+                    // Insert from lowest index first; each call places the new item
+                    // immediately before firstCastItemId, pushing prior inserts right.
+                    for ((queueItem, mediaId) in toInsert.asReversed()) {
+                        withContext(Dispatchers.Main) {
+                            client.queueInsertItems(
+                                arrayOf(queueItem),
+                                firstCastItemId,
+                                org.json.JSONObject()
+                            )
+                        }
+                        castQueueMediaIds.add(mediaId)
+                        backwardCount++
+                    }
+                }
+            }
+
+            val totalAdded = forwardCount + backwardCount
+            if (totalAdded > 0) {
+                Timber.d("Cast queue extended: +$forwardCount fwd, +$backwardCount bwd, total=${castQueueMediaIds.size}")
             }
         } catch (e: Exception) {
             Timber.e(e, "Failed to extend Cast queue")
@@ -704,6 +750,12 @@ class CastConnectionHandler(
                     }
 
                     Timber.d("Loading Cast queue: ${queueItems.size} items, startIndex=$startIndex, shuffle=$shuffleEnabled")
+
+                    // Track what we're loading into Cast
+                    castQueueMediaIds.clear()
+                    for (item in queueItems) {
+                        item.media?.customData?.optString("mediaId")?.let { castQueueMediaIds.add(it) }
+                    }
 
                     withContext(Dispatchers.Main) {
                         val client = remoteMediaClient ?: return@withContext

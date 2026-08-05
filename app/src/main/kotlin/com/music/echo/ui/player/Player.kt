@@ -154,7 +154,6 @@ import coil3.toBitmap
 import iad1tya.echo.music.LocalDatabase
 import iad1tya.echo.music.LocalDownloadUtil
 import iad1tya.echo.music.LocalListenTogetherManager
-import iad1tya.echo.music.fonts.LocalPlayerFontFamily
 import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.R
 import iad1tya.echo.music.constants.AudioQuality
@@ -1520,9 +1519,7 @@ fun BottomSheetPlayer(
                     ) { title ->
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontFamily = LocalPlayerFontFamily.current
-                            ),
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -1604,10 +1601,7 @@ fun BottomSheetPlayer(
                                 var clickOffset by remember { mutableStateOf<Offset?>(null) }
                                 Text(
                                     text = annotatedString,
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        color = TextBackgroundColor,
-                                        fontFamily = LocalPlayerFontFamily.current,
-                                    ),
+                                    style = MaterialTheme.typography.titleMedium.copy(color = TextBackgroundColor),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     onTextLayout = { layoutResult = it },

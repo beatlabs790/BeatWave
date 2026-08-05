@@ -5,6 +5,7 @@ package iad1tya.echo.music.ui.component
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.text.Layout
 import android.view.WindowManager
 import android.widget.Toast
@@ -64,10 +65,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import iad1tya.echo.music.fonts.LocalLyricsFontFamily
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -197,32 +195,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
-/**
- * Lyrics can carry their own font, separate from the rest of the app.
- *
- * The lines below are drawn by several composables that never name a family of their own, so the
- * resolved one is provided once here and inherited by all of them. The renderers that build a
- * [TextStyle] from scratch bypass this and read [LocalLyricsFontFamily] directly.
- */
-@Composable
-fun Lyrics(
-    sliderPositionProvider: () -> Long?,
-    modifier: Modifier = Modifier,
-    showLyrics: Boolean
-) {
-    CompositionLocalProvider(
-        LocalTextStyle provides LocalTextStyle.current.copy(
-            fontFamily = LocalLyricsFontFamily.current
-        )
-    ) {
-        LyricsContent(sliderPositionProvider, modifier, showLyrics)
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedBoxWithConstraintsScope", "StringFormatInvalid")
 @Composable
-private fun LyricsContent(
+fun Lyrics(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
     showLyrics: Boolean
@@ -1263,7 +1239,7 @@ private fun LyricsContent(
                             this.alpha = if (item.isBackground) alpha * 0.8f else alpha
                             this.scaleX = scale * bgScale
                             this.scaleY = scale * bgScale
-                            if (blurRadius > 0f) {
+                            if (blurRadius > 0f && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                                 this.renderEffect = android.graphics.RenderEffect.createBlurEffect(
                                     blurRadius * density.density,
                                     blurRadius * density.density,
@@ -2125,8 +2101,6 @@ private fun LyricsContent(
 
         val textStyleForMeasurement = TextStyle(
             color = previewTextColor,
-            // Must match the card's own style or the auto-sizing measures the wrong font.
-            fontFamily = LocalLyricsFontFamily.current,
             fontWeight = FontWeight.Bold,
             textAlign = lyricsTextAlign
         )

@@ -1,8 +1,8 @@
-package com.music.echo.utils.potoken
+package iad1tya.echo.music.utils.potoken
 
 class PoTokenException(message: String) : Exception(message)
 
-// to be thrown if the WebView provided by the system is broken
+
 class BadWebViewException(message: String) : Exception(message)
 
 fun buildExceptionForJsError(error: String): Exception {

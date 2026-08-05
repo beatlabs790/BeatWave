@@ -4,7 +4,8 @@ import os
 import datetime
 
 # Target date for the start of the lossless funding (YYYY-MM-DD)
-TARGET_DATE_STR = os.environ.get("BMC_START_DATE", "2026-07-01")
+current_month_start = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-01")
+TARGET_DATE_STR = os.environ.get("BMC_START_DATE", current_month_start)
 TARGET_DATE = datetime.datetime.strptime(TARGET_DATE_STR, "%Y-%m-%d").replace(tzinfo=datetime.timezone.utc)
 TARGET_AMOUNT = 200.0
 

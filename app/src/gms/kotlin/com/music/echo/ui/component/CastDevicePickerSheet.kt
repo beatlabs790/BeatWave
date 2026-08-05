@@ -62,7 +62,6 @@ fun CastDevicePickerSheet(
 
     // MediaRouter setup for device discovery
     var mediaRouter by remember { mutableStateOf<MediaRouter?>(null) }
-    var routeSelector by remember { mutableStateOf<MediaRouteSelector?>(null) }
     val discoveredRoutes = remember { mutableStateListOf<MediaRouter.RouteInfo>() }
     var isScanning by remember { mutableStateOf(true) }
 
@@ -81,7 +80,6 @@ fun CastDevicePickerSheet(
     DisposableEffect(Unit) {
         val router = MediaRouter.getInstance(context)
         mediaRouter = router
-        routeSelector = selector
 
         val callback = object : MediaRouter.Callback() {
             override fun onRouteAdded(router: MediaRouter, route: MediaRouter.RouteInfo) {

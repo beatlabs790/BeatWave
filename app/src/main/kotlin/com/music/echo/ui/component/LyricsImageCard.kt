@@ -48,8 +48,6 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import androidx.compose.material3.MaterialTheme
-import iad1tya.echo.music.fonts.LocalLyricsFontFamily
 import iad1tya.echo.music.R
 import iad1tya.echo.music.models.MediaMetadata
 
@@ -166,10 +164,6 @@ fun LyricsImageCard(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
-
-    // Typography still carries the app font here; only LocalTextStyle was swapped for the
-    // lyrics one further up, which is exactly what the metadata below must not pick up.
-    val appFontFamily = MaterialTheme.typography.bodyLarge.fontFamily
 
     val cardCornerRadius = 20.dp
     val padding = 28.dp
@@ -331,10 +325,6 @@ fun LyricsImageCard(
                         Text(
                             text = mediaMetadata.title,
                             color = mainTextColor,
-                            // Named explicitly: the card is inside Lyrics(), which provides the
-                            // lyrics font, but the exported PNG draws this metadata in the app
-                            // font and the two have to agree.
-                            fontFamily = appFontFamily,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
@@ -344,7 +334,6 @@ fun LyricsImageCard(
                         Text(
                             text = mediaMetadata.artists.joinToString { it.name },
                             color = secondaryColor,
-                            fontFamily = appFontFamily,
                             fontSize = 16.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -367,7 +356,6 @@ fun LyricsImageCard(
                     val availableHeight = maxHeight
                     val textStyle = TextStyle(
                         color = mainTextColor,
-                        fontFamily = LocalLyricsFontFamily.current,
                         fontWeight = FontWeight.Bold,
                         textAlign = textAlign,
                         letterSpacing = 0.005.em,
@@ -420,7 +408,6 @@ fun LyricsImageCard(
                     Text(
                         text = context.getString(R.string.app_name),
                         color = secondaryColor,
-                        fontFamily = appFontFamily,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )

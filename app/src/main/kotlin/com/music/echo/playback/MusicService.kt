@@ -1511,6 +1511,7 @@ class MusicService :
                         initialStatus.items.size
                     )
                 )
+                resyncCastQueueIfCasting()
             } else {
                 val safeIndex = initialStatus.mediaItemIndex.coerceIn(0, (initialStatus.items.size - 1).coerceAtLeast(0))
                 player.setMediaItems(
@@ -1527,6 +1528,16 @@ class MusicService :
                 val shufflePlaylistFirst = dataStore.get(ShufflePlaylistFirstKey, false)
                 applyShuffleOrder(player.currentMediaItemIndex, player.mediaItemCount, shufflePlaylistFirst)
             }
+        }
+    }
+
+    /**
+     * Re-load the Cast queue from the local player when casting.
+     * Called after the full radio queue has been loaded into the player.
+     */
+    private fun resyncCastQueueIfCasting() {
+        if (castConnectionHandler?.isCasting?.value == true) {
+            castConnectionHandler?.loadCurrentMedia()
         }
     }
 
@@ -3030,15 +3041,13 @@ class MusicService :
                 val format = nonNullPlayback.format
                 
                 val isFinalLossless = format.mimeType.contains("flac", ignoreCase = true)
-                val isFinalMp4 = format.mimeType.contains("mp4", ignoreCase = true) || format.mimeType.contains("m4a", ignoreCase = true)
                 
                 var targetCacheKey = mediaId
                 
                 if (dbFormat != null && !shouldBypassCache) {
                     val cacheIsLossless = dbFormat.codecs == "flac"
-                    val cacheIsMp4 = dbFormat.codecs == "mp4a.40.2" || dbFormat.mimeType.contains("mp4", ignoreCase = true)
                     
-                    if (isFinalLossless != cacheIsLossless || isFinalMp4 != cacheIsMp4) {
+                    if (isFinalLossless != cacheIsLossless) {
                         Timber.tag(TAG).w("Format fallback detected AFTER fetch. Clearing playerCache to prevent mismatch crash.")
                         playerCache.removeResource(mediaId)
                         
@@ -3054,9 +3063,8 @@ class MusicService :
                     }
                 } else if (dbFormat != null && shouldBypassCache) {
                     val cacheIsLossless = dbFormat.codecs == "flac"
-                    val cacheIsMp4 = dbFormat.codecs == "mp4a.40.2" || dbFormat.mimeType.contains("mp4", ignoreCase = true)
                     
-                    if (isFinalLossless != cacheIsLossless || isFinalMp4 != cacheIsMp4) {
+                    if (isFinalLossless != cacheIsLossless) {
                         Timber.tag(TAG).i("Bypassed cache and fetched different format. Using custom cache key to prevent intercept.")
                         targetCacheKey = "${mediaId}_diff"
                     } else {

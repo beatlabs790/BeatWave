@@ -18,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,9 +59,8 @@ fun CastButton(
     if (!enableGoogleCast) return
 
     // Check Cast availability once
-    var castAvailable by remember { mutableStateOf(false) }
-    remember(enableGoogleCast) {
-        castAvailable = CastConnectionHandler.isCastAvailable(context)
+    val castAvailable = remember(enableGoogleCast) {
+        CastConnectionHandler.isCastAvailable(context)
     }
     if (!castAvailable) return
 

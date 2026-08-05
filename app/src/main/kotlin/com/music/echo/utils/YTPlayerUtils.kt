@@ -3,7 +3,6 @@
 package iad1tya.echo.music.utils
 
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.util.Log
 import androidx.media3.common.PlaybackException
 import com.music.innertube.NewPipeExtractor
@@ -24,8 +23,13 @@ import com.music.innertube.models.YouTubeClient.Companion.WEB_CREATOR
 import com.music.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.music.innertube.models.response.PlayerResponse
 import iad1tya.echo.music.constants.AudioQuality
-import com.music.echo.utils.potoken.PoTokenGenerator
-import com.music.echo.utils.potoken.PoTokenResult
+import iad1tya.echo.music.utils.cipher.CipherDeobfuscator
+import iad1tya.echo.music.utils.YTPlayerUtils.MAIN_CLIENT
+import iad1tya.echo.music.utils.YTPlayerUtils.STREAM_FALLBACK_CLIENTS
+import iad1tya.echo.music.utils.YTPlayerUtils.validateStatus
+import iad1tya.echo.music.utils.potoken.PoTokenGenerator
+import iad1tya.echo.music.utils.potoken.PoTokenResult
+import iad1tya.echo.music.utils.sabr.EjsNTransformSolver
 import iad1tya.echo.music.utils.PlaybackLogLevel
 import iad1tya.echo.music.utils.PlaybackLogManager
 import com.music.innertube.models.IpVersion
@@ -41,12 +45,6 @@ import java.net.SocketAddress
 import java.net.URI
 import java.io.IOException
 import kotlinx.coroutines.flow.first
-
-import com.music.echo.utils.cipher.CipherDeobfuscator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 object YTPlayerUtils {
     private const val logTag = "YTPlayerUtils"
@@ -81,21 +79,6 @@ object YTPlayerUtils {
         .build()
 
     private val poTokenGenerator = PoTokenGenerator()
-
-    private val webRemixFailedIds = java.util.Collections.newSetFromMap(
-        java.util.concurrent.ConcurrentHashMap<String, Boolean>(),
-    )
-
-    fun markWebRemixFailed(videoId: String) {
-        webRemixFailedIds.add(videoId)
-    }
-
-    fun clearWebRemixFailures() {
-        webRemixFailedIds.clear()
-    }
-
-    private val cipherRefreshScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
 
     
     private val MAIN_CLIENT: YouTubeClient = ANDROID_VR_1_43_32
@@ -373,6 +356,7 @@ object YTPlayerUtils {
         )
 
         if (isAgeRestricted) {
+            Timber.tag(logTag).d("Content needs fallback (status: $currentStatus)")
             android.util.Log.i("YTPlayerUtils", "Unplayable content detected: videoId=$videoId, status=$currentStatus")
         }
         
@@ -470,27 +454,36 @@ object YTPlayerUtils {
                     continue
                 }
 
+                
                 val currentClient = if (clientIndex == -1) {
                     usedAgeRestrictedClient ?: MAIN_CLIENT
                 } else {
                     STREAM_FALLBACK_CLIENTS[clientIndex]
                 }
 
-                val needsNTransform = currentClient.useWebPoTokens ||
-                    currentClient.clientName in listOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5")
+                
+                val isPrivatelyOwnedTrack = streamPlayerResponse.videoDetails?.musicVideoType == "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK"
 
-                if (needsNTransform) {
+                
+                if (currentClient.useWebPoTokens) {
                     try {
-                        streamUrl = CipherDeobfuscator.transformNParamInUrl(streamUrl!!)
-                        if (currentClient.useWebPoTokens && poToken?.streamingDataPoToken != null) {
-                            val separator = if ("?" in streamUrl!!) "&" else "?"
-                            streamUrl = "${streamUrl}${separator}pot=${Uri.encode(poToken.streamingDataPoToken)}"
+                        Timber.tag(logTag).d("Applying n-transform to stream URL for ${currentClient.clientName}")
+                        val transformed = EjsNTransformSolver.transformNParamInUrl(streamUrl!!)
+                        if (transformed != streamUrl) {
+                            streamUrl = transformed
+                            Timber.tag(logTag).d("N-transform applied successfully")
                         }
-                    } catch (e: kotlinx.coroutines.CancellationException) {
-                        throw e
                     } catch (e: Exception) {
-                        Timber.tag(TAG).e(e, "N-transform or pot append failed: ${e.message}")
+                        Timber.tag(logTag).e(e, "N-transform failed: ${e.message}")
                     }
+                }
+
+                
+                
+                if (currentClient.useWebPoTokens && poToken?.streamingDataPoToken != null) {
+                    Timber.tag(logTag).d("Appending pot= parameter to stream URL")
+                    val separator = if ("?" in streamUrl!!) "&" else "?"
+                    streamUrl = "${streamUrl}${separator}pot=${poToken.streamingDataPoToken}"
                 }
 
                 streamExpiresInSeconds = streamPlayerResponse.streamingData?.expiresInSeconds
@@ -507,20 +500,6 @@ object YTPlayerUtils {
 
                 
                 val isPrivatelyOwned = streamPlayerResponse.videoDetails?.musicVideoType == "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK"
-                val musicVideoType = streamPlayerResponse.videoDetails?.musicVideoType
-
-                val isUgcOrPodcast = musicVideoType == "MUSIC_VIDEO_TYPE_UGC" ||
-                                     musicVideoType?.contains("PODCAST") == true ||
-                                     musicVideoType == null
-
-                if (currentClient.clientName == "WEB_REMIX" &&
-                    !webRemixFailedIds.contains(videoId) &&
-                    !isUgcOrPodcast
-                ) {
-                    Timber.tag(logTag).d("WEB_REMIX — skipping HEAD validation, letting ExoPlayer try directly")
-                    Log.i(TAG, "Playback: client=${currentClient.clientName}, videoId=$videoId")
-                    break
-                }
 
                 if (clientIndex == STREAM_FALLBACK_CLIENTS.size - 1 || isPrivatelyOwned) {
                     
@@ -534,16 +513,36 @@ object YTPlayerUtils {
                 }
 
                 if (validateStatus(streamUrl!!)) {
+                    
                     Timber.tag(logTag).d("Stream validated successfully with client: ${currentClient.clientName}")
                     PlaybackLogManager.log(PlaybackLogLevel.INFO, "Stream validated", currentClient.clientName)
+                    
                     Log.i(TAG, "Playback: client=${currentClient.clientName}, videoId=$videoId")
                     break
                 } else {
                     Timber.tag(logTag).d("Stream validation failed for client: ${currentClient.clientName}")
-                    if (needsNTransform) {
-                        cipherRefreshScope.launch {
-                            if (CipherDeobfuscator.onStreamRejected()) clearWebRemixFailures()
+
+                    
+                    if (currentClient.useWebPoTokens) {
+                        var nTransformWorked = false
+
+                        
+                        try {
+                            val nTransformed = CipherDeobfuscator.transformNParamInUrl(streamUrl!!)
+                            if (nTransformed != streamUrl) {
+                                Timber.tag(logTag).d("CipherDeobfuscator n-transform applied, re-validating...")
+                                if (validateStatus(nTransformed)) {
+                                    Timber.tag(logTag).d("N-transformed URL VALIDATED OK!")
+                                    streamUrl = nTransformed
+                                    nTransformWorked = true
+                                    Log.i(TAG, "Playback: client=${currentClient.clientName}, videoId=$videoId (cipher n-transform)")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Timber.tag(logTag).e(e, "CipherDeobfuscator n-transform error")
                         }
+
+                        if (nTransformWorked) break
                     }
                 }
             } else {
@@ -663,42 +662,25 @@ object YTPlayerUtils {
         val isAgeRestricted: Boolean
     )
 
-    private suspend fun getSignatureTimestampOrNull(videoId: String): SignatureTimestampResult {
+    private fun getSignatureTimestampOrNull(videoId: String): SignatureTimestampResult {
         Timber.tag(logTag).d("Getting signature timestamp for videoId: $videoId")
-        val cipherSts = try {
-            CipherDeobfuscator.signatureTimestamp()
-                ?.also { Timber.tag(logTag).d("Signature timestamp from cipher player: $it") }
-        } catch (e: kotlinx.coroutines.CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Timber.tag(logTag).e(e, "Cipher player STS fetch failed")
-            null
-        }
-
         val result = NewPipeExtractor.getSignatureTimestamp(videoId)
         return result.fold(
             onSuccess = { timestamp ->
-                val chosen = cipherSts ?: timestamp
-                Timber.tag(logTag).d("Signature timestamp resolved: cipher=$cipherSts newpipe=$timestamp -> using $chosen")
-                SignatureTimestampResult(chosen, isAgeRestricted = false)
+                Timber.tag(logTag).d("Signature timestamp obtained: $timestamp")
+                SignatureTimestampResult(timestamp, isAgeRestricted = false)
             },
             onFailure = { error ->
                 val isAgeRestricted = error.message?.contains("age-restricted", ignoreCase = true) == true ||
                     error.cause?.message?.contains("age-restricted", ignoreCase = true) == true
-                when {
-                    isAgeRestricted -> {
-                        Timber.tag(logTag).d("Age-restricted content detected from NewPipe")
-                        Log.i(TAG, "Age-restricted detected early via NewPipe: videoId=$videoId")
-                    }
-                    cipherSts != null -> {
-                        Timber.tag(logTag).w("NewPipe STS unavailable, using cipher player STS: ${error.message}")
-                    }
-                    else -> {
-                        Timber.tag(logTag).e(error, "Failed to get signature timestamp")
-                        reportException(error)
-                    }
+                if (isAgeRestricted) {
+                    Timber.tag(logTag).d("Age-restricted content detected from NewPipe")
+                    Log.i(TAG, "Age-restricted detected early via NewPipe: videoId=$videoId")
+                } else {
+                    Timber.tag(logTag).e(error, "Failed to get signature timestamp")
+                    reportException(error)
                 }
-                SignatureTimestampResult(cipherSts, isAgeRestricted)
+                SignatureTimestampResult(null, isAgeRestricted)
             }
         )
     }
@@ -717,6 +699,7 @@ object YTPlayerUtils {
             return format.url
         }
 
+        
         val signatureCipher = format.signatureCipher ?: format.cipher
         if (!signatureCipher.isNullOrEmpty()) {
             Timber.tag(logTag).d("Format has signatureCipher, using custom deobfuscation")
@@ -729,15 +712,16 @@ object YTPlayerUtils {
         }
 
         
+        if (skipNewPipe) {
+            Timber.tag(logTag).d("Skipping NewPipe methods for age-restricted content")
+            return null
+        }
+
+        
         val deobfuscatedUrl = NewPipeExtractor.getStreamUrl(format, videoId)
         if (deobfuscatedUrl != null) {
             Timber.tag(logTag).d("Stream URL obtained via NewPipe deobfuscation")
             return deobfuscatedUrl
-        }
-
-        if (skipNewPipe) {
-            Timber.tag(logTag).d("Skipping StreamInfo fallback for age-restricted content")
-            return null
         }
 
         

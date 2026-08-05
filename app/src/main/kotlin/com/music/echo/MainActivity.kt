@@ -153,13 +153,7 @@ import com.music.innertube.models.SongItem
 import com.music.innertube.models.WatchEndpoint
 import iad1tya.echo.music.constants.AppBarHeight
 import iad1tya.echo.music.constants.AiRecommendationsKey
-import iad1tya.echo.music.constants.AppFontKey
 import iad1tya.echo.music.constants.AppLanguageKey
-import iad1tya.echo.music.fonts.AppFont
-import iad1tya.echo.music.fonts.rememberFontFamily
-import iad1tya.echo.music.fonts.rememberInheritingFontFamily
-import iad1tya.echo.music.constants.LyricsFontKey
-import iad1tya.echo.music.constants.PlayerFontKey
 import iad1tya.echo.music.constants.DarkModeKey
 import iad1tya.echo.music.constants.DefaultOpenTabKey
 import iad1tya.echo.music.constants.DisableScreenshotKey
@@ -556,21 +550,10 @@ class MainActivity : ComponentActivity() {
         val view = LocalView.current
         var lastScrollHapticTime by remember { mutableStateOf(0L) }
 
-        val (appFontId) = rememberPreference(AppFontKey, defaultValue = AppFont.SYSTEM_ID)
-        val (lyricsFontId) = rememberPreference(LyricsFontKey, defaultValue = AppFont.INHERIT_ID)
-        val (playerFontId) = rememberPreference(PlayerFontKey, defaultValue = AppFont.INHERIT_ID)
-
-        val appFontFamily = rememberFontFamily(appFontId)
-        val lyricsFontFamily = rememberInheritingFontFamily(lyricsFontId, appFontFamily)
-        val playerFontFamily = rememberInheritingFontFamily(playerFontId, appFontFamily)
-
         echomusicTheme(
             darkTheme = useDarkTheme,
             pureBlack = pureBlack,
             themeColor = themeColor,
-            fontFamily = appFontFamily,
-            lyricsFontFamily = lyricsFontFamily,
-            playerFontFamily = playerFontFamily,
         ) {
             BoxWithConstraints(
                 modifier = Modifier

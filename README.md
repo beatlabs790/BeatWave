@@ -1,31 +1,33 @@
 <div align="center">
-  <img src="assets/Echo-new.png" alt="Echo Music Logo" width="140"/>
+  <img src="assets/Echo-new.png" alt="Echo Music Logo" width="120"/>
 
   <h1>BeatWave</h1>
 
-  <p><strong>A modern Android music app with ad-free streaming, synced lyrics, offline playback, and an intuitive user experience.
-</strong></p>
-
-  [![GitHub Release](https://img.shields.io/github/v/release/iad1tya/Echo-Music?style=for-the-badge&color=6f42c1)](https://github.com/iad1tya/Echo-Music/releases)
-  [![GitHub Stars](https://img.shields.io/github/stars/iad1tya/Echo-Music?style=for-the-badge&color=e3b341)](https://github.com/iad1tya/Echo-Music/stargazers)
-  [![License](https://img.shields.io/github/license/iad1tya/Echo-Music?style=for-the-badge&color=28a745)](LICENSE)
-  [![Telegram](https://img.shields.io/badge/Telegram-Join-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/EchoMusicApp)
-  [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/EcfV3AxH5c)
-  [![Weblate](https://img.shields.io/weblate/progress/echo-music?server=https%3A%2F%2Fhosted.weblate.org&style=for-the-badge)](https://hosted.weblate.org/projects/echo-music/)
+  <p><b>A modern Android music app with ad-free streaming, synced lyrics, offline playback, and an intuitive user experience.</b></p>
   
-  <a href="https://trendshift.io/repositories/20485" target="_blank">
-    <img src="https://trendshift.io/api/badge/repositories/20485" alt="EchoMusicApp%2FEcho-Music | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/>
-  </a>
-
-  <br>
-
-  <a href="https://echomusic.fun/download">
-    <img src="assets/download.png" alt="Download" width="180"/>
-  </a>
-  &nbsp;
-  <a href="https://echomusic.fun/obtainium">
-    <img src="assets/obtainium.png" alt="Get it on Obtainium" width="180"/>
-  </a>
+  <p>
+    <a href="https://github.com/iad1tya/Echo-Music/releases" style="text-decoration:none;"><img src="https://img.shields.io/github/v/release/iad1tya/Echo-Music?style=flat-square&color=6f42c1" alt="GitHub Release"></a>
+    <a href="https://github.com/iad1tya/Echo-Music/stargazers" style="text-decoration:none;"><img src="https://img.shields.io/github/stars/iad1tya/Echo-Music?style=flat-square&color=e3b341" alt="GitHub Stars"></a>
+    <a href="LICENSE" style="text-decoration:none;"><img src="https://img.shields.io/github/license/iad1tya/Echo-Music?style=flat-square&color=28a745" alt="License"></a>
+  </p>
+  <p>
+    <a href="https://t.me/EchoMusicApp" style="text-decoration:none;"><img src="https://img.shields.io/badge/Telegram-Join-2CA5E0?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
+    <a href="https://discord.gg/EcfV3AxH5c" style="text-decoration:none;"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
+    <a href="https://hosted.weblate.org/projects/echo-music/" style="text-decoration:none;"><img src="https://img.shields.io/weblate/progress/echo-music?server=https%3A%2F%2Fhosted.weblate.org&style=flat-square" alt="Weblate"></a>
+  </p>
+  <p>
+    <a href="https://trendshift.io/repositories/20485" target="_blank" style="text-decoration:none;"><img src="https://trendshift.io/api/badge/repositories/20485" alt="EchoMusicApp/Echo-Music | Trendshift" style="width: 200px; height: 44px;" width="200" height="44"/></a>
+  </p>
+  <table style="margin: 0 auto; border-collapse: collapse; border: none;">
+    <tr>
+      <td align="center" style="padding: 15px; border: none;">
+        <a href="https://echomusic.fun/download" style="text-decoration:none;"><img src="assets/download.png" alt="Download" width="150" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      </td>
+      <td align="center" style="padding: 15px; border: none;">
+        <a href="https://echomusic.fun/obtainium" style="text-decoration:none;"><img src="assets/obtainium.png" alt="Get it on Obtainium" width="150" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      </td>
+    </tr>
+  </table>
 </div>
 
 ---
@@ -41,22 +43,12 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 - [Overview](#overview)
 - [Screenshots](#screenshots)
 - [Features](#features)
-  - [What's New](#whats-new)
-  - [Streaming & Playback](#streaming--playback)
-  - [Discovery & Echo Find](#discovery--echo-find)
-  - [Lyrics](#lyrics)
-  - [Integrations](#integrations)
-  - [Smart Playback](#smart-playback)
-  - [Customization](#customization)
 - [Installation & Setup](#installation--setup)
-  - [Android Installation](#android-installation)
-  - [Building from Source](#building-from-source)
 - [Translations](#translations)
 - [Community & Support](#community--support)
 - [Support the Project](#support-the-project)
-  - [Cryptocurrency](#cryptocurrency)
+- [Contributors](#contributors)
 - [Special Thanks](#special-thanks)
-- [Star History](#star-history)
 
 ---
 
@@ -65,31 +57,31 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 <div align="center">
   <table style="margin: 0 auto; border-collapse: collapse;">
     <tr>
-      <td align="center" style="padding: 10px; border: none;">
-        <strong>Home Screen</strong><br><br>
-        <img src="Screenshots/sc_1.png" alt="Home Screen" width="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"/>
+      <td align="center" style="padding: 15px; border: none;">
+        <b>Home Screen</b><br><br>
+        <img src="Screenshots/sc_1.png" alt="Home Screen" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
-      <td align="center" style="padding: 10px; border: none;">
-        <strong>Music Player</strong><br><br>
-        <img src="Screenshots/sc_2.png" alt="Music Player" width="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"/>
+      <td align="center" style="padding: 15px; border: none;">
+        <b>Music Player</b><br><br>
+        <img src="Screenshots/sc_2.png" alt="Music Player" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
-      <td align="center" style="padding: 10px; border: none;">
-        <strong>Synchronized Lyrics</strong><br><br>
-        <img src="Screenshots/sc_3.png" alt="Synchronized Lyrics" width="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"/>
+      <td align="center" style="padding: 15px; border: none;">
+        <b>Synchronized Lyrics</b><br><br>
+        <img src="Screenshots/sc_3.png" alt="Synchronized Lyrics" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
     </tr>
     <tr>
-      <td align="center" style="padding: 10px; border: none;">
-        <strong>Search & Explore</strong><br><br>
-        <img src="Screenshots/sc_4.png" alt="Search & Explore" width="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"/>
+      <td align="center" style="padding: 15px; border: none;">
+        <b>Search & Explore</b><br><br>
+        <img src="Screenshots/sc_4.png" alt="Search & Explore" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
-      <td align="center" style="padding: 10px; border: none;">
-        <strong>Music Library</strong><br><br>
-        <img src="Screenshots/sc_5.png" alt="Music Library" width="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"/>
+      <td align="center" style="padding: 15px; border: none;">
+        <b>Music Library</b><br><br>
+        <img src="Screenshots/sc_5.png" alt="Music Library" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
-      <td align="center" style="padding: 10px; border: none;">
-        <strong>Echo Find (Recognition)</strong><br><br>
-        <img src="Screenshots/sc_6.png" alt="Echo Find" width="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"/>
+      <td align="center" style="padding: 15px; border: none;">
+        <b>Echo Find (Recognition)</b><br><br>
+        <img src="Screenshots/sc_6.png" alt="Echo Find" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
     </tr>
   </table>
@@ -100,17 +92,23 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 ## Features
 
 ### What's New
-- **Lossless Music Hub** — Stream and contribute 16-bit/24-bit FLAC files directly to the Echo Music ecosystem.
-- **Data Saver Mode (Beta)** — Automatically reduces data usage during playback for limited connections.
-- **Settings Search Index** — Quickly find and navigate to any settings option instantly.
-- **Redesigned UI** — Cleaner, faster, and more intuitive interface from the ground up.
-- **Import from Spotify** — Bring your playlists and tracks over with ease.
-- **Listen Together** — Sync music in real time, similar to Spotify Jam.
-- **Podcast Support** — Listen to podcasts alongside your music library.
-- **Local Media Support** — Play music files stored directly on your device.
-- **Dynamic Island Support** — Enhanced playback notifications on supported Android devices.
 
-### Streaming & Playback
+> - **Lossless Music Hub** — Stream and contribute 16-bit/24-bit FLAC files directly to the Echo Music ecosystem.
+> - **Data Saver Mode (Beta)** — Automatically reduces data usage during playback for limited connections.
+> - **Settings Search Index** — Quickly find and navigate to any settings option instantly.
+> - **Redesigned UI** — Cleaner, faster, and more intuitive interface from the ground up.
+> - **Import from Spotify** — Bring your playlists and tracks over with ease.
+> - **Listen Together** — Sync music in real time, similar to Spotify Jam.
+> - **Podcast Support** — Listen to podcasts alongside your music library.
+> - **Local Media Support** — Play music files stored directly on your device.
+> - **Dynamic Island Support** — Enhanced playback notifications on supported Android devices.
+
+<br>
+
+<details>
+<summary><b>Streaming & Playback</b></summary>
+<br>
+
 - **Ad-Free** — Stream without any interruptions.
 - **Lossless Audio** — Support for 16-bit and 24-bit high fidelity FLAC audio.
 - **Data Saver Mode** — Reduce data consumption when streaming on cellular networks.
@@ -120,33 +118,60 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 - **Crossfade** — Smooth transitions between tracks.
 - **Canvas Animations** — Visual animations while playing music.
 
-### Discovery & Echo Find
+</details>
+
+<details>
+<summary><b>Discovery & Echo Find</b></summary>
+<br>
+
 - **Echo Find** — Identify songs playing around you using advanced audio recognition.
 - **Echo Brain** — An intelligent, on-device engine that analyzes your listening momentum and auto-injects perfectly aligned tracks into your queue. Read more in the [Echo Brain Documentation](ECHO_BRAIN_DOCS.md).
 - **Smart Recommendations** — Personalized suggestions based on your listening history.
 - **Comprehensive Browsing** — Explore Charts, Podcasts, Moods, and Genres.
 
-### Lyrics
+</details>
+
+<details>
+<summary><b>Lyrics</b></summary>
+<br>
+
 - **Multiple Lyric Animations** — Choose from various lyric display styles.
 - **Word-by-Word Lyrics** — Precise per-word synchronization.
 - **Lyrics+** — New lyrics provider for improved accuracy and coverage.
 - **AI Translation** — Built-in Google Translate integration for lyrics in any language.
 
-### Integrations
+</details>
+
+<details>
+<summary><b>Integrations</b></summary>
+<br>
+
 - **Music Sharing via Odesli** — Share songs as Song.link for cross-platform listening.
 - **Set as Ringtone** — Directly set any song as your device ringtone.
 
-### Smart Playback
+</details>
+
+<details>
+<summary><b>Smart Playback</b></summary>
+<br>
+
 - **Pause on Mute** — Auto-pause when your device is muted.
 - **Resume on Bluetooth** — Playback resumes when headphones or earbuds reconnect.
 
-### Customization
+</details>
+
+<details>
+<summary><b>Customization</b></summary>
+<br>
+
 - **UI Density Scale** — Adjust interface spacing to your preference.
 - **High Refresh Rate Support** — Smoother UI and animations on supported displays.
 - **Hide Player Thumbnail** — Keep the player minimal without album art.
 - **Crop Album Art** — Adjust album art display to fit your style.
 - **Hide Video Songs** — Filter out video content from your feed.
 - **Hide YouTube Shorts** — Keep Shorts out of your music browsing.
+
+</details>
 
 ---
 
@@ -156,7 +181,9 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 
 Download the latest pre-compiled APK from the [Releases Page](https://github.com/iad1tya/Echo-Music/releases/latest).
 
-### Building from Source
+<details>
+<summary><b>Building from Source</b></summary>
+<br>
 
 1. **Clone the Repository**
    ```bash
@@ -177,15 +204,17 @@ Download the latest pre-compiled APK from the [Releases Page](https://github.com
 4. **Build the Application**
    Echo Music has two build variants: **FOSS** (without Google Play Services / Cast) and **GMS** (with Cast support).
    
-   To build the FOSS Universal Debug variant:
-   ```bash
-   ./gradlew assembleUniversalFossDebug
-   ```
-   To build the GMS Universal Debug variant:
-   ```bash
-   ./gradlew assembleUniversalGmsDebug
-   ```
+   - To build the **FOSS** Universal Debug variant:
+     ```bash
+     ./gradlew assembleUniversalFossDebug
+     ```
+   - To build the **GMS** Universal Debug variant:
+     ```bash
+     ./gradlew assembleUniversalGmsDebug
+     ```
    *(For optimized ARM64 builds, release builds, or other options, refer to [SETUP.md](SETUP.md))*
+
+</details>
 
 ---
 
@@ -193,9 +222,9 @@ Download the latest pre-compiled APK from the [Releases Page](https://github.com
 
 <h3>We use Weblate to translate Echo Music. <a href="https://hosted.weblate.org/projects/echo-music/">Help us bring Echo Music to more people!</a></h3>
 
-<a href="https://hosted.weblate.org/projects/echo-music/">
-  <img src="https://hosted.weblate.org/widgets/echo-music/-/horizontal-auto.svg" alt="Translation status" />
-</a>
+<div align="center">
+  <a href="https://hosted.weblate.org/projects/echo-music/" style="text-decoration:none;"><img src="https://hosted.weblate.org/widgets/echo-music/-/horizontal-auto.svg" alt="Translation status" /></a>
+</div>
 
 ---
 
@@ -204,8 +233,16 @@ Download the latest pre-compiled APK from the [Releases Page](https://github.com
 Join the community for updates, discussions, and help.
 
 <div align="center">
-  <a href="https://discord.gg/EcfV3AxH5c" style="text-decoration:none;"><img src="assets/discord.png" alt="Discord Logo" width="140" style="margin: 0 10px;"/></a>
-  <a href="https://t.me/EchoMusicApp" style="text-decoration:none;"><img src="assets/telegram.png" alt="Telegram Logo" width="130" style="margin: 0 10px;"/></a>
+  <table style="margin: 0 auto; border-collapse: collapse; border: none;">
+    <tr>
+      <td align="center" style="padding: 15px; border: none;">
+        <a href="https://discord.gg/EcfV3AxH5c" style="text-decoration:none;"><img src="assets/discord.png" alt="Discord Logo" width="140" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      </td>
+      <td align="center" style="padding: 15px; border: none;">
+        <a href="https://t.me/EchoMusicApp" style="text-decoration:none;"><img src="assets/telegram.png" alt="Telegram Logo" width="130" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      </td>
+    </tr>
+  </table>
 </div>
 
 ---
@@ -215,18 +252,46 @@ Join the community for updates, discussions, and help.
 If Echo Music has been useful to you, consider supporting its development.
 
 <div align="center">
-  <a href="https://buymeacoffee.com/iad1tya" style="text-decoration:none;"><img src="assets/bmac.png" alt="Buy Me A Coffee Logo" width="140" style="margin: 0 10px;"/></a>
-  <a href="https://intradeus.github.io/http-protocol-redirector/?r=upi://pay?pa=iad1tya@upi&pn=Aditya%20Yadav&am=&tn=Thank%20You" style="text-decoration:none;"><img src="assets/upi.svg" alt="UPI Logo" width="100" style="margin: 0 10px;"/></a>
-  <a href="https://www.patreon.com/cw/iad1tya" style="text-decoration:none;"><img src="assets/patreon3.png" alt="Patreon Logo" width="100" style="margin: 0 10px;"/></a>
+  <table style="margin: 0 auto; border-collapse: collapse; border: none;">
+    <tr>
+      <td align="center" style="padding: 15px; border: none;">
+        <a href="https://buymeacoffee.com/iad1tya" style="text-decoration:none;"><img src="assets/bmac.png" alt="Buy Me A Coffee Logo" width="140" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      </td>
+      <td align="center" style="padding: 15px; border: none;">
+        <a href="https://intradeus.github.io/http-protocol-redirector/?r=upi://pay?pa=iad1tya@upi&pn=Aditya%20Yadav&am=&tn=Thank%20You" style="text-decoration:none;"><img src="assets/upi.svg" alt="UPI Logo" width="100" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      </td>
+      <td align="center" style="padding: 15px; border: none;">
+        <a href="https://www.patreon.com/cw/iad1tya" style="text-decoration:none;"><img src="assets/patreon3.png" alt="Patreon Logo" width="100" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      </td>
+    </tr>
+  </table>
 </div>
 
-### Cryptocurrency
+<br>
+
+<details>
+<summary><b>Cryptocurrency Options</b></summary>
+<br>
 
 | Network | Address |
 | :--- | :--- |
-| Bitcoin | `bc1qcvyr7eekha8uytmffcvgzf4h7xy7shqzke35fy` |
-| Ethereum | `0x51bc91022E2dCef9974D5db2A0e22d57B360e700` |
-| Solana | `9wjca3EQnEiqzqgy7N5iqS1JGXJiknMQv6zHgL96t94S` |
+| **Bitcoin** | `bc1qcvyr7eekha8uytmffcvgzf4h7xy7shqzke35fy` |
+| **Ethereum** | `0x51bc91022E2dCef9974D5db2A0e22d57B360e700` |
+| **Solana** | `9wjca3EQnEiqzqgy7N5iqS1JGXJiknMQv6zHgL96t94S` |
+
+</details>
+
+---
+
+## Contributors
+
+A huge thank you to everyone who has helped improve Echo Music! Whether you've fixed bugs, added new features, or updated translations, your contributions are greatly appreciated.
+
+<div align="center">
+  <a href="https://github.com/iad1tya/Echo-Music/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=iad1tya/Echo-Music" alt="Contributors" />
+  </a>
+</div>
 
 ---
 
@@ -236,16 +301,16 @@ Echo Music stands on the shoulders of several excellent open-source projects. Si
 
 | Project | Description |
 | :--- | :--- |
-| [Metrolist](https://github.com/MetrolistGroup/Metrolist) & [Vivi Music](https://github.com/vivizzz007/vivi-music) | Foundational inspiration and architecture reference |
-| [ArchiveTune](https://github.com/koiverse/ArchiveTune) | Material You UI inspiration |
-| [Better Lyrics](https://better-lyrics.boidu.dev/) | Lyrics enhancement and synchronization |
-| [SimpMusic](https://github.com/maxrave-dev/SimpMusic) | Lyrics implementation reference |
-| [Music Recognizer](https://github.com/aleksey-saenko/MusicRecognizer) | Audio recognition (Echo Find) |
-| [Flow](https://github.com/a-edev/Flow) | AI queue generation engine (Echo Brain) |
-| [zemer-cipher](hhttps://github.com/ZemerTeam/zemer-cipher) | YouTube cipher deobfuscation and PoToken generation |
+| **[Metrolist](https://github.com/MetrolistGroup/Metrolist)** & **[Vivi Music](https://github.com/vivizzz007/vivi-music)** | Foundational inspiration and architecture reference |
+| **[ArchiveTune](https://github.com/koiverse/ArchiveTune)** | Material You UI inspiration |
+| **[Better Lyrics](https://better-lyrics.boidu.dev/)** | Lyrics enhancement and synchronization |
+| **[SimpMusic](https://github.com/maxrave-dev/SimpMusic)** | Lyrics implementation reference |
+| **[Music Recognizer](https://github.com/aleksey-saenko/MusicRecognizer)** | Audio recognition (Echo Find) |
+| **[Flow](https://github.com/a-edev/Flow)** | AI queue generation engine (Echo Brain) |
+| **[zemer-cipher](https://github.com/ZemerTeam/zemer-cipher)** | YouTube cipher deobfuscation and PoToken generation |
 
 ---
 
 <div align="center">
-  Licensed under <a href="LICENSE">GPL-3.0</a>
+  <p>Licensed under <a href="LICENSE">GPL-3.0</a></p>
 </div>

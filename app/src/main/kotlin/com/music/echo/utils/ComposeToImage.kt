@@ -29,9 +29,6 @@ import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
-import iad1tya.echo.music.fonts.FontManager
-import iad1tya.echo.music.fonts.FontTarget
-import iad1tya.echo.music.fonts.resolvedFontId
 import iad1tya.echo.music.R
 import iad1tya.echo.music.ui.component.LyricsBackgroundStyle
 import kotlinx.coroutines.Dispatchers
@@ -198,22 +195,17 @@ object ComposeToImage {
         val textStartX = padding + coverArtSize + (16f * scale)
         val textMaxWidth = imageWidth - textStartX - padding
         
-        // Canvas text never goes through Compose, so the custom fonts are resolved by hand here.
-        // The lyric itself follows the lyrics font; the surrounding metadata follows the app one.
-        val lyricsTypeface = FontManager.typefaceFor(context, FontTarget.LYRICS.resolvedFontId(context))
-        val appTypeface = FontManager.typefaceFor(context, FontTarget.APP.resolvedFontId(context))
-
         val titlePaint = TextPaint().apply {
             color = mainTextColor
             textSize = 20f * scale
-            typeface = appTypeface?.let { Typeface.create(it, Typeface.BOLD) } ?: Typeface.DEFAULT_BOLD
+            typeface = Typeface.DEFAULT_BOLD
             isAntiAlias = true
         }
         
         val artistPaint = TextPaint().apply {
             color = secondaryTxtColor
             textSize = 16f * scale
-            typeface = appTypeface ?: Typeface.DEFAULT
+            typeface = Typeface.DEFAULT
             isAntiAlias = true
         }
 
@@ -278,7 +270,7 @@ object ComposeToImage {
         val appNamePaint = TextPaint().apply {
             color = secondaryTxtColor
             textSize = 14f * scale
-            typeface = appTypeface?.let { Typeface.create(it, Typeface.BOLD) } ?: Typeface.DEFAULT_BOLD
+            typeface = Typeface.DEFAULT_BOLD
             isAntiAlias = true
         }
         
@@ -296,7 +288,7 @@ object ComposeToImage {
 
         val lyricsPaint = TextPaint().apply {
             color = mainTextColor
-            typeface = Typeface.create(lyricsTypeface ?: Typeface.DEFAULT, Typeface.BOLD)
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             isAntiAlias = true
             letterSpacing = 0.005f
         }

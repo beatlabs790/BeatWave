@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.constants.AppleMusicLyricsBlurKey
 import iad1tya.echo.music.constants.LyricsRomanizeAsMainKey
-import iad1tya.echo.music.fonts.LocalLyricsFontFamily
 import iad1tya.echo.music.lyrics.LyricsEntry
 import iad1tya.echo.music.ui.screens.settings.LyricsPosition
 import iad1tya.echo.music.utils.rememberPreference
@@ -226,9 +225,6 @@ fun MetroLyricsLine(
     }
 
     val lyricStyle = TextStyle(
-        // Built from scratch, so it replaces the theme's style outright and has to name the
-        // lyrics family itself.
-        fontFamily = LocalLyricsFontFamily.current,
         fontSize = lyricsTextSize.sp,
         fontWeight = FontWeight.Bold,
         fontStyle = if (entry.isBackground) FontStyle.Italic else FontStyle.Normal,

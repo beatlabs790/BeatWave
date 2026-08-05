@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -262,10 +262,10 @@ class MusicService :
     lateinit var eqProfileRepository: EQProfileRepository
 
     @Inject
-    lateinit var widgetManager: vivimusicWidgetManager
+    lateinit var widgetManager: beatwaveWidgetManager
 
     @Inject
-    lateinit var listenTogetherManager: com.convx.music.listentogether.ListenTogetherManager
+    lateinit var listenTogetherManager: com.BeatWave.music.listentogether.ListenTogetherManager
 
     private lateinit var audioManager: AudioManager
     private var audioFocusRequest: AudioFocusRequest? = null
@@ -325,13 +325,13 @@ class MusicService :
     val waitingForNetworkConnection = MutableStateFlow(false)
     private val isNetworkConnected = MutableStateFlow(false)
 
-    private lateinit var audioQuality: com.convx.music.constants.AudioQuality
+    private lateinit var audioQuality: com.BeatWave.music.constants.AudioQuality
     private lateinit var ipVersion: IpVersion
 
     private var currentQueue: Queue = EmptyQueue
     var queueTitle: String? = null
 
-    val currentMediaMetadata = MutableStateFlow<com.convx.music.models.MediaMetadata?>(null)
+    val currentMediaMetadata = MutableStateFlow<com.BeatWave.music.models.MediaMetadata?>(null)
     private val currentSong =
         currentMediaMetadata
             .flatMapLatest { mediaMetadata ->
@@ -547,7 +547,7 @@ class MusicService :
             val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.music_player))
                 .setContentText("")
-                .setSmallIcon(R.drawable.vivimusicnotification)  //vivimusicnotification
+                .setSmallIcon(R.drawable.beatwavenotification)  //beatwavenotification
                 .setContentIntent(pending)
                 .setOngoing(true)
                 .build()
@@ -570,7 +570,7 @@ class MusicService :
                 R.string.music_player
             )
                 .apply {
-                    setSmallIcon(R.drawable.vivimusicnotification)
+                    setSmallIcon(R.drawable.beatwavenotification)
                 },
         )
         player = createExoPlayer()
@@ -625,7 +625,7 @@ class MusicService :
 
         audioManager.registerAudioDeviceCallback(audioDeviceCallback, null)
 
-        audioQuality = dataStore.get(AudioQualityKey).toEnum(com.convx.music.constants.AudioQuality.AUTO)
+        audioQuality = dataStore.get(AudioQualityKey).toEnum(com.BeatWave.music.constants.AudioQuality.AUTO)
         ipVersion = dataStore.get(IpVersionKey).toEnum(IpVersion.AUTO)
         playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
@@ -675,8 +675,8 @@ class MusicService :
         scope.launch {
             dataStore.data
                 .map { it[AudioQualityKey]?.let { value ->
-                    com.convx.music.constants.AudioQuality.entries.find { it.name == value }
-                } ?: com.convx.music.constants.AudioQuality.AUTO }
+                    com.BeatWave.music.constants.AudioQuality.entries.find { it.name == value }
+                } ?: com.BeatWave.music.constants.AudioQuality.AUTO }
                 .distinctUntilChanged()
                 .collect { newQuality ->
                     val oldQuality = audioQuality
@@ -3584,7 +3584,7 @@ class MusicService :
      * Initialize Google Cast support
      */
     private fun initializeCast() {
-        if (dataStore.get(com.convx.music.constants.EnableGoogleCastKey, true)) {
+        if (dataStore.get(com.BeatWave.music.constants.EnableGoogleCastKey, true)) {
             try {
                 castConnectionHandler = CastConnectionHandler(this, scope, this)
                 castConnectionHandler?.initialize()

@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -75,7 +75,7 @@ fun SuggestionsTabContent(
     val isLoading by viewModel.isLoading.collectAsState()
     val isManualLoading by viewModel.isManualLoading.collectAsState()
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
-    val playerConnection = com.convx.music.LocalPlayerConnection.current
+    val playerConnection = com.BeatWave.music.LocalPlayerConnection.current
     val context = LocalContext.current
     val (regionCode, _) = rememberPreference(
         key = SuggestionRegionKey,

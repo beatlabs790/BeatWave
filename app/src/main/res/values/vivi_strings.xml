@@ -117,18 +117,18 @@
     <string name="thumbnail_corner_radius_desc">Change the corner radius of the album cover thumbnail</string>
     <string name="crop_album_art">Crop Album Art</string>
     <string name="crop_album_art_desc">Force a square aspect ratio by cropping video thumbnails</string>
-    <string name="vivimusic_canvas">Canvas</string>
+    <string name="beatwave_canvas">Canvas</string>
     <string name="use_canvas">Use canvas</string>
-    <string name="vivimusic_canvas_desc">Replaces the static album artwork in the player with a looping animated video when one is available for the current song</string>
+    <string name="beatwave_canvas_desc">Replaces the static album artwork in the player with a looping animated video when one is available for the current song</string>
     <string name="canvas_source">Canvas source</string>
     <string name="canvas_source_auto">Auto</string>
-    <string name="canvas_source_auto_desc">Tries Echo Music first, then falls back to Apple Music, Convx, and Tidal. Picks the best match for the current song automatically</string>
+    <string name="canvas_source_auto_desc">Tries Echo Music first, then falls back to Apple Music, BeatWave, and Tidal. Picks the best match for the current song automatically</string>
     <string name="canvas_source_echo_music">Echo Music</string>
     <string name="canvas_source_echo_music_desc">Uses the community-run Echo Music canvas database exclusively. Only shows a canvas if one has been contributed for the playing song</string>
     <string name="canvas_source_apple_music">Apple Music</string>
     <string name="canvas_source_apple_music_desc">Uses Apple Music&#8217;s animated visuals exclusively. Only shows a canvas if Apple Music has one for the playing song</string>
-    <string name="canvas_source_vivimusic">Convx</string>
-    <string name="canvas_source_vivimusic_desc">Uses the Convx curated canvas library exclusively. Only shows a canvas if one has been added for the playing song</string>
+    <string name="canvas_source_beatwave">BeatWave</string>
+    <string name="canvas_source_beatwave_desc">Uses the BeatWave curated canvas library exclusively. Only shows a canvas if one has been added for the playing song</string>
     <string name="canvas_source_tidal">Tidal</string>
     <string name="canvas_source_tidal_desc">Uses Tidal&#8217;s animated visuals exclusively. Only shows a canvas if Tidal has one for the playing song</string>
     <string name="show_album_canvas">Show Album Canvas</string>
@@ -198,7 +198,7 @@
     <string name="slim">Slim</string>
     <string name="waveform">Waveform</string>
     <string name="brand_font">Display font</string>
-    <string name="brand_font_desc">Use Chillax for the CONVX wordmark and the artist page title</string>
+    <string name="brand_font_desc">Use Chillax for the BEATWAVE wordmark and the artist page title</string>
     <string name="custom_font">Custom font</string>
     <string name="custom_font_none">Tap to install a .ttf or .otf font, applied app-wide</string>
     <string name="custom_font_set">Custom font installed — tap to replace</string>
@@ -418,7 +418,7 @@
     <string name="enable_scrobbling">Enable scrobbling</string>
     <string name="lastfm_now_playing">Send Now Playing</string>
     <string name="last_fm_send_likes">Send Likes/Unlikes</string>
-    <string name="last_fm_send_likes_description">Love/Unlove songs in Last.fm when they are Liked/Unliked in Convx</string>
+    <string name="last_fm_send_likes_description">Love/Unlove songs in Last.fm when they are Liked/Unliked in BeatWave</string>
     <string name="logging_in">Logging in…</string>
 
     <string name="scrobbling_configuration">Scrobbling Configuration</string>
@@ -459,7 +459,7 @@
     <string name="karaoke">Karaoke</string>
     <string name="apple_music_style">Apple Music</string>
     <string name="apple_music_style_letter">Apple Music V2 (Letter by Letter)</string>
-    <string name="vivimusic_1">Convx (Fluid)</string>
+    <string name="beatwave_1">BeatWave (Fluid)</string>
     <string name="apple_music_lyrics_blur">Apple Music Lyrics Blur</string>
     <string name="apple_music_lyrics_blur_desc">Apply blur to inactive lyrics lines for a premium focus effect</string>
     <string name="lyrics_v2_fluid">Lyrics V2 (Fluid)</string>
@@ -489,19 +489,19 @@
     <string name="wrapped_total_artists_subtitle">unique artists</string>
     <string name="wrapped_total_songs_title">You listened to</string>
     <string name="wrapped_total_songs_subtitle">unique songs</string>
-    <string name="wrapped_intro_title">Convx</string>
+    <string name="wrapped_intro_title">BeatWave</string>
     <string name="wrapped_intro_subtitle">it\'s time to see what you\'ve been listening to</string>
     <string name="wrapped_intro_button">let\'s go!</string>
-    <string name="wrapped_end_thanks">Thanks for listening with Convx!</string>
+    <string name="wrapped_end_thanks">Thanks for listening with BeatWave!</string>
     <string name="wrapped_end_create_playlist">Create Your Wrapped Playlist</string>
     <string name="wrapped_end_creating_playlist">Creating...</string>
     <string name="wrapped_end_playlist_saved">Playlist Saved</string>
-    <string name="wrapped_logo_content_description">Convx Logo</string>
+    <string name="wrapped_logo_content_description">BeatWave Logo</string>
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">YOUR WRAPPED IS READY!</string>
     <string name="wrapped_ready_subtitle">Time to see what you loved this year.</string>
     <string name="wrapped_thank_you">Thank you for listening</string>
-    <string name="wrapped_special_thanks">Special thanks to Vividh for creating the app Convx is built on</string>
+    <string name="wrapped_special_thanks">Special thanks to Vividh for creating the app BeatWave is built on</string>
     <string name="wrapped_close">Close wrapped</string>
     <string name="wrapped_playlist_title">Your %s Wrapped</string>
     <string name="wrapped_create_playlist">Create playlist</string>
@@ -577,9 +577,9 @@
     <string name="plays">plays</string>
     <string name="casting_to">Casting to %s</string>
     <string name="progress_percent">Progress %s%%</string>
-    <string name="listening_to_vivimusic">Listening to Convx</string>
+    <string name="listening_to_beatwave">Listening to BeatWave</string>
     <string name="listen_on_youtube_music">Listen on YouTube Music</string>
-    <string name="visit_vivimusic">Visit Convx</string>
+    <string name="visit_beatwave">Visit BeatWave</string>
     <string name="open">Open</string>
     <string name="failed_to_create_image">Failed to create image: %s</string>
     <string name="copied_title">Copied Title</string>
@@ -596,13 +596,13 @@
     <!-- Widget strings -->
     <string name="album_art">Album art</string>
     <string name="no_song_playing">No song playing</string>
-    <string name="tap_to_open">Tap to open Convx</string>
+    <string name="tap_to_open">Tap to open BeatWave</string>
     <string name="previous">Previous</string>
     <string name="play_pause">Play/Pause</string>
     <string name="next">Next</string>
     <string name="like">Like</string>
     <string name="not_playing">No song playing</string>
-    <string name="tap_to_play">Tap to open Convx</string>
+    <string name="tap_to_play">Tap to open BeatWave</string>
     <string name="widget_description">Music player widget with playback controls</string>
     <string name="queue_widget_description">Music player with queue preview</string>
     <string name="turntable_widget_description">Circular music widget with play and like controls</string>
@@ -781,7 +781,7 @@
     <string name="crash_share_logs">Share Logs</string>
     <string name="copy_logs">Copy Logs</string>
     <string name="crash_share_title">Share crash report</string>
-    <string name="crash_report_subject">Convx Crash Report</string>
+    <string name="crash_report_subject">BeatWave Crash Report</string>
     <string name="crash_close">Close</string>
     <string name="crash_no_log">No crash log available</string>
 
@@ -834,7 +834,7 @@
     <string name="delete_from_history">Delete from history</string>
     <string name="re_listen">Re-listen</string>
     <string name="hold_to_recognize">Hold search icon to recognize music</string>
-    <string name="play_on_app">Play on Convx</string>
+    <string name="play_on_app">Play on BeatWave</string>
     <string name="recognized_track">Recognized Track</string>
 
     <!-- CSV Import Strings -->
@@ -873,9 +873,9 @@
     <string name="discord_rpc_preview">Rich Presence Preview</string>
     <string name="discord_presence">Presence</string>
     <string name="discord_connect_description">Sign in with Discord to share what you\'re listening to</string>
-    <string name="discord_playing_vivimusic">Playing Convx</string>
-    <string name="discord_watching_vivimusic">Watching Convx</string>
-    <string name="discord_competing_vivimusic">Competing in Convx</string>
+    <string name="discord_playing_beatwave">Playing BeatWave</string>
+    <string name="discord_watching_beatwave">Watching BeatWave</string>
+    <string name="discord_competing_beatwave">Competing in BeatWave</string>
     <string name="discord_activity_name">Activity name</string>
     <string name="discord_activity_name_description">Custom name for the activity (leave empty for default)</string>
     <string name="discord_advanced_mode">Advanced mode</string>
@@ -933,7 +933,7 @@
 
     <string name="perm_required">Required</string>
     <string name="perm_permissions">Permissions</string>
-    <string name="perm_intro_text">These permissions are required for Convx to function correctly. Please grant them to proceed.</string>
+    <string name="perm_intro_text">These permissions are required for BeatWave to function correctly. Please grant them to proceed.</string>
 
     <string name="perm_notif_title">Notifications</string>
     <string name="perm_notif_desc">Know immediately when your music is playing and control it from the notification bar.</string>
@@ -943,7 +943,7 @@
 
     <string name="feat_discover">Discover</string>
     <string name="feat_features">Features</string>
-    <string name="feat_intro">Explore everything Convx has to offer for your music journey.</string>
+    <string name="feat_intro">Explore everything BeatWave has to offer for your music journey.</string>
 
     <string name="feat_lyrics_title">Smart Lyrics</string>
     <string name="feat_lyrics_desc">Enjoy synchronized, word-by-word lyrics for millions of songs.</string>
@@ -973,7 +973,7 @@
     <string name="welcome_update_status">Updated</string>
     <string name="welcome_update_intro">Ensuring you have the latest features and security improvements.</string>
     <string name="welcome_checking_updates">Checking for updates…</string>
-    <string name="welcome_up_to_date">Convx is up to date!</string>
+    <string name="welcome_up_to_date">BeatWave is up to date!</string>
     <string name="welcome_update_available">New version is available: %s</string>
     <string name="welcome_everything_ready">Everything is now up to date</string>
     <string name="commits_title">Commits</string>

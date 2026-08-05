@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -281,7 +281,7 @@ fun AppearanceSettings(
     )
     val (lyricsAnimationStyle, onLyricsAnimationStyleChange) = rememberEnumPreference(
         LyricsAnimationStyleKey,
-        defaultValue = LyricsAnimationStyle.VIVIMUSIC_1
+        defaultValue = LyricsAnimationStyle.beatwave_1
     )
     val (lyricsTextSize, onLyricsTextSizeChange) = rememberPreference(LyricsTextSizeKey, defaultValue = 30f)
     val (lyricsLineSpacing, onLyricsLineSpacingChange) = rememberPreference(LyricsLineSpacingKey, defaultValue = 1.3f)
@@ -320,7 +320,7 @@ fun AppearanceSettings(
 
     // Density scale preferences
     val context = activity as Context
-    val sharedPreferences = remember { context.getSharedPreferences("vivimusic_settings", Context.MODE_PRIVATE) }
+    val sharedPreferences = remember { context.getSharedPreferences("beatwave_settings", Context.MODE_PRIVATE) }
     val prefDensityScale = remember(sharedPreferences) {
         sharedPreferences.getFloat("density_scale_factor", 1.0f)
     }
@@ -436,7 +436,7 @@ fun AppearanceSettings(
                     LyricsAnimationStyle.KARAOKE -> stringResource(R.string.karaoke)
                     LyricsAnimationStyle.APPLE -> stringResource(R.string.apple_music_style)
                     LyricsAnimationStyle.APPLE_V2 -> stringResource(R.string.apple_music_style_letter)
-                    LyricsAnimationStyle.VIVIMUSIC_1 -> stringResource(R.string.vivimusic_1)
+                    LyricsAnimationStyle.beatwave_1 -> stringResource(R.string.beatwave_1)
                     LyricsAnimationStyle.LYRICS_V2 -> stringResource(R.string.lyrics_v2_fluid)
                     LyricsAnimationStyle.METRO_LYRICS -> stringResource(R.string.lyrics_animation_metro)
                 }
@@ -809,7 +809,7 @@ fun AppearanceSettings(
                 ),
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.canvas_art),
-                        title = { Text(stringResource(R.string.vivimusic_canvas)) },
+                        title = { Text(stringResource(R.string.beatwave_canvas)) },
                     description = {
                         val summary = if (!canvasThumbnailAnimation) {
                             stringResource(R.string.disable)
@@ -818,7 +818,7 @@ fun AppearanceSettings(
                                 CanvasSource.AUTO -> stringResource(R.string.canvas_source_auto)
                                 CanvasSource.ECHO_MUSIC -> stringResource(R.string.canvas_source_echo_music)
                                 CanvasSource.APPLE_MUSIC -> stringResource(R.string.canvas_source_apple_music)
-                                CanvasSource.VIVIMUSIC -> stringResource(R.string.canvas_source_vivimusic)
+                                CanvasSource.beatwave -> stringResource(R.string.canvas_source_beatwave)
                                 CanvasSource.TIDAL -> stringResource(R.string.canvas_source_tidal)
                             }
                         }
@@ -891,7 +891,7 @@ fun AppearanceSettings(
                                 LyricsAnimationStyle.GLOW -> stringResource(R.string.glow)
                                 LyricsAnimationStyle.SLIDE -> stringResource(R.string.slide)
                                 LyricsAnimationStyle.KARAOKE -> stringResource(R.string.karaoke)
-                                LyricsAnimationStyle.VIVIMUSIC_1 -> stringResource(R.string.vivimusic_1)
+                                LyricsAnimationStyle.beatwave_1 -> stringResource(R.string.beatwave_1)
                                 LyricsAnimationStyle.APPLE -> stringResource(R.string.apple_music_style)
                                 LyricsAnimationStyle.APPLE_V2 -> stringResource(R.string.apple_music_style_letter)
                                 LyricsAnimationStyle.LYRICS_V2 -> stringResource(R.string.lyrics_v2_fluid)
@@ -922,7 +922,7 @@ fun AppearanceSettings(
                     },
                     onClick = { onLyricsGlowEffectChange(!lyricsGlowEffect) }
                 ),
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && lyricsAnimationStyle == LyricsAnimationStyle.VIVIMUSIC_1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && lyricsAnimationStyle == LyricsAnimationStyle.beatwave_1) {
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.lyrics),
                         title = { Text(stringResource(R.string.apple_music_lyrics_blur)) },

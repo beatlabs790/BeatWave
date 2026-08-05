@@ -30,11 +30,11 @@ object UpdateNotificationHelper {
             nm.createNotificationChannel(channel)
         }
 
-        // Direct download URL format from vivimusicupdater - use the full tag (vX.X.X or bX.X.X) or nightly link
+        // Direct download URL format from beatwaveupdater - use the full tag (vX.X.X or bX.X.X) or nightly link
         val apkUrl = if (versionName.contains("nightly", ignoreCase = true)) {
-            "https://nightly.link/cosmictaserdev-creator/Convx/workflows/nightly.yml/main/convx-gms-nightly.zip"
+            "https://nightly.link/beatlabs790/beatwave/workflows/nightly.yml/main/beatwave-gms-nightly.zip"
         } else {
-            "https://github.com/cosmictaserdev-creator/Convx/releases/download/$versionName/convx-$versionName.apk"
+            "https://github.com/beatlabs790/beatwave/releases/download/$versionName/beatwave-$versionName.apk"
         }
         val intent = Intent(Intent.ACTION_VIEW, apkUrl.toUri())
 
@@ -42,7 +42,7 @@ object UpdateNotificationHelper {
         val pending = PendingIntent.getActivity(context, NOTIFICATION_ID, intent, flags)
 
         val notif = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.vivimusicnotification)
+            .setSmallIcon(R.drawable.beatwavenotification)
             .setContentTitle(context.getString(R.string.update_available_title))
             .setContentText(versionName)
             .setContentIntent(pending)

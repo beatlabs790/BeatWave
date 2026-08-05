@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -259,7 +259,7 @@ import com.convx.music.ui.theme.LocalAccentTextColor
 import com.convx.music.ui.theme.rememberBrandFontFamily
 import com.convx.music.ui.theme.extractThemeColor
 import com.convx.music.ui.theme.extractThemeColorFromVideoFrame
-import com.convx.music.ui.theme.vivimusicTheme
+import com.convx.music.ui.theme.beatwaveTheme
 import com.convx.music.ui.utils.appBarScrollBehavior
 import com.convx.music.ui.utils.resetHeightOffset
 import com.convx.music.utils.SyncUtils
@@ -389,8 +389,8 @@ private class TopBarChromeVisibility {
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     companion object {
-        private const val ACTION_SEARCH = "com.convx.music.action.SEARCH"
-        private const val ACTION_LIBRARY = "com.convx.music.action.LIBRARY"
+        private const val ACTION_SEARCH = "com.BeatWave.music.action.SEARCH"
+        private const val ACTION_LIBRARY = "com.BeatWave.music.action.LIBRARY"
 
         // Ignore a repeat bottom-nav navigate() to the same route within this
         // window, so the floating tab bar's predictive (press/drag) fire can't
@@ -414,7 +414,7 @@ class MainActivity : ComponentActivity() {
     lateinit var syncUtils: SyncUtils
 
     @Inject
-    lateinit var listenTogetherManager: com.convx.music.listentogether.ListenTogetherManager
+    lateinit var listenTogetherManager: com.BeatWave.music.listentogether.ListenTogetherManager
 
     private lateinit var navController: NavHostController
     private var pendingIntent: Intent? = null
@@ -534,7 +534,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            vivimusicApp(
+            beatwaveApp(
                 playerConnection = playerConnection,
                 database = database,
                 downloadUtil = downloadUtil,
@@ -546,7 +546,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
     @Composable
-    private fun vivimusicApp(
+    private fun beatwaveApp(
         playerConnection: PlayerConnection?,
         database: MusicDatabase,
         downloadUtil: DownloadUtil,
@@ -687,7 +687,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        vivimusicTheme(
+        beatwaveTheme(
             darkTheme = useDarkTheme,
             pureBlack = pureBlack,
             themeColor = themeColor,
@@ -2149,7 +2149,7 @@ val LocalPlayerConnection = staticCompositionLocalOf<PlayerConnection?> { error(
 val LocalPlayerAwareWindowInsets = compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalDownloadUtil = staticCompositionLocalOf<DownloadUtil> { error("No DownloadUtil provided") }
 val LocalSyncUtils = staticCompositionLocalOf<SyncUtils> { error("No SyncUtils provided") }
-val LocalListenTogetherManager = staticCompositionLocalOf<com.convx.music.listentogether.ListenTogetherManager?> { null }
+val LocalListenTogetherManager = staticCompositionLocalOf<com.BeatWave.music.listentogether.ListenTogetherManager?> { null }
 val LocalIsPlayerExpanded = compositionLocalOf { false }
 
 /**

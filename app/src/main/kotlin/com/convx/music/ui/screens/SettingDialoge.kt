@@ -196,7 +196,7 @@ fun SettingDialoge(
                                 text = if (isLoggedIn) {
                                     accountEmail.ifEmpty { "Logged In" }
                                 } else {
-                                    "vivimusictest@gmail.com"
+                                    "beatwavetest@gmail.com"
                                 },
                                 fontWeight = FontWeight.Light,
                                 color = onSecondaryColor,
@@ -314,7 +314,7 @@ fun SettingDialoge(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
                 ) {
-                    TextButton(onClick = { uriHandler.openUri("https://vivimusicapp.netlify.app/privacy") }) {
+                    TextButton(onClick = { uriHandler.openUri("https://beatwaveapp.netlify.app/privacy") }) {
                         Text(
                             text = "Privacy Policy",
                             fontWeight = FontWeight.Light,
@@ -326,7 +326,7 @@ fun SettingDialoge(
                     }
                 
                     Text(text = "•", color = onPrimaryColor)
-                    TextButton(onClick = { uriHandler.openUri("https://vivimusicapp.netlify.app/terms") }) {
+                    TextButton(onClick = { uriHandler.openUri("https://beatwaveapp.netlify.app/terms") }) {
                         Text(
                             text = "Terms of Service",
                             fontWeight = FontWeight.Light,

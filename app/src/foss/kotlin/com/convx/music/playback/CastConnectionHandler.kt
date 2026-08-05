@@ -44,7 +44,7 @@ class CastConnectionHandler(
     fun initialize(): Boolean = false
     fun disconnect() {}
     fun loadCurrentMedia() {}
-    fun loadMedia(metadata: com.convx.music.models.MediaMetadata) {}
+    fun loadMedia(metadata: com.BeatWave.music.models.MediaMetadata) {}
     fun play() {}
     fun pause() {}
     fun seekTo(position: Long) {}

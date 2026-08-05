@@ -107,7 +107,7 @@ import com.convx.music.BuildConfig
 //here b5.0.1 must be used for the beta tag
 
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -162,7 +162,7 @@ fun UpdateSettings(
                     onClick = {
                         val isFoss = !BuildConfig.CAST_AVAILABLE
                         if (isFoss) {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/cosmictaserdev-creator/Convx"))
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/beatlabs790/beatwave"))
                             context.startActivity(intent)
                         } else {
                             navController.navigate("update")

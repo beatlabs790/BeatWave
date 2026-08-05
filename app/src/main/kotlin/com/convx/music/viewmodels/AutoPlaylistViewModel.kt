@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -109,7 +109,7 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _isScanning.value = true
             try {
-                com.convx.music.utils.LocalAudioScanner.scanAndInsert(context, database)
+                com.BeatWave.music.utils.LocalAudioScanner.scanAndInsert(context, database)
             } catch (e: Exception) {
                 Timber.tag("AutoPlaylistViewModel").e(e, "local scan failed")
             } finally {

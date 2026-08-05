@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -98,18 +98,18 @@ fun RecognitionScreen(
     
     // Reset recognition status when entering the screen
     LaunchedEffect(Unit) {
-        com.convx.music.recognition.MusicRecognitionService.reset()
+        com.BeatWave.music.recognition.MusicRecognitionService.reset()
     }
     
     // Reset recognition status when leaving the screen
     DisposableEffect(Unit) {
         onDispose {
-            com.convx.music.recognition.MusicRecognitionService.reset()
+            com.BeatWave.music.recognition.MusicRecognitionService.reset()
         }
     }
     
     // Observe recognition status from service for real-time updates (Listening -> Processing -> Result)
-    val recognitionStatus by com.convx.music.recognition.MusicRecognitionService.recognitionStatus.collectAsState()
+    val recognitionStatus by com.BeatWave.music.recognition.MusicRecognitionService.recognitionStatus.collectAsState()
     
     var hasPermission by remember {
         mutableStateOf(
@@ -124,7 +124,7 @@ fun RecognitionScreen(
         hasPermission = isGranted
         if (isGranted) {
             coroutineScope.launch {
-                com.convx.music.recognition.MusicRecognitionService.recognize(context)
+                com.BeatWave.music.recognition.MusicRecognitionService.recognize(context)
             }
         }
     }
@@ -132,7 +132,7 @@ fun RecognitionScreen(
     fun startRecognition() {
         if (hasPermission) {
             coroutineScope.launch {
-                com.convx.music.recognition.MusicRecognitionService.recognize(context)
+                com.BeatWave.music.recognition.MusicRecognitionService.recognize(context)
             }
         } else {
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
@@ -140,7 +140,7 @@ fun RecognitionScreen(
     }
     
     fun resetToReady() {
-        com.convx.music.recognition.MusicRecognitionService.reset()
+        com.BeatWave.music.recognition.MusicRecognitionService.reset()
     }
 
     fun saveToHistory(result: RecognitionResult) {
@@ -216,7 +216,7 @@ fun RecognitionScreen(
                     }
                     is RecognitionStatus.Listening -> {
                         ListeningState(
-                            onCancel = { com.convx.music.recognition.MusicRecognitionService.reset() }
+                            onCancel = { com.BeatWave.music.recognition.MusicRecognitionService.reset() }
                         )
                     }
                     is RecognitionStatus.Processing -> {
@@ -457,7 +457,7 @@ private fun SuccessState(
             modifier = Modifier
                 .size(180.dp)
                 .aspectRatio(1f),
-            shape = RoundedCornerShape(com.convx.music.constants.ThumbnailCornerRadius),
+            shape = RoundedCornerShape(com.BeatWave.music.constants.ThumbnailCornerRadius),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             AsyncImage(

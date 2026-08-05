@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -704,7 +704,7 @@ private fun RoomStatusCard(
             if (isHost) {
                 Spacer(modifier = Modifier.height(16.dp))
                 val inviteLink = remember(roomCode) {
-                    "https://vivimusic-listen-together.onrender.com/listen?code=$roomCode"
+                    "https://beatwave-listen-together.onrender.com/listen?code=$roomCode"
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

@@ -4,7 +4,7 @@
  * capsule/src/main/java/com/kyant/capsule/path/PathSegmentsBuilder.kt
  *
  * Vendored so the shape ships as source with this app. Package renamed
- * accordingly (com.kyant.capsule -> com.convx.music.ui.component.shapes).
+ * accordingly (com.kyant.capsule -> com.BeatWave.music.ui.component.shapes).
  */
 package com.convx.music.ui.component.shapes.path
 

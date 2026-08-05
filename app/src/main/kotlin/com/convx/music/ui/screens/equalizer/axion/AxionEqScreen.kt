@@ -53,7 +53,7 @@ fun AxionEqScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.vivi_equalizer)) },
                 navigationIcon = {
-                    com.convx.music.ui.component.IconButton(
+                    com.BeatWave.music.ui.component.IconButton(
                         onClick = onBackClick,
                         onLongClick = {}
                     ) {

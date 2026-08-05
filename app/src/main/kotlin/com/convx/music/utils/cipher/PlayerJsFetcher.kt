@@ -9,7 +9,7 @@ import timber.log.Timber
 import java.io.File
 
 object PlayerJsFetcher {
-    private const val TAG = "vivimusic_CipherFetcher"
+    private const val TAG = "beatwave_CipherFetcher"
     private const val IFRAME_API_URL = "https://www.youtube.com/iframe_api"
     private const val PLAYER_JS_URL_TEMPLATE = "https://www.youtube.com/s/player/%s/player_ias.vflset/en_GB/base.js"
     private const val CACHE_TTL_MS = 6 * 60 * 60 * 1000L // 6 hours

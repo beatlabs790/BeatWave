@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -59,10 +59,10 @@ class DiscordRPC(
         }
         if (button2Visible) {
             val resolvedText = resolveVariables(
-                button2Text.ifEmpty { "Visit Convx" },
+                button2Text.ifEmpty { "Visit BeatWave" },
                 song
             )
-            buttonsList.add(resolvedText to "https://github.com/cosmictaserdev-creator/Convx")
+            buttonsList.add(resolvedText to "https://github.com/beatlabs790/beatwave")
         }
 
         val type = when (activityType) {

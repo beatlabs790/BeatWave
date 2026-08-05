@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -446,7 +446,7 @@ fun CommunityPlaylistCard(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DailyDiscoverCard(
-    dailyDiscover: com.convx.music.viewmodels.DailyDiscoverItem,
+    dailyDiscover: com.BeatWave.music.viewmodels.DailyDiscoverItem,
     onClick: () -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier

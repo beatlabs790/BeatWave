@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -623,7 +623,7 @@ private fun ThumbnailItem(
     textBackgroundColor: Color,
     layoutDirection: LayoutDirection,
     onSeek: (String, Boolean) -> Unit,
-    playerConnection: com.convx.music.playback.PlayerConnection,
+    playerConnection: com.BeatWave.music.playback.PlayerConnection,
     context: android.content.Context,
     isLandscape: Boolean = false,
     isListenTogetherGuest: Boolean = false,
@@ -818,7 +818,7 @@ private fun ThumbnailItem(
                                         album = albumName,
                                         storefront = storefront
                                     )?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
-                                        ?: ViviMusicCanvasProvider.getBySongArtist(
+                                        ?: beatwaveCanvasProvider.getBySongArtist(
                                             song = s,
                                             artist = a
                                         )?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
@@ -847,9 +847,9 @@ private fun ThumbnailItem(
                                     )?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
                                 }
                             }
-                            CanvasSource.VIVIMUSIC -> {
+                            CanvasSource.beatwave -> {
                                 searchTasks.firstNotNullOfOrNull { (s, a) ->
-                                    ViviMusicCanvasProvider.getBySongArtist(
+                                    beatwaveCanvasProvider.getBySongArtist(
                                         song = s,
                                         artist = a
                                     )?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }

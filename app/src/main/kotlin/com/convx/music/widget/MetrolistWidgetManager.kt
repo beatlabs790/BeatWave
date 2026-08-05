@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -52,7 +52,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class vivimusicWidgetManager @Inject constructor(
+class beatwaveWidgetManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val database: MusicDatabase
 ) {
@@ -1001,7 +1001,7 @@ class vivimusicWidgetManager @Inject constructor(
      *
      * RemoteViews has no animation, so this cannot reproduce the app's Apple-style
      * glide — it steps as the line changes, keeping the same visual language
-     * (active line solid, neighbours faded) that ViviMusicLyrics uses.
+     * (active line solid, neighbours faded) that beatwaveLyrics uses.
      */
     private fun createLyricsRemoteViews(
         options: Bundle,

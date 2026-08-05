@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -584,7 +584,7 @@ enum class LyricsAnimationStyle {
     KARAOKE,
     APPLE,
     APPLE_V2,
-    VIVIMUSIC_1,
+    beatwave_1,
     LYRICS_V2,
     METRO_LYRICS,
 }
@@ -604,7 +604,7 @@ enum class CanvasSource {
     AUTO,
     ECHO_MUSIC,
     APPLE_MUSIC,
-    VIVIMUSIC,
+    beatwave,
     TIDAL,
 }
 val SwipeSensitivityKey = floatPreferencesKey("swipeSensitivity")

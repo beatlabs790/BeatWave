@@ -5,7 +5,7 @@
  *
  * Not published as a library — ported straight from the catalog demo app that
  * showcases Kyant0/backdrop, source-only. Package renamed and RuntimeShader
- * imports repointed at this app's vendored com.convx.music.ui.component.backdrop.
+ * imports repointed at this app's vendored com.BeatWave.music.ui.component.backdrop.
  */
 package com.convx.music.ui.component.backdrop.catalog.utils
 

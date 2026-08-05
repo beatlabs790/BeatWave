@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -104,7 +104,7 @@ class WrappedAudioService(
         }
 
         return try {
-            val audioQuality = context.dataStore.get(com.convx.music.constants.AudioQualityKey).let {
+            val audioQuality = context.dataStore.get(com.BeatWave.music.constants.AudioQualityKey).let {
                 AudioQuality.valueOf(it ?: AudioQuality.AUTO.name)
             }
             val playbackData = withContext(Dispatchers.IO) {

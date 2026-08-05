@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -12,7 +12,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.convx.music.constants.SearchSource
 
 /**
- * Search input state shared between [com.convx.music.ui.component.AppFloatingNavBar]
+ * Search input state shared between [com.BeatWave.music.ui.component.AppFloatingNavBar]
  * (which now owns the actual search text field) and the search_input/search/{query}
  * screens (which just read the query to filter/display results). Hoisted to
  * MainActivity, provided via [LocalNavSearchState] — the nav bar renders outside

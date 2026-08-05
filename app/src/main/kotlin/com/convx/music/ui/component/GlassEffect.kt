@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -32,7 +32,7 @@ import com.convx.music.ui.component.backdrop.shadow.Shadow
 
 /**
  * User-configurable parameters of the liquid glass effect, sourced from DataStore
- * preferences in [com.convx.music.MainActivity] and distributed through
+ * preferences in [com.BeatWave.music.MainActivity] and distributed through
  * [LocalGlassEffectConfig].
  */
 @Stable
@@ -197,7 +197,7 @@ val LocalAppBackdrop = staticCompositionLocalOf<Backdrop> { error("No AppBackdro
 
 /**
  * Whether the Apple Music-styled UI (iOS 26/27 liquid glass look, SF-style tab icons,
- * denser glass) is active. Read by [com.convx.music.ui.screens.Screens] consumers to pick
+ * denser glass) is active. Read by [com.BeatWave.music.ui.screens.Screens] consumers to pick
  * between the classic and iOS icon sets.
  */
 val LocalAppleMusicUi = staticCompositionLocalOf { false }

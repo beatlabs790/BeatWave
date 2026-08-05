@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -667,7 +667,7 @@ fun BottomSheetPlayer(
                     } else null
                     val appleSong = AppleMusicCanvasProvider.getBySongArtist(s, a, requestedAlbum, storefront)
                         ?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
-                    val vivi = ViviMusicCanvasProvider.getBySongArtist(s, a)
+                    val vivi = beatwaveCanvasProvider.getBySongArtist(s, a)
                         ?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
                     val tidal = TidalCanvasProvider.getBySongArtist(s, a, requestedAlbum)
                         ?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
@@ -681,8 +681,8 @@ fun BottomSheetPlayer(
                     AppleMusicCanvasProvider.getBySongArtist(s, a, requestedAlbum, storefront)
                         ?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
                 )
-                CanvasSource.VIVIMUSIC -> listOfNotNull(
-                    ViviMusicCanvasProvider.getBySongArtist(s, a)
+                CanvasSource.beatwave -> listOfNotNull(
+                    beatwaveCanvasProvider.getBySongArtist(s, a)
                         ?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
                 )
                 CanvasSource.TIDAL -> listOfNotNull(
@@ -1880,7 +1880,7 @@ fun BottomSheetPlayer(
                                 FilledIconButton(
                                     onClick = {
                                         menuState.show {
-                                            com.convx.music.ui.menu.LyricsMenu(
+                                            com.BeatWave.music.ui.menu.LyricsMenu(
                                                 lyricsProvider = { currentLyrics },
                                                 songProvider = { currentSong?.song },
                                                 mediaMetadataProvider = { mediaMetadata },
@@ -1987,7 +1987,7 @@ fun BottomSheetPlayer(
                             GlassCircleButton(
                                 onClick = {
                                     menuState.show {
-                                        com.convx.music.ui.menu.LyricsMenu(
+                                        com.BeatWave.music.ui.menu.LyricsMenu(
                                             lyricsProvider = { currentLyrics },
                                             songProvider = { currentSong?.song },
                                             mediaMetadataProvider = { mediaMetadata },
@@ -3051,7 +3051,7 @@ fun InlineLyricsView(
                 try {
                     val entryPoint = EntryPointAccessors.fromApplication(
                         context.applicationContext,
-                        com.convx.music.di.LyricsHelperEntryPoint::class.java
+                        com.BeatWave.music.di.LyricsHelperEntryPoint::class.java
                     )
                     val lyricsHelper = entryPoint.lyricsHelper()
                     val fetchedLyricsWithProvider = lyricsHelper.getLyrics(mediaMetadata)

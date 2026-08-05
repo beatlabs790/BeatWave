@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -59,7 +59,7 @@ import com.convx.music.utils.rememberPreference
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ViviMusicLyricsLine(
+fun beatwaveLyricsLine(
     entry: LyricsEntry,
     nextEntryTime: Long?,
     effectivePlaybackPosition: Long,
@@ -111,7 +111,7 @@ fun ViviMusicLyricsLine(
 
     // Segment the line into words with their own time windows
     val wordData = remember(entry.text, entry.words, activeDuration) {
-        val isHindiText = com.convx.music.lyrics.LyricsUtils.isHindi(entry.text)
+        val isHindiText = com.BeatWave.music.lyrics.LyricsUtils.isHindi(entry.text)
         if (!isHindiText && entry.words != null && entry.words.isNotEmpty()) {
             // Use precise word timestamps if available
             entry.words.mapIndexed { index, word ->

@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  *
  * Lossless (TIDAL) streaming via the open "hifi-api" family of public proxies.
@@ -145,7 +145,7 @@ object TidalService {
     )
 
     // Browser-ish identity so instances that block bots/datacenter UAs still answer.
-    private const val UA = "Mozilla/5.0 (compatible; ViviMusic/1.0)"
+    private const val UA = "Mozilla/5.0 (compatible; beatwave/1.0)"
 
     @Volatile private var cachedLive: List<String> = emptyList()
     @Volatile private var cachedAt: Long = 0L

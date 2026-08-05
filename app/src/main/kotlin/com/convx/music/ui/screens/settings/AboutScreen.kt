@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -109,6 +109,7 @@ import androidx.compose.ui.unit.dp
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.ui.unit.sp
 import com.convx.music.ui.utils.appTopBarWindowInsets
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.navigation.NavController
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import com.convx.music.BuildConfig
@@ -126,10 +127,13 @@ import com.convx.music.ui.utils.appTopBarWindowInsets
 import com.convx.music.ui.utils.backToMain
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import com.convx.music.ui.utils.safeOpenUri
+import coil3.compose.AsyncImage
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import java.text.SimpleDateFormat
+import coil3.compose.AsyncImage
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import java.util.Date
+import coil3.compose.AsyncImage
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import java.util.Locale
 
@@ -212,12 +216,19 @@ fun AboutScreen(
             title = stringResource(R.string.developer_section),
             items = listOf(
                 Material3SettingsItem(
-                    icon = painterResource(R.drawable.dev),
+                    leadingContent = {
+                        AsyncImage(
+                            model = "https://i.ibb.co/RpC3bT8g/beatlabs.jpg",
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(cookieShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    },
                     title = { Text(stringResource(R.string.developer_name)) },
                     description = { Text(stringResource(R.string.app_developer), color = MaterialTheme.colorScheme.primary) },
-                    tintIcon = false,
-                    iconShape = cookieShape,
-                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/cosmictaserdev-creator") }
+                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/beatlabs790") }
                 )
             )
         )
@@ -231,13 +242,28 @@ fun AboutScreen(
                     icon = painterResource(R.drawable.github),
                     title = { Text(stringResource(R.string.github_repository)) },
                     description = { Text(stringResource(R.string.view_source_code)) },
-                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/cosmictaserdev-creator/Convx") }
+                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/beatlabs790/BeatWave") }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.discord),
                     title = { Text(stringResource(R.string.discord_channel)) },
                     description = { Text(stringResource(R.string.join_discord)) },
-                    onClick = { uriHandler.safeOpenUri(context, "https://discord.gg/Ejeb4cmzfd") }
+                    onClick = { uriHandler.safeOpenUri(context, "https://discord.gg/spbuDTePSR") }
+                )
+            )
+        )
+
+        Spacer(modifier = Modifier.height(27.dp))
+
+        // Support Section
+        Material3SettingsGroup(
+            title = stringResource(R.string.donate),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = rememberVectorPainter(Icons.Filled.Favorite),
+                    title = { Text(stringResource(R.string.support_development)) },
+                    description = { Text(stringResource(R.string.upi_id_text)) },
+                    onClick = { uriHandler.safeOpenUri(context, "https://support-akshansh.vercel.app") }
                 )
             )
         )
@@ -262,7 +288,7 @@ fun AboutScreen(
                     icon = painterResource(R.drawable.license_vivi),
                     title = { Text(stringResource(R.string.license)) },
                     description = { Text("GPL-3.0 • Free Open Source Software") },
-                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/cosmictaserdev-creator/Convx/blob/main/LICENSE") }
+                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/beatlabs790/beatwave/blob/main/LICENSE") }
                 ),
             )
         )

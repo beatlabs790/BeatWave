@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  * 
  * Ported and adapted from ArchiveTune-dev (LyricsV2.kt)

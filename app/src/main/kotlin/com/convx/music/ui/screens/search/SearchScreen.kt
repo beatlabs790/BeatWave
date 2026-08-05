@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -195,7 +195,7 @@ fun SearchScreen(
       HomeImageBackground()
       HeroTintedContent(tint = tint, backdrop = heroBackdrop) {
         val chromeShape = ContinuousRoundedRectangle(percent = 50)
-        val accent = com.convx.music.ui.theme.LocalAccentColor.current
+        val accent = com.BeatWave.music.ui.theme.LocalAccentColor.current
 
         // Space for the floating side bar in tab view (0 otherwise). The hero
         // background stays full-bleed behind the Scaffold; only the foreground —

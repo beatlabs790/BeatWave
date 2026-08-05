@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         ### 💡 Feature Proposal
-        Help us make Convx even more awesome.
+        Help us make BeatWave even more awesome.
 
   - type: dropdown
     id: category

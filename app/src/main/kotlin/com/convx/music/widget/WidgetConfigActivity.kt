@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -41,7 +41,7 @@ import com.convx.music.R
 import com.convx.music.ui.component.PreferenceEntry
 import com.convx.music.ui.component.PreferenceGroupTitle
 import com.convx.music.ui.component.SwitchPreference
-import com.convx.music.ui.theme.vivimusicTheme
+import com.convx.music.ui.theme.beatwaveTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -74,7 +74,7 @@ class WidgetConfigActivity : ComponentActivity() {
         }
 
         setContent {
-            vivimusicTheme {
+            beatwaveTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,

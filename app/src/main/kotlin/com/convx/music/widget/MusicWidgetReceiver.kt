@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -78,10 +78,10 @@ open class MusicWidgetReceiver : AppWidgetProvider() {
     }
 
     companion object {
-        const val ACTION_PLAY_PAUSE = "com.convx.music.widget.PLAY_PAUSE"
-        const val ACTION_LIKE = "com.convx.music.widget.LIKE"
-        const val ACTION_NEXT = "com.convx.music.widget.NEXT"
-        const val ACTION_PREVIOUS = "com.convx.music.widget.PREVIOUS"
-        const val ACTION_UPDATE_WIDGET = "com.convx.music.widget.UPDATE_WIDGET"
+        const val ACTION_PLAY_PAUSE = "com.BeatWave.music.widget.PLAY_PAUSE"
+        const val ACTION_LIKE = "com.BeatWave.music.widget.LIKE"
+        const val ACTION_NEXT = "com.BeatWave.music.widget.NEXT"
+        const val ACTION_PREVIOUS = "com.BeatWave.music.widget.PREVIOUS"
+        const val ACTION_UPDATE_WIDGET = "com.BeatWave.music.widget.UPDATE_WIDGET"
     }
 }

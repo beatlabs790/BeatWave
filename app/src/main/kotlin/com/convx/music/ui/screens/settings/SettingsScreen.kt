@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -60,7 +60,7 @@ fun SettingsScreen(
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val isUpdateAvailable = getUpdateAvailableState(context) &&
-        com.convx.music.vivimusic.updater.getAutoUpdateCheckSetting(context)
+        com.BeatWave.music.beatwave.updater.getAutoUpdateCheckSetting(context)
 
     Column(
         Modifier
@@ -87,7 +87,7 @@ fun SettingsScreen(
         SettingsSectionHeader("GENERAL")
         SettingsSection {
             SettingsNavItem(
-                icon = painterResource(if (isUpdateAvailable) R.drawable.vivimusicnotification else R.drawable.network_update),
+                icon = painterResource(if (isUpdateAvailable) R.drawable.beatwavenotification else R.drawable.network_update),
                 iconTint = if (isUpdateAvailable) MaterialTheme.colorScheme.error else Color(0xFF007AFF),
                 title = stringResource(R.string.system_update),
                 badge = if (isUpdateAvailable) stringResource(R.string.update_available) else null,

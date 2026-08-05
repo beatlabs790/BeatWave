@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -70,7 +70,7 @@ fun YouTubeSelectionSongMenu(
         mutableStateOf(false)
     }
 
-    val listenTogetherManager = com.convx.music.LocalListenTogetherManager.current
+    val listenTogetherManager = com.BeatWave.music.LocalListenTogetherManager.current
     val isGuest = listenTogetherManager?.isInRoom == true && listenTogetherManager.isHost == false
 
     var downloadState by remember {
@@ -127,8 +127,8 @@ fun YouTubeSelectionSongMenu(
             songSelection.map { song ->
                 // Convert SongItem to Song entity
                 val metadata = song.toMediaMetadata()
-                com.convx.music.db.entities.Song(
-                    song = com.convx.music.db.entities.SongEntity(
+                com.BeatWave.music.db.entities.Song(
+                    song = com.BeatWave.music.db.entities.SongEntity(
                         id = metadata.id,
                         title = metadata.title,
                         duration = metadata.duration,
@@ -143,13 +143,13 @@ fun YouTubeSelectionSongMenu(
                         libraryRemoveToken = metadata.libraryRemoveToken
                     ),
                     artists = metadata.artists.map { artist ->
-                        com.convx.music.db.entities.ArtistEntity(
+                        com.BeatWave.music.db.entities.ArtistEntity(
                             id = artist.id ?: "",
                             name = artist.name
                         )
                     },
                     album = metadata.album?.let { album ->
-                        com.convx.music.db.entities.AlbumEntity(
+                        com.BeatWave.music.db.entities.AlbumEntity(
                             id = album.id,
                             title = album.title,
                             thumbnailUrl = metadata.thumbnailUrl, // Use song's thumbnail as album thumbnail
@@ -396,7 +396,7 @@ fun YouTubeSelectionSongMenu(
                                         // Insert the song first if it doesn't exist
                                         insert(metadata)
                                         // Create SongEntity with toggled like status
-                                        val songEntity = com.convx.music.db.entities.SongEntity(
+                                        val songEntity = com.BeatWave.music.db.entities.SongEntity(
                                             id = metadata.id,
                                             title = metadata.title,
                                             duration = metadata.duration,

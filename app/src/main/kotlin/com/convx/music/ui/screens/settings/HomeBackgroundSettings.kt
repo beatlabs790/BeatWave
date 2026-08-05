@@ -1,5 +1,5 @@
-ï»¿/**
- * Convx Project (C) 2026
+/**
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -78,7 +78,7 @@ private fun copyBackgroundImage(context: android.content.Context, source: Uri): 
 }.getOrNull()
 
 /**
- * Background-image controls (preview + enable/pick/blur/dim/animate/remove) â€”
+ * Background-image controls (preview + enable/pick/blur/dim/animate/remove) —
  * embedded inside [ThemeScreen] rather than its own settings screen, since it's
  * just another facet of the app's theme. See PLAN notes: moved out of
  * AppearanceSettings' standalone "settings/appearance/homebackground" route.
@@ -240,7 +240,7 @@ fun HomeBackgroundControls() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // What the Library screen falls back to when the custom image above is
-        // off/unset â€” plain, a flat theme-color wash, or a blurred thumbnail
+        // off/unset — plain, a flat theme-color wash, or a blurred thumbnail
         // pulled from the library's own content.
         val (libraryBackgroundMode, onLibraryBackgroundModeChange) = rememberEnumPreference(
             LibraryBackgroundModeKey,

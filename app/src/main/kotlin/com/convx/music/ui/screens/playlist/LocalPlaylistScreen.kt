@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -557,7 +557,7 @@ fun LocalPlaylistScreen(
     }
 
     val tint = rememberHeroTint(heroUrl)
-    val onTint = com.convx.music.ui.theme.AppleTokens.onColor(tint)
+    val onTint = com.BeatWave.music.ui.theme.AppleTokens.onColor(tint)
 
     val glassConfig = LocalGlassEffectConfig.current
     val useGlass = glassConfig.isEnabledFor(GlassComponent.NAV_BAR) && isGlassAllowed()
@@ -1102,7 +1102,7 @@ fun LocalPlaylistHeader(
 
     val overrideThumbnail = remember {mutableStateOf<String?>(null)}
     var isCustomThumbnail: Boolean = playlist.thumbnails.firstOrNull()?.let {
-        it.contains("studio_square_thumbnail") || it.contains("content://com.vivimusic.music")
+        it.contains("studio_square_thumbnail") || it.contains("content://com.BeatWave.music")
     } ?: false
 
 

@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -36,7 +36,7 @@ private val artworkTintCache = LruCache<String, List<Color>>(128)
  * darker variant, black) from an arbitrary artwork URL — the "single color
  * from the image" background tint used by the Artist/Album/Playlist detail
  * screens. Same Coil load + [Palette] pipeline as
- * [com.convx.music.ui.component.AlbumGradient], copied rather than composed
+ * [com.BeatWave.music.ui.component.AlbumGradient], copied rather than composed
  * since callers need the raw colors for buttons/text too, not just a painted
  * gradient box.
  *

@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import com.convx.music.R
-import com.convx.music.ui.theme.vivimusicTheme
+import com.convx.music.ui.theme.beatwaveTheme
 import com.convx.music.utils.CrashHandler
 import java.io.File
 import java.text.SimpleDateFormat
@@ -60,7 +60,7 @@ class CrashActivity : ComponentActivity() {
         
         setContent {
             val darkTheme = isSystemInDarkTheme()
-            vivimusicTheme(darkTheme = darkTheme) {
+            beatwaveTheme(darkTheme = darkTheme) {
                 CrashScreen(
                     crashLog = crashLog,
                     onClose = { finishAffinity() },
@@ -82,7 +82,7 @@ class CrashActivity : ComponentActivity() {
         try {
             // Create crash log file
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-            val fileName = "convx_crash_$timestamp.txt"
+            val fileName = "beatwave_crash_$timestamp.txt"
             val crashFile = File(cacheDir, fileName)
             crashFile.writeText(crashLog)
             

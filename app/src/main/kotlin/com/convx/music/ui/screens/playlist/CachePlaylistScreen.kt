@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -603,7 +603,7 @@ fun CachePlaylistScreen(
 private fun CachePlaylistHeader(
     songs: List<Song>,
     context: android.content.Context,
-    menuState: com.convx.music.ui.component.MenuState,
+    menuState: com.BeatWave.music.ui.component.MenuState,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -612,12 +612,12 @@ private fun CachePlaylistHeader(
     val cacheLength = remember(songs) { songs.fastSumBy { it.song.duration ?: 0 } }
 
     val heroUrl = songs.firstOrNull()?.thumbnailUrl
-    val heroSource = com.convx.music.ui.component.rememberHeroSource(
+    val heroSource = com.BeatWave.music.ui.component.rememberHeroSource(
         staticArt = heroUrl,
         songs = songs.map { it.thumbnailUrl to false },
     )
-    val tint = com.convx.music.ui.component.rememberHeroTint(heroUrl)
-    val onTint = com.convx.music.ui.theme.AppleTokens.onColor(tint)
+    val tint = com.BeatWave.music.ui.component.rememberHeroTint(heroUrl)
+    val onTint = com.BeatWave.music.ui.theme.AppleTokens.onColor(tint)
 
     Column(
         modifier = modifier.fillMaxWidth(),

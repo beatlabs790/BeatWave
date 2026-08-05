@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -215,7 +215,7 @@ class WrappedManager(
             @Suppress("UNCHECKED_CAST")
             val topSongsResult = results[1] as List<SongWithStats>
             @Suppress("UNCHECKED_CAST")
-            val topAlbumsResult = results[3] as List<com.convx.music.db.entities.Album>
+            val topAlbumsResult = results[3] as List<com.BeatWave.music.db.entities.Album>
             @Suppress("UNCHECKED_CAST")
             val topArtistsResult = results[2] as List<Artist>
             _state.update {

@@ -214,7 +214,7 @@ fun rememberAppBackgroundTint(contentTint: Color): Color {
  * Album-screen style hero header: a full-width square artwork that fades
  * (DstIn vertical gradient) into whatever tint plane sits behind it, so the
  * image dissolves into the color. Meant to be the FIRST item of a LazyColumn
- * whose parent paints [com.convx.music.ui.theme.AppleTokens] tint behind it.
+ * whose parent paints [com.BeatWave.music.ui.theme.AppleTokens] tint behind it.
  *
  * Falls back to the default music image when [artworkUrl] is null/blank.
  */

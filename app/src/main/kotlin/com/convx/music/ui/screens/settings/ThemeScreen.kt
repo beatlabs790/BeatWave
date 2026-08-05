@@ -172,7 +172,7 @@ import com.convx.music.ui.theme.AppleTokens
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import com.convx.music.ui.theme.DefaultThemeColor
 import com.convx.music.ui.utils.appTopBarWindowInsets
-import com.convx.music.ui.theme.vivimusicTheme
+import com.convx.music.ui.theme.beatwaveTheme
 import com.convx.music.ui.utils.appTopBarWindowInsets
 import com.convx.music.utils.rememberEnumPreference
 import com.convx.music.ui.utils.appTopBarWindowInsets
@@ -837,7 +837,7 @@ fun ThemeMockup(
         DarkMode.OFF -> false
     }
 
-    vivimusicTheme(
+    beatwaveTheme(
         darkTheme = useDark,
         pureBlack = pureBlack,
         themeColor = themeColor
@@ -945,7 +945,7 @@ fun ThemeMockupPortrait(
         DarkMode.OFF -> false
     }
 
-    vivimusicTheme(
+    beatwaveTheme(
         darkTheme = useDark,
         pureBlack = pureBlack,
         themeColor = themeColor

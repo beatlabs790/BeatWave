@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -12,8 +12,8 @@ import android.content.pm.PackageManager
 object IconUtils {
     fun setIcon(context: Context, enabled: Boolean) {
         val pm = context.packageManager
-        val dynamic = ComponentName(context, "com.convx.music.MainActivityAlias")
-        val static = ComponentName(context, "com.convx.music.MainActivityStatic")
+        val dynamic = ComponentName(context, "com.BeatWave.music.MainActivityAlias")
+        val static = ComponentName(context, "com.BeatWave.music.MainActivityStatic")
 
         pm.setComponentEnabledSetting(
             dynamic,

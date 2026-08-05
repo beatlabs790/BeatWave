@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -61,7 +61,7 @@ fun accentTextColor(accent: Color, dark: Boolean): Color {
 val LocalAccentTextColor = androidx.compose.runtime.compositionLocalOf { DefaultThemeColor }
 
 @Composable
-fun vivimusicTheme(
+fun beatwaveTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     pureBlack: Boolean = true,
     themeColor: Color = DefaultThemeColor,

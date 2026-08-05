@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -883,7 +883,7 @@ private fun SeekBarPreview(style: SliderStyle, color: Color) {
             val slot = size.width / bars
             val barW = slot * 0.5f
             val mid = size.height / 2f
-            val heights = com.convx.music.ui.component.waveformBars(7, bars)
+            val heights = com.BeatWave.music.ui.component.waveformBars(7, bars)
             for (i in 0 until bars) {
                 val h = (heights[i] * size.height).coerceAtLeast(size.height * 0.2f)
                 val x = i * slot + slot / 2f

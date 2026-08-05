@@ -17,19 +17,19 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class ViviMusicCanvasManifest(
-    val items: List<ViviMusicCanvasItem> = emptyList()
+data class beatwaveCanvasManifest(
+    val items: List<beatwaveCanvasItem> = emptyList()
 )
 
 @Serializable
-data class ViviMusicCanvasItem(
+data class beatwaveCanvasItem(
     val song: String,
     val artist: String,
     val url: String
 )
 
-object ViviMusicCanvasProvider {
-    private const val BASE_URL = "https://vivimusicanvas.mkmdevilmi.workers.dev/canvas.json" //new link
+object beatwaveCanvasProvider {
+    private const val BASE_URL = "https://beatwaveanvas.mkmdevilmi.workers.dev/canvas.json" //new link
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -55,7 +55,7 @@ object ViviMusicCanvasProvider {
     }
 
     private data class CacheEntry(
-        val value: ViviMusicCanvasManifest?,
+        val value: beatwaveCanvasManifest?,
         val expiresAtMs: Long,
     )
 
@@ -66,14 +66,14 @@ object ViviMusicCanvasProvider {
     // cache don't both fire the same network call.
     private val fetchMutex = Mutex()
 
-    private suspend fun fetchManifest(): ViviMusicCanvasManifest? = fetchMutex.withLock {
+    private suspend fun fetchManifest(): beatwaveCanvasManifest? = fetchMutex.withLock {
         val currentCache = manifestCache
         if (currentCache != null && currentCache.expiresAtMs > System.currentTimeMillis()) {
             return@withLock currentCache.value
         }
 
         try {
-            val manifest: ViviMusicCanvasManifest = client.get(BASE_URL).body()
+            val manifest: beatwaveCanvasManifest = client.get(BASE_URL).body()
 
             manifestCache = CacheEntry(
                 value = manifest,

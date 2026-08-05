@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -214,12 +214,12 @@ constructor(
                         CanvasSource.AUTO -> {
                             EchoMusicCanvasProvider.getBySongArtist(s, a)?.preferredAnimationUrl
                                 ?: AppleMusicCanvasProvider.getBySongArtist(s, a, "", storefront)?.preferredAnimationUrl
-                                ?: ViviMusicCanvasProvider.getBySongArtist(s, a)?.preferredAnimationUrl
+                                ?: beatwaveCanvasProvider.getBySongArtist(s, a)?.preferredAnimationUrl
                                 ?: TidalCanvasProvider.getBySongArtist(s, a, "")?.preferredAnimationUrl
                         }
                         CanvasSource.ECHO_MUSIC -> EchoMusicCanvasProvider.getBySongArtist(s, a)?.preferredAnimationUrl
                         CanvasSource.APPLE_MUSIC -> AppleMusicCanvasProvider.getBySongArtist(s, a, "", storefront)?.preferredAnimationUrl
-                        CanvasSource.VIVIMUSIC -> ViviMusicCanvasProvider.getBySongArtist(s, a)?.preferredAnimationUrl
+                        CanvasSource.beatwave -> beatwaveCanvasProvider.getBySongArtist(s, a)?.preferredAnimationUrl
                         CanvasSource.TIDAL -> TidalCanvasProvider.getBySongArtist(s, a, "")?.preferredAnimationUrl
                     }
 

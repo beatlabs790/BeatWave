@@ -3,7 +3,7 @@ package com.convx.music.utils.cipher
 import timber.log.Timber
 
 object FunctionNameExtractor {
-    private const val TAG = "vivimusic_CipherFnExtract"
+    private const val TAG = "beatwave_CipherFnExtract"
 
     // Modern 2025+ signature deobfuscation function patterns
     // The sig function is called as: FUNC(NUMBER, decodeURIComponent(encryptedSig))

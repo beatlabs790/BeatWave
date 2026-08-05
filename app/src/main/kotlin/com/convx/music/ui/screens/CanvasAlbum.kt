@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -70,7 +70,7 @@ fun rememberAlbumCanvas(
                 ?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
                 ?.takeIf { artistOnlyMatches(it.artist, artistName) }
 
-            val vivi = ViviMusicCanvasProvider.getBySongArtist(songQuery, artistName)
+            val vivi = beatwaveCanvasProvider.getBySongArtist(songQuery, artistName)
                 ?.takeIf { !it.preferredAnimationUrl.isNullOrBlank() }
                 ?.takeIf { artistOnlyMatches(it.artist, artistName) }
 

@@ -51,7 +51,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/Theme.Convx"
+        android:theme="@style/Theme.BeatWave"
         tools:targetApi="tiramisu">
         <uses-library
             android:name="org.apache.http.legacy"
@@ -60,7 +60,7 @@
         <activity
             android:name=".ui.screens.CrashActivity"
             android:exported="false"
-            android:theme="@style/Theme.Convx"
+            android:theme="@style/Theme.BeatWave"
             android:excludeFromRecents="true"
             android:process=":crash" />
 
@@ -70,7 +70,7 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:theme="@style/Theme.Convx">
+            android:theme="@style/Theme.BeatWave">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -81,7 +81,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.Convx"
+            android:theme="@style/Theme.BeatWave"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -100,7 +100,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <data android:host="vivimusic-listen-together.onrender.com" />
+                <data android:host="beatwave-listen-together.onrender.com" />
                 <data android:pathPrefix="/listen" />
             </intent-filter>
 
@@ -111,7 +111,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="vivimusic" />
+                <data android:scheme="beatwave" />
                 <data android:host="listen" />
             </intent-filter>
 
@@ -277,9 +277,9 @@
             android:label="@string/widget_music_player">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.convx.music.widget.PLAY_PAUSE" />
-                <action android:name="com.convx.music.widget.LIKE" />
-                <action android:name="com.convx.music.widget.UPDATE_WIDGET" />
+                <action android:name="com.BeatWave.music.widget.PLAY_PAUSE" />
+                <action android:name="com.BeatWave.music.widget.LIKE" />
+                <action android:name="com.BeatWave.music.widget.UPDATE_WIDGET" />
             </intent-filter>
 
             <meta-data
@@ -292,7 +292,7 @@
             android:name=".widget.WidgetConfigActivity"
             android:exported="true"
             android:excludeFromRecents="true"
-            android:theme="@style/Theme.Convx">
+            android:theme="@style/Theme.BeatWave">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -305,7 +305,7 @@
             android:label="@string/widget_now_playing">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.convx.music.widget.UPDATE_WIDGET" />
+                <action android:name="com.BeatWave.music.widget.UPDATE_WIDGET" />
             </intent-filter>
 
             <meta-data
@@ -320,7 +320,7 @@
             android:label="@string/widget_lyrics">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.convx.music.widget.UPDATE_WIDGET" />
+                <action android:name="com.BeatWave.music.widget.UPDATE_WIDGET" />
             </intent-filter>
 
             <meta-data
@@ -335,9 +335,9 @@
             android:label="@string/widget_turntable">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.convx.music.widget.TURNTABLE_PLAY_PAUSE" />
-                <action android:name="com.convx.music.widget.TURNTABLE_LIKE" />
-                <action android:name="com.convx.music.widget.UPDATE_TURNTABLE_WIDGET" />
+                <action android:name="com.BeatWave.music.widget.TURNTABLE_PLAY_PAUSE" />
+                <action android:name="com.BeatWave.music.widget.TURNTABLE_LIKE" />
+                <action android:name="com.BeatWave.music.widget.UPDATE_TURNTABLE_WIDGET" />
             </intent-filter>
 
             <meta-data
@@ -348,7 +348,7 @@
         <!-- Google Cast Options Provider -->
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="com.convx.music.cast.CastOptionsProvider" />
+            android:value="com.BeatWave.music.cast.CastOptionsProvider" />
     </application>
 
 </manifest>

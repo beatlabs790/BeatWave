@@ -65,7 +65,7 @@ object NetworkConfig {
                 
                 // Cache configuration
                 if (enableCache) {
-                    val cacheDirectory = cacheDir ?: File(System.getProperty("java.io.tmpdir"), "vivimusic_http_cache")
+                    val cacheDirectory = cacheDir ?: File(System.getProperty("java.io.tmpdir"), "beatwave_http_cache")
                     cache(okhttp3.Cache(cacheDirectory, CACHE_SIZE_MB))
                 }
             }

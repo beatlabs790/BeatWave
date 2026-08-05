@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -408,7 +408,7 @@ fun LyricsImageCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.vivimusicnotification),
+                            painter = painterResource(id = R.drawable.beatwavenotification),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(16.dp),

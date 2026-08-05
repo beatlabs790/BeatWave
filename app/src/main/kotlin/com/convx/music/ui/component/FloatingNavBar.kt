@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -461,7 +461,7 @@ private fun SearchBarPlaceholder(
  * Keyboard-active search state — replaces the whole nav bar (mini player and
  * current-screen icon included) while focused, since the keyboard covers that
  * screen space anyway. Docked above the keyboard via [Modifier.imePadding].
- * Relocated from the old [com.convx.music.ui.screens.search.SearchScreen]
+ * Relocated from the old [com.BeatWave.music.ui.screens.search.SearchScreen]
  * bottomBar pill — same markup, now driven by hoisted [NavSearchState].
  */
 @Composable

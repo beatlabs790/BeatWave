@@ -26,7 +26,7 @@ import kotlin.coroutines.resumeWithException
  * from the YouTube player JS.
  */
 object EjsNTransformSolver {
-    private const val TAG = "vivimusic_EjsNSolver"
+    private const val TAG = "beatwave_EjsNSolver"
 
     private var solverWebView: SolverWebView? = null
 

@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -150,8 +150,8 @@ fun PlayerMenu(
     }
 
     val listenTogetherManager = LocalListenTogetherManager.current
-    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsState(initial = com.convx.music.listentogether.RoomRole.NONE)
-    val isListenTogetherGuest = listenTogetherRoleState?.value == com.convx.music.listentogether.RoomRole.GUEST
+    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsState(initial = com.BeatWave.music.listentogether.RoomRole.NONE)
+    val isListenTogetherGuest = listenTogetherRoleState?.value == com.BeatWave.music.listentogether.RoomRole.GUEST
     val pendingSuggestions by listenTogetherManager?.pendingSuggestions?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
 
     AddToPlaylistDialog(
@@ -691,7 +691,7 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
         playerConnection.player.playbackParameters =
             PlaybackParameters(tempo, 2f.pow(transposeValue.toFloat() / 12))
     }
-    val listenTogetherManager = com.convx.music.LocalListenTogetherManager.current
+    val listenTogetherManager = com.BeatWave.music.LocalListenTogetherManager.current
     val isInRoom = listenTogetherManager?.isInRoom ?: false
 
     AlertDialog(
@@ -810,7 +810,7 @@ fun ListenTogetherDialog(
     if (!visible) return
     
     val context = LocalContext.current
-    val listenTogetherManager = com.convx.music.LocalListenTogetherManager.current
+    val listenTogetherManager = com.BeatWave.music.LocalListenTogetherManager.current
     
     // Handle case where manager is not available
     if (listenTogetherManager == null) {
@@ -864,7 +864,7 @@ fun ListenTogetherDialog(
     val pendingSuggestions by listenTogetherManager.pendingSuggestions.collectAsState()
     
     // Load saved username
-    var savedUsername by rememberPreference(com.convx.music.constants.ListenTogetherUsernameKey, "")
+    var savedUsername by rememberPreference(com.BeatWave.music.constants.ListenTogetherUsernameKey, "")
     var roomCodeInput by rememberSaveable { mutableStateOf("") }
     var usernameInput by rememberSaveable { mutableStateOf(savedUsername) }
 
@@ -1293,7 +1293,7 @@ fun ListenTogetherDialog(
                             if (isHost) {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 val inviteLink = remember(room.roomCode) {
-                                    "https://vivimusic-listen-together.onrender.com/listen?code=${room.roomCode}"
+                                    "https://beatwave-listen-together.onrender.com/listen?code=${room.roomCode}"
                                 }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,

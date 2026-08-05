@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -36,7 +36,7 @@ private val GlassCircleShape = ContinuousRoundedRectangle(percent = 50)
  * the Artist/Album/Playlist detail screens, replacing their Material TopAppBar
  * and flat-colored circular Surface/IconButton. Falls back to a translucent
  * flat circle when glass is disabled or unsupported, same as
- * [com.convx.music.ui.component.FloatingNavBar]'s own useGlass fallback.
+ * [com.BeatWave.music.ui.component.FloatingNavBar]'s own useGlass fallback.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -24,7 +24,7 @@ class DensityScaler : BaseLifecycleContentProvider() {
     }
 
     companion object {
-        private const val PREFS_NAME = "vivimusic_settings"
+        private const val PREFS_NAME = "beatwave_settings"
         private const val KEY_DENSITY_SCALE = "density_scale_factor"
         private const val DEFAULT_SCALE_FACTOR = 1.0f
 

@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -332,7 +332,7 @@ fun UpdateScreen(navController: NavHostController) {
                                                 ContextCompat.startActivity(context, installIntent, null)
                                             }
                                         } else {
-                                            val urlToDownload = currentStatus.apkUrl ?: "https://github.com/cosmictaserdev-creator/Convx/releases/download/${currentStatus.version}/convx-${currentStatus.version}.apk"
+                                            val urlToDownload = currentStatus.apkUrl ?: "https://github.com/beatlabs790/beatwave/releases/download/${currentStatus.version}/beatwave-${currentStatus.version}.apk"
                                             val downloadRequest = OneTimeWorkRequestBuilder<UpdateDownloadWorker>()
                                                 .setInputData(workDataOf("apk_url" to urlToDownload, "version" to currentStatus.version, "file_size" to currentStatus.size))
                                                 .addTag("update_download")
@@ -528,12 +528,12 @@ fun UpdateScreen(navController: NavHostController) {
                                         }
                                         section.items.forEachIndexed { index, item ->
                                             val shape = when {
-                                                section.items.size == 1 -> com.convx.music.ui.component.detachedItemShape()
-                                                index == 0 -> com.convx.music.ui.component.leadingItemShape()
-                                                index == section.items.size - 1 -> com.convx.music.ui.component.endItemShape()
-                                                else -> com.convx.music.ui.component.middleItemShape()
+                                                section.items.size == 1 -> com.BeatWave.music.ui.component.detachedItemShape()
+                                                index == 0 -> com.BeatWave.music.ui.component.leadingItemShape()
+                                                index == section.items.size - 1 -> com.BeatWave.music.ui.component.endItemShape()
+                                                else -> com.BeatWave.music.ui.component.middleItemShape()
                                             }
-                                            com.convx.music.ui.component.ChangelogItem(
+                                            com.BeatWave.music.ui.component.ChangelogItem(
                                                 text = item,
                                                 shape = shape,
                                                 modifier = Modifier.padding(vertical = 1.dp)
@@ -658,7 +658,7 @@ suspend fun checkForUpdate(
 ) {
     withContext(Dispatchers.IO) {
         try {
-            val url = URL("https://api.github.com/repos/cosmictaserdev-creator/Convx/releases")
+            val url = URL("https://api.github.com/repos/beatlabs790/beatwave/releases")
             val json = url.openStream().bufferedReader().use { it.readText() }
             val releases = JSONArray(json)
             
@@ -670,7 +670,7 @@ suspend fun checkForUpdate(
 
             if (betaEnabled) {
                 try {
-                    val nightlyUrl = URL("https://api.github.com/repos/cosmictaserdev-creator/Convx/actions/workflows/nightly.yml/runs?status=success&per_page=1")
+                    val nightlyUrl = URL("https://api.github.com/repos/beatlabs790/beatwave/actions/workflows/nightly.yml/runs?status=success&per_page=1")
                     val nightlyJson = nightlyUrl.openStream().bufferedReader().use { it.readText() }
                     val nightlyData = JSONObject(nightlyJson)
                     val runs = nightlyData.optJSONArray("workflow_runs")
@@ -724,7 +724,7 @@ suspend fun checkForUpdate(
                 changelogList.add(ChangelogSection(context.getString(R.string.changelog), listOf(subjectLine)))
                 
                 val formattedReleaseDate = formatGitHubDate(runUpdatedAt)
-                val apkDownloadUrl = "https://nightly.link/cosmictaserdev-creator/Convx/workflows/nightly.yml/main/convx-gms-nightly.zip"
+                val apkDownloadUrl = "https://nightly.link/beatlabs790/beatwave/workflows/nightly.yml/main/beatwave-gms-nightly.zip"
                 
                 withContext(Dispatchers.Main) {
                     onSuccess(displayTag, true, changelogList, "~30", formattedReleaseDate, "Bleeding-edge nightly build from main branch.", null, apkDownloadUrl)
@@ -795,7 +795,7 @@ suspend fun checkForUpdate(
                     var imageUrl: String? = null
                     try {
                         val changelogUrl =
-                            URL("https://github.com/cosmictaserdev-creator/Convx/releases/download/$tagWithPrefix/changelog.json")
+                            URL("https://github.com/beatlabs790/beatwave/releases/download/$tagWithPrefix/changelog.json")
                         val changelogJson = changelogUrl.openStream().bufferedReader().use { it.readText() }
                         val changelogData = JSONObject(changelogJson)
 

@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -569,7 +569,7 @@ fun Lyrics(
 
     val lazyListState = rememberLazyListState()
     
-    // Professional animation states for smooth vivimusic-style transitions
+    // Professional animation states for smooth beatwave-style transitions
     var isAnimating by remember { mutableStateOf(false) }
     var isAutoScrollEnabled by rememberSaveable { mutableStateOf(true) }
 
@@ -921,7 +921,7 @@ fun Lyrics(
                     key = { index, item -> "$index-${item.time}" } // Add stable key
                 ) { index, item ->
                     val isSelected = selectedIndices.contains(index)
-                    if (lyricsAnimationStyle == LyricsAnimationStyle.VIVIMUSIC_1 && item.words?.isNotEmpty() == true) {
+                    if (lyricsAnimationStyle == LyricsAnimationStyle.beatwave_1 && item.words?.isNotEmpty() == true) {
                         val currentLineTime = if (displayedCurrentLineIndex >= 0 && displayedCurrentLineIndex < lines.size) {
                             lines[displayedCurrentLineIndex].time
                         } else -1L
@@ -929,7 +929,7 @@ fun Lyrics(
                         val isActiveByIndex = index == displayedCurrentLineIndex
                         val isActiveByTime = isLineAtSameTime && displayedCurrentLineIndex >= 0
 
-                        ViviMusicLyricsLine(
+                        beatwaveLyricsLine(
                             entry = item,
                             nextEntryTime = lines.getOrNull(index + 1)?.time,
                             effectivePlaybackPosition = effectivePlaybackPosition,
@@ -2298,11 +2298,11 @@ fun Lyrics(
     }
 }
 
-// Professional page animation constants inspired by vivimusic design - slower for smoothness
-private const val vivimusic_AUTO_SCROLL_DURATION = 1500L // Much slower auto-scroll for smooth transitions
-private const val vivimusic_INITIAL_SCROLL_DURATION = 1000L // Slower initial positioning
-private const val vivimusic_SEEK_DURATION = 800L // Slower user interaction
-private const val vivimusic_FAST_SEEK_DURATION = 600L // Less aggressive seeking
+// Professional page animation constants inspired by beatwave design - slower for smoothness
+private const val beatwave_AUTO_SCROLL_DURATION = 1500L // Much slower auto-scroll for smooth transitions
+private const val beatwave_INITIAL_SCROLL_DURATION = 1000L // Slower initial positioning
+private const val beatwave_SEEK_DURATION = 800L // Slower user interaction
+private const val beatwave_FAST_SEEK_DURATION = 600L // Less aggressive seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds

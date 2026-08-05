@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -277,7 +277,7 @@ fun ArtistScreen(
     val heroZoom = rememberHeroZoom()
 
     val tint = rememberHeroTint(artistThumbnail)
-    val onTint = com.convx.music.ui.theme.AppleTokens.onColor(tint)
+    val onTint = com.BeatWave.music.ui.theme.AppleTokens.onColor(tint)
 
     // Fills the screen tint into the capture BEFORE the content, exactly like
     // MainActivity's appBackdrop does with its own background. Without it the

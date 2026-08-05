@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -278,7 +278,7 @@ fun AlbumScreen(
     }
 
     val tint = rememberHeroTint(albumWithSongs?.album?.thumbnailUrl)
-    val onTint = com.convx.music.ui.theme.AppleTokens.onColor(tint)
+    val onTint = com.BeatWave.music.ui.theme.AppleTokens.onColor(tint)
 
     val glassConfig = LocalGlassEffectConfig.current
     val useGlass = glassConfig.isEnabledFor(GlassComponent.NAV_BAR) && isGlassAllowed()
@@ -350,7 +350,7 @@ fun AlbumScreen(
                 }
 
                 val tintHeader = tint
-                val onTintHeader = com.convx.music.ui.theme.AppleTokens.onColor(tintHeader)
+                val onTintHeader = com.BeatWave.music.ui.theme.AppleTokens.onColor(tintHeader)
 
                 Box(
                     modifier = Modifier.fillMaxWidth()

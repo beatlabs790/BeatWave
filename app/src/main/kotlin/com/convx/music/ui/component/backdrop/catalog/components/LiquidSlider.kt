@@ -5,7 +5,7 @@
  *
  * Not published as a library — ported straight from the catalog demo app that
  * showcases Kyant0/backdrop, source-only. Package renamed, imports repointed at
- * this app's vendored com.convx.music.ui.component.backdrop, and
+ * this app's vendored com.BeatWave.music.ui.component.backdrop, and
  * com.kyant.shapes.Capsule swapped for RoundedCornerShape(percent = 50) (the
  * lens effect only supports CornerBasedShape here — see GlassEffect.kt).
  */

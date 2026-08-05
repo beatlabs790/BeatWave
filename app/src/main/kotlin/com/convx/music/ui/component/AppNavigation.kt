@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -312,7 +312,7 @@ fun AppLandscapeRail(
         else -> MaterialTheme.colorScheme.surfaceContainerHigh
     }
     
-    val selectedContentColor = com.convx.music.ui.theme.LocalAccentColor.current
+    val selectedContentColor = com.BeatWave.music.ui.theme.LocalAccentColor.current
     val unselectedContentColor = if (useGlass) glassConfig.textColor else Color.White
 
     val railModifier = if (useGlass) {

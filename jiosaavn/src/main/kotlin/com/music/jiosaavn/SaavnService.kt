@@ -1,5 +1,5 @@
 /**
- * vivimusic Project (C) 2026
+ * beatwave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  *
  * JioSaavn audio streaming service.
@@ -122,7 +122,7 @@ object SaavnService {
             defaultRequest {
                 url(BASE_URL)
                 headers.append(HttpHeaders.Accept, "application/json")
-                headers.append(HttpHeaders.UserAgent, "ViviMusic/1.0")
+                headers.append(HttpHeaders.UserAgent, "beatwave/1.0")
             }
             expectSuccess = false
         }

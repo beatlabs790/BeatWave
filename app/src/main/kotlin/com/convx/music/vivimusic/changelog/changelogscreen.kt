@@ -141,9 +141,9 @@ fun ChangelogScreen(
                         showingCached = true
                     }
                 } else {
-                    val changelogUrl = URL("https://github.com/cosmictaserdev-creator/Convx/releases/download/$tag/changelog.json")
+                    val changelogUrl = URL("https://github.com/beatlabs790/beatwave/releases/download/$tag/changelog.json")
                     val connection = changelogUrl.openConnection() as HttpURLConnection
-                    connection.setRequestProperty("User-Agent", "ViviMusic-Changelog-App")
+                    connection.setRequestProperty("User-Agent", "beatwave-Changelog-App")
                     connection.setRequestProperty("Accept", "application/json")
                     
                     if (connection.responseCode == 200) {
@@ -214,9 +214,9 @@ fun ChangelogScreen(
         isFetchingOldReleases = true
         coroutineScope.launch(Dispatchers.IO) {
             try {
-                val releasesUrl = URL("https://api.github.com/repos/cosmictaserdev-creator/Convx/releases")
+                val releasesUrl = URL("https://api.github.com/repos/beatlabs790/beatwave/releases")
                 val connection = releasesUrl.openConnection() as HttpURLConnection
-                connection.setRequestProperty("User-Agent", "ViviMusic-Changelog-App")
+                connection.setRequestProperty("User-Agent", "beatwave-Changelog-App")
                 connection.setRequestProperty("Accept", "application/vnd.github+json")
                 
                 if (connection.responseCode == 200) {

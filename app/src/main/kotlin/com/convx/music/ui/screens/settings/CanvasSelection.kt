@@ -1,5 +1,5 @@
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
@@ -146,7 +146,7 @@ fun CanvasSelection(
 
         // Description text
         Text(
-            text = stringResource(R.string.vivimusic_canvas_desc),
+            text = stringResource(R.string.beatwave_canvas_desc),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 24.dp, top = 16.dp)
@@ -241,15 +241,15 @@ fun CanvasSelection(
                 Material3SettingsItem(
                     leadingContent = {
                         RadioButton(
-                            selected = canvasSource == CanvasSource.VIVIMUSIC,
+                            selected = canvasSource == CanvasSource.beatwave,
                             onClick = null,
                             enabled = canvasThumbnailAnimation
                         )
                     },
-                    title = { Text(stringResource(R.string.canvas_source_vivimusic)) },
-                    description = { Text(stringResource(R.string.canvas_source_vivimusic_desc)) },
+                    title = { Text(stringResource(R.string.canvas_source_beatwave)) },
+                    description = { Text(stringResource(R.string.canvas_source_beatwave_desc)) },
                     enabled = canvasThumbnailAnimation,
-                    onClick = { onCanvasSourceChange(CanvasSource.VIVIMUSIC) }
+                    onClick = { onCanvasSourceChange(CanvasSource.beatwave) }
                 ),
                 Material3SettingsItem(
                     leadingContent = {
@@ -271,7 +271,7 @@ fun CanvasSelection(
 
     TopAppBar(
             windowInsets = appTopBarWindowInsets(),
-        title = { Text(stringResource(R.string.vivimusic_canvas)) },
+        title = { Text(stringResource(R.string.beatwave_canvas)) },
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,

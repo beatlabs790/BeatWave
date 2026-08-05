@@ -48,7 +48,7 @@ youtubedlAndroid = "0.17.3"
 playServicesAuth = "21.2.0"
 googleApiClient = "2.9.0"
 googleDriveApi = "v3-rev20260428-2.0.0"
-browser = "1.8.0"
+browser = "1.10.0"
 
 [libraries]
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }

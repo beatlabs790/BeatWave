@@ -6,25 +6,21 @@
   <p><b>A modern Android music app with ad-free streaming, synced lyrics, offline playback, and an intuitive user experience.</b></p>
   
   <p>
-    <a href="https://github.com/iad1tya/Echo-Music/releases" style="text-decoration:none;"><img src="https://img.shields.io/github/v/release/iad1tya/Echo-Music?style=flat-square&color=6f42c1" alt="GitHub Release"></a>
-    <a href="https://github.com/iad1tya/Echo-Music/stargazers" style="text-decoration:none;"><img src="https://img.shields.io/github/stars/iad1tya/Echo-Music?style=flat-square&color=e3b341" alt="GitHub Stars"></a>
-    <a href="LICENSE" style="text-decoration:none;"><img src="https://img.shields.io/github/license/iad1tya/Echo-Music?style=flat-square&color=28a745" alt="License"></a>
+    <a href="https://github.com/beatlabs790/beatwavet/releases" style="text-decoration:none;"><img src="." alt="GitHub Release"></a>
+    <a href="https://github.com/iad1tya/beatlabs790/beatwave" style="text-decoration:none;"><img src="." alt="GitHub Stars"></a>
   </p>
   <p>
-    <a href="https://t.me/EchoMusicApp" style="text-decoration:none;"><img src="https://img.shields.io/badge/Telegram-Join-2CA5E0?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
-    <a href="https://discord.gg/EcfV3AxH5c" style="text-decoration:none;"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
-    <a href="https://hosted.weblate.org/projects/echo-music/" style="text-decoration:none;"><img src="https://img.shields.io/weblate/progress/echo-music?server=https%3A%2F%2Fhosted.weblate.org&style=flat-square" alt="Weblate"></a>
+    </a>
+    <a href="https://discord.gg/spbuDTePSR" style="text-decoration:none;"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
   </p>
   <p>
-    <a href="https://trendshift.io/repositories/20485" target="_blank" style="text-decoration:none;"><img src="https://trendshift.io/api/badge/repositories/20485" alt="EchoMusicApp/Echo-Music | Trendshift" style="width: 200px; height: 44px;" width="200" height="44"/></a>
   </p>
   <table style="margin: 0 auto; border-collapse: collapse; border: none;">
     <tr>
       <td align="center" style="padding: 15px; border: none;">
-        <a href="https://echomusic.fun/download" style="text-decoration:none;"><img src="assets/download.png" alt="Download" width="150" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+        <a href="https://beatwave.de5.net style="text-decoration:none;"><img src="assets/download.png" alt="Download" width="150" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
       </td>
-      <td align="center" style="padding: 15px; border: none;">
-        <a href="https://echomusic.fun/obtainium" style="text-decoration:none;"><img src="assets/obtainium.png" alt="Get it on Obtainium" width="150" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+      <td /></a>
       </td>
     </tr>
   </table>
@@ -80,8 +76,8 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
         <img src="Screenshots/sc_5.png" alt="Music Library" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
       <td align="center" style="padding: 15px; border: none;">
-        <b>Echo Find (Recognition)</b><br><br>
-        <img src="Screenshots/sc_6.png" alt="Echo Find" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
+        <b>BeatWave Find (Recognition)</b><br><br>
+        <img src="Screenshots/sc_6.png" alt="BeatWave Find" width="220" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/>
       </td>
     </tr>
   </table>
@@ -93,7 +89,7 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 
 ### What's New
 
-> - **Lossless Music Hub** — Stream and contribute 16-bit/24-bit FLAC files directly to the Echo Music ecosystem.
+> - **Lossless Music Hub** — Stream and contribute 16-bit/24-bit FLAC files directly to the BeatWave Music ecosystem.
 > - **Data Saver Mode (Beta)** — Automatically reduces data usage during playback for limited connections.
 > - **Settings Search Index** — Quickly find and navigate to any settings option instantly.
 > - **Redesigned UI** — Cleaner, faster, and more intuitive interface from the ground up.
@@ -121,11 +117,11 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 </details>
 
 <details>
-<summary><b>Discovery & Echo Find</b></summary>
+<summary><b>Discovery & BeatWave Find</b></summary>
 <br>
 
-- **Echo Find** — Identify songs playing around you using advanced audio recognition.
-- **Echo Brain** — An intelligent, on-device engine that analyzes your listening momentum and auto-injects perfectly aligned tracks into your queue. Read more in the [Echo Brain Documentation](ECHO_BRAIN_DOCS.md).
+- **BeatWave Find** — Identify songs playing around you using advanced audio recognition.
+- **Ai Hub** — An intelligent, on-device engine that analyzes your listening momentum and auto-injects perfectly aligned tracks into your queue.
 - **Smart Recommendations** — Personalized suggestions based on your listening history.
 - **Comprehensive Browsing** — Explore Charts, Podcasts, Moods, and Genres.
 
@@ -179,7 +175,7 @@ BeatWave delivers a seamless, premium listening experience by leveraging YouTube
 
 ### Android Installation
 
-Download the latest pre-compiled APK from the [Releases Page](https://github.com/iad1tya/Echo-Music/releases/latest).
+Download the latest pre-compiled APK from the [Releases Page](https://github.com/beatlabs790/beatwave/releases/latest).
 
 <details>
 <summary><b>Building from Source</b></summary>
@@ -187,14 +183,14 @@ Download the latest pre-compiled APK from the [Releases Page](https://github.com
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/iad1tya/Echo-Music.git
-   cd Echo-Music
+   git clone https://github.com/beatlabs790/beatwave.git
+   cd beatwave
    ```
 
 2. **Configure Android SDK**
    Create a `local.properties` file:
    ```bash
-   echo "sdk.dir=/path/to/your/android/sdk" > local.properties
+   beatwave "sdk.dir=/path/to/your/android/sdk" > local.properties
    ```
    *(For detailed paths on Windows/macOS/Linux, refer to [SETUP.md](SETUP.md))*
 
@@ -202,7 +198,7 @@ Download the latest pre-compiled APK from the [Releases Page](https://github.com
    Firebase is required for analytics and crash reporting. See the instructions in [SETUP.md](SETUP.md#3-configure-firebase-optional) for adding your `google-services.json`.
 
 4. **Build the Application**
-   Echo Music has two build variants: **FOSS** (without Google Play Services / Cast) and **GMS** (with Cast support).
+   beatwave Music has two build variants: **FOSS** (without Google Play Services / Cast) and **GMS** (with Cast support).
    
    - To build the **FOSS** Universal Debug variant:
      ```bash
@@ -218,16 +214,6 @@ Download the latest pre-compiled APK from the [Releases Page](https://github.com
 
 ---
 
-## Translations
-
-<h3>We use Weblate to translate Echo Music. <a href="https://hosted.weblate.org/projects/echo-music/">Help us bring Echo Music to more people!</a></h3>
-
-<div align="center">
-  <a href="https://hosted.weblate.org/projects/echo-music/" style="text-decoration:none;"><img src="https://hosted.weblate.org/widgets/echo-music/-/horizontal-auto.svg" alt="Translation status" /></a>
-</div>
-
----
-
 ## Community & Support
 
 Join the community for updates, discussions, and help.
@@ -236,12 +222,8 @@ Join the community for updates, discussions, and help.
   <table style="margin: 0 auto; border-collapse: collapse; border: none;">
     <tr>
       <td align="center" style="padding: 15px; border: none;">
-        <a href="https://discord.gg/EcfV3AxH5c" style="text-decoration:none;"><img src="assets/discord.png" alt="Discord Logo" width="140" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+        <a href="https://discord.gg/spbuDTePSR" style="text-decoration:none;"><img src="assets/discord.png" alt="Discord Logo" width="140" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
       </td>
-      <td align="center" style="padding: 15px; border: none;">
-        <a href="https://t.me/EchoMusicApp" style="text-decoration:none;"><img src="assets/telegram.png" alt="Telegram Logo" width="130" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
-      </td>
-    </tr>
   </table>
 </div>
 
@@ -249,55 +231,26 @@ Join the community for updates, discussions, and help.
 
 ## Support the Project
 
-If Echo Music has been useful to you, consider supporting its development.
+If BeatWave has been useful to you, consider supporting its development.
 
 <div align="center">
   <table style="margin: 0 auto; border-collapse: collapse; border: none;">
     <tr>
       <td align="center" style="padding: 15px; border: none;">
-        <a href="https://buymeacoffee.com/iad1tya" style="text-decoration:none;"><img src="assets/bmac.png" alt="Buy Me A Coffee Logo" width="140" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
       </td>
       <td align="center" style="padding: 15px; border: none;">
-        <a href="https://intradeus.github.io/http-protocol-redirector/?r=upi://pay?pa=iad1tya@upi&pn=Aditya%20Yadav&am=&tn=Thank%20You" style="text-decoration:none;"><img src="assets/upi.svg" alt="UPI Logo" width="100" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
-      </td>
-      <td align="center" style="padding: 15px; border: none;">
-        <a href="https://www.patreon.com/cw/iad1tya" style="text-decoration:none;"><img src="assets/patreon3.png" alt="Patreon Logo" width="100" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+        <a href="https://support-akshansh.vercel.app" style="text-decoration:none;"><img src="assets/upi.svg" alt="UPI Logo" width="100" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
       </td>
     </tr>
   </table>
 </div>
 
 <br>
-
-<details>
-<summary><b>Cryptocurrency Options</b></summary>
-<br>
-
-| Network | Address |
-| :--- | :--- |
-| **Bitcoin** | `bc1qcvyr7eekha8uytmffcvgzf4h7xy7shqzke35fy` |
-| **Ethereum** | `0x51bc91022E2dCef9974D5db2A0e22d57B360e700` |
-| **Solana** | `9wjca3EQnEiqzqgy7N5iqS1JGXJiknMQv6zHgL96t94S` |
-
-</details>
-
----
-
-## Contributors
-
-A huge thank you to everyone who has helped improve Echo Music! Whether you've fixed bugs, added new features, or updated translations, your contributions are greatly appreciated.
-
-<div align="center">
-  <a href="https://github.com/iad1tya/Echo-Music/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=iad1tya/Echo-Music" alt="Contributors" />
-  </a>
-</div>
-
 ---
 
 ## Special Thanks
 
-Echo Music stands on the shoulders of several excellent open-source projects. Sincere thanks to:
+BeatWave stands on the shoulders of several excellent open-source projects. Sincere thanks to:
 
 | Project | Description |
 | :--- | :--- |

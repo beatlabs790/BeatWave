@@ -777,10 +777,10 @@ fun ArtistScreen(
                             LazyRow(
                                 contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                             ) {
-                                items(
+                                itemsIndexed(
                                     items = filteredLibraryAlbums,
-                                    key = { "local_album_${it.id}_${filteredLibraryAlbums.indexOf(it)}" }
-                                ) { album ->
+                                    key = { index, it -> "local_album_${it.id}_${index}" }
+                                ) { _, album ->
                                     AlbumGridItem(
                                         album = album,
                                         isActive = mediaMetadata?.album?.id == album.id,

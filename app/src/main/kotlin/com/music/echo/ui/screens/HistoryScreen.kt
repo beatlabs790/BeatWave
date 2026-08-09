@@ -238,15 +238,15 @@ fun HistoryScreen(
                         )
                     }
 
-                    items(
+                    itemsIndexed(
                         items = section.songs,
-                        key = { "${section.title}_${it.id}_${section.songs.indexOf(it)}" }
-                    ) { song ->
+                        key = { index, it -> "${section.title}_${it.id}_${index}" }
+                    ) { index, song ->
                         YouTubeListItem(
                             item = song,
                             isActive = song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
-                            shape = listItemShape(section.songs.indexOf(song), section.songs.size),
+                            shape = listItemShape(index, section.songs.size),
                             trailingContent = {
                                 IconButton(
                                     onClick = {

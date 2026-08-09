@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,14 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.music.innertube.utils.parseCookieString
 import iad1tya.echo.music.BuildConfig
@@ -32,11 +30,11 @@ import iad1tya.echo.music.constants.AudioQualityKey
 import iad1tya.echo.music.constants.AudioQuality
 import iad1tya.echo.music.ui.component.Material3SettingsGroup
 import iad1tya.echo.music.ui.component.Material3SettingsItem
-import iad1tya.echo.music.utils.rememberPreference
 import iad1tya.echo.music.utils.rememberEnumPreference
+import iad1tya.echo.music.utils.rememberPreference
 import iad1tya.echo.music.viewmodels.HomeViewModel
-import androidx.compose.ui.layout.ContentScale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingDialoge(
     onDismissRequest: () -> Unit,
@@ -60,22 +58,23 @@ fun SettingDialoge(
     val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(UseLoginForBrowse, true)
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, true)
 
-    Dialog(
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        sheetState = sheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
         val primaryColor = MaterialTheme.colorScheme.onSurface
         val onSecondaryColor = MaterialTheme.colorScheme.onSurfaceVariant
 
-        Card(
+        Column(
             modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(28.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 32.dp, start = 16.dp, end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -102,60 +101,32 @@ fun SettingDialoge(
                         textAlign = TextAlign.Center
                     )
 
-                    IconButton(
-                        onClick = onDismissRequest,
-                        modifier = Modifier.size(32.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.close),
-                            contentDescription = "Close",
-                            tint = primaryColor,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-
-                // Account Group
-                Material3SettingsGroup(
-                    title = "Account",
-                    compact = true,
-                    items = buildList {
-                        add(
-                            Material3SettingsItem(
-                                title = { Text(if (isLoggedIn) accountName else "Anonymous") },
-                                description = { Text(if (isLoggedIn) accountEmail.ifEmpty { "Logged In" } else "Not Logged In") },
-                                icon = painterResource(R.drawable.account),
-                                trailingContent = if (isLoggedIn && !accountImageUrl.isNullOrBlank()) {
-                                    {
-                                        AsyncImage(
-                                            model = accountImageUrl,
-                                            contentDescription = "Profile Photo",
-                                            contentScale = ContentScale.Crop,
-                                            modifier = Modifier
-                                                .size(40.dp)
-                                                .clip(CircleShape)
-                                        )
-                                    }
-                                } else null,
-                                onClick = { if (isLoggedIn) onNavigate("settings/account") else onNavigate("login") }
-                            )
-                        )
-                        add(
-                            Material3SettingsItem(
-                                title = { Text(androidx.compose.ui.res.stringResource(R.string.ai_lyrics_translation)) },
-                                customIcon = {
-                                    Text(
-                                        text = "Ai",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+            // Account Group
+            Material3SettingsGroup(
+                title = "Account",
+                compact = true,
+                items = buildList {
+                    add(
+                        Material3SettingsItem(
+                            title = { Text(if (isLoggedIn) accountName else "Anonymous") },
+                            description = { Text(if (isLoggedIn) accountEmail.ifEmpty { "Logged In" } else "Not Logged In") },
+                            icon = painterResource(R.drawable.account),
+                            trailingContent = if (isLoggedIn && !accountImageUrl.isNullOrBlank()) {
+                                {
+                                    AsyncImage(
+                                        model = accountImageUrl,
+                                        contentDescription = "Profile Photo",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
                                     )
-                                },
-                                onClick = {
-                                    onDismissRequest()
-                                    onNavigate("settings/ai")
                                 }
-                            )
+                            } else null,
+                            onClick = {
+                                onDismissRequest()
+                                if (isLoggedIn) onNavigate("settings/account") else onNavigate("login") 
+                            }
                         )
                     }
                 )
@@ -199,24 +170,47 @@ fun SettingDialoge(
                         )
                     )
                 }
+            )
 
+            if (isLoggedIn) {
                 Material3SettingsGroup(
-                    title = "App",
+                    title = "Preferences",
                     compact = true,
                     items = listOf(
                         Material3SettingsItem(
-                            title = { Text("Settings") },
-                            icon = painterResource(R.drawable.settings),
-                            onClick = { onNavigate("settings") }
+                            title = { Text("Use Account for Browsing") },
+                            icon = painterResource(R.drawable.add_circle),
+                            trailingContent = {
+                                Switch(
+                                    checked = useLoginForBrowse,
+                                    onCheckedChange = {
+                                        com.music.innertube.YouTube.useLoginForBrowse = it
+                                        onUseLoginForBrowseChange(it)
+                                    },
+                                    modifier = Modifier.scale(0.8f)
+                                )
+                            },
+                            onClick = {
+                                val newVal = !useLoginForBrowse
+                                com.music.innertube.YouTube.useLoginForBrowse = newVal
+                                onUseLoginForBrowseChange(newVal)
+                            }
                         ),
                         Material3SettingsItem(
-                            title = { Text("About") },
-                            icon = painterResource(R.drawable.info),
-                            trailingContent = { Text(BuildConfig.VERSION_NAME, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) },
-                            onClick = { onNavigate("settings/about") }
+                            title = { Text("YouTube Music Sync") },
+                            icon = painterResource(R.drawable.cached),
+                            trailingContent = {
+                                Switch(
+                                    checked = ytmSync,
+                                    onCheckedChange = onYtmSyncChange,
+                                    modifier = Modifier.scale(0.8f)
+                                )
+                            },
+                            onClick = { onYtmSyncChange(!ytmSync) }
                         )
                     )
                 )
+            }
 
                 // Footer Links
                 Row(

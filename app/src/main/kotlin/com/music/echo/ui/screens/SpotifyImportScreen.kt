@@ -197,6 +197,7 @@ private fun spotifyImportItems(
         ),
         Material3SettingsItem(
             title = { Text(stringResource(R.string.action_logout)) },
+            description = { Text(stringResource(R.string.action_logout_desc)) },
             icon = painterResource(R.drawable.logout),
             enabled = idle,
             onClick = { viewModel.logout() },

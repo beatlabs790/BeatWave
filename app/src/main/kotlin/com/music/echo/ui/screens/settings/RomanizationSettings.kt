@@ -92,6 +92,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_as_main)),
                     icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.lyrics_romanize_as_main)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_as_main_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeAsMain,
@@ -113,6 +114,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_japanese)),
                     icon = painterResource(R.drawable.language_japanese_latin),
                     title = { Text(stringResource(R.string.lyrics_romanize_japanese)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_japanese_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeJapanese,
@@ -134,6 +136,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_korean)),
                     icon = painterResource(R.drawable.language_korean_latin),
                     title = { Text(stringResource(R.string.lyrics_romanize_korean)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_korean_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeKorean,
@@ -155,6 +158,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_chinese)),
                     icon = painterResource(R.drawable.language),
                     title = { Text(stringResource(R.string.lyrics_romanize_chinese)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_chinese_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeChinese,
@@ -176,6 +180,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_hindi)),
                     icon = painterResource(R.drawable.language),
                     title = { Text(stringResource(R.string.lyrics_romanize_hindi)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_hindi_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeHindi,
@@ -197,6 +202,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_punjabi)),
                     icon = painterResource(R.drawable.language),
                     title = { Text(stringResource(R.string.lyrics_romanize_punjabi)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_punjabi_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizePunjabi,
@@ -226,6 +232,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_russian)),
                     icon = painterResource(R.drawable.alphabet_cyrillic),
                     title = { Text(stringResource(R.string.lyrics_romanize_russian)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_russian_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeRussian,
@@ -247,6 +254,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_ukrainian)),
                     icon = painterResource(R.drawable.alphabet_cyrillic),
                     title = { Text(stringResource(R.string.lyrics_romanize_ukrainian)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_ukrainian_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeUkrainian,
@@ -268,6 +276,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_serbian)),
                     icon = painterResource(R.drawable.alphabet_cyrillic),
                     title = { Text(stringResource(R.string.lyrics_romanize_serbian)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_serbian_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeSerbian,
@@ -289,6 +298,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_bulgarian)),
                     icon = painterResource(R.drawable.alphabet_cyrillic),
                     title = { Text(stringResource(R.string.lyrics_romanize_bulgarian)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_bulgarian_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeBulgarian,
@@ -310,6 +320,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_belarusian)),
                     icon = painterResource(R.drawable.alphabet_cyrillic),
                     title = { Text(stringResource(R.string.lyrics_romanize_belarusian)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_belarusian_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeBelarusian,
@@ -331,6 +342,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_kyrgyz)),
                     icon = painterResource(R.drawable.alphabet_cyrillic),
                     title = { Text(stringResource(R.string.lyrics_romanize_kyrgyz)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_kyrgyz_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeKyrgyz,
@@ -352,6 +364,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanize_macedonian)),
                     icon = painterResource(R.drawable.alphabet_cyrillic),
                     title = { Text(stringResource(R.string.lyrics_romanize_macedonian)) },
+                    description = { Text(stringResource(R.string.lyrics_romanize_macedonian_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lyricsRomanizeMacedonian,

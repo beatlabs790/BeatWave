@@ -197,6 +197,7 @@ fun AccountSettingsScreen(
     isHighlighted = (highlightKey == stringResource(R.string.more_content)),
                             icon = painterResource(R.drawable.add_circle),
                             title = { Text(stringResource(R.string.more_content)) },
+                            description = { Text(stringResource(R.string.more_content_desc)) },
                             trailingContent = {
                                 Switch(
                                     checked = useLoginForBrowse,
@@ -225,6 +226,7 @@ fun AccountSettingsScreen(
     isHighlighted = (highlightKey == stringResource(R.string.yt_sync)),
                             icon = painterResource(R.drawable.cached),
                             title = { Text(stringResource(R.string.yt_sync)) },
+                            description = { Text(stringResource(R.string.yt_sync_desc)) },
                             trailingContent = {
                                 Switch(
                                     checked = ytmSync,
@@ -255,18 +257,21 @@ fun AccountSettingsScreen(
                         isHighlighted = (highlightKey == stringResource(R.string.discord_integration)),
                         icon = painterResource(R.drawable.discord),
                         title = { Text(stringResource(R.string.discord_integration)) },
+                        description = { Text(stringResource(R.string.discord_integration_desc)) },
                         onClick = { navController.navigate("settings/discord") }
                     ),
                     Material3SettingsItem(
                         isHighlighted = (highlightKey == stringResource(R.string.lastfm_integration)),
                         icon = painterResource(R.drawable.ic_lastfm),
                         title = { Text(stringResource(R.string.lastfm_integration)) },
+                        description = { Text(stringResource(R.string.lastfm_integration_desc)) },
                         onClick = { navController.navigate("settings/lastfm") }
                     ),
                     Material3SettingsItem(
                         isHighlighted = (highlightKey == stringResource(R.string.listenbrainz_scrobbling)),
                         icon = painterResource(R.drawable.ic_listenbrainz),
                         title = { Text(stringResource(R.string.listenbrainz_scrobbling)) },
+                        description = { Text(stringResource(R.string.listenbrainz_scrobbling_desc)) },
                         trailingContent = {
                             Switch(
                                 checked = listenBrainzEnabled,

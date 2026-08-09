@@ -570,10 +570,11 @@ class HomeViewModel @Inject constructor(
 
         
         loadLocalDataPhase()
-        isLoading.value = false
 
         
         loadNetworkDataPhase()
+        
+        isLoading.value = false
     }
 
     private val _isLoadingMore = MutableStateFlow(false)

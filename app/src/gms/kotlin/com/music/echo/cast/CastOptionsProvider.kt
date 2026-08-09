@@ -43,6 +43,7 @@ class CastOptionsProvider : OptionsProvider {
             .setCastMediaOptions(mediaOptions)
             .setStopReceiverApplicationWhenEndingSession(true)
             .setResumeSavedSession(true)
+            .setEnableReconnectionService(true)
             .build()
     }
 

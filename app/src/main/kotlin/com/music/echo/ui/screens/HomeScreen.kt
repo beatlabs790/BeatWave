@@ -1187,7 +1187,7 @@ fun HomeScreen(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                                         modifier = Modifier.animateItem()
                                     ) {
-                                        items(items = songs, key = { it.id }) { songObj ->
+                                        items(items = songs.distinctBy { it.id }, key = { it.id }) { songObj ->
                                             localGridItem(songObj)
                                         }
                                     }
@@ -1329,7 +1329,7 @@ fun HomeScreen(
                                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         modifier = Modifier.animateItem()
                                     ) {
-                                        items(playlists, key = { it.playlist.id }) { item ->
+                                        items(playlists.distinctBy { it.playlist.id }, key = { it.playlist.id }) { item ->
                                             CommunityPlaylistCard(
                                                 item = item,
                                                 onClick = {
@@ -1436,7 +1436,7 @@ fun HomeScreen(
                                             }) * rows)
                                             .animateItem()
                                     ) {
-                                        items(keepListening, key = { it.id }) {
+                                        items(keepListening.distinctBy { it.id }, key = { it.id }) {
                                             localGridItem(it)
                                         }
                                     }
@@ -1637,7 +1637,7 @@ fun HomeScreen(
                                             .asPaddingValues(),
                                         modifier = Modifier.animateItem()
                                     ) {
-                                        items(recommendation.items, key = { it.id }) { item ->
+                                        items(recommendation.items.distinctBy { it.id }, key = { it.id }) { item ->
                                             ytGridItem(item)
                                         }
                                     }
@@ -1777,7 +1777,7 @@ fun HomeScreen(
                                                 .asPaddingValues(),
                                             modifier = Modifier.animateItem()
                                         ) {
-                                            items(sectionData.items, key = { it.id }) { item ->
+                                            items(sectionData.items.distinctBy { it.id }, key = { it.id }) { item ->
                                                 ytGridItem(item)
                                             }
                                         }
@@ -1841,7 +1841,7 @@ fun HomeScreen(
                                             .width(250.dp)
                                             .height(290.dp)
                                             .clip(MaterialTheme.shapes.extraLarge)
-                                            .background(MaterialTheme.colorScheme.onSurface)
+                                            .background(MaterialTheme.colorScheme.surfaceVariant)
                                     )
                                 }
                             }

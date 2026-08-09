@@ -326,6 +326,7 @@ fun LastFMSettingsScreen(
             items = listOf(
                 Material3SettingsItem(
                     title = { Text(stringResource(R.string.enable_scrobbling)) },
+                    description = { Text(stringResource(R.string.enable_scrobbling_desc)) },
                     trailingContent = {
                         Switch(
                             checked = lastfmScrobbling,
@@ -347,6 +348,7 @@ fun LastFMSettingsScreen(
                 ),
                 Material3SettingsItem(
                     title = { Text(stringResource(R.string.lastfm_now_playing)) },
+                    description = { Text(stringResource(R.string.lastfm_now_playing_desc)) },
                     trailingContent = {
                         Switch(
                             checked = useNowPlaying,

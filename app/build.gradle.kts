@@ -33,15 +33,8 @@ android {
         applicationId = "iad1tya.echo.music"
         minSdk = 26
         targetSdk = 36
-<<<<<<< HEAD
-
-
-        versionCode = 525
-        versionName = "5.2.83"
-=======
         versionCode = 526
-        versionName = "5.2.85"
->>>>>>> upstream/main
+        versionName = "4.4.0"
 
 
         versionCode = 521

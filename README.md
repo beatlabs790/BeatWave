@@ -18,7 +18,7 @@
   <table style="margin: 0 auto; border-collapse: collapse; border: none;">
     <tr>
       <td align="center" style="padding: 15px; border: none;">
-        <a href="https://beatwave.de5.net style="text-decoration:none;"><img src="assets/download.png" alt="Download" width="150" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
+        <a href="https://beatwave.de5.net"><img src="assets/download.png" alt="Download" width="150" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);"/></a>
       </td>
       <td /></a>
       </td>
@@ -258,8 +258,8 @@ BeatWave stands on the shoulders of several excellent open-source projects. Sinc
 | **[ArchiveTune](https://github.com/koiverse/ArchiveTune)** | Material You UI inspiration |
 | **[Better Lyrics](https://better-lyrics.boidu.dev/)** | Lyrics enhancement and synchronization |
 | **[SimpMusic](https://github.com/maxrave-dev/SimpMusic)** | Lyrics implementation reference |
-| **[Music Recognizer](https://github.com/aleksey-saenko/MusicRecognizer)** | Audio recognition (Echo Find) |
-| **[Flow](https://github.com/a-edev/Flow)** | AI queue generation engine (Echo Brain) |
+| **[Music Recognizer](https://github.com/aleksey-saenko/MusicRecognizer)** | Audio recognition (BeatWave Find) |
+| **[Flow](https://github.com/a-edev/Flow)** | AI queue generation engine (Ai Hub) |
 | **[zemer-cipher](https://github.com/ZemerTeam/zemer-cipher)** | YouTube cipher deobfuscation and PoToken generation |
 
 ---

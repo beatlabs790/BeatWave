@@ -20,7 +20,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,11 +59,12 @@ fun CastSessionSheet(
     }
 
     // Cast state
-    val isCasting by castHandler.isCasting.collectAsState()
-    val castDeviceName by castHandler.castDeviceName.collectAsState()
+    val isCasting by castHandler.isCasting.collectAsStateWithLifecycle()
+    val castDeviceName by castHandler.castDeviceName.collectAsStateWithLifecycle()
+    val deviceType by castHandler.deviceType.collectAsStateWithLifecycle()
 
     // Current media metadata
-    val currentMetadata by playerConnection.mediaMetadata.collectAsState()
+    val currentMetadata by playerConnection.mediaMetadata.collectAsStateWithLifecycle()
 
     // Auto-dismiss if disconnected
     if (!isCasting) {
@@ -80,7 +83,7 @@ fun CastSessionSheet(
             modifier = Modifier.padding(horizontal = 4.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.cast_connected),
+                painter = painterResource(deviceType.connectedIcon),
                 contentDescription = null,
                 modifier = Modifier.size(28.dp),
                 tint = MaterialTheme.colorScheme.primary
@@ -112,7 +115,7 @@ fun CastSessionSheet(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.cast_connected),
+                    painter = painterResource(deviceType.connectedIcon),
                     contentDescription = null,
                     modifier = Modifier.size(26.dp)
                 )
@@ -137,8 +140,8 @@ fun CastSessionSheet(
         Spacer(modifier = Modifier.height(16.dp))
 
         // ── Now playing ────────────────────────────────────────────
-        if (currentMetadata != null) {
-            NowPlayingCard(metadata = currentMetadata!!)
+        currentMetadata?.let { metadata ->
+            NowPlayingCard(metadata = metadata)
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -154,7 +157,7 @@ fun CastSessionSheet(
             shape = RoundedCornerShape(12.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.cast_connected),
+                painter = painterResource(deviceType.connectedIcon),
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.error

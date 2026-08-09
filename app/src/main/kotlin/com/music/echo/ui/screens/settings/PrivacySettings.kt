@@ -160,6 +160,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.pause_listen_history)),
                     icon = painterResource(R.drawable.history),
                     title = { Text(stringResource(R.string.pause_listen_history)) },
+                    description = { Text(stringResource(R.string.pause_listen_history_desc)) },
                     trailingContent = {
                         Switch(
                             checked = pauseListenHistory,
@@ -181,6 +182,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.clear_listen_history)),
                     icon = painterResource(R.drawable.delete_history),
                     title = { Text(stringResource(R.string.clear_listen_history)) },
+                    description = { Text(stringResource(R.string.clear_listen_history_desc)) },
                     onClick = { showClearListenHistoryDialog = true }
                 )
             )
@@ -195,6 +197,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.pause_search_history)),
                     icon = painterResource(R.drawable.search_off),
                     title = { Text(stringResource(R.string.pause_search_history)) },
+                    description = { Text(stringResource(R.string.pause_search_history_desc)) },
                     trailingContent = {
                         Switch(
                             checked = pauseSearchHistory,
@@ -216,6 +219,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.clear_search_history)),
                     icon = painterResource(R.drawable.clear_all),
                     title = { Text(stringResource(R.string.clear_search_history)) },
+                    description = { Text(stringResource(R.string.clear_search_history_desc)) },
                     onClick = { showClearSearchHistoryDialog = true }
                 )
             )

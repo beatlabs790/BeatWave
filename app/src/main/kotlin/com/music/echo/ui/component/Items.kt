@@ -388,26 +388,7 @@ fun SongListItem(
     showInLibraryIcon: Boolean = false,
     showDownloadIcon: Boolean = true,
     showSize: Boolean = false,
-    badges: @Composable RowScope.() -> Unit = {
-        val isLossless = song.format?.codecs == "flac"
-
-        if (isLossless) {
-            Text(
-                text = "LOSSLESS",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp,
-                    fontSize = 8.sp
-                ),
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .padding(end = 4.dp)
-                    .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(2.dp))
-                    .padding(horizontal = 2.dp)
-            )
-        }
-
-        if (showLikedIcon && song.song.liked) {
+    badges: @Composable RowScope.() -> Unit = {        if (showLikedIcon && song.song.liked) {
             Icon.Favorite()
         }
         if (song.song.explicit) {
@@ -1823,22 +1804,5 @@ object Icon {
 
 }
 
-@Composable
-fun rememberLosslessMatch(
-    id: String,
-    artist: String,
-    title: String,
-    cachedFlac: Boolean
-): androidx.compose.runtime.State<Boolean?> {
-    return androidx.compose.runtime.produceState<Boolean?>(initialValue = if (cachedFlac) true else null, id) {
-        if (cachedFlac) {
-            value = true
-            return@produceState
-        }
-        kotlinx.coroutines.delay(300) // Debounce fast scrolling
-        val track = iad1tya.echo.music.utils.LosslessAPI.search(title, artist)
-        value = track != null
-    }
-}
 
 

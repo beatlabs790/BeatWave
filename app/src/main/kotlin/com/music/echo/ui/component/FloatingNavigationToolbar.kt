@@ -89,9 +89,9 @@ fun FloatingNavigationToolbar(
     shuffleContentDescription: String = "",
     onMusicRecognitionClick: (() -> Unit)? = null,
     musicRecognitionContentDescription: String = "",
-    onSettingsClick: (() -> Unit)? = null,
-    settingsIconRes: Int? = null,
-    settingsContentDescription: String = "",
+    onAiHubClick: (() -> Unit)? = null,
+    aiHubIconRes: Int? = null,
+    aiHubContentDescription: String = "",
     scrollBehavior: FloatingToolbarScrollBehavior? = null,
     isSelected: (Screens) -> Boolean,
     onItemClick: (Screens, Boolean) -> Unit,
@@ -118,9 +118,9 @@ fun FloatingNavigationToolbar(
                         onShuffleClick = onShuffleClick,
                         shuffleIconRes = shuffleIconRes,
                         shuffleContentDescription = shuffleContentDescription,
-                        onSettingsClick = onSettingsClick,
-                        settingsIconRes = settingsIconRes,
-                        settingsContentDescription = settingsContentDescription,
+                        onAiHubClick = onAiHubClick,
+                        aiHubIconRes = aiHubIconRes,
+                        aiHubContentDescription = aiHubContentDescription,
                     )
                 },
                 modifier = Modifier.widthIn(max = 480.dp),
@@ -271,9 +271,9 @@ private fun FloatingToolbarOverflowMenuButton(
     onShuffleClick: (() -> Unit)?,
     shuffleIconRes: Int?,
     shuffleContentDescription: String,
-    onSettingsClick: (() -> Unit)?,
-    settingsIconRes: Int?,
-    settingsContentDescription: String,
+    onAiHubClick: (() -> Unit)?,
+    aiHubIconRes: Int?,
+    aiHubContentDescription: String,
 ) {
     var menuExpanded by rememberSaveable { mutableStateOf(false) }
 
@@ -326,12 +326,12 @@ private fun FloatingToolbarOverflowMenuButton(
                 )
             }
 
-            if (onSettingsClick != null && settingsIconRes != null) {
+            if (onAiHubClick != null && aiHubIconRes != null) {
                 DropdownMenuItem(
-                    text = { Text(settingsContentDescription) },
+                    text = { Text(aiHubContentDescription) },
                     onClick = {
                         menuExpanded = false
-                        onSettingsClick()
+                        onAiHubClick()
                     },
                     leadingIcon = {
                         Surface(
@@ -342,8 +342,8 @@ private fun FloatingToolbarOverflowMenuButton(
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
-                                    painter = painterResource(settingsIconRes),
-                                    contentDescription = settingsContentDescription,
+                                    painter = painterResource(aiHubIconRes),
+                                    contentDescription = aiHubContentDescription,
                                 )
                             }
                         }

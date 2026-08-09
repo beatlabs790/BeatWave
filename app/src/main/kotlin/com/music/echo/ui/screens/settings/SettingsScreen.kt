@@ -81,6 +81,18 @@ highlightKey: String? = null) {
     val backupText = stringResource(R.string.backup_restore)
     val systemUpdateText = stringResource(R.string.system_update)
     val aboutText = stringResource(R.string.about)
+    
+    val accountDesc = stringResource(R.string.setting_desc_account)
+    val appearanceDesc = stringResource(R.string.setting_desc_appearance)
+    val playerDesc = stringResource(R.string.setting_desc_player)
+    val listenTogetherDesc = stringResource(R.string.setting_desc_listen_together)
+    val contentDesc = stringResource(R.string.setting_desc_content)
+    val aiLyricsDesc = stringResource(R.string.setting_desc_ai)
+    val privacyDesc = stringResource(R.string.setting_desc_privacy)
+    val storageDesc = stringResource(R.string.setting_desc_storage)
+    val backupDesc = stringResource(R.string.setting_desc_backup)
+    val systemUpdateDesc = stringResource(R.string.setting_desc_update)
+    val aboutDesc = stringResource(R.string.setting_desc_about)
 
     val scrollState = rememberScrollState()
     Column(
@@ -132,18 +144,19 @@ highlightKey: String? = null) {
         )
 
         val itemsList = buildList {
-            if (accountText.lowercase().contains(searchLower)) {
+            if (accountText.lowercase().contains(searchLower) || accountDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == accountText),
+                        isHighlighted = (highlightKey == accountText),
                         icon = painterResource(R.drawable.account),
                         title = { Text(accountText) },
+                        description = { Text(accountDesc) },
                         onClick = { navController.navigate("settings/account") }
                     )
                 )
             }
 
-            if (aiLyricsText.lowercase().contains(searchLower)) {
+            if (aiLyricsText.lowercase().contains(searchLower) || aiLyricsDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
                         isHighlighted = (highlightKey == aiLyricsText),
@@ -159,108 +172,95 @@ highlightKey: String? = null) {
                             )
                         },
                         title = { Text(aiLyricsText) },
+                        description = { Text(aiLyricsDesc) },
                         onClick = { navController.navigate("settings/ai") }
                     )
                 )
             }
 
-            val contributeLosslessText = stringResource(R.string.contribute_to_lossless)
-            if (contributeLosslessText.lowercase().contains(searchLower)) {
-                add(
-                    Material3SettingsItem(
-                        isHighlighted = (highlightKey == contributeLosslessText),
-                        customIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_apple_lossless),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = if (highlightKey == contributeLosslessText)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-                            )
-                        },
-                        title = { Text(contributeLosslessText) },
-                        onClick = { navController.navigate("settings/lossless") }
-                    )
-                )
-            }
 
-            if (appearanceText.lowercase().contains(searchLower)) {
+            if (appearanceText.lowercase().contains(searchLower) || appearanceDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == appearanceText),
+                        isHighlighted = (highlightKey == appearanceText),
                         icon = painterResource(R.drawable.palette),
                         title = { Text(appearanceText) },
+                        description = { Text(appearanceDesc) },
                         onClick = { navController.navigate("settings/appearance") }
                     )
                 )
             }
-            if (playerText.lowercase().contains(searchLower)) {
+            if (playerText.lowercase().contains(searchLower) || playerDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == playerText),
+                        isHighlighted = (highlightKey == playerText),
                         icon = painterResource(R.drawable.play),
                         title = { Text(playerText) },
+                        description = { Text(playerDesc) },
                         onClick = { navController.navigate("settings/player") }
                     )
                 )
             }
-            if (listenTogetherText.lowercase().contains(searchLower)) {
+            if (listenTogetherText.lowercase().contains(searchLower) || listenTogetherDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == listenTogetherText),
+                        isHighlighted = (highlightKey == listenTogetherText),
                         icon = painterResource(R.drawable.group),
                         title = { Text(listenTogetherText) },
+                        description = { Text(listenTogetherDesc) },
                         onClick = { navController.navigate(Screens.ListenTogether.route) }
                     )
                 )
             }
-            if (contentText.lowercase().contains(searchLower)) {
+            if (contentText.lowercase().contains(searchLower) || contentDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == contentText),
+                        isHighlighted = (highlightKey == contentText),
                         icon = painterResource(R.drawable.language),
                         title = { Text(contentText) },
+                        description = { Text(contentDesc) },
                         onClick = { navController.navigate("settings/content") }
                     )
                 )
             }
 
-            if (privacyText.lowercase().contains(searchLower)) {
+            if (privacyText.lowercase().contains(searchLower) || privacyDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == privacyText),
+                        isHighlighted = (highlightKey == privacyText),
                         icon = painterResource(R.drawable.security),
                         title = { Text(privacyText) },
+                        description = { Text(privacyDesc) },
                         onClick = { navController.navigate("settings/privacy") }
                     )
                 )
             }
-            if (storageText.lowercase().contains(searchLower)) {
+            if (storageText.lowercase().contains(searchLower) || storageDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == storageText),
+                        isHighlighted = (highlightKey == storageText),
                         icon = painterResource(R.drawable.storage),
                         title = { Text(storageText) },
+                        description = { Text(storageDesc) },
                         onClick = { navController.navigate("settings/storage") }
                     )
                 )
             }
-            if (backupText.lowercase().contains(searchLower)) {
+            if (backupText.lowercase().contains(searchLower) || backupDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == backupText),
+                        isHighlighted = (highlightKey == backupText),
                         icon = painterResource(R.drawable.restore),
                         title = { Text(backupText) },
+                        description = { Text(backupDesc) },
                         onClick = { navController.navigate("settings/backup_restore") }
                     )
                 )
             }
-            if (systemUpdateText.lowercase().contains(searchLower)) {
+            if (systemUpdateText.lowercase().contains(searchLower) || systemUpdateDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == systemUpdateText),
+                        isHighlighted = (highlightKey == systemUpdateText),
                         icon = painterResource(if (isUpdateAvailable) R.drawable.ic_launcher_nobg else R.drawable.update),
                         title = { Text(systemUpdateText) },
                         description = if (isUpdateAvailable) {
@@ -270,7 +270,9 @@ highlightKey: String? = null) {
                                     color = MaterialTheme.colorScheme.error
                                 )
                             }
-                        } else null,
+                        } else {
+                            { Text(systemUpdateDesc) }
+                        },
                         onClick = { navController.navigate("settings/update") }
                     )
                 )
@@ -282,6 +284,7 @@ highlightKey: String? = null) {
                             isHighlighted = (highlightKey == "supported links"),
                             icon = painterResource(R.drawable.link),
                             title = { Text("Supported Links") },
+                            description = { Text("App linking settings") },
                             onClick = {
                                 try {
                                     val intent = Intent(
@@ -305,12 +308,13 @@ highlightKey: String? = null) {
                     )
                 }
             }
-            if (aboutText.lowercase().contains(searchLower)) {
+            if (aboutText.lowercase().contains(searchLower) || aboutDesc.lowercase().contains(searchLower)) {
                 add(
                     Material3SettingsItem(
-    isHighlighted = (highlightKey == aboutText),
+                        isHighlighted = (highlightKey == aboutText),
                         icon = painterResource(R.drawable.info),
                         title = { Text(aboutText) },
+                        description = { Text(aboutDesc) },
                         onClick = { navController.navigate("settings/about") }
                     )
                 )
@@ -321,15 +325,24 @@ highlightKey: String? = null) {
             val subSettings = getAllSearchableSettings()
 
             val matchedSubSettings = subSettings
-                .filter { it.first.lowercase().contains(searchLower) }
-                .map { (title, parentTitle, route) ->
+                .filter { 
+                    it.title.lowercase().contains(searchLower) || 
+                    (it.description?.lowercase()?.contains(searchLower) == true)
+                }
+                .map { setting ->
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.search),
-                        title = { Text(title) },
-                        description = { Text(parentTitle) },
+                        title = { Text(setting.title) },
+                        description = { 
+                            if (setting.description != null) {
+                                Text("${setting.category} • ${setting.description}") 
+                            } else {
+                                Text(setting.category)
+                            }
+                        },
                         onClick = { 
-                            val encodedTitle = android.net.Uri.encode(title)
-                            val finalRoute = if (route.contains("?")) "$route&highlightKey=$encodedTitle" else "$route?highlightKey=$encodedTitle"
+                            val encodedTitle = android.net.Uri.encode(setting.title)
+                            val finalRoute = if (setting.route.contains("?")) "${setting.route}&highlightKey=$encodedTitle" else "${setting.route}?highlightKey=$encodedTitle"
                             navController.navigate(finalRoute)
                         }
                     )

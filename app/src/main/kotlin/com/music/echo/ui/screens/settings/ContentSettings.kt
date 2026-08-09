@@ -167,7 +167,7 @@ highlightKey: String? = null) {
     )
     val (ipVersion, onIpVersionChange) = rememberEnumPreference(
         IpVersionKey,
-        defaultValue = IpVersion.IPV4
+        defaultValue = IpVersion.AUTO
     )
     val (albumCanvasEnabled, onAlbumCanvasEnabledChange) = rememberPreference(key = AlbumCanvasEnabledKey, defaultValue = false)
 
@@ -650,6 +650,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.hide_explicit)),
                     icon = painterResource(R.drawable.explicit),
                     title = { Text(stringResource(R.string.hide_explicit)) },
+                    description = { Text(stringResource(R.string.hide_explicit_desc)) },
                     trailingContent = {
                         Switch(
                             checked = hideExplicit,
@@ -671,6 +672,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.hide_video_songs)),
                     icon = painterResource(R.drawable.slow_motion_video),
                     title = { Text(stringResource(R.string.hide_video_songs)) },
+                    description = { Text(stringResource(R.string.hide_video_songs_desc)) },
                     trailingContent = {
                         Switch(
                             checked = hideVideoSongs,
@@ -693,6 +695,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.hide_youtube_shorts)),
                     icon = painterResource(R.drawable.hide_image),
                     title = { Text(stringResource(R.string.hide_youtube_shorts)) },
+                    description = { Text(stringResource(R.string.hide_youtube_shorts_desc)) },
                     trailingContent = {
                         Switch(
                             checked = hideYoutubeShorts,
@@ -765,6 +768,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.show_artist_subscriber_count)),
                     icon = painterResource(R.drawable.person),
                     title = { Text(stringResource(R.string.show_artist_subscriber_count)) },
+                    description = { Text(stringResource(R.string.show_artist_subscriber_count_desc)) },
                     trailingContent = {
                         Switch(
                             checked = showArtistSubscriberCount,
@@ -786,6 +790,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.show_artist_monthly_listeners)),
                     icon = painterResource(R.drawable.person),
                     title = { Text(stringResource(R.string.show_artist_monthly_listeners)) },
+                    description = { Text(stringResource(R.string.show_artist_monthly_listeners_desc)) },
                     trailingContent = {
                         Switch(
                             checked = showMonthlyListeners,
@@ -888,6 +893,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.app_language)),
                         icon = painterResource(R.drawable.language),
                         title = { Text(stringResource(R.string.app_language)) },
+                        description = { Text(stringResource(R.string.app_language_desc)) },
                         onClick = {
                             context.startActivity(
                                 Intent(
@@ -938,6 +944,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.enable_proxy)),
                         icon = painterResource(R.drawable.wifi_proxy),
                         title = { Text(stringResource(R.string.enable_proxy)) },
+                        description = { Text(stringResource(R.string.enable_proxy_desc)) },
                         trailingContent = {
                             Switch(
                                 checked = proxyEnabled,
@@ -962,6 +969,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.config_proxy)),
                             icon = painterResource(R.drawable.settings),
                             title = { Text(stringResource(R.string.config_proxy)) },
+                            description = { Text(stringResource(R.string.config_proxy_desc)) },
                             onClick = { showProxyConfigurationDialog = true }
                         )
                     )
@@ -978,6 +986,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.enable_lrclib)),
                     icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.enable_lrclib)) },
+                    description = { Text(stringResource(R.string.enable_lrclib_desc)) },
                     trailingContent = {
                         Switch(
                             checked = enableLrclib,
@@ -999,6 +1008,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.enable_kugou)),
                     icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.enable_kugou)) },
+                    description = { Text(stringResource(R.string.enable_kugou_desc)) },
                     trailingContent = {
                         Switch(
                             checked = enableKugou,
@@ -1115,6 +1125,7 @@ highlightKey: String? = null) {
     isHighlighted = (highlightKey == stringResource(R.string.lyrics_romanization)),
                     icon = painterResource(R.drawable.language_korean_latin),
                     title = { Text(stringResource(R.string.lyrics_romanization)) },
+                    description = { Text(stringResource(R.string.lyrics_romanization_desc)) },
                     onClick = { navController.navigate("settings/content/romanization") }
                 )
             )

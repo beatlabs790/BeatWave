@@ -62,14 +62,14 @@ fun Material3SettingsGroup(
         
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items.forEachIndexed { index, item ->
                 val shape = when {
                     items.size == 1 -> RoundedCornerShape(24.dp)
-                    index == 0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 6.dp, bottomEnd = 6.dp)
-                    index == items.size - 1 -> RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
-                    else -> RoundedCornerShape(6.dp)
+                    index == 0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 4.dp, bottomEnd = 4.dp)
+                    index == items.size - 1 -> RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
+                    else -> RoundedCornerShape(4.dp)
                 }
 
                 Card(
@@ -79,9 +79,9 @@ fun Material3SettingsGroup(
                     shape = shape,
                     colors = CardDefaults.cardColors(
                         containerColor = if (item.isHighlighted)
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                            MaterialTheme.colorScheme.primaryContainer
                         else
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                            MaterialTheme.colorScheme.surfaceContainerHigh
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {

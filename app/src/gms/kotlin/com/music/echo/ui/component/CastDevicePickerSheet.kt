@@ -47,6 +47,48 @@ import iad1tya.echo.music.R
 import timber.log.Timber
 
 /**
+ * Heuristic Cast device type based on route name/description keywords.
+ */
+internal enum class CastDeviceType(val icon: Int, val connectedIcon: Int) {
+    TV(R.drawable.cast_tv, R.drawable.cast_tv_connected),
+    SPEAKER(R.drawable.cast_speaker, R.drawable.cast_speaker_connected),
+    CHROMECAST(R.drawable.cast, R.drawable.cast_connected),
+    UNKNOWN(R.drawable.cast, R.drawable.cast_connected);
+
+    companion object {
+        private val TV_KEYWORDS = listOf(
+            "tv", "bravia", "webos", "tizen", "fire tv", "android tv",
+            "google tv", "smart tv", "display", "shield",
+            "monitor", "hisense", "tcl", "samsung tv", "lg tv", "sony tv",
+            "vizio", "insignia", "toshiba tv", "jvc", "philips tv",
+            "androidtv"
+        )
+        private val SPEAKER_KEYWORDS = listOf(
+            "home", "nest", "speaker", "audio", "max", "mini",
+            "echo", "alexa", "sonos", "harman", "jabra",
+            "bose", "bang", "olufsen", "marshall", "jbl",
+            "soundbar", "sound bar", "subwoofer", "receiver",
+            "amplifier", "amp", "hifi", "stereo"
+        )
+        private val CHROMECAST_KEYWORDS = listOf(
+            "chromecast", "ecast"
+        )
+
+        fun fromName(name: String, description: String?): CastDeviceType {
+            val text = "$name ${description ?: ""}".lowercase()
+            return when {
+                // Check the specific "Chromecast with Google TV" phrasing before the
+                // generic Chromecast match so it classifies as a TV.
+                TV_KEYWORDS.any { text.contains(it) } -> TV
+                CHROMECAST_KEYWORDS.any { text.contains(it) } -> CHROMECAST
+                SPEAKER_KEYWORDS.any { text.contains(it) } -> SPEAKER
+                else -> UNKNOWN
+            }
+        }
+    }
+}
+
+/**
  * Custom Cast device picker bottom sheet with Material3 design.
  *
  * Uses MediaRouter callbacks for real-time device discovery and connects
@@ -86,7 +128,7 @@ fun CastDevicePickerSheet(
                 if (route.matchesSelector(selector) && !route.isDefault) {
                     if (discoveredRoutes.none { it.id == route.id }) {
                         discoveredRoutes.add(route)
-                        Timber.d("Cast route added: ${route.name}")
+                        Timber.d("Cast route added: name=${route.name}, description=${route.description}, extras=${route.extras}")
                     }
                 }
             }
@@ -261,6 +303,9 @@ private fun CastDeviceItem(
     modifier: Modifier = Modifier
 ) {
     val isSelected = route.isSelected
+    val deviceType = remember(route.name, route.description) {
+        CastDeviceType.fromName(route.name, route.description)
+    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -283,7 +328,7 @@ private fun CastDeviceItem(
         ) {
             Image(
                 painter = painterResource(
-                    if (isSelected) R.drawable.cast_connected else R.drawable.cast
+                    if (isSelected) deviceType.connectedIcon else deviceType.icon
                 ),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),

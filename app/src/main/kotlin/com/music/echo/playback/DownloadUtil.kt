@@ -66,7 +66,7 @@ constructor(
 ) {
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val downloadQuality by enumPreference(context, iad1tya.echo.music.constants.DownloadQualityKey, iad1tya.echo.music.constants.DownloadQuality.YOUTUBE)
-    private val ipVersion by enumPreference(context, IpVersionKey, IpVersion.IPV4)
+    private val ipVersion by enumPreference(context, IpVersionKey, IpVersion.AUTO)
     private val songUrlCache = HashMap<String, Pair<String, Long>>()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -109,10 +109,7 @@ constructor(
             val playbackData = runBlocking(Dispatchers.IO) {
                 YTPlayerUtils.playerResponseForPlayback(
                     mediaId,
-                    audioQuality = when (downloadQuality) {
-                        iad1tya.echo.music.constants.DownloadQuality.LOSSLESS -> AudioQuality.LOSSLESS
-                        else -> AudioQuality.OPUS
-                    },
+                    audioQuality = AudioQuality.OPUS,
                     connectivityManager = connectivityManager,
                     context = context,
                     isDownload = true

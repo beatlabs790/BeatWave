@@ -1643,14 +1643,28 @@ fun Lyrics(
                                     
                                     with(LocalDensity.current) { (lyricsTextSize * (lyricsLineSpacing.coerceAtMost(1.3f) - 1f)).sp.toDp() }
                                 )
-                            ) {
+                                            ) {
                                 wordData.forEachIndexed { wordIndex, (wordText, startRelative, endRelative) ->
                                     val lineRelTime = (effectivePlaybackPosition - item.time).coerceAtLeast(0L)
                                     val wordDuration = endRelative - startRelative
 
                                     Row {
-                                        wordText.forEachIndexed { charIndex, char ->
-                                            val charDuration = if (wordText.isNotEmpty()) wordDuration / wordText.length else 0L
+                                        val graphemes = remember(wordText) {
+                                            val iterator = java.text.BreakIterator.getCharacterInstance()
+                                            iterator.setText(wordText)
+                                            val list = mutableListOf<String>()
+                                            var start = iterator.first()
+                                            var end = iterator.next()
+                                            while (end != java.text.BreakIterator.DONE) {
+                                                list.add(wordText.substring(start, end))
+                                                start = end
+                                                end = iterator.next()
+                                            }
+                                            list
+                                        }
+                                        
+                                        graphemes.forEachIndexed { charIndex, grapheme ->
+                                            val charDuration = if (graphemes.isNotEmpty()) wordDuration / graphemes.size else 0L
                                             val charStart = startRelative + (charIndex * charDuration)
                                             val charEnd = charStart + charDuration
 
@@ -1665,7 +1679,7 @@ fun Lyrics(
                                             }
 
                                             Text(
-                                                text = char.toString(),
+                                                text = grapheme,
                                                 fontSize = lyricsTextSize.sp,
                                                 color = expressiveAccent.copy(alpha = if (!isActiveLine) 1f else if (charProgress >= 1f) 1f else 0.3f + (0.7f * charProgress)),
                                                 fontWeight = FontWeight.Bold,

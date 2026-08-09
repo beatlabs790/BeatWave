@@ -189,6 +189,10 @@ gradle-app.setting
 run_on_emulator.sh
 build_and_sign_apk.sh
 
+# Agent skills and tooling (local development only)
+.agents/
+skills-lock.json
+
 # YouTube tokens and sensitive assets
 **/assets/po_token.html
 **/assets/*token*

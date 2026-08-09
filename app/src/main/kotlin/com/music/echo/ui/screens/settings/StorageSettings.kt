@@ -387,6 +387,7 @@ fun StorageSettings(
                     isHighlighted = (highlightKey == stringResource(R.string.clear_all_downloads)),
                     icon = painterResource(R.drawable.clear_all),
                     title = { Text(stringResource(R.string.clear_all_downloads)) },
+                    description = { Text(stringResource(R.string.clear_all_downloads_desc)) },
                     onClick = {
                         clearDownloads = true
                     }
@@ -474,6 +475,7 @@ fun StorageSettings(
                     isHighlighted = (highlightKey == stringResource(R.string.clear_song_cache)),
                     icon = painterResource(R.drawable.clear_all),
                     title = { Text(stringResource(R.string.clear_song_cache)) },
+                    description = { Text(stringResource(R.string.clear_song_cache_desc)) },
                     onClick = {
                         clearCacheDialog = true
                     }
@@ -537,6 +539,7 @@ fun StorageSettings(
                     isHighlighted = (highlightKey == stringResource(R.string.clear_image_cache)),
                     icon = painterResource(R.drawable.clear_all),
                     title = { Text(stringResource(R.string.clear_image_cache)) },
+                    description = { Text(stringResource(R.string.clear_image_cache_desc)) },
                     onClick = {
                         clearImageCacheDialog = true
                     }

@@ -614,6 +614,7 @@ highlightKey: String? = null) {
                             isHighlighted = false,
                             icon = painterResource(R.drawable.sync),
                             title = { Text(stringResource(R.string.ai_recommendations_refresh)) },
+                            description = { Text(stringResource(R.string.ai_recommendations_refresh_desc)) },
                             onClick = {
                                 showRefreshDialog = true
                             }

@@ -1125,13 +1125,13 @@ class MainActivity : ComponentActivity() {
                                                 shuffleContentDescription = stringResource(R.string.shuffle),
                                                 onMusicRecognitionClick = onMusicRecognitionClick,
                                                 musicRecognitionContentDescription = stringResource(R.string.recognition),
-                                                onSettingsClick = { 
-                                                    navController.navigate("settings") {
+                                                onAiHubClick = { 
+                                                    navController.navigate("settings/ai") {
                                                         launchSingleTop = true
                                                     }
                                                 },
-                                                settingsIconRes = R.drawable.settings,
-                                                settingsContentDescription = stringResource(R.string.settings),
+                                                aiHubIconRes = R.drawable.sparks,
+                                                aiHubContentDescription = stringResource(R.string.ai_lyrics_translation),
                                                 isSelected = { screen ->
                                                     currentRoute == screen.route || currentRoute?.startsWith("${screen.route}/") == true
                                                 },

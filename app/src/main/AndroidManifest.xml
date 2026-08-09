@@ -353,6 +353,11 @@
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="iad1tya.echo.music.cast.CastOptionsProvider" />
+        <!-- Google Cast Reconnection Service (required by setEnableReconnectionService(true)) -->
+        <service
+            android:name="com.google.android.gms.cast.framework.ReconnectionService"
+            android:exported="false"
+            android:process=":reconnection_service" />
         <!-- Music Widget -->
         <receiver
             android:name=".widget.MusicWidgetReceiver"

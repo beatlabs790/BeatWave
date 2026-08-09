@@ -681,7 +681,7 @@ class MusicService :
         audioManager.registerAudioDeviceCallback(audioDeviceCallback, null)
 
         audioQuality = dataStore.get(AudioQualityKey).toEnum(iad1tya.echo.music.constants.AudioQuality.OPUS)
-        ipVersion = dataStore.get(IpVersionKey).toEnum(IpVersion.IPV4)
+        ipVersion = dataStore.get(IpVersionKey).toEnum(IpVersion.AUTO)
         playerVolume = MutableStateFlow(restorePlayerVolume(dataStore.get(PlayerVolumeKey, 1f)))
 
         
@@ -789,7 +789,7 @@ class MusicService :
         
         scope.launch {
             dataStore.data
-                .map { it[IpVersionKey]?.toEnum(IpVersion.IPV4) ?: IpVersion.IPV4 }
+                .map { it[IpVersionKey]?.toEnum(IpVersion.AUTO) ?: IpVersion.AUTO }
                 .distinctUntilChanged()
                 .collect { newIpVersion ->
                     val oldIpVersion = ipVersion
@@ -1726,14 +1726,14 @@ class MusicService :
     }
 
     fun playNext(items: List<MediaItem>) {
+        val isCasting = castConnectionHandler?.isCasting?.value == true
+        Timber.d("CastFlow.playNext: items=${items.size}, isCasting=$isCasting, playerItemCount=${player.mediaItemCount}")
         
-        if (player.mediaItemCount == 0 || player.playbackState == STATE_IDLE) {
+        if ((player.mediaItemCount == 0 || player.playbackState == STATE_IDLE) && !isCasting) {
+            Timber.d("CastFlow.playNext: empty queue, setting items directly")
             player.setMediaItems(items)
             player.prepare()
-            
-            if (castConnectionHandler?.isCasting?.value != true) {
-                player.play()
-            }
+            player.play()
             return
         }
 
@@ -1758,9 +1758,16 @@ class MusicService :
         val insertIndex = player.currentMediaItemIndex + 1
         val shuffleEnabled = player.shuffleModeEnabled
 
-        
         player.addMediaItems(insertIndex, items)
         player.prepare()
+
+        // Sync new items to Cast queue after current item
+        if (isCasting) {
+            Timber.d("CastFlow.playNext: dispatching insertItemsAfterCurrent to Cast")
+            scope.launch {
+                castConnectionHandler?.insertItemsAfterCurrent(items)
+            }
+        }
 
         if (shuffleEnabled) {
             
@@ -1816,6 +1823,8 @@ class MusicService :
     }
 
     fun addToQueue(items: List<MediaItem>) {
+        val isCasting = castConnectionHandler?.isCasting?.value == true
+        Timber.d("CastFlow.addToQueue: items=${items.size}, isCasting=$isCasting, playerItemCount=${player.mediaItemCount}")
         
         if (dataStore.get(PreventDuplicateTracksInQueueKey, false)) {
             val itemIds = items.map { it.mediaId }.toSet()
@@ -1834,7 +1843,17 @@ class MusicService :
             }
         }
 
+        // Suppress onTimelineChanged Cast sync — we handle it directly below
         player.addMediaItems(items)
+
+        // Sync new items to end of Cast queue
+        if (isCasting) {
+            Timber.d("CastFlow.addToQueue: dispatching appendItemsToCastQueue to Cast")
+            scope.launch {
+                castConnectionHandler?.appendItemsToCastQueue(items)
+            }
+        }
+
         if (player.shuffleModeEnabled) {
             val shufflePlaylistFirst = dataStore.get(ShufflePlaylistFirstKey, false)
             applyShuffleOrder(player.currentMediaItemIndex, player.mediaItemCount, shufflePlaylistFirst)
@@ -2059,11 +2078,11 @@ class MusicService :
             mediaItem != null) {
             val metadata = mediaItem.metadata
             if (metadata != null) {
-                
-                
+                Timber.d("CastFlow.onMediaItemTransition: mediaId=${metadata.id}, reason=$reason")
                 val navigated = castConnectionHandler?.navigateToMediaIfInQueue(metadata.id) ?: false
+                Timber.d("CastFlow.onMediaItemTransition: navigated=$navigated")
                 if (!navigated) {
-                    
+                    Timber.d("CastFlow.onMediaItemTransition: item not in Cast queue, calling loadMedia")
                     castConnectionHandler?.loadMedia(metadata)
                 }
             }
@@ -2939,20 +2958,6 @@ class MusicService :
             }
             val lockedQuality = activeQualityInCache ?: audioQuality
 
-            if (!shouldBypassCache && !isFullyDownloaded && dbFormat != null) {
-                val isLosslessCache = dbFormat.codecs == "flac"
-                
-                val cacheMatchesTarget = when (lockedQuality) {
-                    iad1tya.echo.music.constants.AudioQuality.LOSSLESS -> isLosslessCache
-                    iad1tya.echo.music.constants.AudioQuality.OPUS -> !isLosslessCache
-                }
-                
-                if (!cacheMatchesTarget) {
-                    shouldBypassCache = true
-                    Timber.tag(TAG).i("Quality changed to $lockedQuality for $mediaId. Clearing playerCache to prevent container mismatch.")
-                    playerCache.removeResource(mediaId)
-                }
-            }
 
             if (!shouldBypassCache) {
                 if (isFullyDownloaded) {
@@ -3040,37 +3045,11 @@ class MusicService :
             run {
                 val format = nonNullPlayback.format
                 
-                val isFinalLossless = format.mimeType.contains("flac", ignoreCase = true)
-                
                 var targetCacheKey = mediaId
                 
-                if (dbFormat != null && !shouldBypassCache) {
-                    val cacheIsLossless = dbFormat.codecs == "flac"
-                    
-                    if (isFinalLossless != cacheIsLossless) {
-                        Timber.tag(TAG).w("Format fallback detected AFTER fetch. Clearing playerCache to prevent mismatch crash.")
-                        playerCache.removeResource(mediaId)
-                        
-                        if (activeQualityInCache != null) {
-                            Timber.tag(TAG).e("Format changed mid-stream for $mediaId. Throwing to force player restart.")
-                            runBlocking(Dispatchers.IO) { database.query { deleteFormat(mediaId) } }
-                            throw PlaybackException(
-                                "Container format changed mid-stream due to fallback",
-                                null,
-                                PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED
-                            )
-                        }
-                    }
-                } else if (dbFormat != null && shouldBypassCache) {
-                    val cacheIsLossless = dbFormat.codecs == "flac"
-                    
-                    if (isFinalLossless != cacheIsLossless) {
-                        Timber.tag(TAG).i("Bypassed cache and fetched different format. Using custom cache key to prevent intercept.")
-                        targetCacheKey = "${mediaId}_diff"
-                    } else {
-                        Timber.tag(TAG).i("Bypassed cache but fallback resulted in cached format. Using original cache key.")
-                        targetCacheKey = mediaId
-                    }
+                if (dbFormat != null && shouldBypassCache) {
+                    Timber.tag(TAG).i("Bypassed cache. Using custom cache key to prevent intercept.")
+                    targetCacheKey = "${mediaId}_diff"
                 }
 
                 val loudnessDb = nonNullPlayback.audioConfig?.loudnessDb

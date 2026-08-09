@@ -865,12 +865,10 @@ fun AudioQualitySelector(context: Context) {
         )
 
         val options = listOf(
-            "Opus",
-            "Lossless"
+            "Opus"
         )
         val selectedIndex = when (audioQuality) {
             AudioQuality.OPUS -> 0
-            AudioQuality.LOSSLESS -> 1
             else -> 0
         }
 
@@ -888,7 +886,6 @@ fun AudioQualitySelector(context: Context) {
                     onCheckedChange = {
                         val newQuality = when (index) {
                             0 -> AudioQuality.OPUS
-                            1 -> AudioQuality.LOSSLESS
                             else -> AudioQuality.OPUS
                         }
                         onAudioQualityChange(newQuality)
@@ -931,12 +928,10 @@ fun DownloadQualitySelector() {
         )
 
         val options = listOf(
-            "Opus",
-            "Lossless"
+            "Opus"
         )
         val selectedIndex = when (downloadQuality) {
             iad1tya.echo.music.constants.DownloadQuality.YOUTUBE -> 0
-            iad1tya.echo.music.constants.DownloadQuality.LOSSLESS -> 1
             else -> 0
         }
 
@@ -954,7 +949,6 @@ fun DownloadQualitySelector() {
                     onCheckedChange = {
                         val newQuality = when (index) {
                             0 -> iad1tya.echo.music.constants.DownloadQuality.YOUTUBE
-                            1 -> iad1tya.echo.music.constants.DownloadQuality.LOSSLESS
                             else -> iad1tya.echo.music.constants.DownloadQuality.YOUTUBE
                         }
                         onDownloadQualityChange(newQuality)

@@ -42,7 +42,7 @@ fun SettingDialoge(
     homeViewModel: HomeViewModel
 ) {
     val uriHandler = LocalUriHandler.current
-    rememberEnumPreference(
+    val (audioQuality) = rememberEnumPreference(
         AudioQualityKey,
         defaultValue = AudioQuality.OPUS
     )
@@ -76,30 +76,17 @@ fun SettingDialoge(
                 .padding(bottom = 32.dp, start = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(vertical = 16.dp, horizontal = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                // Header
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-                ) {
-                    Spacer(modifier = Modifier.size(24.dp))
-                    
-                    Text(
-                        text = "BeatWave",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.sp
-                        ),
-                        color = primaryColor,
-                        textAlign = TextAlign.Center
-                    )
+            // Header
+            Text(
+                text = "Echo Music",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp
+                ),
+                color = primaryColor,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+            )
 
             // Account Group
             Material3SettingsGroup(
@@ -128,45 +115,23 @@ fun SettingDialoge(
                                 if (isLoggedIn) onNavigate("settings/account") else onNavigate("login") 
                             }
                         )
-                    }
-                )
-
-                if (isLoggedIn) {
-                    Material3SettingsGroup(
-                        title = "Preferences",
-                        compact = true,
-                        items = listOf(
-                            Material3SettingsItem(
-                                title = { Text("Use Account for Browsing") },
-                                icon = painterResource(R.drawable.add_circle),
-                                trailingContent = {
-                                    Switch(
-                                        checked = useLoginForBrowse,
-                                        onCheckedChange = {
-                                            com.music.innertube.YouTube.useLoginForBrowse = it
-                                            onUseLoginForBrowseChange(it)
-                                        },
-                                        modifier = Modifier.scale(0.8f)
-                                    )
-                                },
-                                onClick = {
-                                    val newVal = !useLoginForBrowse
-                                    com.music.innertube.YouTube.useLoginForBrowse = newVal
-                                    onUseLoginForBrowseChange(newVal)
-                                }
-                            ),
-                            Material3SettingsItem(
-                                title = { Text("YouTube Music Sync") },
-                                icon = painterResource(R.drawable.cached),
-                                trailingContent = {
-                                    Switch(
-                                        checked = ytmSync,
-                                        onCheckedChange = onYtmSyncChange,
-                                        modifier = Modifier.scale(0.8f)
-                                    )
-                                },
-                                onClick = { onYtmSyncChange(!ytmSync) }
-                            )
+                    )
+                    add(
+                        Material3SettingsItem(
+                            title = { Text(androidx.compose.ui.res.stringResource(R.string.ai_lyrics_translation)) },
+                            description = { Text(androidx.compose.ui.res.stringResource(R.string.setting_desc_ai)) },
+                            customIcon = {
+                                Text(
+                                    text = "Ai",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                                )
+                            },
+                            onClick = {
+                                onDismissRequest()
+                                onNavigate("settings/ai")
+                            }
                         )
                     )
                 }
@@ -212,26 +177,50 @@ fun SettingDialoge(
                 )
             }
 
-                // Footer Links
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Privacy Policy",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = onSecondaryColor,
-                        modifier = Modifier.clickable { uriHandler.openUri("https://beatwavy.vercel.app/toc.html") }.padding(4.dp)
+            Material3SettingsGroup(
+                title = "App",
+                compact = true,
+                items = listOf(
+                    Material3SettingsItem(
+                        title = { Text(androidx.compose.ui.res.stringResource(R.string.settings)) },
+                        description = { Text(androidx.compose.ui.res.stringResource(R.string.setting_desc_settings_main)) },
+                        icon = painterResource(R.drawable.settings),
+                        onClick = { 
+                            onDismissRequest()
+                            onNavigate("settings") 
+                        }
+                    ),
+                    Material3SettingsItem(
+                        title = { Text("About") },
+                        icon = painterResource(R.drawable.info),
+                        trailingContent = { Text(BuildConfig.VERSION_NAME, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        onClick = { 
+                            onDismissRequest()
+                            onNavigate("settings/about") 
+                        }
                     )
-                    Text(text = " • ", color = onSecondaryColor, style = MaterialTheme.typography.bodySmall)
-                    Text(
-                        text = "Terms of Service",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = onSecondaryColor,
-                        modifier = Modifier.clickable { uriHandler.openUri("https://beatwavy.vercel.app/toc.html") }.padding(4.dp)
-                    )
-                }
+                )
+            )
+
+            // Footer Links
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Privacy Policy",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = onSecondaryColor,
+                    modifier = Modifier.clickable { uriHandler.openUri("https://echomusic.fun/p/privacy-policy") }.padding(4.dp)
+                )
+                Text(text = " • ", color = onSecondaryColor, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = "Terms of Service",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = onSecondaryColor,
+                    modifier = Modifier.clickable { uriHandler.openUri("https://echomusic.fun/p/toc") }.padding(4.dp)
+                )
             }
         }
     }

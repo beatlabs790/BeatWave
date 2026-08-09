@@ -1,5 +1,3 @@
-
-
 package iad1tya.echo.music.ui.screens.settings
 
 import androidx.compose.foundation.layout.Column
@@ -60,18 +58,13 @@ import iad1tya.echo.music.constants.ResumeOnBluetoothConnectKey
 import iad1tya.echo.music.constants.SeekExtraSeconds
 import iad1tya.echo.music.constants.ShufflePlaylistFirstKey
 import iad1tya.echo.music.constants.SimilarContent
-
 import iad1tya.echo.music.constants.SkipSilenceInstantKey
 import iad1tya.echo.music.constants.SkipSilenceKey
 import iad1tya.echo.music.constants.StopMusicOnTaskClearKey
 import iad1tya.echo.music.constants.EnableExportAsMp3Key
-
 import iad1tya.echo.music.constants.PreloadNextSongEnabledKey
 import iad1tya.echo.music.constants.PreloadNextSongLimitKey
 import iad1tya.echo.music.constants.PreloadLyricsEnabledKey
-
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import iad1tya.echo.music.ui.component.DefaultDialog
 import iad1tya.echo.music.ui.component.EnumDialog
 import iad1tya.echo.music.ui.component.IconButton
@@ -81,16 +74,15 @@ import iad1tya.echo.music.ui.utils.backToMain
 import iad1tya.echo.music.utils.rememberEnumPreference
 import iad1tya.echo.music.utils.rememberPreference
 import kotlin.math.roundToInt
-import android.content.Intent
-import android.net.Uri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
-highlightKey: String? = null) {
-    val scrollState = androidx.compose.foundation.rememberScrollState()
+    highlightKey: String? = null
+) {
+    val scrollState = rememberScrollState()
 
     val (audioQuality, onAudioQualityChange) = rememberEnumPreference(
         AudioQualityKey,
@@ -139,7 +131,6 @@ highlightKey: String? = null) {
         defaultValue = false
     )
 
-
     val (preloadNextSongEnabled, onPreloadNextSongEnabledChange) = rememberPreference(
         key = PreloadNextSongEnabledKey,
         defaultValue = true
@@ -164,8 +155,6 @@ highlightKey: String? = null) {
         key = EnableExportAsMp3Key,
         defaultValue = false
     )
-
-    val context = androidx.compose.ui.platform.LocalContext.current
 
     val (enableGoogleCast, onEnableGoogleCastChange) = rememberPreference(
         key = EnableGoogleCastKey,
@@ -258,9 +247,7 @@ highlightKey: String? = null) {
                     else -> ""
                 }
             },
-            valueDescription = {
-                ""
-            }
+            valueDescription = { "" }
         )
     }
 
@@ -315,59 +302,6 @@ highlightKey: String? = null) {
             }
         }
 
-
-        if (showLosslessAudioWarning) {
-            DefaultDialog(
-                onDismiss = { showLosslessAudioWarning = false },
-                title = { Text("Enable Lossless Audio?") },
-                buttons = {
-                    TextButton(onClick = { showLosslessAudioWarning = false }) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                    TextButton(onClick = {
-                        showLosslessAudioWarning = false
-                        onAudioQualityChange(AudioQuality.LOSSLESS)
-                    }) {
-                        Text(stringResource(R.string.enable))
-                    }
-                }
-            ) {
-                Text("Lossless is uncompressed music which is higher in size and requires significant server load and data usage.")
-
-                Text("Lossless is uncompressed music which is higher in size and requires significant server load. Continuous maintenance requires funding. We have a monthly goal of $200 to keep this active.\n\nPlease consider donating!")
-            }
-        }
-
-
-        if (showLosslessDownloadWarning) {
-            DefaultDialog(
-                onDismiss = { showLosslessDownloadWarning = false },
-                title = { Text("Enable Lossless Downloads?") },
-                buttons = {
-                    TextButton(onClick = { showLosslessDownloadWarning = false }) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                    TextButton(onClick = {
-                        showLosslessDownloadWarning = false
-                        onDownloadQualityChange(iad1tya.echo.music.constants.DownloadQuality.LOSSLESS)
-                    }) {
-                        Text(stringResource(R.string.enable))
-                    }
-                }
-            ) {
-
-                Text("Lossless downloads require significant server load, bandwidth and storage space.")
-
-                Text("Lossless downloads require significant server load and bandwidth. Continuous maintenance requires funding. We have a monthly goal of $200 to keep this active.\n\nPlease consider donating!")
-
-            }
-        }
-
-
-
-
-
-
         Spacer(
             Modifier.windowInsetsPadding(
                 LocalPlayerAwareWindowInsets.current.only(
@@ -405,11 +339,12 @@ highlightKey: String? = null) {
             }
         )
 
-        Material3SettingsGroup(scrollState = scrollState, 
+        Material3SettingsGroup(
+            scrollState = scrollState,
             title = stringResource(R.string.player),
             items = buildList {
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.audio_quality)),
+                    isHighlighted = (highlightKey == stringResource(R.string.audio_quality)),
                     icon = painterResource(R.drawable.graphic_eq),
                     title = { Text(stringResource(R.string.audio_quality)) },
                     description = {
@@ -422,9 +357,9 @@ highlightKey: String? = null) {
                     },
                     onClick = { showAudioQualityDialog = true }
                 ))
-                
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.download_quality_title)),
+                    isHighlighted = (highlightKey == stringResource(R.string.download_quality_title)),
                     icon = painterResource(R.drawable.download),
                     title = { Text(stringResource(R.string.download_quality_title)) },
                     description = {
@@ -438,13 +373,12 @@ highlightKey: String? = null) {
                     onClick = { showDownloadQualityDialog = true }
                 ))
 
-
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.crossfade)),
+                    isHighlighted = (highlightKey == stringResource(R.string.crossfade)),
                     icon = painterResource(R.drawable.linear_scale),
                     title = { Text(stringResource(R.string.crossfade)) },
-                    description = { 
-                        Text(stringResource(R.string.crossfade_desc)) 
+                    description = {
+                        Text(stringResource(R.string.crossfade_desc))
                     },
                     showBadge = true,
                     trailingContent = {
@@ -476,9 +410,10 @@ highlightKey: String? = null) {
                         }
                     }
                 ))
+
                 if (crossfadeEnabled) {
                     add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.crossfade_duration)),
+                        isHighlighted = (highlightKey == stringResource(R.string.crossfade_duration)),
                         icon = painterResource(R.drawable.timer),
                         title = { Text(stringResource(R.string.crossfade_duration)) },
                         description = {
@@ -494,7 +429,7 @@ highlightKey: String? = null) {
                         }
                     ))
                     add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.crossfade_gapless)),
+                        isHighlighted = (highlightKey == stringResource(R.string.crossfade_gapless)),
                         icon = painterResource(R.drawable.album),
                         title = { Text(stringResource(R.string.crossfade_gapless)) },
                         description = { Text(stringResource(R.string.crossfade_gapless_desc)) },
@@ -562,8 +497,9 @@ highlightKey: String? = null) {
                         ))
                     }
                 }
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.history_duration)),
+                    isHighlighted = (highlightKey == stringResource(R.string.history_duration)),
                     icon = painterResource(R.drawable.history),
                     title = { Text(stringResource(R.string.history_duration)) },
                     description = {
@@ -578,8 +514,9 @@ highlightKey: String? = null) {
                         Text(text = historyDuration.roundToInt().toString())
                     }
                 ))
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.skip_silence)),
+                    isHighlighted = (highlightKey == stringResource(R.string.skip_silence)),
                     icon = painterResource(R.drawable.fast_forward),
                     title = { Text(stringResource(R.string.skip_silence)) },
                     description = { Text(stringResource(R.string.skip_silence_desc)) },
@@ -600,8 +537,9 @@ highlightKey: String? = null) {
                     },
                     onClick = { onSkipSilenceChange(!skipSilence) }
                 ))
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.skip_silence_instant)),
+                    isHighlighted = (highlightKey == stringResource(R.string.skip_silence_instant)),
                     icon = painterResource(R.drawable.skip_next),
                     title = { Text(stringResource(R.string.skip_silence_instant)) },
                     description = { Text(stringResource(R.string.skip_silence_instant_desc)) },
@@ -623,8 +561,9 @@ highlightKey: String? = null) {
                     },
                     onClick = { if (skipSilence) onSkipSilenceInstantChange(!skipSilenceInstant) }
                 ))
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.audio_normalization)),
+                    isHighlighted = (highlightKey == stringResource(R.string.audio_normalization)),
                     icon = painterResource(R.drawable.volume_up),
                     title = { Text(stringResource(R.string.audio_normalization)) },
                     description = { Text(stringResource(R.string.audio_normalization_desc)) },
@@ -645,8 +584,9 @@ highlightKey: String? = null) {
                     },
                     onClick = { onAudioNormalizationChange(!audioNormalization) }
                 ))
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.audio_offload)),
+                    isHighlighted = (highlightKey == stringResource(R.string.audio_offload)),
                     icon = painterResource(R.drawable.graphic_eq),
                     title = { Text(stringResource(R.string.audio_offload)) },
                     description = {
@@ -673,10 +613,9 @@ highlightKey: String? = null) {
                     },
                     onClick = { if (!crossfadeEnabled) onAudioOffloadChange(!audioOffload) }
                 ))
-                
 
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == "Preload Next Song"),
+                    isHighlighted = (highlightKey == "Preload Next Song"),
                     icon = painterResource(R.drawable.skip_next),
                     title = { Text("Preload Next Song") },
                     description = { Text("Cache the next song for gapless playback") },
@@ -700,7 +639,7 @@ highlightKey: String? = null) {
 
                 if (preloadNextSongEnabled) {
                     add(Material3SettingsItem(
-    isHighlighted = (highlightKey == "Preload Limit"),
+                        isHighlighted = (highlightKey == "Preload Limit"),
                         icon = painterResource(R.drawable.library_music),
                         title = { Text("Preload Limit") },
                         description = {
@@ -715,9 +654,9 @@ highlightKey: String? = null) {
                             Text(text = preloadNextSongLimit.toString())
                         }
                     ))
-                    
+
                     add(Material3SettingsItem(
-    isHighlighted = (highlightKey == "Preload Lyrics"),
+                        isHighlighted = (highlightKey == "Preload Lyrics"),
                         icon = painterResource(R.drawable.queue_music),
                         title = { Text("Preload Lyrics") },
                         description = { Text("Also cache lyrics for the preloaded songs") },
@@ -739,10 +678,10 @@ highlightKey: String? = null) {
                         onClick = { onPreloadLyricsEnabledChange(!preloadLyricsEnabled) }
                     ))
                 }
-                
+
                 if (BuildConfig.CAST_AVAILABLE) {
                     add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.google_cast)),
+                        isHighlighted = (highlightKey == stringResource(R.string.google_cast)),
                         icon = painterResource(R.drawable.cast),
                         title = { Text(stringResource(R.string.google_cast)) },
                         description = { Text(stringResource(R.string.google_cast_description)) },
@@ -764,8 +703,9 @@ highlightKey: String? = null) {
                         onClick = { onEnableGoogleCastChange(!enableGoogleCast) }
                     ))
                 }
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.seek_seconds_addup)),
+                    isHighlighted = (highlightKey == stringResource(R.string.seek_seconds_addup)),
                     icon = painterResource(R.drawable.arrow_forward),
                     title = { Text(stringResource(R.string.seek_seconds_addup)) },
                     description = { Text(stringResource(R.string.seek_seconds_addup_description)) },
@@ -786,8 +726,9 @@ highlightKey: String? = null) {
                     },
                     onClick = { onSeekExtraSeconds(!seekExtraSeconds) }
                 ))
+
                 add(Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.echo_equalizer)),
+                    isHighlighted = (highlightKey == stringResource(R.string.echo_equalizer)),
                     icon = painterResource(R.drawable.echoequlizer),
                     title = { Text(stringResource(R.string.echo_equalizer)) },
                     description = { Text(stringResource(R.string.echo_equalizer_desc)) },
@@ -798,11 +739,12 @@ highlightKey: String? = null) {
 
         Spacer(modifier = Modifier.height(27.dp))
 
-        Material3SettingsGroup(scrollState = scrollState, 
+        Material3SettingsGroup(
+            scrollState = scrollState,
             title = stringResource(R.string.queue),
             items = listOf(
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.persistent_queue)),
+                    isHighlighted = (highlightKey == stringResource(R.string.persistent_queue)),
                     icon = painterResource(R.drawable.queue_music),
                     title = { Text(stringResource(R.string.persistent_queue)) },
                     description = { Text(stringResource(R.string.persistent_queue_desc)) },
@@ -824,7 +766,7 @@ highlightKey: String? = null) {
                     onClick = { onPersistentQueueChange(!persistentQueue) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.auto_load_more)),
+                    isHighlighted = (highlightKey == stringResource(R.string.auto_load_more)),
                     icon = painterResource(R.drawable.playlist_add),
                     title = { Text(stringResource(R.string.auto_load_more)) },
                     description = { Text(stringResource(R.string.auto_load_more_desc)) },
@@ -846,7 +788,7 @@ highlightKey: String? = null) {
                     onClick = { onAutoLoadMoreChange(!autoLoadMore) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.disable_load_more_when_repeat_all)),
+                    isHighlighted = (highlightKey == stringResource(R.string.disable_load_more_when_repeat_all)),
                     icon = painterResource(R.drawable.repeat),
                     title = { Text(stringResource(R.string.disable_load_more_when_repeat_all)) },
                     description = { Text(stringResource(R.string.disable_load_more_when_repeat_all_desc)) },
@@ -868,7 +810,7 @@ highlightKey: String? = null) {
                     onClick = { onDisableLoadMoreWhenRepeatAllChange(!disableLoadMoreWhenRepeatAll) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.auto_download_on_like)),
+                    isHighlighted = (highlightKey == stringResource(R.string.auto_download_on_like)),
                     icon = painterResource(R.drawable.download),
                     title = { Text(stringResource(R.string.auto_download_on_like)) },
                     description = { Text(stringResource(R.string.auto_download_on_like_desc)) },
@@ -890,7 +832,7 @@ highlightKey: String? = null) {
                     onClick = { onAutoDownloadOnLikeChange(!autoDownloadOnLike) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.enable_similar_content)),
+                    isHighlighted = (highlightKey == stringResource(R.string.enable_similar_content)),
                     icon = painterResource(R.drawable.similar),
                     title = { Text(stringResource(R.string.enable_similar_content)) },
                     description = { Text(stringResource(R.string.similar_content_desc)) },
@@ -912,7 +854,7 @@ highlightKey: String? = null) {
                     onClick = { similarContentEnabledChange(!similarContentEnabled) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.persistent_shuffle_title)),
+                    isHighlighted = (highlightKey == stringResource(R.string.persistent_shuffle_title)),
                     icon = painterResource(R.drawable.shuffle),
                     title = { Text(stringResource(R.string.persistent_shuffle_title)) },
                     description = { Text(stringResource(R.string.persistent_shuffle_desc)) },
@@ -934,7 +876,7 @@ highlightKey: String? = null) {
                     onClick = { onPersistentShuffleAcrossQueuesChange(!persistentShuffleAcrossQueues) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.remember_shuffle_and_repeat)),
+                    isHighlighted = (highlightKey == stringResource(R.string.remember_shuffle_and_repeat)),
                     icon = painterResource(R.drawable.shuffle),
                     title = { Text(stringResource(R.string.remember_shuffle_and_repeat)) },
                     description = { Text(stringResource(R.string.remember_shuffle_and_repeat_desc)) },
@@ -956,7 +898,7 @@ highlightKey: String? = null) {
                     onClick = { onRememberShuffleAndRepeatChange(!rememberShuffleAndRepeat) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.shuffle_playlist_first)),
+                    isHighlighted = (highlightKey == stringResource(R.string.shuffle_playlist_first)),
                     icon = painterResource(R.drawable.shuffle),
                     title = { Text(stringResource(R.string.shuffle_playlist_first)) },
                     description = { Text(stringResource(R.string.shuffle_playlist_first_desc)) },
@@ -978,7 +920,7 @@ highlightKey: String? = null) {
                     onClick = { onShufflePlaylistFirstChange(!shufflePlaylistFirst) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.prevent_duplicate_tracks_in_queue)),
+                    isHighlighted = (highlightKey == stringResource(R.string.prevent_duplicate_tracks_in_queue)),
                     icon = painterResource(R.drawable.queue_music),
                     title = { Text(stringResource(R.string.prevent_duplicate_tracks_in_queue)) },
                     description = { Text(stringResource(R.string.prevent_duplicate_tracks_in_queue_desc)) },
@@ -1000,7 +942,7 @@ highlightKey: String? = null) {
                     onClick = { onPreventDuplicateTracksInQueueChange(!preventDuplicateTracksInQueue) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.auto_skip_next_on_error)),
+                    isHighlighted = (highlightKey == stringResource(R.string.auto_skip_next_on_error)),
                     icon = painterResource(R.drawable.skip_next),
                     title = { Text(stringResource(R.string.auto_skip_next_on_error)) },
                     description = { Text(stringResource(R.string.auto_skip_next_on_error_desc)) },
@@ -1026,11 +968,12 @@ highlightKey: String? = null) {
 
         Spacer(modifier = Modifier.height(27.dp))
 
-        Material3SettingsGroup(scrollState = scrollState, 
+        Material3SettingsGroup(
+            scrollState = scrollState,
             title = stringResource(R.string.misc),
             items = listOf(
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.stop_music_on_task_clear)),
+                    isHighlighted = (highlightKey == stringResource(R.string.stop_music_on_task_clear)),
                     icon = painterResource(R.drawable.clear_all),
                     title = { Text(stringResource(R.string.stop_music_on_task_clear)) },
                     description = { Text(stringResource(R.string.stop_music_on_task_clear_desc)) },
@@ -1052,7 +995,7 @@ highlightKey: String? = null) {
                     onClick = { onStopMusicOnTaskClearChange(!stopMusicOnTaskClear) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.pause_music_when_media_is_muted)),
+                    isHighlighted = (highlightKey == stringResource(R.string.pause_music_when_media_is_muted)),
                     icon = painterResource(R.drawable.volume_off_pause),
                     title = { Text(stringResource(R.string.pause_music_when_media_is_muted)) },
                     description = { Text(stringResource(R.string.pause_music_when_media_is_muted_desc)) },
@@ -1074,7 +1017,7 @@ highlightKey: String? = null) {
                     onClick = { onPauseOnMuteChange(!pauseOnMute) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.resume_on_bluetooth_connect)),
+                    isHighlighted = (highlightKey == stringResource(R.string.resume_on_bluetooth_connect)),
                     icon = painterResource(R.drawable.bluetooth),
                     title = { Text(stringResource(R.string.resume_on_bluetooth_connect)) },
                     description = { Text(stringResource(R.string.resume_on_bluetooth_connect_desc)) },
@@ -1096,7 +1039,7 @@ highlightKey: String? = null) {
                     onClick = { onResumeOnBluetoothConnectChange(!resumeOnBluetoothConnect) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.keep_screen_on_when_player_is_expanded)),
+                    isHighlighted = (highlightKey == stringResource(R.string.keep_screen_on_when_player_is_expanded)),
                     icon = painterResource(R.drawable.screenshot),
                     title = { Text(stringResource(R.string.keep_screen_on_when_player_is_expanded)) },
                     description = { Text(stringResource(R.string.keep_screen_on_when_player_is_expanded_desc)) },
@@ -1118,7 +1061,7 @@ highlightKey: String? = null) {
                     onClick = { onKeepScreenOnChange(!keepScreenOn) }
                 ),
                 Material3SettingsItem(
-    isHighlighted = (highlightKey == stringResource(R.string.export_desc)),
+                    isHighlighted = (highlightKey == stringResource(R.string.export_desc)),
                     icon = painterResource(R.drawable.file_export),
                     title = { Text(stringResource(R.string.export_desc)) },
                     description = { Text("Show 'Export as MP3' in menus") },
@@ -1149,7 +1092,7 @@ highlightKey: String? = null) {
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
-    
+
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Bottom)))
     }
 

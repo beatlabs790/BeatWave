@@ -39,5 +39,5 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BeatWave-Universal-Release-APK
+          name: BeatWave-v4.4.0-latest
           path: app/build/outputs/apk/universalGms/release/*.apk

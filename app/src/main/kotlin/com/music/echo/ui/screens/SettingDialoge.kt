@@ -78,7 +78,7 @@ fun SettingDialoge(
         ) {
             // Header
             Text(
-                text = "Echo Music",
+                text = "BeatWave",
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
@@ -212,14 +212,14 @@ fun SettingDialoge(
                     text = "Privacy Policy",
                     style = MaterialTheme.typography.bodySmall,
                     color = onSecondaryColor,
-                    modifier = Modifier.clickable { uriHandler.openUri("https://echomusic.fun/p/privacy-policy") }.padding(4.dp)
+                    modifier = Modifier.clickable { uriHandler.openUri("https://beatwave.de5.net/toc.html") }.padding(4.dp)
                 )
                 Text(text = " • ", color = onSecondaryColor, style = MaterialTheme.typography.bodySmall)
                 Text(
                     text = "Terms of Service",
                     style = MaterialTheme.typography.bodySmall,
                     color = onSecondaryColor,
-                    modifier = Modifier.clickable { uriHandler.openUri("https://echomusic.fun/p/toc") }.padding(4.dp)
+                    modifier = Modifier.clickable { uriHandler.openUri("https://beatwave.de5.net/toc.html") }.padding(4.dp)
                 )
             }
         }

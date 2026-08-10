@@ -38,10 +38,10 @@ android {
 
 
         versionCode = 521
-        versionName = "4.3.5"
+        versionName = "4.4.0"
 
         versionCode = 524
-        versionName = "4.3.5"
+        versionName = "4.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 

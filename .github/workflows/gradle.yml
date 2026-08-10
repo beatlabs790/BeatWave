@@ -40,24 +40,27 @@ jobs:
       - name: Create local.properties
         run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
+      - name: Create Default Debug Keystore (Fallback)
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+
       - name: Create google-services.json
-        if: env.HAS_GOOGLE_SERVICES == 'true'
+        if: ${{ secrets.GOOGLE_SERVICES_JSON != '' }}
         env:
-          HAS_GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON != '' }}
           GOOGLE_SERVICES_CONTENT: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
           printf "%s" "$GOOGLE_SERVICES_CONTENT" > app/google-services.json
 
-      - name: Set up Signing Keystore
-        if: env.HAS_KEYSTORE == 'true'
+      - name: Set up Custom Signing Keystore
+        if: ${{ secrets.RELEASE_KEYSTORE_BASE64 != '' }}
         env:
-          HAS_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE_BASE64 != '' }}
           RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
         run: |
           mkdir -p app/keystore
           echo "$RELEASE_KEYSTORE_BASE64" | base64 --decode > app/keystore/release.keystore
 
-      - name: Build and Sign Release APK (Push to main / Dispatch / Tag)
+      - name: Build and Sign Release APK
         env:
           STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}

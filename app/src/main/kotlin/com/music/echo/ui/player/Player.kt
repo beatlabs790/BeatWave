@@ -954,19 +954,8 @@ fun BottomSheetPlayer(
                     .fillMaxSize()
                     .background(bottomSheetBackgroundColor)
             ) {
-                if (customBackgroundPath.isNotEmpty()) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(customBackgroundPath)
-                            .allowHardware(false)
-                            .build(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .alpha(backgroundAlpha)
-                            .blur(customBackgroundBlur.dp)
-                    )
+                if (false) {
+                    // Custom background moved to home screen
                 } else {
                     when (playerBackground) {
                     PlayerBackgroundStyle.BLUR -> {

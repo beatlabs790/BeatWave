@@ -25,6 +25,14 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
@@ -98,6 +106,17 @@ fun PlayerSettings(
     var showRemoteControlDialog by remember { mutableStateOf(false) }
     var remoteIp by remember { mutableStateOf("") }
     var remoteConnected by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val discoveredDevices by RemoteControlClient.discoveredDevices.collectAsState()
+
+    LaunchedEffect(showRemoteControlDialog) {
+        if (showRemoteControlDialog) {
+            RemoteControlClient.startDiscovery(context)
+        } else {
+            RemoteControlClient.stopDiscovery()
+        }
+    }
 
     val (audioQuality, onAudioQualityChange) = rememberEnumPreference(
         AudioQualityKey,
@@ -1163,7 +1182,41 @@ fun PlayerSettings(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     if (!remoteConnected) {
-                        Text("Enter the IP address of the BeatWave server device:")
+                        if (discoveredDevices.isNotEmpty()) {
+                            Text("Discovered Devices on Wi-Fi:", fontWeight = FontWeight.Bold)
+                            discoveredDevices.forEach { device ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            remoteIp = device.ip
+                                            coroutineScope.launch {
+                                                val success = RemoteControlClient.connect(device.ip, device.port)
+                                                remoteConnected = success
+                                            }
+                                        }
+                                        .padding(vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column {
+                                        Text(device.name, fontWeight = FontWeight.SemiBold)
+                                        Text(device.ip, style = MaterialTheme.typography.bodySmall)
+                                    }
+                                    Text("Tap to connect", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                                }
+                            }
+                            Spacer(
+                                modifier = Modifier
+                                    .height(1.dp)
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.outlineVariant)
+                            )
+                        } else {
+                            Text("Scanning same Wi-Fi for BeatWave servers...", style = MaterialTheme.typography.bodyMedium)
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
+                        Text("Or enter IP manually:")
                         OutlinedTextField(
                             value = remoteIp,
                             onValueChange = { remoteIp = it },

@@ -118,6 +118,9 @@ import iad1tya.echo.music.constants.RandomizeHomeOrderKey
 import iad1tya.echo.music.constants.ShowSpeedDialKey
 import iad1tya.echo.music.constants.SmallGridThumbnailHeight
 import iad1tya.echo.music.constants.ThumbnailCornerRadius
+import iad1tya.echo.music.constants.CustomBackgroundPathKey
+import iad1tya.echo.music.constants.CustomBackgroundBlurKey
+import androidx.compose.ui.draw.blur
 import iad1tya.echo.music.db.entities.Album
 import iad1tya.echo.music.db.entities.Artist
 import iad1tya.echo.music.db.entities.LocalItem
@@ -930,6 +933,23 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopStart
         ) {
+            val (customBackgroundPath) = rememberPreference(CustomBackgroundPathKey, defaultValue = "")
+            val (customBackgroundBlur) = rememberPreference(CustomBackgroundBlurKey, defaultValue = 10f)
+
+            if (customBackgroundPath.isNotEmpty()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(customBackgroundPath)
+                        .allowHardware(false)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(0.35f)
+                        .blur(customBackgroundBlur.dp)
+                )
+            }
             val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
             val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
             val quickPicksSnapLayoutInfoProvider = remember(quickPicksLazyGridState) {

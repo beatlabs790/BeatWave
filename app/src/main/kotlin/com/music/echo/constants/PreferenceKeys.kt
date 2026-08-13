@@ -798,3 +798,8 @@ val LiquidGlassPlayerEnabledKey = booleanPreferencesKey("liquidGlassPlayerEnable
 val LiquidGlassMiniPlayerEnabledKey = booleanPreferencesKey("liquidGlassMiniPlayerEnabled")
 val LiquidGlassNavBarEnabledKey = booleanPreferencesKey("liquidGlassNavBarEnabled")
 val UseFloatingNavBarKey = booleanPreferencesKey("useFloatingNavBar")
+
+val VocalSuppressorEnabledKey = booleanPreferencesKey("vocalSuppressorEnabled")
+val CustomBackgroundPathKey = stringPreferencesKey("customBackgroundPath")
+val CustomBackgroundBlurKey = floatPreferencesKey("customBackgroundBlur")
+

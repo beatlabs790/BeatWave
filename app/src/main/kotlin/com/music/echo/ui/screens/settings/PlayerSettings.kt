@@ -18,6 +18,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +34,7 @@ import androidx.navigation.NavController
 import iad1tya.echo.music.BuildConfig
 import iad1tya.echo.music.LocalPlayerAwareWindowInsets
 import iad1tya.echo.music.R
+import iad1tya.echo.music.playback.RemoteControlClient
 import iad1tya.echo.music.constants.AudioNormalizationKey
 import iad1tya.echo.music.constants.AudioOffload
 import iad1tya.echo.music.constants.AudioQuality
@@ -60,6 +62,7 @@ import iad1tya.echo.music.constants.ShufflePlaylistFirstKey
 import iad1tya.echo.music.constants.SimilarContent
 import iad1tya.echo.music.constants.SkipSilenceInstantKey
 import iad1tya.echo.music.constants.SkipSilenceKey
+import iad1tya.echo.music.constants.VocalSuppressorEnabledKey
 import iad1tya.echo.music.constants.StopMusicOnTaskClearKey
 import iad1tya.echo.music.constants.EnableExportAsMp3Key
 import iad1tya.echo.music.constants.PreloadNextSongEnabledKey
@@ -83,6 +86,10 @@ fun PlayerSettings(
     highlightKey: String? = null
 ) {
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    var showRemoteControlDialog by remember { mutableStateOf(false) }
+    var remoteIp by remember { mutableStateOf("") }
+    var remoteConnected by remember { mutableStateOf(false) }
 
     val (audioQuality, onAudioQualityChange) = rememberEnumPreference(
         AudioQualityKey,
@@ -124,6 +131,10 @@ fun PlayerSettings(
     val (audioNormalization, onAudioNormalizationChange) = rememberPreference(
         AudioNormalizationKey,
         defaultValue = true
+    )
+    val (vocalSuppressorEnabled, onVocalSuppressorEnabledChange) = rememberPreference(
+        VocalSuppressorEnabledKey,
+        defaultValue = false
     )
 
     val (audioOffload, onAudioOffloadChange) = rememberPreference(
@@ -338,6 +349,24 @@ fun PlayerSettings(
                 ))
             }
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Material3SettingsGroup(
+            scrollState = scrollState,
+            title = "Wi-Fi Remote Control",
+            items = buildList {
+                add(Material3SettingsItem(
+                    isHighlighted = false,
+                    icon = painterResource(R.drawable.cast),
+                    title = { Text("Wi-Fi Remote Controller") },
+                    description = { Text(if (remoteConnected) "Connected to $remoteIp" else "Control another BeatWave instance over local Wi-Fi") },
+                    onClick = { showRemoteControlDialog = true }
+                ))
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Material3SettingsGroup(
             scrollState = scrollState,
@@ -583,6 +612,29 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onAudioNormalizationChange(!audioNormalization) }
+                ))
+
+                add(Material3SettingsItem(
+                    isHighlighted = (highlightKey == "Vocal Suppression (Karaoke Mode)"),
+                    icon = painterResource(R.drawable.echoequlizer),
+                    title = { Text("Vocal Suppression (Karaoke Mode)") },
+                    description = { Text("Suppress central vocal frequencies in real-time for singing along.") },
+                    trailingContent = {
+                        Switch(
+                            checked = vocalSuppressorEnabled,
+                            onCheckedChange = onVocalSuppressorEnabledChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (vocalSuppressorEnabled) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onVocalSuppressorEnabledChange(!vocalSuppressorEnabled) }
                 ))
 
                 add(Material3SettingsItem(
@@ -1094,6 +1146,76 @@ fun PlayerSettings(
         Spacer(modifier = Modifier.height(16.dp))
 
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Bottom)))
+    }
+
+    if (showRemoteControlDialog) {
+        AlertDialog(
+            onDismissRequest = { showRemoteControlDialog = false },
+            title = { Text("Wi-Fi Remote Control") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    if (!remoteConnected) {
+                        Text("Enter the IP address of the BeatWave server device:")
+                        OutlinedTextField(
+                            value = remoteIp,
+                            onValueChange = { remoteIp = it },
+                            placeholder = { Text("e.g. 192.168.1.100") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text("Connected to BeatWave Server at $remoteIp")
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Button(onClick = { coroutineScope.launch { RemoteControlClient.sendCommand("play") } }) {
+                                Text("Play")
+                            }
+                            Button(onClick = { coroutineScope.launch { RemoteControlClient.sendCommand("pause") } }) {
+                                Text("Pause")
+                            }
+                            Button(onClick = { coroutineScope.launch { RemoteControlClient.sendCommand("prev") } }) {
+                                Text("Prev")
+                            }
+                            Button(onClick = { coroutineScope.launch { RemoteControlClient.sendCommand("next") } }) {
+                                Text("Next")
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                if (!remoteConnected) {
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                val success = RemoteControlClient.connect(remoteIp)
+                                remoteConnected = success
+                            }
+                        }
+                    ) {
+                        Text("Connect")
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                RemoteControlClient.disconnect()
+                                remoteConnected = false
+                            }
+                        }
+                    ) {
+                        Text("Disconnect")
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRemoteControlDialog = false }) {
+                    Text("Close")
+                }
+            }
+        )
     }
 
     TopAppBar(

@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.C
 import androidx.media3.common.Player.COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM
 import androidx.media3.common.Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM
 import androidx.media3.common.Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM
@@ -316,7 +317,11 @@ class PlayerConnection(
                     castHandler.play()
                 }
             } else {
-                player.togglePlayPause()
+                if (player.isPlaying) {
+                    service.pauseWithFade()
+                } else {
+                    service.playWithFade()
+                }
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in togglePlayPause")
@@ -330,10 +335,7 @@ class PlayerConnection(
             if (castHandler?.isCasting?.value == true) {
                 castHandler.play()
             } else {
-                if (player.playbackState == Player.STATE_IDLE) {
-                    player.prepare()
-                }
-                player.playWhenReady = true
+                service.playWithFade()
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in play")
@@ -347,7 +349,7 @@ class PlayerConnection(
             if (castHandler?.isCasting?.value == true) {
                 castHandler.pause()
             } else {
-                player.playWhenReady = false
+                service.pauseWithFade()
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in pause")
@@ -361,7 +363,7 @@ class PlayerConnection(
             if (castHandler?.isCasting?.value == true) {
                 castHandler.seekTo(position)
             } else {
-                player.seekTo(position)
+                service.seekWithFade(position)
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in seekTo")
@@ -376,11 +378,15 @@ class PlayerConnection(
                 castHandler.skipToNext()
                 return
             }
-            player.seekToNext()
-            if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
-                player.prepare()
+            if (service.isCrossfadeEnabled() && service.player.nextMediaItemIndex != C.INDEX_UNSET) {
+                service.skipWithCrossfade()
+            } else {
+                player.seekToNext()
+                if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+                    player.prepare()
+                }
+                player.playWhenReady = true
             }
-            player.playWhenReady = true
             onSkipNext?.invoke()
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in seekToNext")

@@ -166,6 +166,8 @@ import iad1tya.echo.music.constants.EnableLyricsThumbnailPlayPauseKey
 import iad1tya.echo.music.constants.KeepScreenOn
 import iad1tya.echo.music.constants.PlayerBackgroundStyle
 import iad1tya.echo.music.constants.PlayerBackgroundStyleKey
+import iad1tya.echo.music.constants.CustomBackgroundPathKey
+import iad1tya.echo.music.constants.CustomBackgroundBlurKey
 import iad1tya.echo.music.constants.PlayerButtonsStyle
 import iad1tya.echo.music.constants.PlayerButtonsStyleKey
 import iad1tya.echo.music.constants.PlayerHorizontalPadding
@@ -317,6 +319,9 @@ fun BottomSheetPlayer(
         defaultValue = PlayerBackgroundStyle.GRADIENT
     )
     val playerBackground = if (isLocalMedia) PlayerBackgroundStyle.DEFAULT else playerBackgroundPref
+    val (customBackgroundPath) = rememberPreference(CustomBackgroundPathKey, defaultValue = "")
+    val (customBackgroundBlur) = rememberPreference(CustomBackgroundBlurKey, defaultValue = 15f)
+
     val playerButtonsStyle by rememberEnumPreference(
         key = PlayerButtonsStyleKey,
         defaultValue = PlayerButtonsStyle.DEFAULT
@@ -949,7 +954,21 @@ fun BottomSheetPlayer(
                     .fillMaxSize()
                     .background(bottomSheetBackgroundColor)
             ) {
-                when (playerBackground) {
+                if (customBackgroundPath.isNotEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(customBackgroundPath)
+                            .allowHardware(false)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .alpha(backgroundAlpha)
+                            .blur(customBackgroundBlur.dp)
+                    )
+                } else {
+                    when (playerBackground) {
                     PlayerBackgroundStyle.BLUR -> {
                         AnimatedContent(
                             targetState = backgroundThumbnailUrl,
@@ -1402,6 +1421,7 @@ fun BottomSheetPlayer(
                     PlayerBackgroundStyle.DEFAULT -> {
                         
                     }
+                }
                 }
             }
         },

@@ -56,6 +56,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import iad1tya.echo.music.constants.CustomBackgroundPathKey
+import iad1tya.echo.music.constants.CustomBackgroundBlurKey
 import iad1tya.echo.music.LocalPlayerAwareWindowInsets
 import iad1tya.echo.music.R
 import iad1tya.echo.music.constants.CanvasThumbnailAnimationKey
@@ -138,6 +142,23 @@ fun AppearanceSettings(
     snackbarHostState: SnackbarHostState,
 highlightKey: String? = null) {
     val scrollState = androidx.compose.foundation.rememberScrollState()
+
+    val (customBackgroundPath, onCustomBackgroundPathChange) = rememberPreference(
+        CustomBackgroundPathKey,
+        defaultValue = ""
+    )
+    val (customBackgroundBlur, onCustomBackgroundBlurChange) = rememberPreference(
+        CustomBackgroundBlurKey,
+        defaultValue = 15f
+    )
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            onCustomBackgroundPathChange(it.toString())
+        }
+    }
 
     val (dynamicTheme, onDynamicThemeChange) = rememberPreference(
         DynamicThemeKey,
@@ -980,6 +1001,51 @@ highlightKey: String? = null) {
                 )
             )
         )
+        Material3SettingsGroup(scrollState = scrollState, 
+            title = "Custom Background",
+            items = buildList {
+                add(
+                    Material3SettingsItem(
+                        isHighlighted = false,
+                        icon = painterResource(R.drawable.explore_outlined), // we can use explore or a suitable drawable
+                        title = { Text("Select Custom Background Image") },
+                        description = { Text(if (customBackgroundPath.isNotEmpty()) "Selected: ${customBackgroundPath.takeLast(30)}" else "Not set") },
+                        onClick = { launcher.launch("image/*") }
+                    )
+                )
+                if (customBackgroundPath.isNotEmpty()) {
+                    add(
+                        Material3SettingsItem(
+                            isHighlighted = false,
+                            icon = painterResource(R.drawable.discover_tune),
+                            title = { Text("Background Blur density") },
+                            description = {
+                                Column {
+                                    Text("${customBackgroundBlur.roundToInt()} dp")
+                                    Slider(
+                                        value = customBackgroundBlur,
+                                        onValueChange = onCustomBackgroundBlurChange,
+                                        valueRange = 0f..25f,
+                                        steps = 25
+                                    )
+                                }
+                            }
+                        )
+                    )
+                    add(
+                        Material3SettingsItem(
+                            isHighlighted = false,
+                            icon = painterResource(R.drawable.close),
+                            title = { Text("Reset Custom Background") },
+                            onClick = { onCustomBackgroundPathChange("") }
+                        )
+                    )
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(27.dp))
+
         Material3SettingsGroup(scrollState = scrollState, 
             title = stringResource(R.string.theme),
             items = buildList {

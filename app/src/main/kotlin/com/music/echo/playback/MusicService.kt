@@ -125,6 +125,8 @@ import iad1tya.echo.music.constants.PreventDuplicateTracksInQueueKey
 import iad1tya.echo.music.constants.SimilarContent
 import iad1tya.echo.music.constants.SkipSilenceInstantKey
 import iad1tya.echo.music.constants.SkipSilenceKey
+import iad1tya.echo.music.constants.VocalSuppressorEnabledKey
+import iad1tya.echo.music.playback.audio.VocalSuppressorAudioProcessor
 import iad1tya.echo.music.constants.IpVersionKey
 import com.music.innertube.models.IpVersion
 import okhttp3.Dns
@@ -438,7 +440,9 @@ class MusicService :
     val playerFlow = _playerFlow.asStateFlow()
 
     private val playerSilenceProcessors = HashMap<Player, SilenceDetectorAudioProcessor>()
+    private val playerVocalSuppressors = HashMap<Player, VocalSuppressorAudioProcessor>()
     private val playerDuckProcessors = HashMap<Player, AutomixDuckAudioProcessor>()
+    private var remoteControlServer: RemoteControlServer? = null
 
 
     private val instantSilenceSkipEnabled = MutableStateFlow(false)
@@ -554,6 +558,7 @@ class MusicService :
     override fun onCreate() {
         super.onCreate()
         isRunning = true
+        remoteControlServer = RemoteControlServer(this).apply { start() }
 
         
         // Workaround for ForegroundServiceStartNotAllowedException
@@ -647,7 +652,7 @@ class MusicService :
         }
         mediaSession =
             MediaLibrarySession
-                .Builder(this, player, mediaLibrarySessionCallback)
+                .Builder(this, createSessionPlayerWrapper(player), mediaLibrarySessionCallback)
                 .setSessionActivity(
                     PendingIntent.getActivity(
                         this,
@@ -879,6 +884,17 @@ class MusicService :
                 }
             }
 
+        scope.launch {
+            dataStore.data
+                .map { it[VocalSuppressorEnabledKey] ?: false }
+                .distinctUntilChanged()
+                .collect { enabled ->
+                    playerVocalSuppressors.values.forEach { processor ->
+                        processor.isEnabled = enabled
+                    }
+                }
+        }
+
         combine(
             currentFormat,
             dataStore.data
@@ -1084,6 +1100,42 @@ class MusicService :
         }
     }
 
+    private fun createSessionPlayerWrapper(targetPlayer: Player): androidx.media3.common.ForwardingPlayer {
+        return object : androidx.media3.common.ForwardingPlayer(targetPlayer) {
+            override fun play() {
+                playWithFade()
+            }
+
+            override fun pause() {
+                pauseWithFade()
+            }
+
+            override fun seekTo(mediaItemIndex: Int, positionMs: Long) {
+                if (mediaItemIndex == targetPlayer.currentMediaItemIndex) {
+                    seekWithFade(positionMs)
+                } else {
+                    super.seekTo(mediaItemIndex, positionMs)
+                }
+            }
+
+            override fun seekToNext() {
+                if (crossfadeEnabled && targetPlayer.nextMediaItemIndex != C.INDEX_UNSET) {
+                    skipWithCrossfade()
+                } else {
+                    super.seekToNext()
+                }
+            }
+
+            override fun seekToNextMediaItem() {
+                if (crossfadeEnabled && targetPlayer.nextMediaItemIndex != C.INDEX_UNSET) {
+                    skipWithCrossfade()
+                } else {
+                    super.seekToNextMediaItem()
+                }
+            }
+        }
+    }
+
     private fun createExoPlayer(): ExoPlayer {
         val eqProcessor = CustomEqualizerAudioProcessor()
         equalizerService.addAudioProcessor(eqProcessor)
@@ -1091,17 +1143,18 @@ class MusicService :
         val duckProcessor = AutomixDuckAudioProcessor()
 
         val silenceProcessor = SilenceDetectorAudioProcessor { handleLongSilenceDetected() }
+        val vocalSuppressorProcessor = VocalSuppressorAudioProcessor()
 
-        
         runBlocking {
             val skipSilence = dataStore.get(SkipSilenceKey, false)
             val instantSkip = dataStore.get(SkipSilenceInstantKey, false)
             silenceProcessor.instantModeEnabled = skipSilence && instantSkip
+            vocalSuppressorProcessor.isEnabled = dataStore.get(VocalSuppressorEnabledKey, false)
         }
 
         val player = ExoPlayer.Builder(this)
             .setMediaSourceFactory(createMediaSourceFactory())
-            .setRenderersFactory(createRenderersFactory(eqProcessor, silenceProcessor, duckProcessor))
+            .setRenderersFactory(createRenderersFactory(eqProcessor, silenceProcessor, duckProcessor, vocalSuppressorProcessor))
             .setLoadControl(
                 DefaultLoadControl.Builder()
                     .setBufferDurationsMs(50_000, 50_000, 750, 2_000)
@@ -1122,6 +1175,7 @@ class MusicService :
             .build()
 
         playerSilenceProcessors[player] = silenceProcessor
+        playerVocalSuppressors[player] = vocalSuppressorProcessor
         playerDuckProcessors[player] = duckProcessor
 
         player.apply {
@@ -3105,6 +3159,7 @@ class MusicService :
         eqProcessor: CustomEqualizerAudioProcessor,
         silenceProcessor: SilenceDetectorAudioProcessor,
         duckProcessor: AutomixDuckAudioProcessor,
+        vocalSuppressorProcessor: VocalSuppressorAudioProcessor,
     ) =
         object : DefaultRenderersFactory(this) {
             override fun buildAudioSink(
@@ -3122,6 +3177,7 @@ class MusicService :
                             eqProcessor,
                             duckProcessor,
                             silenceProcessor,
+                            vocalSuppressorProcessor,
                         ),
                         SilenceSkippingAudioProcessor(2_000_000, 20_000, 256),
                         SonicAudioProcessor(),
@@ -3246,6 +3302,8 @@ class MusicService :
 
     override fun onDestroy() {
         isRunning = false
+        remoteControlServer?.stop()
+        remoteControlServer = null
         releasePrebuffered()
 
         try {
@@ -3320,7 +3378,11 @@ class MusicService :
                 toggleLike()
             }
             MusicWidgetReceiver.ACTION_NEXT -> {
-                player.seekToNext()
+                if (crossfadeEnabled && player.nextMediaItemIndex != C.INDEX_UNSET) {
+                    skipWithCrossfade()
+                } else {
+                    player.seekToNext()
+                }
                 updateWidgetUI(player.isPlaying)
             }
             MusicWidgetReceiver.ACTION_PREVIOUS -> {
@@ -3857,6 +3919,97 @@ class MusicService :
         prebuffered = PrebufferedTransition(secPlayer, plan, targetMediaId)
     }
 
+    fun isCrossfadeEnabled() = crossfadeEnabled
+
+    fun skipWithCrossfade() {
+        if (!crossfadeEnabled || player.nextMediaItemIndex == C.INDEX_UNSET) {
+            player.seekToNext()
+            if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+                player.prepare()
+            }
+            player.playWhenReady = true
+            return
+        }
+        startCrossfade(plan = null)
+    }
+
+    private var playbackFadeJob: Job? = null
+
+    fun playWithFade() {
+        playbackFadeJob?.cancel()
+        if (player.playbackState == Player.STATE_IDLE) {
+            player.prepare()
+        }
+        if (isCrossfading.value) {
+            player.playWhenReady = true
+            return
+        }
+        player.volume = 0f
+        player.playWhenReady = true
+        playbackFadeJob = scope.launch {
+            val duration = 300L
+            val steps = 20
+            val stepTime = duration / steps
+            for (i in 1..steps) {
+                if (!isActive) break
+                player.volume = (i.toFloat() / steps)
+                delay(stepTime)
+            }
+            player.volume = 1f
+        }
+    }
+
+    fun pauseWithFade() {
+        playbackFadeJob?.cancel()
+        if (isCrossfading.value) {
+            player.playWhenReady = false
+            return
+        }
+        playbackFadeJob = scope.launch {
+            val duration = 300L
+            val steps = 20
+            val stepTime = duration / steps
+            val startVal = player.volume
+            for (i in steps downTo 0) {
+                if (!isActive) break
+                player.volume = startVal * (i.toFloat() / steps)
+                delay(stepTime)
+            }
+            player.playWhenReady = false
+            player.volume = 1f
+        }
+    }
+
+    fun seekWithFade(positionMs: Long) {
+        playbackFadeJob?.cancel()
+        if (isCrossfading.value) {
+            player.seekTo(positionMs)
+            return
+        }
+        playbackFadeJob = scope.launch {
+            val fadeOutDuration = 150L
+            val stepsOut = 10
+            val stepTimeOut = fadeOutDuration / stepsOut
+            val startVal = player.volume
+            for (i in stepsOut downTo 0) {
+                if (!isActive) break
+                player.volume = startVal * (i.toFloat() / stepsOut)
+                delay(stepTimeOut)
+            }
+            player.seekTo(positionMs)
+            
+            val fadeInDuration = 150L
+            val stepsIn = 10
+            val stepTimeIn = fadeInDuration / stepsIn
+            for (i in 1..stepsIn) {
+                if (!isActive) break
+                player.volume = (i.toFloat() / stepsIn)
+                delay(stepTimeIn)
+            }
+            player.volume = 1f
+        }
+    }
+
     private fun startCrossfade(plan: AutomixPlan? = null) {
         if (isCrossfading.value) return
 
@@ -3973,7 +4126,7 @@ class MusicService :
         sleepTimer.player = player
 
         try {
-            (mediaSession as MediaSession).player = player
+            (mediaSession as MediaSession).player = createSessionPlayerWrapper(player)
         } catch (e: Exception) {
             timber.log.Timber.e(e, "Failed to swap player in MediaSession")
         }

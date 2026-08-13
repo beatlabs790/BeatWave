@@ -46,6 +46,7 @@ import iad1tya.echo.music.models.toMediaMetadata
 import iad1tya.echo.music.playback.queues.ListQueue
 import iad1tya.echo.music.playback.queues.YouTubeQueue
 import iad1tya.echo.music.ui.component.ChoiceChipsRow
+import iad1tya.echo.music.ui.component.WrappedStoryDialog
 import iad1tya.echo.music.ui.component.HideOnScrollFAB
 import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.component.LocalAlbumsGrid
@@ -91,6 +92,7 @@ fun StatsScreen(
     val uniqueAlbumsCount by viewModel.uniqueAlbumsCount.collectAsState()
 
     var showHistorySheet by remember { mutableStateOf(false) }
+    var showWrappedDialog by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -431,6 +433,14 @@ fun StatsScreen(
             },
             actions = {
                 IconButton(
+                    onClick = { showWrappedDialog = true }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.music_note),
+                        contentDescription = "BeatWave Wrapped",
+                    )
+                }
+                IconButton(
                     onClick = { showHistorySheet = true }
                 ) {
                     Icon(
@@ -467,6 +477,16 @@ fun StatsScreen(
                 uniqueArtists = uniqueArtistsCount,
                 uniqueAlbums = uniqueAlbumsCount,
                 periodLabel = currentPeriodLabel
+            )
+        }
+
+        if (showWrappedDialog) {
+            WrappedStoryDialog(
+                totalPlayTime = totalPlayTime,
+                uniqueSongs = uniqueSongsCount,
+                topSongs = mostPlayedSongs,
+                topArtists = mostPlayedArtists,
+                onDismiss = { showWrappedDialog = false }
             )
         }
     }

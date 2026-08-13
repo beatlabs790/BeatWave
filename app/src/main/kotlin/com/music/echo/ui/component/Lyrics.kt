@@ -1893,23 +1893,48 @@ fun Lyrics(
         modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp)
     ) {
         AnimatedVisibility(
-            visible = !isAutoScrollEnabled && isSynced && !isSelectionModeActive,
+            visible = !isSelectionModeActive,
             enter = slideInVertically { it } + fadeIn(),
             exit = slideOutVertically { it } + fadeOut()
         ) {
-            FilledTonalButton(onClick = {
-                scope.launch {
-                    performSmoothPageScroll(currentLineIndex, 1500)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (!isAutoScrollEnabled && isSynced) {
+                    FilledTonalButton(onClick = {
+                        scope.launch {
+                            performSmoothPageScroll(currentLineIndex, 1500)
+                        }
+                        isAutoScrollEnabled = true
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.sync),
+                            contentDescription = stringResource(R.string.auto_scroll),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = stringResource(R.string.auto_scroll))
+                    }
                 }
-                isAutoScrollEnabled = true
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.sync),
-                    contentDescription = stringResource(R.string.auto_scroll),
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(R.string.auto_scroll))
+                if (lines.isNotEmpty()) {
+                    FilledTonalButton(onClick = {
+                        isSelectionModeActive = true
+                        selectedIndices.clear()
+                        val currentActiveIdx = displayedCurrentLineIndex
+                        if (currentActiveIdx in lines.indices) {
+                            selectedIndices.add(currentActiveIdx)
+                        }
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = "Share Card",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Share Card")
+                    }
+                }
             }
         }
 

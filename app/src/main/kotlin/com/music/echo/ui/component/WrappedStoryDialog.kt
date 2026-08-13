@@ -69,7 +69,7 @@ fun WrappedStoryDialog(
                     .clip(RoundedCornerShape(24.dp))
                     .drawWithCache {
                         onDrawWithContent {
-                            val pictureCanvas = android.graphics.Canvas(picture.beginRecording(size.width.toInt(), size.height.toInt()))
+                            val pictureCanvas = picture.beginRecording(size.width.toInt(), size.height.toInt())
                             drawIntoCanvas { canvas ->
                                 pictureCanvas.drawColor(android.graphics.Color.TRANSPARENT)
                             }
@@ -167,7 +167,7 @@ fun WrappedStoryDialog(
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                topSongs.firstOrNull()?.song?.artistsText ?: "",
+                                topSongs.firstOrNull()?.artists?.joinToString { it.name } ?: "",
                                 color = Color.White.copy(alpha = 0.8f),
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center

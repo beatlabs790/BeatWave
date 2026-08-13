@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import iad1tya.echo.music.R
-import iad1tya.echo.music.db.entities.SongEntity
-import iad1tya.echo.music.db.entities.ArtistEntity
+import iad1tya.echo.music.db.entities.Song
+import iad1tya.echo.music.db.entities.Artist
 import iad1tya.echo.music.db.entities.AlbumEntity
 import java.io.File
 import java.io.FileOutputStream
@@ -39,8 +39,8 @@ import java.io.FileOutputStream
 fun WrappedStoryDialog(
     totalPlayTime: Long,
     uniqueSongs: Int,
-    topSongs: List<SongEntity>,
-    topArtists: List<ArtistEntity>,
+    topSongs: List<Song>,
+    topArtists: List<Artist>,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
@@ -69,7 +69,7 @@ fun WrappedStoryDialog(
                     .clip(RoundedCornerShape(24.dp))
                     .drawWithCache {
                         onDrawWithContent {
-                            val pictureCanvas = Canvas(picture.beginRecording(size.width.toInt(), size.height.toInt()))
+                            val pictureCanvas = android.graphics.Canvas(picture.beginRecording(size.width.toInt(), size.height.toInt()))
                             drawIntoCanvas { canvas ->
                                 pictureCanvas.drawColor(android.graphics.Color.TRANSPARENT)
                             }

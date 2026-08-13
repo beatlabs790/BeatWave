@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Picture
+import kotlin.math.roundToInt
 import android.net.Uri
 import android.os.Environment
 import androidx.compose.foundation.Canvas as JCanvas
@@ -82,7 +83,7 @@ fun LyricCardGenerator(
                         .clip(RoundedCornerShape(16.dp))
                         .drawWithCache {
                             onDrawWithContent {
-                                val pictureCanvas = Canvas(picture.beginRecording(size.width.toInt(), size.height.toInt()))
+                                val pictureCanvas = android.graphics.Canvas(picture.beginRecording(size.width.toInt(), size.height.toInt()))
                                 drawIntoCanvas { canvas ->
                                     pictureCanvas.drawColor(android.graphics.Color.TRANSPARENT)
                                     // Redirect drawing to picture canvas

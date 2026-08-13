@@ -154,6 +154,7 @@ import coil3.toBitmap
 import iad1tya.echo.music.LocalDatabase
 import iad1tya.echo.music.LocalDownloadUtil
 import iad1tya.echo.music.LocalListenTogetherManager
+import iad1tya.echo.music.playback.RemoteControlClient
 import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.R
 import iad1tya.echo.music.constants.AudioQuality
@@ -311,7 +312,22 @@ fun BottomSheetPlayer(
     val hidePlayerSlider by rememberPreference(iad1tya.echo.music.constants.HidePlayerSliderKey, false)
     val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(HidePlayerThumbnailKey, false)
     val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
-    val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
+    val localMediaMetadata by playerConnection.mediaMetadata.collectAsState()
+    val connectedIp by RemoteControlClient.currentConnectedDeviceIp.collectAsState()
+    val remoteState by RemoteControlClient.remotePlaybackState.collectAsState()
+    val isRemoteConnected = connectedIp != null
+    val remoteMediaMetadata = remember(remoteState) {
+        remoteState?.let {
+            iad1tya.echo.music.models.MediaMetadata(
+                id = "remote",
+                title = it.title,
+                artists = listOf(iad1tya.echo.music.models.MediaMetadata.Artist(id = "remote", name = it.artist)),
+                duration = (it.duration / 1000L).toInt(),
+                thumbnailUrl = it.thumbnailUrl
+            )
+        }
+    }
+    val mediaMetadata = if (isRemoteConnected) remoteMediaMetadata else localMediaMetadata
     val isLocalMedia = mediaMetadata?.id?.isLocalMediaId() == true
 
     val playerBackgroundPref by rememberEnumPreference(
@@ -343,7 +359,8 @@ fun BottomSheetPlayer(
             PlayerBackgroundStyle.DEFAULT -> useDarkTheme
         }
     }
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val localIsPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying = if (isRemoteConnected) (remoteState?.isPlaying == true) else localIsPlaying
     val isCrossfading by playerConnection.isCrossfading.collectAsState()
     val isAutomixing by playerConnection.isAutomixing.collectAsState()
     val automixDebug by playerConnection.automixDebugInfo.collectAsState()
@@ -920,6 +937,13 @@ fun BottomSheetPlayer(
                 position = castPosition
                 if (castDuration > 0) duration = castDuration
             }
+        }
+    }
+
+    LaunchedEffect(isRemoteConnected, remoteState) {
+        if (isRemoteConnected && remoteState != null) {
+            position = remoteState!!.position
+            duration = remoteState!!.duration
         }
     }
 
@@ -1688,6 +1712,25 @@ fun BottomSheetPlayer(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        var showDevicePicker by remember { mutableStateOf(false) }
+                        if (showDevicePicker) {
+                            iad1tya.echo.music.ui.component.DevicePickerSheet(onDismiss = { showDevicePicker = false })
+                        }
+                        FilledIconButton(
+                            onClick = { showDevicePicker = true },
+                            shape = middleShape,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = textButtonColor,
+                                contentColor = if (connectedIp != null) MaterialTheme.colorScheme.primary else iconButtonColor,
+                            ),
+                            modifier = Modifier.size(42.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(if (connectedIp != null) R.drawable.cast_connected else R.drawable.cast),
+                                contentDescription = "Cast",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                         AnimatedContent(targetState = showInlineLyrics, label = "DownloadButton") { showLyrics ->
                             if (showLyrics) {
                                 FilledIconButton(
@@ -2355,8 +2398,14 @@ fun BottomSheetPlayer(
                             )
 
                             FilledIconButton(
-                                onClick = playerConnection::seekToPrevious,
-                                enabled = canSkipPrevious && !isListenTogetherGuest,
+                                onClick = {
+                                    if (isRemoteConnected) {
+                                        coroutineScope.launch { RemoteControlClient.sendCommand("prev") }
+                                    } else {
+                                        playerConnection.seekToPrevious()
+                                    }
+                                },
+                                enabled = (canSkipPrevious || isRemoteConnected) && !isListenTogetherGuest,
                                 shape = CircleShape,
                                 interactionSource = backInteractionSource,
                                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -2399,7 +2448,13 @@ fun BottomSheetPlayer(
                                         playerConnection.toggleMute()
                                         return@FilledIconButton
                                     }
-                                    if (isCasting) {
+                                    if (isRemoteConnected) {
+                                        if (remoteState?.isPlaying == true) {
+                                            coroutineScope.launch { RemoteControlClient.sendCommand("pause") }
+                                        } else {
+                                            coroutineScope.launch { RemoteControlClient.sendCommand("play") }
+                                        }
+                                    } else if (isCasting) {
                                         if (castIsPlaying) {
                                             castHandler?.pause()
                                         } else {
@@ -2447,8 +2502,14 @@ fun BottomSheetPlayer(
                             Spacer(modifier = Modifier.width(24.dp))
 
                             FilledIconButton(
-                                onClick = playerConnection::seekToNext,
-                                enabled = canSkipNext && !isListenTogetherGuest,
+                                onClick = {
+                                    if (isRemoteConnected) {
+                                        coroutineScope.launch { RemoteControlClient.sendCommand("next") }
+                                    } else {
+                                        playerConnection.seekToNext()
+                                    }
+                                },
+                                enabled = (canSkipNext || isRemoteConnected) && !isListenTogetherGuest,
                                 shape = CircleShape,
                                 interactionSource = nextInteractionSource,
                                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -2523,7 +2584,13 @@ fun BottomSheetPlayer(
                                             playerConnection.toggleMute()
                                             return@clickable
                                         }
-                                        if (isCasting) {
+                                        if (isRemoteConnected) {
+                                            if (remoteState?.isPlaying == true) {
+                                                coroutineScope.launch { RemoteControlClient.sendCommand("pause") }
+                                            } else {
+                                                coroutineScope.launch { RemoteControlClient.sendCommand("play") }
+                                            }
+                                        } else if (isCasting) {
                                             if (castIsPlaying) {
                                                 castHandler?.pause()
                                             } else {

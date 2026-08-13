@@ -233,7 +233,7 @@
     <string name="unique_artists">Unikal ifaçılar</string>
     <string name="unique_albums">Unikal albomlar</string>
     <string name="selected_period">Seçilmiş dövr</string>
-    <string name="hours_minutes_format">%s saat %s dəqiqə</string>
+    <string name="hours_minutes_format">%1$s saat %2$s dəqiqə</string>
     <string name="default_open_tab">Defolt açılan bölmə</string>
     <string name="grid_cell_size">Şəbəkə xanasının ölçüsü</string>
     <string name="small">Kiçik</string>
@@ -360,10 +360,10 @@
     <string name="spotify_loading_library">Spotify kitabxanası yüklənir</string>
     <string name="spotify_no_sources">İdxal ediləcək mənbə yoxdur</string>
     <string name="spotify_import_in_progress">Spotify idxalı davam edir</string>
-    <string name="spotify_import_progress_step">%s / %s idxal edilir</string>
+    <string name="spotify_import_progress_step">%1$s / %2$s idxal edilir</string>
     <string name="spotify_import_complete">Spotify idxalı tamamlandı</string>
     <string name="spotify_import_summary">İdxal edildi: %s</string>
-    <string name="spotify_source_summary">%s: %s trek</string>
+    <string name="spotify_source_summary">%1$s: %2$s trek</string>
     <string name="spotify_select_all">Hamısını seç</string>
     <string name="spotify_clear_selection">Seçimi təmizlə</string>
     <string name="spotify_account">Spotify hesabı</string>

@@ -8,14 +8,18 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.io.PrintWriter
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.concurrent.CopyOnWriteArrayList
 import timber.log.Timber
 
 class RemoteControlServer(private val service: MusicService) {
     private var serverSocket: ServerSocket? = null
     private var serverJob: Job? = null
+    private var stateBroadcastJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val activeClients = CopyOnWriteArrayList<Socket>()
 
     private var nsdManager: NsdManager? = null
     private var registrationListener: NsdManager.RegistrationListener? = null
@@ -23,6 +27,7 @@ class RemoteControlServer(private val service: MusicService) {
     fun start(port: Int = 8085) {
         if (serverSocket != null) return
         registerNsd(port)
+        startStateBroadcasting()
         serverJob = scope.launch {
             try {
                 serverSocket = ServerSocket(port)
@@ -30,11 +35,54 @@ class RemoteControlServer(private val service: MusicService) {
                 while (isActive) {
                     val clientSocket = serverSocket?.accept()
                     if (clientSocket != null) {
+                        activeClients.add(clientSocket)
                         handleClient(clientSocket)
+                        // Immediate broadcast on client connect
+                        broadcastCurrentState()
                     }
                 }
             } catch (e: Exception) {
                 Timber.tag("RemoteServer").e(e, "Error in server socket loop")
+            }
+        }
+    }
+
+    private fun startStateBroadcasting() {
+        stateBroadcastJob = scope.launch {
+            while (isActive) {
+                broadcastCurrentState()
+                delay(1000L)
+            }
+        }
+    }
+
+    private fun broadcastCurrentState() {
+        val clients = activeClients.filter { it.isConnected && !it.isClosed }
+        if (clients.isEmpty()) return
+
+        val player = service.player
+        val metadata = service.currentMediaMetadata.value
+
+        val stateJson = JSONObject().apply {
+            put("type", "playback_state")
+            put("title", metadata?.title ?: "")
+            put("artist", metadata?.artists?.joinToString { it.name } ?: "")
+            put("thumbnailUrl", metadata?.thumbnailUrl ?: "")
+            val duration = if (player.duration > 0) player.duration else (metadata?.duration?.toLong()?.times(1000L) ?: 0L)
+            put("duration", duration)
+            put("position", player.currentPosition)
+            put("isPlaying", player.isPlaying)
+            put("volume", player.volume.toDouble())
+        }.toString()
+
+        for (client in clients) {
+            try {
+                val writer = PrintWriter(client.getOutputStream(), true)
+                writer.println(stateJson)
+            } catch (e: Exception) {
+                activeClients.remove(client)
+                runCatching { client.close() }
+                Timber.tag("RemoteServer").w("Error sending state to client: ${e.message}")
             }
         }
     }
@@ -108,6 +156,7 @@ class RemoteControlServer(private val service: MusicService) {
             } catch (e: Exception) {
                 Timber.tag("RemoteServer").w("Client connection error: ${e.message}")
             } finally {
+                activeClients.remove(socket)
                 runCatching { socket.close() }
             }
         }
@@ -115,7 +164,10 @@ class RemoteControlServer(private val service: MusicService) {
 
     fun stop() {
         unregisterNsd()
+        stateBroadcastJob?.cancel()
         serverJob?.cancel()
+        activeClients.forEach { runCatching { it.close() } }
+        activeClients.clear()
         runCatching { serverSocket?.close() }
         serverSocket = null
     }

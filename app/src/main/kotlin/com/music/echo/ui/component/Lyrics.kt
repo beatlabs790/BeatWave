@@ -1921,7 +1921,11 @@ fun Lyrics(
                     FilledTonalButton(onClick = {
                         isSelectionModeActive = true
                         selectedIndices.clear()
-                        val currentActiveIdx = displayedCurrentLineIndex
+                        val currentActiveIdx = if (!isAutoScrollEnabled) {
+                            currentLineIndex
+                        } else {
+                            if (isSeeking || isSelectionModeActive) deferredCurrentLineIndex else currentLineIndex
+                        }
                         if (currentActiveIdx in lines.indices) {
                             selectedIndices.add(currentActiveIdx)
                         }

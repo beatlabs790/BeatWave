@@ -3,10 +3,16 @@ package iad1tya.echo.music.playback
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
 import timber.log.Timber
@@ -14,9 +20,23 @@ import timber.log.Timber
 object RemoteControlClient {
     private var socket: Socket? = null
     private var writer: PrintWriter? = null
+    private var clientReadJob: Job? = null
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     data class DiscoveredDevice(val name: String, val ip: String, val port: Int)
     val discoveredDevices = MutableStateFlow<List<DiscoveredDevice>>(emptyList())
+
+    data class RemotePlaybackState(
+        val title: String,
+        val artist: String,
+        val thumbnailUrl: String,
+        val duration: Long,
+        val position: Long,
+        val isPlaying: Boolean,
+        val volume: Float
+    )
+    val remotePlaybackState = MutableStateFlow<RemotePlaybackState?>(null)
+    val currentConnectedDeviceIp = MutableStateFlow<String?>(null)
 
     private var nsdManager: NsdManager? = null
     private var discoveryListener: NsdManager.DiscoveryListener? = null
@@ -87,9 +107,38 @@ object RemoteControlClient {
     suspend fun connect(ip: String, port: Int = 8085): Boolean = withContext(Dispatchers.IO) {
         try {
             disconnect()
-            socket = Socket(ip, port)
-            writer = PrintWriter(socket?.getOutputStream(), true)
+            val newSocket = Socket(ip, port)
+            socket = newSocket
+            writer = PrintWriter(newSocket.getOutputStream(), true)
+            currentConnectedDeviceIp.value = ip
             Timber.tag("RemoteClient").i("Connected to server at $ip:$port")
+
+            clientReadJob = scope.launch {
+                try {
+                    val reader = BufferedReader(InputStreamReader(newSocket.getInputStream()))
+                    while (newSocket.isConnected && !newSocket.isClosed) {
+                        val line = reader.readLine() ?: break
+                        val json = JSONObject(line)
+                        if (json.optString("type") == "playback_state") {
+                            val state = RemotePlaybackState(
+                                title = json.optString("title"),
+                                artist = json.optString("artist"),
+                                thumbnailUrl = json.optString("thumbnailUrl"),
+                                duration = json.optLong("duration"),
+                                position = json.optLong("position"),
+                                isPlaying = json.optBoolean("isPlaying"),
+                                volume = json.optDouble("volume", 1.0).toFloat()
+                            )
+                            remotePlaybackState.value = state
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.tag("RemoteClient").e(e, "Error reading from server socket")
+                } finally {
+                    remotePlaybackState.value = null
+                    currentConnectedDeviceIp.value = null
+                }
+            }
             true
         } catch (e: Exception) {
             Timber.tag("RemoteClient").e(e, "Connection failed to $ip:$port")
@@ -115,9 +164,13 @@ object RemoteControlClient {
     }
 
     suspend fun disconnect() = withContext(Dispatchers.IO) {
+        clientReadJob?.cancel()
+        clientReadJob = null
         runCatching { writer?.close() }
         runCatching { socket?.close() }
         writer = null
         socket = null
+        remotePlaybackState.value = null
+        currentConnectedDeviceIp.value = null
     }
 }

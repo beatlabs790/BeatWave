@@ -34,7 +34,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Single Universal Release APK
-        run: ./gradlew assembleUniversalGmsRelease
+        run: ./gradlew clean assembleUniversalGmsRelease
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4

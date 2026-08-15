@@ -226,7 +226,7 @@
     <string name="lastfm_integration">Integrazione con Last.fm</string>
     <string name="swipe_song_to_remove">Scorri il brano per rimuoverlo dalla playlist</string>
     <string name="last_fm_send_likes">Invia Mi piace/Non mi piace</string>
-    Ama/non amare brani su Last.fm quando (non) vengono apprezzati su Convx
+    Ama/non amare brani su Last.fm quando (non) vengono apprezzati su BeatWave
     <string name="lyrics_romanize_chinese">Romanizza testo in cinese</string>
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Attiva l\'invio dell\'audio a Chromecast e altri dispositivi</string>
@@ -300,28 +300,28 @@
     <string name="wrapped_total_artists_subtitle">artisti diversi</string>
     <string name="wrapped_total_songs_title">Hai ascoltato</string>
     <string name="wrapped_total_songs_subtitle">canzoni diverse</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">è l\'ora di vedere cosa hai ascoltato</string>
     <string name="wrapped_intro_button">cominciamo!</string>
-    Grazie per aver ascoltato con Convx!
+    Grazie per aver ascoltato con BeatWave!
     <string name="wrapped_end_create_playlist">Crea la tua playlist del Wrapped</string>
     <string name="wrapped_end_creating_playlist">Creazione...</string>
     <string name="wrapped_end_playlist_saved">Playlist Salvata</string>
-    Logo di Convx
+    Logo di BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">IL TUO WRAPPED È PRONTO!</string>
     <string name="wrapped_ready_subtitle">È l\'ora di vedere cosa hai amato quest\'anno.</string>
     <string name="wrapped_thank_you">Grazie per aver ascoltato</string>
-    Un ringraziamento speciale a MO Agami per aver creato Convx
+    Un ringraziamento speciale a MO Agami per aver creato BeatWave
     <string name="wrapped_close">Chiudi wrapped</string>
     <string name="wrapped_playlist_title">Il tuo Wrapped %s</string>
     <string name="wrapped_create_playlist">Crea playlist</string>
     <string name="wrapped_playlist_saved">Playlist salvata</string>
     <string name="casting_to">Trasmissione a %s in corso</string>
     <string name="progress_percent">Progresso %s%%</string>
-    Ascoltando Convx
+    Ascoltando BeatWave
     <string name="listen_on_youtube_music">Ascolta su YouTube Music</string>
-    Visita Convx
+    Visita BeatWave
     <string name="open">Apri</string>
     <string name="failed_to_create_image">Impossibile creare l\'immagine: %s</string>
     <string name="copied_title">Titolo copiato</string>
@@ -357,7 +357,7 @@
     <string name="system_equalizer">Equalizzatore di sistema</string>
     <string name="album_art">Copertina</string>
     <string name="no_song_playing">Nessun brano in riproduzione</string>
-    Premi per aprire Convx
+    Premi per aprire BeatWave
     <string name="previous">Precedente</string>
     <string name="play_pause">Play/Pausa</string>
     <string name="next">Prossimo</string>
@@ -470,7 +470,7 @@
     <string name="crash_description">Si è verificato un errore inaspettato. Si prega di condividere il rapporto per aiutarci a risolvere il problema.</string>
     <string name="crash_share_logs">Condividi i Log</string>
     <string name="crash_share_title">Condividi rapporto di errore</string>
-    Rapporto di Errore Convx
+    Rapporto di Errore BeatWave
     <string name="crash_close">Chiudi</string>
     <string name="crash_no_log">Nessun log di errore disponibile</string>
     <string name="palette_dynamic">Dinamico</string>
@@ -520,7 +520,7 @@
     <string name="user_blocked_by_host">Utente bloccato dall\'host</string>
     <string name="cd_system_mode">Modalità di sistema</string>
     <string name="not_playing">Nessun brano in riproduzione</string>
-    Premi per aprire Convx
+    Premi per aprire BeatWave
     <string name="widget_music_player">Riproduttore Musicale</string>
     <string name="widget_turntable">Giradischi</string>
     <string name="together">Insieme</string>
@@ -574,7 +574,7 @@
     <string name="first_row_is_header">La prima riga è l\'intestazione</string>
     <string name="tap_to_recognize">Tocca per riconoscere</string>
     <string name="enable_high_refresh_rate">Abilita frequenza di aggiornamento elevata</string>
-    Riproduci su Convx
+    Riproduci su BeatWave
     <string name="listening">In ascolto…</string>
     <string name="continue_action">Continua</string>
     <string name="enable">Attiva</string>
@@ -621,9 +621,9 @@
     <string name="discord_advanced_mode">Modalità avanzata</string>
     <string name="discord_activity_name_description">Nome personalizzato per l\'attività (lascia vuoto per predefinito)</string>
     <string name="discord_activity_name">Nome dell\'attività</string>
-    Competendo su Convx
-    Guardando video su Convx
-    Riproducendo musica su Convx
+    Competendo su BeatWave
+    Guardando video su BeatWave
+    Riproducendo musica su BeatWave
     <string name="discord_connect_description">Accedi con Discord per condividere ciò che stai ascoltando</string>
     <string name="discord_presence">Presenza</string>
     <string name="discord_rpc_preview">Anteprima della Rich Presence</string>

@@ -10,7 +10,7 @@
  */
 export const TEST_CLIENT_HTML = `<!doctype html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Convx Sync — test member</title>
+<title>BeatWave Sync — test member</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -35,7 +35,7 @@ pre{background:#000;border-radius:12px;padding:12px;max-height:320px;overflow:au
 font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#98989d;margin:0}
 .k{color:#64d2ff}
 </style></head><body>
-<h1>Convx Sync — test member</h1>
+<h1>BeatWave Sync — test member</h1>
 <div class="sub">A second participant, without a second phone. Joins as a normal member.</div>
 
 <div class="card">

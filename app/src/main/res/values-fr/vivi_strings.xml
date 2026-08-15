@@ -352,7 +352,7 @@
     <string name="enable_scrobbling">Activer le scrobbling</string>
     <string name="lastfm_now_playing">Envoyer « En cours de lecture »</string>
     <string name="last_fm_send_likes">Envoyer des « J\'aime » / « Je n\'aime pas »</string>
-    Ajouter/Retirer des titres de la liste « J\'aime » sur Last.fm lorsqu\'ils sont ajoutés/retirés de la liste « J\'aime » dans Convx
+    Ajouter/Retirer des titres de la liste « J\'aime » sur Last.fm lorsqu\'ils sont ajoutés/retirés de la liste « J\'aime » dans BeatWave
     <string name="logging_in">Connexion en cours…</string>
 
     <string name="scrobbling_configuration">Configuration du scrobbling</string>
@@ -392,7 +392,7 @@
     <string name="karaoke">Karaoké</string>
     <string name="apple_music_style">Apple Music</string>
     <string name="apple_music_style_letter">Apple Music V2 (Lettre par Lettre)</string>
-    Convx (Fluide)
+    BeatWave (Fluide)
     <string name="apple_music_lyrics_blur">Paroles d\'Apple Music floues</string>
     <string name="apple_music_lyrics_blur_desc">Appliquez un effet de flou aux lignes de paroles inactives pour créer un effet de mise au point haut de gamme.</string>
     <string name="lyrics_v2_fluid">Paroles V2 (Fluide)</string>
@@ -422,19 +422,19 @@
     <string name="wrapped_total_artists_subtitle">artistes uniques</string>
     <string name="wrapped_total_songs_title">Vous avez écouté</string>
     <string name="wrapped_total_songs_subtitle">titres uniques</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">Il est temps de découvrir ce que vous avez écouté</string>
     <string name="wrapped_intro_button">C\'est parti !</string>
-    Merci d\'avoir écouté Convx !
+    Merci d\'avoir écouté BeatWave !
     <string name="wrapped_end_create_playlist">Créez votre playlist personnalisée</string>
     <string name="wrapped_end_creating_playlist">Création en cours...</string>
     <string name="wrapped_end_playlist_saved">Playlist enregistrée</string>
-    Logo Convx
+    Logo BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">VOTRE RÉSUMÉ EST PRÊT !</string>
     <string name="wrapped_ready_subtitle">C\'est le moment de découvrir ce que vous avez aimé cette année.</string>
     <string name="wrapped_thank_you">Merci de votre écoute</string>
-    Un grand merci à MO Agamy pour avoir créé Convx.
+    Un grand merci à MO Agamy pour avoir créé BeatWave.
     <string name="wrapped_close">Fermer le résumé</string>
     <string name="wrapped_playlist_title">Votre %s en résumé</string>
     <string name="wrapped_create_playlist">Créer une playlist</string>
@@ -469,9 +469,9 @@ est irréversible.
     <string name="plays">lectures</string>
     <string name="casting_to">Conversion vers %s</string>
     <string name="progress_percent">Progression %s%%</string>
-    Écouter Convx
+    Écouter BeatWave
     <string name="listen_on_youtube_music">Écoutez sur YouTube Music</string>
-    Rendez-vous sur Convx
+    Rendez-vous sur BeatWave
     <string name="open">Ouvrir</string>
     <string name="failed_to_create_image">Échec de la création de l\'image : %s</string>
     <string name="copied_title">Titre copié</string>
@@ -488,13 +488,13 @@ est irréversible.
     <!-- Widget strings -->
     <string name="album_art">Pochette d\'album</string>
     <string name="no_song_playing">Aucun titre n\'est en cours de lecture</string>
-    Appuyez pour ouvrir Convx
+    Appuyez pour ouvrir BeatWave
     <string name="previous">Précédent</string>
     <string name="play_pause">Lecture/Pause</string>
     <string name="next">Suivant</string>
     <string name="like">J\'aime</string>
     <string name="not_playing">Aucun titre n\'est en cours de lecture</string>
-    Appuyez pour ouvrir Convx
+    Appuyez pour ouvrir BeatWave
     <string name="widget_description">Widget de lecteur de musique avec commandes de lecture</string>
     <string name="queue_widget_description">Lecteur de musique avec aperçu de la file d\'attente</string>
     <string name="turntable_widget_description">Widget musical circulaire avec boutons de lecture et de « J\'aime »</string>
@@ -653,7 +653,7 @@ est irréversible.
     <string name="crash_share_logs">Partager les journaux</string>
 	<string name="copy_logs">Copier les journaux</string>
     <string name="crash_share_title">Partager un rapport d\'incident</string>
-    Rapport d\'erreur Convx
+    Rapport d\'erreur BeatWave
     <string name="crash_close">Fermer</string>
     <string name="crash_no_log">Aucun journal d\'erreurs n\'est disponible</string>
 
@@ -705,7 +705,7 @@ est irréversible.
     <string name="delete_from_history">Supprimer de l\'historique</string>
     <string name="re_listen">Réécouter</string>
     <string name="hold_to_recognize">Maintenez l\'icône de recherche enfoncée pour reconnaître un titre.</string>
-    Écoutez sur Convx
+    Écoutez sur BeatWave
     <string name="recognized_track">Titre reconnu</string>
 
     <!-- CSV Import Strings -->
@@ -744,9 +744,9 @@ est irréversible.
     <string name="discord_rpc_preview">Aperçu de Rich Presence</string>
     <string name="discord_presence">Présence</string>
     <string name="discord_connect_description">Connectez-vous avec Discord pour partager ce que vous écoutez.</string>
-    Écouter Convx
-    Regarder Convx
-    En compétition sur Convx
+    Écouter BeatWave
+    Regarder BeatWave
+    En compétition sur BeatWave
     <string name="discord_activity_name">Nom de l\'activité</string>
     <string name="discord_activity_name_description">Nom personnalisé de l\'activité (laissez vide pour utiliser le nom par défaut)</string>
     <string name="discord_advanced_mode">Mode avancé</string>

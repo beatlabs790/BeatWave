@@ -232,7 +232,7 @@
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Habilitar transmissão de áudio para o Chromecast e outros dispositivos compatíveis</string>
     <string name="last_fm_send_likes">Enviar Likes/Deslikes</string>
-    Curtir/Descurtir músicas no Last.fm quanto são Curtidas/Descurtidas no Convx
+    Curtir/Descurtir músicas no Last.fm quanto são Curtidas/Descurtidas no BeatWave
     <string name="logging_in">Fazendo login…</string>
     <string name="hide_video_songs">Ocultar videoclipes</string>
     <string name="details_desc">Ver as informações da música</string>
@@ -301,19 +301,19 @@
     <string name="wrapped_total_artists_subtitle">Artistas únicos</string>
     <string name="wrapped_total_songs_title">Você ouviu</string>
     <string name="wrapped_total_songs_subtitle">canções únicas</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">é hora de checar o que você tem ouvido</string>
     <string name="wrapped_intro_button">vamos lá!</string>
-    Obrigado por ouvir com o Convx!
+    Obrigado por ouvir com o BeatWave!
     <string name="wrapped_end_create_playlist">Crie Sua Lista de Reprodução Embrulhada</string>
     <string name="wrapped_end_creating_playlist">Criando...</string>
     <string name="wrapped_end_playlist_saved">Lista de Reprodução Salva</string>
-    Convx Logo
+    BeatWave Logo
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">SEU EMBRULHO ESTÁ PRONTO!</string>
     <string name="wrapped_ready_subtitle">Hora de checar o que você amou esse ano.</string>
     <string name="wrapped_thank_you">Obrigado por ouvir</string>
-    Agradecimentos especiais ao MO Agamy por criar o Convx
+    Agradecimentos especiais ao MO Agamy por criar o BeatWave
     <string name="wrapped_close">Feche o embrulho</string>
     <string name="wrapped_playlist_title">Seu %s Embrulhado</string>
     <string name="wrapped_create_playlist">Criar lista de reprodução</string>
@@ -342,9 +342,9 @@
     <string name="import_error_title">Erro ao importar</string>
     <string name="casting_to">Transmitir para %s</string>
     <string name="progress_percent">Progresso %s%%</string>
-    Ouvindo Convx
+    Ouvindo BeatWave
     <string name="listen_on_youtube_music">Ouça no YouTube Music</string>
-    Visite Convx
+    Visite BeatWave
     <string name="open">Abrir</string>
     <string name="failed_to_create_image">Falha ao criar a imagem: %s</string>
     <string name="copied_title">Título Copiado</string>
@@ -359,7 +359,7 @@
     <string name="system_equalizer">Equalizador do Sistema</string>
     <string name="album_art">Capa do Álbum</string>
     <string name="no_song_playing">Nenhuma música tocando</string>
-    Clique para abrir o Convx
+    Clique para abrir o BeatWave
     <string name="previous">Anterior</string>
     <string name="play_pause">Tocar/Pausar</string>
     <string name="next">Próximo</string>
@@ -399,7 +399,7 @@
     <string name="copy_error">Copiar erro</string>
     <string name="error_copy_hint">Copie as informações do erro para ajudar os desenvolvedores a identificar o problema</string>
     <string name="not_playing">Nenhuma música tocando</string>
-    Clique para abrir o Convx
+    Clique para abrir o BeatWave
     <string name="widget_music_player">Reprodutor de música</string>
     <string name="widget_turntable">Toca-discos</string>
     <string name="player_client">Reprodutor</string>
@@ -451,7 +451,7 @@
     <string name="delete_from_history">Apagar do histórico</string>
     <string name="re_listen">Ouvir novamente</string>
     <string name="hold_to_recognize">Segure o ícone de pesquisa para reconhecer música</string>
-    Tocar no Convx
+    Tocar no BeatWave
     <string name="listen_together_auto_approval_desc">Aprovar pedidos de entrada automaticamente, ao invés de analisá-los manualmente</string>
     <string name="listen_together_sync_volume">Sincronizar volume do anfitrião</string>
     <string name="listen_together_sync_volume_desc">Participantes seguem o nível de volume do anfitrião</string>
@@ -542,7 +542,7 @@
     <string name="crash_description">Ocorreu um erro inesperado. Por favor, compartilhe o relatório de falha para nos ajudar a corrigir o problema.</string>
     <string name="crash_share_logs">Compartilhar registros</string>
     <string name="crash_share_title">Compartilhar relatório de falha</string>
-    Relatório de Acidente da Convx
+    Relatório de Acidente da BeatWave
     <string name="crash_close">Fechar</string>
     <string name="crash_no_log">Nenhum registro de falha disponível</string>
     <string name="palette_dynamic">Dinâmico</string>
@@ -627,9 +627,9 @@
     <string name="discord_rpc_preview">Visualização de rich presence</string>
     <string name="discord_presence">Presença</string>
     <string name="discord_connect_description">Entre com o Discord para compartilhar o que você está ouvindo</string>
-    Jogando Convx
-    Assistindo Convx
-    Competindo no Convx
+    Jogando BeatWave
+    Assistindo BeatWave
+    Competindo no BeatWave
     <string name="discord_activity_name">Nome da atividade</string>
     <string name="discord_activity_name_description">Nome personalizado para a atividade (deixe vazio para padrão)</string>
     <string name="discord_advanced_mode">Modo avançado</string>

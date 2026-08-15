@@ -37,9 +37,6 @@ jobs:
       - name: Setup FFTW for Android
         uses: ./.github/actions/setup-fftw
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Generate debug.keystore
         run: |
           mkdir -p ~/.android
@@ -53,25 +50,18 @@ jobs:
             -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Decode release keystore
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
-        run: |
-          mkdir -p app/keystore
-          echo "$KEYSTORE_BASE64" | base64 -d > app/keystore/release.keystore
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Build Universal GMS Release APK
+      - name: Build Universal FOSS Release APK
         env:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
-          STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          ./gradlew assembleUniversalGmsRelease -Pnightly=true --no-configuration-cache --console=plain --warning-mode summary -x lint
+          ./gradlew assembleUniversalFossRelease -Pnightly=true --no-configuration-cache --console=plain --warning-mode summary -x lint
 
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: convx-gms-nightly
-          path: app/build/outputs/apk/universalGms/release/*.apk
+          name: beatwave-foss-nightly
+          path: app/build/outputs/apk/universalFoss/release/*.apk

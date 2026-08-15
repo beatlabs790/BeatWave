@@ -243,7 +243,7 @@
     <string name="enable_scrobbling">Habilitar scrobbling</string>
     <string name="lastfm_now_playing">Enviar lo que estoy escuchando</string>
     <string name="last_fm_send_likes">Enviar Me gusta/No me gusta</string>
-    Marcar como Me gusta/No me gusta las canciones en Last.fm cuando son marcadas como Me gusta/No me gusta en Convx
+    Marcar como Me gusta/No me gusta las canciones en Last.fm cuando son marcadas como Me gusta/No me gusta en BeatWave
     <string name="logging_in">Iniciando sesión…</string>
     <string name="enable_wavy_slider">Habilitar deslizador ondulado</string>
     <string name="wavy">Ondulado</string>
@@ -321,19 +321,19 @@
     <string name="wrapped_total_artists_subtitle">artistas únicos</string>
     <string name="wrapped_total_songs_title">Escuchaste</string>
     <string name="wrapped_total_songs_subtitle">canciones únicas</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">es hora de ver lo que estuviste escuchando</string>
     <string name="wrapped_intro_button">¡vamos!</string>
-    ¡Gracias por escuchar con Convx!
+    ¡Gracias por escuchar con BeatWave!
     <string name="wrapped_end_create_playlist">Crea tu lista de reproducción Recap</string>
     <string name="wrapped_end_creating_playlist">Creando...</string>
     <string name="wrapped_end_playlist_saved">Lista de reproducción guardada</string>
-    Logo de Convx
+    Logo de BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">¡TU RECAP ESTÁ LISTO!</string>
     <string name="wrapped_ready_subtitle">Hora de ver lo que te gustó este año.</string>
     <string name="wrapped_thank_you">Gracias por escuchar</string>
-    Agradecimiento especial a MO Agamy por crear Convx
+    Agradecimiento especial a MO Agamy por crear BeatWave
     <string name="wrapped_close">Cerrar Recap</string>
     <string name="wrapped_playlist_title">Tu Recap %s</string>
     <string name="wrapped_create_playlist">Crear lista de reproducción</string>
@@ -359,9 +359,9 @@
     <string name="error_file_open">No se pudo abrir el archivo: %1$s</string>
     <string name="import_error_title">Error al importar</string>
     <string name="casting_to">Transmitiendo a %s</string>
-    Escuchando Convx
+    Escuchando BeatWave
     <string name="listen_on_youtube_music">Escuchar en YouTube Music</string>
-    Visita Convx
+    Visita BeatWave
     <string name="open">Abrir</string>
     <string name="failed_to_create_image">No se pudo crear la imagen: %s</string>
     <string name="copied_title">Se copió el título</string>
@@ -370,7 +370,7 @@
     <string name="failed_to_parse_proxy">No se pudo analizar la URL del proxy.</string>
     <string name="album_art">Carátula del álbum</string>
     <string name="no_song_playing">Ninguna canción en reproducción</string>
-    Toca para abrir Convx
+    Toca para abrir BeatWave
     <string name="previous">Anterior</string>
     <string name="play_pause">Reproducir/pausar</string>
     <string name="next">Siguiente</string>
@@ -482,7 +482,7 @@
     <string name="lyrics_romanize_as_main">Mostrar letras romanizadas como principales</string>
     <string name="hide_youtube_shorts">Ocultar Youtube Shorts</string>
     <string name="not_playing">No se está reproduciendo ninguna canción</string>
-    Toca para abrir Convx
+    Toca para abrir BeatWave
     <string name="widget_music_player">Reproductor de Música</string>
     <string name="widget_turntable">Disco giratorio</string>
     <string name="together">En compañia</string>
@@ -551,7 +551,7 @@
     <string name="crash_description">Se ha producido un error inesperado. Por favor, comparta el informe de errores para ayudarnos a solucionar el problema.</string>
     <string name="crash_share_logs">Compartir Registros</string>
     <string name="crash_share_title">Compartir informe de errores</string>
-    Informe de errores de Convx
+    Informe de errores de BeatWave
     <string name="crash_close">Cerrar</string>
     <string name="crash_no_log">No hay registro de fallos disponible</string>
     <string name="palette_dynamic">Dinámico</string>
@@ -597,7 +597,7 @@
     <string name="delete_from_history">Eliminar del historial</string>
     <string name="re_listen">Volver a escuchar</string>
     <string name="hold_to_recognize">Mantén pulsado el icono de búsqueda para reconocer la música</string>
-    Escuchar en Convx
+    Escuchar en BeatWave
     <string name="recognized_track">Pistas Identificadas</string>
     <string name="map_csv_columns">Asignar columnas CSV</string>
     <string name="first_row_is_header">La primera fila es el encabezado</string>
@@ -632,9 +632,9 @@
     <string name="discord_rpc_preview">Previsualizar Presencia</string>
     <string name="discord_presence">Presencia</string>
     <string name="discord_connect_description">Inicia sesión con Discord para compartir lo que estás escuchando</string>
-    Reproduciendo en Convx
-    Viendo en Convx
-    Compitiendo en Convx
+    Reproduciendo en BeatWave
+    Viendo en BeatWave
+    Compitiendo en BeatWave
     <string name="discord_activity_name">Nombre de la actividad</string>
     <string name="discord_activity_name_description">Nombre personalizado para la actividad (déjelo vacío para usar el nombre predeterminado)</string>
     <string name="discord_advanced_mode">Modo avanzado</string>

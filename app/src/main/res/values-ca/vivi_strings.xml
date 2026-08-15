@@ -239,7 +239,7 @@
     <string name="enable_scrobbling">Habilitar scrobbling</string>
     <string name="lastfm_now_playing">Enviar Reproducció Actual</string>
     <string name="last_fm_send_likes">Enviar Agrada/No m\'agrada</string>
-    Indicar que M\'agrada/No m\'agrada a Last.fm en indicar M\'agrada/No m\'agrada a Convx
+    Indicar que M\'agrada/No m\'agrada a Last.fm en indicar M\'agrada/No m\'agrada a BeatWave
     <string name="logging_in">Iniciant sessió…</string>
     <string name="scrobbling_configuration">Configuració de scrobbling</string>
     <string name="scrobble_min_track_duration">Fer scrobble a cançons més llargues de</string>
@@ -297,28 +297,28 @@
     <string name="wrapped_total_artists_subtitle">artistes únics</string>
     <string name="wrapped_total_songs_title">Has escoltat</string>
     <string name="wrapped_total_songs_subtitle">cançons diferents</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">És hora de veure què has estat escoltant</string>
     <string name="wrapped_intro_button">anem!</string>
-    Gràcies per escoltar amb Convx!
+    Gràcies per escoltar amb BeatWave!
     <string name="wrapped_end_create_playlist">Crea la llista del teu Recopilatori</string>
     <string name="wrapped_end_creating_playlist">Generant…</string>
     <string name="wrapped_end_playlist_saved">Llista Desada</string>
-    Logo de Convx
+    Logo de BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">EL TEU RECOPILATORI ESTÀ PREPARAT!</string>
     <string name="wrapped_ready_subtitle">És hora de veure què t\'ha encantat enguany.</string>
     <string name="wrapped_thank_you">Gràcies per escoltar</string>
-    Un especial agraïment a MO Agamy per crear Convx
+    Un especial agraïment a MO Agamy per crear BeatWave
     <string name="wrapped_close">Tancar Recopilatori</string>
     <string name="wrapped_playlist_title">El teu Recopilatori %s</string>
     <string name="wrapped_create_playlist">Crear llista de reproducció</string>
     <string name="wrapped_playlist_saved">Llista de reproducció desada</string>
     <string name="casting_to">Transmetent a %s</string>
     <string name="progress_percent">Progrés %s%%</string>
-    Escoltant Convx
+    Escoltant BeatWave
     <string name="listen_on_youtube_music">Escoltar a YouTube Music</string>
-    Visita Convx
+    Visita BeatWave
     <string name="open">Obrir</string>
     <string name="failed_to_create_image">No s\'ha pogut generar la imatge: %s</string>
     <string name="copied_title">Títol copiat</string>
@@ -376,7 +376,7 @@
     <string name="show_artist_subscriber_count">Mostra el nombre de subscriptors</string>
     <string name="show_artist_monthly_listeners">Mostra els oients mensuals</string>
     <string name="crop_album_art">Retalla la coberta</string>
-    Toqueu per obrir el Convx
+    Toqueu per obrir el BeatWave
     <string name="remember_shuffle_and_repeat">Recorda l\'aleatori i la repetició</string>
     <string name="queue_widget_description">Reproductor de música amb vista prèvia de la cua</string>
     <string name="error_copied">Informació de l\'error copiada al porta-retalls</string>
@@ -470,11 +470,11 @@
     <string name="crash_description">S\'ha produït un error inesperat. Per favor, enviï\'ns l\'informe de fallida per a ajudar-nos a solucionar el problema.</string>
     <string name="crash_share_logs">Compartir Registres</string>
     <string name="crash_share_title">Enviar l\'informe de fallida</string>
-    Informe de Fallida de Convx
+    Informe de Fallida de BeatWave
     <string name="crash_close">Tancar</string>
     <string name="crash_no_log">No hi ha registres de fallida disponibles</string>
     <string name="not_playing">Cap cançó sonant</string>
-    Prem per obrir Convx
+    Prem per obrir BeatWave
     <string name="widget_music_player">Reproductor de música</string>
     <string name="widget_turntable">Tocadiscs</string>
     <string name="together">Junts</string>
@@ -592,7 +592,7 @@
     <string name="delete_from_history">Elimina de l\'historial</string>
     <string name="re_listen">Escoltar de nou</string>
     <string name="hold_to_recognize">Mantín l\'icona de cerca per reconèixer la música</string>
-    Reprodueix amb Convx
+    Reprodueix amb BeatWave
     <string name="recognized_track">Cançó identificada</string>
     <string name="map_csv_columns">Mapatge de Columnes CSV</string>
     <string name="first_row_is_header">La primera fila son les capçaleres</string>
@@ -626,9 +626,9 @@
     <string name="discord_rpc_preview">Previsualització de la Rich Presence</string>
     <string name="discord_presence">Presència</string>
     <string name="discord_connect_description">Inicia sessió a Discord per compartir el que estàs escoltant</string>
-    Reproduint Convx
-    Veient Convx
-    Competint a Convx
+    Reproduint BeatWave
+    Veient BeatWave
+    Competint a BeatWave
     <string name="discord_activity_name">Nom de l\'activitat</string>
     <string name="discord_activity_name_description">Nom personalitzat per a l\'activitat (buit de manera predeterminada)</string>
     <string name="discord_advanced_mode">Mode avançat</string>

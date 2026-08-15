@@ -226,7 +226,7 @@
     <string name="scrobble_delay_minutes">Întârziere pentru scrobble în minute</string>
     <string name="swipe_song_to_remove">Glisează melodia pentru a o elimina din playlist</string>
     <string name="last_fm_send_likes">Trimite aprecierile</string>
-    Apreciază/dezapreciază melodiile în Last.fm atunci când sunt apreciate/dezapreciate în Convx
+    Apreciază/dezapreciază melodiile în Last.fm atunci când sunt apreciate/dezapreciate în BeatWave
     <string name="primary_color_style">Culoare principală</string>
     <string name="tertiary_color_style">Culoare terțiară</string>
     <string name="auto_scroll">Resincronizare</string>
@@ -301,28 +301,28 @@
     <string name="wrapped_total_artists_subtitle">artiști unici</string>
     <string name="wrapped_total_songs_title">Ai ascultat</string>
     <string name="wrapped_total_songs_subtitle">(de) melodii unice</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">este timpul să vedem ce ai ascultat</string>
     <string name="wrapped_intro_button">să mergem!</string>
-    Mulțumim că asculți folosind Convx!
+    Mulțumim că asculți folosind BeatWave!
     <string name="wrapped_end_create_playlist">Creează-ți playlistul tău Wrapped</string>
     <string name="wrapped_end_creating_playlist">Se creează...</string>
     <string name="wrapped_end_playlist_saved">Playlist salvat</string>
-    Logo-ul Convx
+    Logo-ul BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">WRAPPED-UL TĂU ESTE GATA!</string>
     <string name="wrapped_ready_subtitle">Este timpul să vedem ce ai apreciat în acest an.</string>
     <string name="wrapped_thank_you">Mulțumim pentru ascultare</string>
-    Mulțumire speciale lui MO Agamy pentru crearea Convx
+    Mulțumire speciale lui MO Agamy pentru crearea BeatWave
     <string name="wrapped_close">Închide Wrapped</string>
     <string name="wrapped_playlist_title">Wrapped-ul tău %s</string>
     <string name="wrapped_create_playlist">Creează playlist</string>
     <string name="wrapped_playlist_saved">Playlist salvat</string>
     <string name="casting_to">Se difuzează către %s</string>
     <string name="progress_percent">Progres: %s%%</string>
-    Ascultă pe Convx
+    Ascultă pe BeatWave
     <string name="listen_on_youtube_music">Ascultă pe YouTube Music</string>
-    Vizitează Convx
+    Vizitează BeatWave
     <string name="open">Deschide</string>
     <string name="failed_to_create_image">Nu s-a putut crea imaginea: %s</string>
     <string name="copied_title">Titlul a fost copiat</string>
@@ -370,7 +370,7 @@
     <string name="system_equalizer">Egalizator de sistem</string>
     <string name="album_art">Coperta albumului</string>
     <string name="no_song_playing">Nu se redă nicio melodie</string>
-    Atinge pentru a deschide Convx
+    Atinge pentru a deschide BeatWave
     <string name="previous">Anterioara</string>
     <string name="play_pause">Redă/Pauză</string>
     <string name="next">Următoarea</string>
@@ -468,7 +468,7 @@
     <string name="crash_description">A apărut o eroare neașteptată. Te rugăm să ne trimiți raportul de eroare pentru a ne ajuta să remediem problema.</string>
     <string name="crash_share_logs">Partajează jurnalele</string>
     <string name="crash_share_title">Partajează raportul de eroare</string>
-    Raport de eroare Convx
+    Raport de eroare BeatWave
     <string name="crash_close">Închide</string>
     <string name="crash_no_log">Niciun jurnal de eroare disponibil</string>
     <string name="palette_dynamic">Dinamic</string>
@@ -488,7 +488,7 @@
     <string name="palette_grey">Gri</string>
     <string name="cd_back">Înapoi</string>
     <string name="not_playing">Nu se redă nicio melodie</string>
-    Atinge pentru a deschide Convx
+    Atinge pentru a deschide BeatWave
     <string name="widget_music_player">Player de muzică</string>
     <string name="widget_turntable">Platan</string>
     <string name="listen_together_choose_server">Alege serverul</string>
@@ -573,7 +573,7 @@
     <string name="recently_converted">Convertite recent</string>
     <string name="csv_import_failed">Nu s-a putut importa fișierul CSV</string>
     <string name="importing_csv">Se importă CSV-ul</string>
-    Redă pe Convx
+    Redă pe BeatWave
     <string name="listening">Se ascultă…</string>
     <string name="continue_action">Continuă</string>
     <string name="hold_to_recognize">Ține apăsat pe pictograma de căutare pentru a recunoaște muzica</string>
@@ -627,9 +627,9 @@
     <string name="discord_rpc_preview">Previzualizare Rich Presence</string>
     <string name="discord_presence">Prezență</string>
     <string name="discord_connect_description">Autentifică-te cu Discord pentru a partaja ce asculți</string>
-    Se joacă Convx
-    Vizionează Convx
-    Concurează pe Convx
+    Se joacă BeatWave
+    Vizionează BeatWave
+    Concurează pe BeatWave
     <string name="discord_activity_name">Numele activității</string>
     <string name="discord_activity_name_description">Nume personalizat pentru activitate (lasă gol pentru numele prestabilit)</string>
     <string name="discord_advanced_mode">Mod avansat</string>

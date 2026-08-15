@@ -31,12 +31,12 @@ plugins {
 }
 
 android {
-    namespace = "com.convx.music"
+    namespace = "com.beatwave.music"
     compileSdk = 37
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
-        applicationId = "com.convx.music"
+        applicationId = "com.beatwave.music"
         minSdk = 26
         targetSdk = 36
         versionCode = appVersionCode
@@ -134,6 +134,8 @@ android {
             isDebuggable = false
             if (file("keystore/release.keystore").exists()) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

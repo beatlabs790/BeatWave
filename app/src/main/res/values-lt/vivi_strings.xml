@@ -245,19 +245,19 @@
     <string name="wrapped_total_artists_subtitle">unikalių kūrėjų</string>
     <string name="wrapped_total_songs_title">Jūs klausėtės</string>
     <string name="wrapped_total_songs_subtitle">unikalių dainų</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">laikas pamatyti, ką jūs klausėtės</string>
     <string name="wrapped_intro_button">pirmyn!</string>
-    Ačiū, kad klausotės muzikos su „Convx”!
+    Ačiū, kad klausotės muzikos su „BeatWave”!
     <string name="wrapped_end_create_playlist">Sukurti savo Wrapped grojaraštį</string>
     <string name="wrapped_end_creating_playlist">Kuriama...</string>
     <string name="wrapped_end_playlist_saved">Grojaraštis išsaugotas</string>
-    „Convx” logotipas
+    „BeatWave” logotipas
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">JŪSŲ WRAPPED YRA PARUOŠTAS!</string>
     <string name="wrapped_ready_subtitle">Metas pamatyti, kas jums patiko šiais metais.</string>
     <string name="wrapped_thank_you">Ačiū, kad klausotės</string>
-    Ypatingas ačiū MO Agamy, kad sukūrė „Convx”
+    Ypatingas ačiū MO Agamy, kad sukūrė „BeatWave”
     <string name="wrapped_close">Uždaryti Wrapped</string>
     <string name="wrapped_playlist_title">Jūsų %s Wrapped</string>
     <string name="wrapped_create_playlist">Sukurti grojaraštį</string>
@@ -286,9 +286,9 @@
     <string name="error_title">Klaida</string>
     <string name="error_eq_apply_failed">Klaida, įkeliant ekvalaizerio profilį %1$s</string>
     <string name="progress_percent">Progresas %s%%</string>
-    Klausomasi „Convx”
+    Klausomasi „BeatWave”
     <string name="listen_on_youtube_music">Klausyti per „YouTube Muzika”</string>
-    Aplankyti „Convx”
+    Aplankyti „BeatWave”
     <string name="open">Atidaryti</string>
     <string name="failed_to_create_image">Klaida, kuriant nuotrauką %s</string>
     <string name="copied_title">Nukopijuotas pavadinimas</string>
@@ -301,7 +301,7 @@
     <string name="error_copy_hint">Nukopijuoti klaidos informacija, kad padėtumėte programėlės kūrėjams ištaisyti problemą</string>
     <string name="album_art">Albumo viršelis</string>
     <string name="no_song_playing">Nėra grojančios dainos</string>
-    Spauskite, kad atidarytumėte „Convx”
+    Spauskite, kad atidarytumėte „BeatWave”
     <string name="previous">Ankstesnis</string>
     <string name="play_pause">Leisti / pristabdyti</string>
     <string name="next">Kitas</string>

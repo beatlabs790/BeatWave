@@ -1,7 +1,7 @@
 /**
  * End-to-end protocol smoke test against a deployed Worker.
  *
- *   node test-protocol.mjs https://convx-sync.<sub>.workers.dev
+ *   node test-protocol.mjs https://beatwave-sync.<sub>.workers.dev
  *
  * Drives the real create -> join -> approve -> playback path with two sockets,
  * which is the part that cannot be checked with curl.

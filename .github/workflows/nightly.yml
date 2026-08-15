@@ -53,15 +53,15 @@ jobs:
             -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Build Universal GMS Debug APK
+      - name: Build Universal GMS Release APK
         env:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-          ./gradlew assembleUniversalGmsDebug -Pnightly=true --no-configuration-cache --console=plain --warning-mode summary -x lint
+          ./gradlew assembleUniversalGmsRelease -Pnightly=true --no-configuration-cache --console=plain --warning-mode summary -x lint
 
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: beatwave-gms-nightly
-          path: app/build/outputs/apk/universalGms/debug/*.apk
+          path: app/build/outputs/apk/universalGms/release/*.apk

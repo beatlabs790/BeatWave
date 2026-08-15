@@ -41,15 +41,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Universal GMS Release APK
+      - name: Build Universal FOSS Release APK
         env:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-          ./gradlew assembleUniversalGmsRelease --no-configuration-cache --console=plain --warning-mode summary -x lint
+          ./gradlew assembleUniversalFossRelease --no-configuration-cache --console=plain --warning-mode summary -x lint
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: beatwave-release
-          path: app/build/outputs/apk/universalGms/release/*.apk
+          path: app/build/outputs/apk/universalFoss/release/*.apk

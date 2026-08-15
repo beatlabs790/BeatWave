@@ -134,6 +134,8 @@ android {
             isDebuggable = false
             if (file("keystore/release.keystore").exists()) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

@@ -267,7 +267,7 @@
     <string name="lyrics_offset">歌詞のタイミングを調整</string>
     <string name="google_cast_description">Chromecastなどのキャスト対応のデバイスに音声をキャストできます</string>
     <string name="last_fm_send_likes">高評価/低評価を反映する</string>
-    Convxで曲に高評価/低評価をつけると、Last.fmでもラブ/アンラブされます
+    BeatWaveで曲に高評価/低評価をつけると、Last.fmでもラブ/アンラブされます
     <string name="edit_desc">タイトルやアーティスト名を変更します</string>
     <string name="start_radio_desc">この曲をもとに似た曲を再生します</string>
     <string name="play_next_desc">キューの先頭に追加します</string>
@@ -288,7 +288,7 @@
     <string name="listen_together">Listen Together</string>
     <string name="decryption_library_pipepipe_api">PipePipe API</string>
     <string name="play_pause">再生/停止</string>
-    Convx
+    BeatWave
     <string name="apple_music_style">Apple Music</string>
     <string name="karaoke">カラオケ</string>
     <string name="none">なし</string>
@@ -304,7 +304,7 @@
     <string name="eq_disabled">無効</string>
     <string name="error_title">エラー</string>
     <string name="listen_on_youtube_music">YouTube Musicで聴く</string>
-    Convxに移動
+    BeatWaveに移動
     <string name="open">開く</string>
     <string name="copied_title">タイトルをコピーしました</string>
     <string name="copied_artist">アーティスト名をコピーしました</string>
@@ -358,7 +358,7 @@
     <string name="crash_title">アプリがクラッシュしました</string>
     <string name="crash_share_logs">クラッシュログを共有</string>
     <string name="crash_share_title">クラッシュレポートを共有</string>
-    Convxのクラッシュレポート
+    BeatWaveのクラッシュレポート
     <string name="crash_close">閉じる</string>
     <string name="crash_no_log">クラッシュログがありません</string>
     <string name="palette_dynamic">ダイナミック</string>
@@ -442,12 +442,12 @@
     <string name="wrapped_total_songs_subtitle">ユニークな曲数</string>
     <string name="wrapped_intro_subtitle">これまでに聴いてきた音楽を振り返りましょう</string>
     <string name="wrapped_intro_button">さあ、始めよう！</string>
-    Convxで聴いてくれてありがとう！
-    Convxロゴ
+    BeatWaveで聴いてくれてありがとう！
+    BeatWaveロゴ
     <string name="wrapped_ready_title">あなたのWrappedが完成しました！</string>
     <string name="wrapped_ready_subtitle">今年あなたが夢中になった音楽を見てみましょう。</string>
     <string name="wrapped_thank_you">聴いてくれてありがとう</string>
-    Convxを制作したMO Agamyに特別な感謝を
+    BeatWaveを制作したMO Agamyに特別な感謝を
     <string name="wrapped_close">Wrappedを閉じる</string>
     <string name="wrapped_playlist_title">あなたの%sWrapped</string>
     <plurals name="profiles_count">
@@ -462,7 +462,7 @@
     <string name="error_eq_apply_failed">イコライザープロファイルを適用できません：%1$s</string>
     <string name="casting_to">%sにキャスト中</string>
     <string name="progress_percent">進行状況：%s%%</string>
-    Convxで再生中
+    BeatWaveで再生中
     <string name="failed_to_create_image">画像の作成に失敗しました：%s</string>
     <string name="error_playing">再生中にエラーが発生しました</string>
     <string name="failed_to_parse_proxy">プロキシURLを解析できません。</string>
@@ -470,9 +470,9 @@
     <string name="error_copied">エラー情報をクリップボードにコピーしました</string>
     <string name="error_copy_hint">エラー情報をコピーして、開発者が問題を特定できるようにします</string>
     <string name="no_song_playing">再生中の曲はありません</string>
-    タップしてConvxを開く
+    タップしてBeatWaveを開く
     <string name="previous">前へ</string>
-    タップしてConvxを開く
+    タップしてBeatWaveを開く
     <string name="queue_widget_description">再生キューを確認できる音楽プレーヤー</string>
     <string name="listen_together_you_are_host">あなたはホストです</string>
     <string name="listen_together_you_are_guest">あなたはゲストです</string>
@@ -562,7 +562,7 @@
     <string name="delete_from_history">履歴から削除</string>
     <string name="re_listen">もう一度聴く</string>
     <string name="hold_to_recognize">検索タブを長押しして音楽を認識</string>
-    Convxで再生
+    BeatWaveで再生
     <string name="recognized_track">認識された曲</string>
     <string name="map_csv_columns">CSV列の対応設定</string>
     <string name="first_row_is_header">1行目をヘッダーとして扱う</string>
@@ -617,9 +617,9 @@
     <string name="discord_rpc_preview">リッチプレゼンスのプレビュー</string>
     <string name="discord_presence">プレゼンス</string>
     <string name="discord_connect_description">Discordにサインインして、再生中の内容を共有しよう</string>
-    Convxで再生中
-    Convxで視聴中
-    Convxで大会に参加中
+    BeatWaveで再生中
+    BeatWaveで視聴中
+    BeatWaveで大会に参加中
     <string name="discord_activity_name">アクティビティ名</string>
     <string name="discord_activity_name_description">アクティビティのカスタム名（空欄の場合はデフォルトを使用）</string>
     <string name="discord_advanced_mode">詳細設定</string>

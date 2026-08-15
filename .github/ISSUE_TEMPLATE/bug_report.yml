@@ -14,7 +14,7 @@ body:
     attributes:
       label: Pre-flight Checklist
       options:
-        - label: I am running the [latest debug version](https://github.com/cosmictaserdev-creator/Convx/actions).
+        - label: I am running the [latest debug version](https://github.com/beatlabs790/BeatWave/actions).
           required: true
         - label: I checked for duplicate issues.
           required: true

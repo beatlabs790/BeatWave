@@ -229,7 +229,7 @@
     <string name="scrobble_delay_minutes">Minuty zpoždění scrobblování</string>
     <string name="swipe_song_to_remove">Posuňte skladbu pro odstranění z playlistu</string>
     <string name="last_fm_send_likes">Odesílat stav oblíbení</string>
-    Přidat/odebrat srdíčko u skladby v Last.fm, když ji přidáte/odeberete z oblíbených v Convxu
+    Přidat/odebrat srdíčko u skladby v Last.fm, když ji přidáte/odeberete z oblíbených v BeatWaveu
     <string name="lyrics_romanize_chinese">Přepsat čínské texty do latinky</string>
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Povolit streamování zvuku do Chromecastu a dalších zařízení kompatibilních s protokolem Cast</string>
@@ -305,28 +305,28 @@
     <string name="wrapped_total_artists_subtitle">různých umělců</string>
     <string name="wrapped_total_songs_title">Poslouchali jste</string>
     <string name="wrapped_total_songs_subtitle">různých skladeb</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">je čas podívat se, co jste poslouchali</string>
     <string name="wrapped_intro_button">jdeme na to!</string>
-    Děkujeme, že posloucháte s aplikací Convx!
+    Děkujeme, že posloucháte s aplikací BeatWave!
     <string name="wrapped_end_create_playlist">Vytvořit váš playlist Wrapped</string>
     <string name="wrapped_end_creating_playlist">Vytváření…</string>
     <string name="wrapped_end_playlist_saved">Playlist uložen</string>
-    Logo Convx
+    Logo BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">TVŮJ WRAPPED JE READY!</string>
     <string name="wrapped_ready_subtitle">Je čas podívat se, co se ti tento rok líbilo.</string>
     <string name="wrapped_thank_you">Děkujeme za poslouchání</string>
-    Zvláštní poděkování patří MO Agamy za vytvoření Convxu
+    Zvláštní poděkování patří MO Agamy za vytvoření BeatWaveu
     <string name="wrapped_close">Zavřít Wrapped</string>
     <string name="wrapped_playlist_title">Váš %s Wrapped</string>
     <string name="wrapped_create_playlist">Vytvořit playlist</string>
     <string name="wrapped_playlist_saved">Playlist uložen</string>
     <string name="casting_to">Přehrávání přes %s</string>
     <string name="progress_percent">Postup %s%%</string>
-    Poslouchá Convx
+    Poslouchá BeatWave
     <string name="listen_on_youtube_music">Poslouchat na YouTube Music</string>
-    Navštívit Convx
+    Navštívit BeatWave
     <string name="open">Otevřít</string>
     <string name="failed_to_create_image">Nepodařilo se vytvořit obrázek: %s</string>
     <string name="copied_title">Název zkopírován</string>
@@ -362,7 +362,7 @@
     <string name="system_equalizer">Systémový ekvalizér</string>
     <string name="album_art">Obal alba</string>
     <string name="no_song_playing">Nehraje žádná skladba</string>
-    Klepnutím otevřete Convx
+    Klepnutím otevřete BeatWave
     <string name="previous">Předchozí</string>
     <string name="play_pause">Přehrát/pozastavit</string>
     <string name="next">Další</string>
@@ -475,7 +475,7 @@
     <string name="crash_description">Došlo k neočekávané chybě. Pošlete nám hlášení o chybě, abyste nám pomohli problém opravit.</string>
     <string name="crash_share_logs">Sdílet logy</string>
     <string name="crash_share_title">Sdílet hlášení o chybě</string>
-    Convx hlášení o chybě
+    BeatWave hlášení o chybě
     <string name="crash_close">Zavřít</string>
     <string name="crash_no_log">Není k dispozici žádný záznam o chybě</string>
     <string name="palette_dynamic">Dynamická</string>
@@ -525,7 +525,7 @@
     <string name="unblock">Odblokovat</string>
     <string name="user_blocked_by_host">Uživatel zablokován hostitelem</string>
     <string name="not_playing">Nehraje žádná skladba</string>
-    Klepněte pro otevření Convxu
+    Klepněte pro otevření BeatWaveu
     <string name="widget_music_player">Hudební přehrávač</string>
     <string name="widget_turntable">Gramofon</string>
     <string name="enter_room_code">Vložte kód místnosti</string>
@@ -574,7 +574,7 @@
     <string name="recently_converted">Nedávno převedeno</string>
     <string name="csv_import_failed">Nepodařilo se importovat soubor CSV</string>
     <string name="importing_csv">Import CSV</string>
-    Přehrát v Convxu
+    Přehrát v BeatWaveu
     <string name="listening">Poslouchám…</string>
     <string name="ai_api_key_required">Vyžadován klíč API</string>
     <string name="ai_error_unexpected">Neočekávaný výsledek překladu</string>
@@ -637,9 +637,9 @@
     <string name="discord_rpc_preview">Náhled stavu na Discordu</string>
     <string name="discord_presence">Stav</string>
     <string name="discord_connect_description">Přihlaste se k Discordu pro sdílení hudby, kterou posloucháte</string>
-    Hraje Convx
-    Sleduje Convx
-    Soupeří v Convx
+    Hraje BeatWave
+    Sleduje BeatWave
+    Soupeří v BeatWave
     <string name="discord_activity_name">Název aktivity</string>
     <string name="discord_activity_name_description">Vlastní název aktivity (ponechte prázdné pro výchozí)</string>
     <string name="discord_advanced_mode">Pokročilý režim</string>

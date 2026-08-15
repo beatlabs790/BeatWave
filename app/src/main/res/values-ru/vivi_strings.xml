@@ -229,7 +229,7 @@
     <string name="scrobble_delay_minutes">Задержка скробблинга (в минутах)</string>
     <string name="swipe_song_to_remove">Свайп по песне, чтобы удалить её из плейлиста</string>
     <string name="last_fm_send_likes">Отправлять лайки/дизлайки</string>
-    Добавлять/убирать отметку «любимая» на Last.fm, когда ставится/снимается отметка «Нравится» в Convx
+    Добавлять/убирать отметку «любимая» на Last.fm, когда ставится/снимается отметка «Нравится» в BeatWave
     <string name="lyrics_romanize_chinese">Романизировать тексты на китайском</string>
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Включить трансляцию звука на Chromecast и другие устройства с поддержкой Cast</string>
@@ -305,28 +305,28 @@
     <string name="wrapped_total_artists_subtitle">уникальных исполнителей</string>
     <string name="wrapped_total_songs_title">Вы слушали</string>
     <string name="wrapped_total_songs_subtitle">уникальных треков</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">пришло время узнать, что вы слушали</string>
     <string name="wrapped_intro_button">поехали!</string>
-    Спасибо, что слушали с Convx!
+    Спасибо, что слушали с BeatWave!
     <string name="wrapped_end_create_playlist">Создайте ваш Wrapped-плейлист</string>
     <string name="wrapped_end_creating_playlist">Создание…</string>
     <string name="wrapped_end_playlist_saved">Плейлист сохранён</string>
-    Логотип Convx
+    Логотип BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">ВАШ WRAPPED ГОТОВ!</string>
     <string name="wrapped_ready_subtitle">Время узнать, что вам понравилось в этом году.</string>
     <string name="wrapped_thank_you">Спасибо за прослушивание</string>
-    Особая благодарность MO Agamy за создание Convx
+    Особая благодарность MO Agamy за создание BeatWave
     <string name="wrapped_close">Закрыть Wrapped</string>
     <string name="wrapped_playlist_title">Ваш Wrapped %s</string>
     <string name="wrapped_create_playlist">Создать плейлист</string>
     <string name="wrapped_playlist_saved">Плейлист сохранён</string>
     <string name="casting_to">Трансляция на %s</string>
     <string name="progress_percent">Прогресс %s%%</string>
-    Вы слушаете Convx
+    Вы слушаете BeatWave
     <string name="listen_on_youtube_music">Слушать в YouTube Music</string>
-    Посетить Convx
+    Посетить BeatWave
     <string name="open">Открыть</string>
     <string name="failed_to_create_image">Не удалось создать изображение: %s</string>
     <string name="copied_title">Название скопировано</string>
@@ -361,7 +361,7 @@
     <string name="enable_simpmusic_desc">Использовать SimpMusic Lyrics для синхронизации текстов</string>
     <string name="no_song_playing">Сейчас ничего не играет</string>
     <string name="album_art">Обложка альбома</string>
-    Нажмите, чтобы открыть Convx
+    Нажмите, чтобы открыть BeatWave
     <string name="previous">Предыдущий</string>
     <string name="play_pause">Играть/Пауза</string>
     <string name="next">Следующий</string>
@@ -475,7 +475,7 @@
     <string name="crash_description">Произошла непредвиденная ошибка. Пожалуйста, отправьте отчет о сбое, чтобы помочь нам устранить проблему.</string>
     <string name="crash_share_logs">Поделиться логами</string>
     <string name="crash_share_title">Поделиться отчетом о сбое</string>
-    Отчет о сбое Convx
+    Отчет о сбое BeatWave
     <string name="crash_close">Закрыть</string>
     <string name="crash_no_log">Лог сбоя недоступен</string>
     <string name="palette_dynamic">Динамическая</string>
@@ -525,7 +525,7 @@
     <string name="unblock">Разблокировать</string>
     <string name="user_blocked_by_host">Пользователь заблокирован хостом</string>
     <string name="not_playing">Ничего не играет</string>
-    Нажмите, чтобы открыть Convx
+    Нажмите, чтобы открыть BeatWave
     <string name="widget_music_player">Музыкальный плеер</string>
     <string name="widget_turntable">Виниловый проигрыватель</string>
     <string name="together">Вместе</string>
@@ -578,7 +578,7 @@
     <string name="recently_converted">Недавно конвертированные</string>
     <string name="csv_import_failed">Не удалось импортировать CSV-файл</string>
     <string name="importing_csv">Импорт CSV</string>
-    Играть в Convx
+    Играть в BeatWave
     <string name="listening">Слушаем…</string>
     <string name="continue_action">Продолжить</string>
     <string name="hold_to_recognize">Удерживайте значок поиска для распознавания музыки</string>
@@ -604,7 +604,7 @@
     <string name="discord_rpc_preview">Предпросмотр Rich Presence</string>
     <string name="discord_presence">Присутствие</string>
     <string name="discord_connect_description">Войдите через Discord, чтобы поделиться тем, что вы слушаете</string>
-    Играет в Convx
+    Играет в BeatWave
     <string name="prevent_duplicate_tracks_in_queue">Исключать дубликаты в очереди</string>
     <string name="prevent_duplicate_tracks_in_queue_desc">При добавлении трека в очередь удалять его из предыдущей позиции, если он уже присутствует</string>
     <string name="ai_translation_literal_desc">Перевести смысл на язык перевода</string>
@@ -634,8 +634,8 @@
     <string name="login_successful">Вход выполнен успешно!</string>
     <string name="discord_information_warning">Эта функция использует библиотеку KizzyRPC для подключения к шлюзу Discord и установки статуса Rich Presence. Хотя случаев блокировки аккаунтов при подобном использовании не зафиксировано, данный метод официально не поддерживается Discord и может считаться нарушением Условий использования. Ваш токен извлекается локально и никогда не отправляется на сторонние серверы. Используйте на свой страх и риск.</string>
     <string name="discord_activity_type">Тип активности</string>
-    Смотрит Convx
-    Соревнуется в Convx
+    Смотрит BeatWave
+    Соревнуется в BeatWave
     <string name="discord_activity_name">Название активности</string>
     <string name="discord_activity_name_description">Пользовательское название активности (оставьте пустым для значения по умолчанию)</string>
     <string name="discord_advanced_mode">Расширенный режим</string>

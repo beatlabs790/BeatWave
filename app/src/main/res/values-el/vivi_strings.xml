@@ -301,16 +301,16 @@
     <string name="wrapped_top_artist_title">Ο κορυφαίος καλλιτέχνης σας της χρονιάς είναι</string>
     <string name="wrapped_top_song_title">Το τραγούδι που παίζει πιο συχνά είναι</string>
     <string name="wrapped_top_song_listening_time">Έχετε ακούσει %d λεπτά</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">ήρθε η ώρα να δείτε τι έχετε ακούσει</string>
     <string name="wrapped_intro_button">Πάμε!</string>
-    Ευχαριστούμε που ακούτε με το Convx!
+    Ευχαριστούμε που ακούτε με το BeatWave!
     <string name="wrapped_end_creating_playlist">Δημιουργία...</string>
     <string name="wrapped_end_playlist_saved">Η Λίστα Αναπαραγωγής Αποθηκεύτηκε</string>
-    Λογότυπο Convx
+    Λογότυπο BeatWave
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_subtitle">Ήρθε η ώρα να δείτε τι λατρέψατε φέτος.</string>
-    Ιδιαίτερες ευχαριστίες στον MO Agamy για τη δημιουργία του Convx
+    Ιδιαίτερες ευχαριστίες στον MO Agamy για τη δημιουργία του BeatWave
     <string name="wrapped_create_playlist">Δημιουργία λίστας αναπαραγωγής</string>
     <string name="wrapped_playlist_saved">Η λίστα αναπαραγωγής αποθηκεύτηκε</string>
     <plurals name="profiles_count">
@@ -341,7 +341,7 @@
     <string name="copy_error">Σφάλμα αντιγραφής</string>
     <string name="error_copy_hint">Αντιγράψτε τις πληροφορίες σφάλματος για να βοηθήσετε τους προγραμματιστές να επιλύσουν το πρόβλημα</string>
     <string name="no_song_playing">Δεν παίζει κανένα τραγούδι</string>
-    Πατήστε για να ανοίξετε το Convx
+    Πατήστε για να ανοίξετε το BeatWave
     <string name="previous">Προηγούμενο</string>
     <string name="play_pause">Αναπαραγωγή/Παύση</string>
     <string name="next">Επόμενο</string>
@@ -353,7 +353,7 @@
     <string name="player_client_web_remix">Web Remix</string>
     <string name="player_client_web_remix_desc">Πιο αργό, αλλά υποστηρίζει μορφές υψηλής ποιότητας. Χρησιμοποιεί αποκρυπτογράφηση υπογραφής JavaScript, η οποία προσθέτει ~5-10 δευτερόλεπτα στην έναρξη της αναπαραγωγής.</string>
     <string name="keep_screen_on_when_player_is_expanded">Διατήρηση της οθόνης ενεργοποιημένης όταν το πρόγραμμα αναπαραγωγής έχει επεκταθεί</string>
-    Να γίνονται τα τραγούδια Love/Unlove όταν γίνεται Like/Unlike στο Convx
+    Να γίνονται τα τραγούδια Love/Unlove όταν γίνεται Like/Unlike στο BeatWave
     <string name="play_next_desc">Προσθήκη στην κορυφή της σειράς αναπαραγωγής</string>
     <string name="add_to_queue_desc">Προσθήκη στο τέλος της σειράς αναπαραγωγής</string>
     <string name="mini_player">Μίνι πρόγραμμα αναπαραγωγής</string>
@@ -378,9 +378,9 @@
     <string name="wrapped_thank_you">Σας ευχαριστούμε για την ακρόαση</string>
     <string name="wrapped_close">Κλείσιμο wrapped</string>
     <string name="wrapped_playlist_title">To Wrapped σας %s</string>
-    Ακούτε το Convx
+    Ακούτε το BeatWave
     <string name="listen_on_youtube_music">Ακρόαση στο YouTube Music</string>
-    Eπισκεφτείτε το Convx
+    Eπισκεφτείτε το BeatWave
     <string name="failed_to_create_image">Αποτυχία δημιουργίας εικόνας: %s</string>
     <string name="copied_title">Ο Τίτλος Αντιγράφηκε</string>
     <string name="copied_artist">Ο Καλλιτέχνης Αντιγράφηκε</string>

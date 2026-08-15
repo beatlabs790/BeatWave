@@ -1,11 +1,11 @@
 {
-  "description": "Convx 1.4 — fixes the in-app updater (direct APK downloads, no more browser redirect) and consolidates every font control into one place. Plus everything from 1.3: bundled App Fonts, Auto-DJ mixing, a full-screen lyrics overhaul, waveform seeking in the mini player, a redesigned Liquid Glass system, and a large performance pass.",
+  "description": "BeatWave 1.4 — fixes the in-app updater (direct APK downloads, no more browser redirect) and consolidates every font control into one place. Plus everything from 1.3: bundled App Fonts, Auto-DJ mixing, a full-screen lyrics overhaul, waveform seeking in the mini player, a redesigned Liquid Glass system, and a large performance pass.",
   "image": "",
   "changelog": [
     {
       "title": "Updates & Fonts (Fixed)",
       "items": [
-        "In-app updates fixed: the update check now finds Convx's actual APK asset and downloads it directly, so Check for updates installs the new version instead of bouncing you to the browser.",
+        "In-app updates fixed: the update check now finds BeatWave's actual APK asset and downloads it directly, so Check for updates installs the new version instead of bouncing you to the browser.",
         "All font controls now live in one place — Settings → Appearance → App Font: the App Font picker, the Display font (Chillax wordmark/title) toggle, and the Custom font installer."
       ]
     },

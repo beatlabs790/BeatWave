@@ -345,7 +345,7 @@
     <string name="enable_scrobbling">Scrobbling\'i etkinleştir</string>
     <string name="lastfm_now_playing">Şimdi çalanı gönder</string>
     <string name="last_fm_send_likes">Beğenilenler/Beğenilmeyenleri Gönder</string>
-    Convx\'te Beğenilen/Beğenilmeyen şarkıları Last.fm\'de de Beğen/Beğenme
+    BeatWave\'te Beğenilen/Beğenilmeyen şarkıları Last.fm\'de de Beğen/Beğenme
     <string name="logging_in">Giriş yapılıyor…</string>
 
     <string name="scrobbling_configuration">Scrobbling Yapılandırması</string>
@@ -385,7 +385,7 @@
     <string name="karaoke">Karaoke</string>
     <string name="apple_music_style">Apple Müzik</string>
     <string name="apple_music_style_letter">Apple Music V2 (Letter by Letter)</string>
-    Convx (Fluid)
+    BeatWave (Fluid)
     <string name="apple_music_lyrics_blur">Apple Music Lyrics Blur</string>
     <string name="apple_music_lyrics_blur_desc">Premium bir odak efekti için pasif şarkı sözü satırlarına bulanıklık uygulayın</string>
     <string name="lyrics_v2_fluid">Şarkı Sözleri V2 (Akıcı)</string>
@@ -414,19 +414,19 @@
     <string name="wrapped_total_artists_subtitle">benzersiz sanatçılar</string>
     <string name="wrapped_total_songs_title">Şunları dinlediniz</string>
     <string name="wrapped_total_songs_subtitle">benzersiz şarkılar</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">Dinlediklerinize göz atmanın zamanı geldi</string>
     <string name="wrapped_intro_button">hadi başlayalım!</string>
-    Convx ile dinlediğiniz için teşekkürler!
+    BeatWave ile dinlediğiniz için teşekkürler!
     <string name="wrapped_end_create_playlist">Özet Çalma Listeni Oluştur</string>
     <string name="wrapped_end_creating_playlist">Oluşturuluyor...</string>
     <string name="wrapped_end_playlist_saved">Çalma Listesi Kaydedildi</string>
-    Convx Logosu
+    BeatWave Logosu
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">ÖZETİNİZ HAZIR!</string>
     <string name="wrapped_ready_subtitle">Bu yıl neleri sevdiğini görme zamanı.</string>
     <string name="wrapped_thank_you">Dinlediğin için teşekkürler</string>
-    Convx\'i oluşturduğu için MO Agamy\'ye özel teşekkürler
+    BeatWave\'i oluşturduğu için MO Agamy\'ye özel teşekkürler
     <string name="wrapped_close">Özeti kapat</string>
     <string name="wrapped_playlist_title">%s Özetin</string>
     <string name="wrapped_create_playlist">Çalma listesi oluştur</string>
@@ -459,9 +459,9 @@
     <string name="plays">plays</string>
     <string name="casting_to">%s cihazına yansıtılıyor</string>
     <string name="progress_percent">İlerleme %s%%</string>
-    Convx dinleniyor
+    BeatWave dinleniyor
     <string name="listen_on_youtube_music">YouTube Music\'te dinle</string>
-    Convx\'i ziyaret et
+    BeatWave\'i ziyaret et
     <string name="open">Aç</string>
     <string name="failed_to_create_image">Görsel oluşturulamadı: %s</string>
     <string name="copied_title">Başlık kopyalandı</string>
@@ -478,13 +478,13 @@
     <!-- Widget strings -->
     <string name="album_art">Albüm kapağı</string>
     <string name="no_song_playing">Oynatılan şarkı yok</string>
-    Convx\'i açmak için bas
+    BeatWave\'i açmak için bas
     <string name="previous">Bir önceki</string>
     <string name="play_pause">Devam Et/Duraklat</string>
     <string name="next">Bir sonraki</string>
     <string name="like">Beğen</string>
     <string name="not_playing">Herhangi bir şarkı oynatılmıyor</string>
-    Convx\'i açmak için tıkla
+    BeatWave\'i açmak için tıkla
     <string name="widget_description">Oynatıcı widgetı için arkaplan kontrolcüsü</string>
     <string name="queue_widget_description">Sıra önizlemeli oynatıcı</string>
     <string name="turntable_widget_description">Şarkıyı oynatmak ve değiştirmek yapılmış için dairesel müzik widget\'ı</string>
@@ -641,7 +641,7 @@
     <string name="crash_description">Beklenmedik bir hata oluştu. Sorunu çözebilmemiz için lütfen bize oluşan hatayı raporlayın.</string>
     <string name="crash_share_logs">Logları paylaş</string>
     <string name="crash_share_title">Hata raporlarını paylaş</string>
-    Convx Hata Bildirimi
+    BeatWave Hata Bildirimi
     <string name="crash_close">Kapat</string>
     <string name="crash_no_log">Hata logları bulunmamakta</string>
 
@@ -693,7 +693,7 @@
     <string name="delete_from_history">Geçmişten sil</string>
     <string name="re_listen">Yeniden dinle</string>
     <string name="hold_to_recognize">Müziği tanımlamak için arama tuşuna basılı tutun</string>
-    Convx\'te dinle
+    BeatWave\'te dinle
     <string name="recognized_track">Tanımlanmış parça</string>
 
     <!-- CSV Import Strings -->
@@ -732,9 +732,9 @@
     <string name="discord_rpc_preview">Zengin Görünüm Önizlemesi</string>
     <string name="discord_presence">Görünüm</string>
     <string name="discord_connect_description">Ne dinlediğini paylaşmak için Discord\'a giriş yap</string>
-    Convx oynatılıyor
-    Convx izlenliyor
-    Convx\'te yarış
+    BeatWave oynatılıyor
+    BeatWave izlenliyor
+    BeatWave\'te yarış
     <string name="discord_activity_name">Aktivite adı</string>
     <string name="discord_activity_name_description">Aktivite için özel ad (boş bırakılırsa varsayılan kullanılır)</string>
     <string name="discord_advanced_mode">Gelişmiş seçenekler</string>

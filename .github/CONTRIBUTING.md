@@ -1,12 +1,12 @@
-# 🤝 Contributing to Convx
+# 🤝 Contributing to BeatWave
 
-Thanks for considering a contribution to **Convx**. This document is the real, current process — if something here goes stale, please send a PR fixing it rather than adding a second guide.
+Thanks for considering a contribution to **BeatWave**. This document is the real, current process — if something here goes stale, please send a PR fixing it rather than adding a second guide.
 
 ## 🛠️ Project Layout
 
-Convx is a single Android Studio project (Gradle multi-module). The pieces you'll actually touch:
+BeatWave is a single Android Studio project (Gradle multi-module). The pieces you'll actually touch:
 
-* **`app/`** — the app itself. Compose UI lives under `app/src/main/kotlin/com/convx/music/ui/`, screens under `ui/screens/`, `viewmodels/` per screen, navigation wired in `ui/screens/NavigationBuilder.kt`.
+* **`app/`** — the app itself. Compose UI lives under `app/src/main/kotlin/com/beatwave/music/ui/`, screens under `ui/screens/`, `viewmodels/` per screen, navigation wired in `ui/screens/NavigationBuilder.kt`.
 * **`ui/component/GlassEffect.kt`** + **`ui/component/backdrop/`** — the Liquid Glass system (a vendored, source-included copy of [Kyant0/backdrop](https://github.com/Kyant0/backdrop)). `Modifier.liquidGlass(...)` is the entry point most UI code needs; see the doc comment on `GlassCircleButton` for a worked example of a glass surface sampling a local backdrop.
 * **`innertube/`** — the unofficial YouTube Music (InnerTube) API client, kept independent of the app module.
 * Other top-level modules (`kugou`, `lrclib`, `kizzy`, `lastfm`, `betterlyrics`, `simpmusic`, `youlyplus`, `shazamkit`, `spotify`, ...) are individually-scoped integrations — a lyrics/Discord-RPC/Last.fm provider, etc. Keep changes to one of these scoped to that module.
@@ -31,8 +31,8 @@ Convx is a single Android Studio project (Gradle multi-module). The pieces you'l
 
 ## 🐞 Reporting Bugs
 
-Open an [issue](https://github.com/cosmictaserdev-creator/Convx/issues) with repro steps, your Android version/device, and `adb logcat` output if it's a crash. For anything real-time (playback glitches, Listen Together sync), a screen recording helps a lot.
+Open an [issue](https://github.com/beatlabs790/BeatWave/issues) with repro steps, your Android version/device, and `adb logcat` output if it's a crash. For anything real-time (playback glitches, Listen Together sync), a screen recording helps a lot.
 
 ## 💬 Questions
 
-Ask in the [Discord](https://discord.gg/Ejeb4cmzfd) before starting anything large — happy to point you at the right file instead of you reverse-engineering it.
+Ask in the [Discord](https://discord.gg/spbuDTePSR) before starting anything large — happy to point you at the right file instead of you reverse-engineering it.

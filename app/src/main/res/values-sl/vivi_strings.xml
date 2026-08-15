@@ -227,7 +227,7 @@
     <string name="scrobble_delay_percent">Odstotek zakasnitve beleženja</string>
     <string name="scrobble_delay_minutes">Zakasnitev beleženja v minutah</string>
     <string name="last_fm_send_likes">Pošlji všečke/nevšečke</string>
-    Dodaj/odstrani pesmi med priljubljenimi na Last.fm, ko jih všečkaš/odvšečkaš v Convxu
+    Dodaj/odstrani pesmi med priljubljenimi na Last.fm, ko jih všečkaš/odvšečkaš v BeatWaveu
     <string name="lyrics_romanize_chinese">Romaniziraj kitajska besedila</string>
     <string name="edit_playlist_cover_note">Opomba: Vaš račun mora biti povezan s telefonsko številko in preverjen na YouTube Music, da lahko spremenite naslovnico seznama predvajanja.</string>
     <string name="settings_section_player">Predvajalnik in predstavnost</string>
@@ -321,6 +321,6 @@
     <string name="wrapped_total_artists_subtitle">različnih izvajalcev</string>
     <string name="casting_to">Predvajanje na %s</string>
     <string name="progress_percent">Napredek: %s%%</string>
-    Poslušaš Convx
+    Poslušaš BeatWave
     <string name="listen_on_youtube_music">Poslušaj v YouTube Music</string>
 </resources>

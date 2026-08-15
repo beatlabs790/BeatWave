@@ -232,7 +232,7 @@
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Włącz przesyłanie dźwięku do Chromecasta i innych urządzeń obsługujących Cast</string>
     <string name="last_fm_send_likes">Wyślij polubienia/niepolubienia</string>
-    Polub/niepolub piosenki w Last.fm, gdy są polubione/niepolubione w Convx
+    Polub/niepolub piosenki w Last.fm, gdy są polubione/niepolubione w BeatWave
     <string name="logging_in">Logowanie…</string>
     <string name="hide_video_songs">Ukryj utwory wideo</string>
     <string name="details_desc">Wyświetl informacje o utworze</string>
@@ -307,19 +307,19 @@
     <string name="wrapped_total_artists_subtitle">Unikalni artyści</string>
     <string name="wrapped_total_songs_title">Słuchałeś/aś</string>
     <string name="wrapped_total_songs_subtitle">Unikalnie piosenki</string>
-    Convx
+    BeatWave
     <string name="wrapped_intro_subtitle">Czas sprawdzić, czego słuchałeś/aś</string>
     <string name="wrapped_intro_button">Zaczynamy!</string>
-    Dzięki, że słuchasz z Convx!
+    Dzięki, że słuchasz z BeatWave!
     <string name="wrapped_end_create_playlist">Stwórz swoją playlistę Wrapped</string>
     <string name="wrapped_end_creating_playlist">Tworzenie...</string>
     <string name="wrapped_end_playlist_saved">Zapisano Playlistę</string>
-    Logo Convx
+    Logo BeatWave
     <string name="wrapped_year">2026</string>
     <string name="wrapped_ready_title">­TWOJE WRAPPED JEST GOTOWE!</string>
     <string name="wrapped_ready_subtitle">Czas sprawdzić, co pokochałeś/aś w tym roku.</string>
     <string name="wrapped_thank_you">Dziękujemy za słuchanie</string>
-    Specjalne podziękowania dla MO Agamy za stworzenie Convx
+    Specjalne podziękowania dla MO Agamy za stworzenie BeatWave
     <string name="wrapped_close">Zamknij Wrapped</string>
     <string name="wrapped_playlist_title">Twoje %s Wrapped</string>
     <string name="wrapped_create_playlist">Utwórz playlistę</string>
@@ -347,9 +347,9 @@
     <string name="import_error_title">Błąd importu</string>
     <string name="casting_to">Wysyłanie do %s</string>
     <string name="progress_percent">Postęp %s%%</string>
-    Słuchasz Convx
+    Słuchasz BeatWave
     <string name="listen_on_youtube_music">Odtwórz w YouTube Music</string>
-    Odwiedź Convx
+    Odwiedź BeatWave
     <string name="open">Otwórz</string>
     <string name="failed_to_create_image">Nie udało się utworzyć obrazu: %s</string>
     <string name="copied_title">Skopiowano Tytuł</string>
@@ -388,7 +388,7 @@
     <string name="error_copy_hint">Skopiuj informacje o błędzie, aby pomóc nam rozwiązać problem</string>
     <string name="album_art">Okładka albumu</string>
     <string name="no_song_playing">Nic nie jest odtwarzane</string>
-    Dotknij, aby otworzyć Convx
+    Dotknij, aby otworzyć BeatWave
     <string name="previous">Poprzedni</string>
     <string name="play_pause">Odtwórz/Wstrzymaj</string>
     <string name="next">Następny</string>

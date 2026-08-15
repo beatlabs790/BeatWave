@@ -1,6 +1,6 @@
 [versions]
 androidGradlePlugin = "9.2.1"
-json = "20251224"
+json = "20260719"
 kotlin = "2.3.10"
 compose = "1.10.2"
 lifecycle = "2.10.0"

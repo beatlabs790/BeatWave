@@ -212,7 +212,7 @@
 
   <h2>🙏 Credits</h2>
 
-  <p>BeatWave is developed and maintained by <a href="https://github.com/beatlabs790">Aryan (CosmicTaser)</a>. See <a href="https://support-akshansh.vercel.app">cosmic-taser.netlify.app</a> for the portfolio.</p>
+  <p>BeatWave is developed and maintained by <a href="https://github.com/beatlabs790">BeatLabs</a>. See <a href="https://support-akshansh.vercel.app">support-akshansh.vercel.app</a> for support.</p>
 
   <table border="0" cellpadding="10" cellspacing="0" width="90%">
     <tr valign="top">

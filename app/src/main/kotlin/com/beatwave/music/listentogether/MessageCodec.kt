@@ -264,7 +264,7 @@ class MessageCodec(
                     .setIsPlaying(payload.isPlaying)
                     .setPosition(payload.position)
                     .setLastUpdate(payload.lastUpdate)
-                    .setVolume(payload.volume)
+                payload.volume?.let { builder.setVolume(it) }
                 payload.currentTrack?.let { builder.setCurrentTrack(trackInfoToProto(it)) }
                 payload.queue?.forEach { builder.addQueue(trackInfoToProto(it)) }
                 builder.build()

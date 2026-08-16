@@ -915,7 +915,7 @@ class ListenTogetherClient @Inject constructor(
                         _roomState.value = newRoom
                         
                         // Send JOIN_APPROVED back to guest
-                        val joinApproved = JoinApprovedPayload(currentRoom.roomCode, guestId, newRoom, "local_token")
+                        val joinApproved = JoinApprovedPayload(currentRoom.roomCode, guestId, "local_token", newRoom)
                         sendMessage(MessageTypes.JOIN_APPROVED, joinApproved)
                         
                         // Notify host UI that a user joined

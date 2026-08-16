@@ -85,4 +85,20 @@ class ListenTogetherViewModel @Inject constructor(
     fun getPersistedRoomCode(): String? = manager.getPersistedRoomCode()
     
     fun getSessionAge(): Long = manager.getSessionAge()
+
+    fun hostLocalSync(username: String) {
+        manager.hostLocalSync(username)
+    }
+
+    fun startLocalDiscovery(onDeviceDiscovered: (String, String) -> Unit) {
+        manager.startLocalDiscovery(onDeviceDiscovered)
+    }
+
+    fun stopLocalDiscovery() {
+        manager.stopLocalDiscovery()
+    }
+
+    fun joinLocalSync(hostIp: String, username: String) {
+        manager.joinLocalSync(hostIp, username)
+    }
 }

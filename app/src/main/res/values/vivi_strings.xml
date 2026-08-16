@@ -369,6 +369,14 @@
     <string name="crossfade_beta_title">Beta Feature</string>
     <string name="crossfade_beta_message">Crossfade is a new feature and may have bugs. If you experience any issues, please report them.\n\nThis feature disables audio offload due to technical limitations.</string>
 
+    <string name="manual_crossfade">Manual Skip Crossfade</string>
+    <string name="manual_crossfade_desc">Crossfade when you manually press next/prev or select a new song</string>
+    <string name="manual_crossfade_duration">Manual crossfade duration</string>
+    <string name="local_offline_sync">Local Offline Sync</string>
+    <string name="local_offline_sync_desc">Synchronize playback with friends nearby without internet</string>
+    <string name="host_local_session">Host Local Session</string>
+    <string name="join_local_session">Join Local Session</string>
+
     <!-- Romanization Settings -->
     <string name="lyrics_romanization_cyrillic">Cyrillic</string>
     <string name="lyrics_romanize_title">Romanization</string>
@@ -750,6 +758,13 @@
     <string name="listen_together_notification_channel_name">Listen Together</string>
     <string name="listen_together_notification_channel_desc">Notifications for Listen Together events</string>
     <string name="listen_together_room_created">Room created: %s</string>
+    <string name="listen_together_local_offline_sync">Local Offline Sync</string>
+    <string name="listen_together_host_local">Host Local Sync</string>
+    <string name="listen_together_host_local_desc">Broadcast music stream on Wi-Fi / Hotspot</string>
+    <string name="listen_together_join_local">Join Local Sync</string>
+    <string name="listen_together_join_local_desc">Discover and join a local sync stream nearby</string>
+    <string name="listen_together_discovering_devices">Searching for nearby hosts…</string>
+    <string name="listen_together_no_devices_found">No nearby hosts found</string>
     <string name="listen_together_cannot_edit_username_in_room">Cannot edit username while in a room</string>
     <string name="waiting_for_approval">Waiting for approval from host</string>
     <string name="invalid_room_code">Invalid room code</string>

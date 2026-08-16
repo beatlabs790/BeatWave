@@ -16,6 +16,7 @@ import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.ForwardingPlayer
 import com.beatwave.music.db.MusicDatabase
 import com.beatwave.music.extensions.currentMetadata
 import com.beatwave.music.extensions.getCurrentQueueIndex
@@ -54,8 +55,10 @@ class PlayerConnection(
      * Safe player accessor checks readiness & handles errors.
      * Should be used by all player access within this class.
      */
-    private fun getPlayerSafe(): ExoPlayer {
-        return try {
+    private var cachedForwardingPlayer: CrossfadeForwardingPlayer? = null
+
+    private fun getPlayerSafe(): Player {
+        val rawPlayer = try {
             if (!playerReadinessFlow.value) {
                 Timber.tag(TAG).w("Player accessed before service initialization complete; returning best-effort reference")
             }
@@ -64,13 +67,20 @@ class PlayerConnection(
             Timber.tag(TAG).e(e, "Fatal: player property accessed but not initialized")
             throw IllegalStateException("MusicService.player not initialized; possible race condition in service startup", e)
         }
+        val currentCached = cachedForwardingPlayer
+        if (currentCached != null && currentCached.rawPlayer == rawPlayer) {
+            return currentCached
+        }
+        val newForwarder = CrossfadeForwardingPlayer(rawPlayer, service)
+        cachedForwardingPlayer = newForwarder
+        return newForwarder
     }
 
     /**
      * Public accessor for player. Throws if player not ready.
      * Callers should check [isPlayerInitialized] before calling, or handle exceptions.
      */
-    val player: ExoPlayer
+    val player: Player
         get() = getPlayerSafe()
 
     /** Tracks whether player initialization completed successfully */
@@ -176,6 +186,7 @@ class PlayerConnection(
 
     var onSkipPrevious: (() -> Unit)? = null
     var onSkipNext: (() -> Unit)? = null
+    var onLocalPlayPauseRequest: ((Boolean) -> Unit)? = null
 
     private var attachedPlayer: Player? = null
 
@@ -329,9 +340,6 @@ class PlayerConnection(
         }
     }
 
-    /**
-     * Toggle play/pause - handles Cast when active
-     */
     fun togglePlayPause() {
         try {
             val castHandler = service.castConnectionHandler
@@ -342,7 +350,8 @@ class PlayerConnection(
                     castHandler.play()
                 }
             } else {
-                player.togglePlayPause()
+                val nextPlayState = !player.playWhenReady
+                onLocalPlayPauseRequest?.invoke(nextPlayState) ?: player.togglePlayPause()
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in togglePlayPause")
@@ -358,12 +367,14 @@ class PlayerConnection(
             if (castHandler?.isCasting?.value == true) {
                 castHandler.play()
             } else {
-                when (player.playbackState) {
-                    Player.STATE_IDLE -> player.prepare()
-                    Player.STATE_ENDED -> player.seekTo(player.currentMediaItemIndex, 0)
-                    else -> {}
+                onLocalPlayPauseRequest?.invoke(true) ?: run {
+                    when (player.playbackState) {
+                        Player.STATE_IDLE -> player.prepare()
+                        Player.STATE_ENDED -> player.seekTo(player.currentMediaItemIndex, 0)
+                        else -> {}
+                    }
+                    player.playWhenReady = true
                 }
-                player.playWhenReady = true
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in play")
@@ -379,7 +390,9 @@ class PlayerConnection(
             if (castHandler?.isCasting?.value == true) {
                 castHandler.pause()
             } else {
-                player.playWhenReady = false
+                onLocalPlayPauseRequest?.invoke(false) ?: run {
+                    player.playWhenReady = false
+                }
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error in pause")
@@ -541,5 +554,70 @@ class PlayerConnection(
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Error during PlayerConnection disposal")
         }
+    }
+}
+
+class CrossfadeForwardingPlayer(
+    val rawPlayer: Player,
+    private val service: MusicService
+) : ForwardingPlayer(rawPlayer) {
+    override fun seekToDefaultPosition(mediaItemIndex: Int) {
+        if (service.manualCrossfadeEnabled) {
+            service.startManualTrackTransition(mediaItemIndex)
+        } else {
+            super.seekToDefaultPosition(mediaItemIndex)
+        }
+    }
+
+    override fun seekTo(mediaItemIndex: Int, positionMs: Long) {
+        if (service.manualCrossfadeEnabled && mediaItemIndex != currentMediaItemIndex) {
+            service.startManualTrackTransition(mediaItemIndex)
+        } else {
+            super.seekTo(mediaItemIndex, positionMs)
+        }
+    }
+
+    override fun seekToNext() {
+        if (service.manualCrossfadeEnabled) {
+            val targetIndex = nextMediaItemIndex
+            if (targetIndex != -1) {
+                service.startManualTrackTransition(targetIndex)
+                return
+            }
+        }
+        super.seekToNext()
+    }
+
+    override fun seekToNextMediaItem() {
+        if (service.manualCrossfadeEnabled) {
+            val targetIndex = nextMediaItemIndex
+            if (targetIndex != -1) {
+                service.startManualTrackTransition(targetIndex)
+                return
+            }
+        }
+        super.seekToNextMediaItem()
+    }
+
+    override fun seekToPrevious() {
+        if (service.manualCrossfadeEnabled && currentPosition <= 3000) {
+            val targetIndex = previousMediaItemIndex
+            if (targetIndex != -1) {
+                service.startManualTrackTransition(targetIndex)
+                return
+            }
+        }
+        super.seekToPrevious()
+    }
+
+    override fun seekToPreviousMediaItem() {
+        if (service.manualCrossfadeEnabled && currentPosition <= 3000) {
+            val targetIndex = previousMediaItemIndex
+            if (targetIndex != -1) {
+                service.startManualTrackTransition(targetIndex)
+                return
+            }
+        }
+        super.seekToPreviousMediaItem()
     }
 }

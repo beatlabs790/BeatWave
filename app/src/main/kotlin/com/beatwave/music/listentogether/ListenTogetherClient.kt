@@ -617,6 +617,8 @@ class ListenTogetherClient @Inject constructor(
         pingJob = null
         webSocket?.close(1000, "User disconnected")
         webSocket = null
+        localSocketTransport?.disconnect()
+        localSocketTransport = null
         _connectionState.value = ConnectionState.DISCONNECTED
         
         // Clear session and state on explicit disconnect
@@ -1343,7 +1345,11 @@ class ListenTogetherClient @Inject constructor(
             val data = codec.encode(type, payload)
             log(LogLevel.DEBUG, "Sending message", "$type (${codec.format.name})")
             
-            val success = webSocket?.send(okio.ByteString.of(*data)) ?: false
+            val success = if (localSocketTransport != null) {
+                localSocketTransport?.send(data) ?: false
+            } else {
+                webSocket?.send(okio.ByteString.of(*data)) ?: false
+            }
             if (!success) {
                 log(LogLevel.ERROR, "Failed to send message", type)
             }
@@ -1529,7 +1535,8 @@ class ListenTogetherClient @Inject constructor(
         insertNext: Boolean? = null, 
         queue: List<TrackInfo>? = null,
         queueTitle: String? = null,
-        volume: Float? = null
+        volume: Float? = null,
+        serverTime: Long? = null
     ) {
         // The server is the authority here; this only avoids sending a frame we
         // already know will be refused.
@@ -1539,7 +1546,7 @@ class ListenTogetherClient @Inject constructor(
         }
         sendMessage(
             MessageTypes.PLAYBACK_ACTION,
-            PlaybackActionPayload(action, trackId, position, trackInfo, insertNext, queue, queueTitle, volume)
+            PlaybackActionPayload(action, trackId, position, trackInfo, insertNext, queue, queueTitle, volume, serverTime)
         )
     }
 
@@ -1775,5 +1782,96 @@ class ListenTogetherClient @Inject constructor(
         System.currentTimeMillis() - sessionStartTime
     } else {
         0L
+    }
+
+    fun hostLocalSync(username: String) {
+        disconnect()
+        storedUsername = username
+        _connectionState.value = ConnectionState.CONNECTING
+        
+        localSocketTransport = LocalSocketTransport(
+            context = context,
+            onMessageReceived = { handleMessage(it) },
+            onConnectionStateChanged = { localState ->
+                when (localState) {
+                    LocalSocketTransport.ConnectionState.DISCONNECTED -> {
+                        _connectionState.value = ConnectionState.DISCONNECTED
+                        handleDisconnect()
+                    }
+                    LocalSocketTransport.ConnectionState.CONNECTING -> {
+                        _connectionState.value = ConnectionState.CONNECTING
+                    }
+                    LocalSocketTransport.ConnectionState.CONNECTED -> {
+                        _connectionState.value = ConnectionState.CONNECTED
+                        _role.value = RoomRole.HOST
+                        storedRoomCode = "LOCAL"
+                        connectedRoomCode = "LOCAL"
+                        _roomState.value = RoomStatePayload(
+                            roomCode = "LOCAL",
+                            hostId = "local_host",
+                            users = listOf(UserInfo(userId = "local_host", username = username)),
+                            currentTrack = null,
+                            controlMode = ControlModes.EVERYONE
+                        )
+                        scope.launch {
+                            _events.emit(ListenTogetherEvent.RoomCreated("LOCAL"))
+                        }
+                    }
+                }
+            },
+            onLog = { log(LogLevel.INFO, "LocalSync", it) }
+        )
+        localSocketTransport?.startHost()
+    }
+
+    fun startLocalDiscovery(onDeviceDiscovered: (String, String) -> Unit) {
+        if (localSocketTransport == null) {
+            localSocketTransport = LocalSocketTransport(
+                context = context,
+                onMessageReceived = { handleMessage(it) },
+                onConnectionStateChanged = { _ -> },
+                onLog = { log(LogLevel.INFO, "LocalSync", it) }
+            )
+        }
+        localSocketTransport?.startDiscovery(onDeviceDiscovered)
+    }
+
+    fun stopLocalDiscovery() {
+        localSocketTransport?.stopDiscovery()
+    }
+
+    fun joinLocalSync(hostIp: String, username: String) {
+        disconnect()
+        storedUsername = username
+        _connectionState.value = ConnectionState.CONNECTING
+
+        val transport = LocalSocketTransport(
+            context = context,
+            onMessageReceived = { handleMessage(it) },
+            onConnectionStateChanged = { localState ->
+                when (localState) {
+                    LocalSocketTransport.ConnectionState.DISCONNECTED -> {
+                        _connectionState.value = ConnectionState.DISCONNECTED
+                        handleDisconnect()
+                    }
+                    LocalSocketTransport.ConnectionState.CONNECTING -> {
+                        _connectionState.value = ConnectionState.CONNECTING
+                    }
+                    LocalSocketTransport.ConnectionState.CONNECTED -> {
+                        _connectionState.value = ConnectionState.CONNECTED
+                        _role.value = RoomRole.GUEST
+                        storedRoomCode = "LOCAL"
+                        connectedRoomCode = "LOCAL"
+                        scope.launch {
+                            _events.emit(ListenTogetherEvent.JoinApproved("LOCAL"))
+                        }
+                    }
+                }
+            },
+            onLog = { log(LogLevel.INFO, "LocalSync", it) }
+        )
+        localSocketTransport?.disconnect()
+        localSocketTransport = transport
+        localSocketTransport?.connectToHost(hostIp)
     }
 }

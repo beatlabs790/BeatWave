@@ -99,6 +99,8 @@ import com.beatwave.music.constants.CompactPlayerInTabViewKey
 import com.beatwave.music.constants.HideVolumeBarKey
 import com.beatwave.music.constants.LocalOnlyModeKey
 import com.beatwave.music.constants.CrossfadeEnabledKey
+import com.beatwave.music.constants.ManualCrossfadeEnabledKey
+import com.beatwave.music.constants.ManualCrossfadeDurationKey
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.constants.CrossfadeGaplessKey
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -177,6 +179,14 @@ fun PlayerSettings(
     val (crossfadeGapless, onCrossfadeGaplessChange) = rememberPreference(
         CrossfadeGaplessKey,
         defaultValue = true
+    )
+    val (manualCrossfadeEnabled, onManualCrossfadeEnabledChange) = rememberPreference(
+        ManualCrossfadeEnabledKey,
+        defaultValue = false
+    )
+    val (manualCrossfadeDuration, onManualCrossfadeDurationChange) = rememberPreference(
+        ManualCrossfadeDurationKey,
+        defaultValue = 3f
     )
     val (creativeTransitionsEnabled, onCreativeTransitionsEnabledChange) = rememberPreference(
         CreativeTransitionsEnabledKey,
@@ -464,6 +474,44 @@ fun PlayerSettings(
                             )
                         },
                         onClick = { onCrossfadeGaplessChange(!crossfadeGapless) }
+                    ))
+                }
+                add(Material3SettingsItem(
+                    icon = painterResource(R.drawable.linear_scale),
+                    title = { Text(stringResource(R.string.manual_crossfade)) },
+                    description = { Text(stringResource(R.string.manual_crossfade_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = manualCrossfadeEnabled,
+                            onCheckedChange = onManualCrossfadeEnabledChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (manualCrossfadeEnabled) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onManualCrossfadeEnabledChange(!manualCrossfadeEnabled) }
+                ))
+                if (manualCrossfadeEnabled) {
+                    add(Material3SettingsItem(
+                        icon = painterResource(R.drawable.timer),
+                        title = { Text(stringResource(R.string.manual_crossfade_duration)) },
+                        description = {
+                            Column {
+                                Text(pluralStringResource(R.plurals.seconds, manualCrossfadeDuration.roundToInt(), manualCrossfadeDuration.roundToInt()))
+                                Slider(
+                                    value = manualCrossfadeDuration,
+                                    onValueChange = onManualCrossfadeDurationChange,
+                                    valueRange = 1f..15f,
+                                    steps = 14
+                                )
+                            }
+                        }
                     ))
                 }
                 // Auto-DJ Mixing needs crossfade on (it beatmatches into the crossfade

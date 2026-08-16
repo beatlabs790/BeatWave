@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
@@ -95,6 +95,8 @@ import com.beatwave.music.constants.AutoLoadMoreKey
 import com.beatwave.music.constants.AutoSkipNextOnErrorKey
 import com.beatwave.music.constants.CrossfadeDurationKey
 import com.beatwave.music.constants.CrossfadeEnabledKey
+import com.beatwave.music.constants.ManualCrossfadeEnabledKey
+import com.beatwave.music.constants.ManualCrossfadeDurationKey
 import com.beatwave.music.constants.AutoDjMixingEnabledKey
 import com.beatwave.music.constants.CreativeTransitionsEnabledKey
 import com.beatwave.music.constants.CrossfadeGaplessKey
@@ -292,6 +294,8 @@ class MusicService :
     private var crossfadeEnabled = false
     private var crossfadeDuration = 5000f
     private var crossfadeGapless = true
+    var manualCrossfadeEnabled = false
+    var manualCrossfadeDuration = 3000f
     private var crossfadeTriggerJob: Job? = null
 
     // Mirrors of settings read at ExoPlayer construction time (initial player +
@@ -1002,6 +1006,23 @@ class MusicService :
                 crossfadeEnabled = enabled
                 crossfadeDuration = duration * 1000f // Convert to ms
                 crossfadeGapless = gapless
+            }
+
+        combine(
+            dataStore.data.map { prefs ->
+                Pair(
+                    prefs[ManualCrossfadeEnabledKey] ?: false,
+                    prefs[ManualCrossfadeDurationKey] ?: 3f
+                )
+            },
+            listenTogetherManager.roomState
+        ) { (enabled, duration), roomState ->
+            Pair(enabled && roomState == null, duration)
+        }
+            .distinctUntilChanged()
+            .collect(scope) { (enabled, duration) ->
+                manualCrossfadeEnabled = enabled
+                manualCrossfadeDuration = duration * 1000f // Convert to ms
             }
 
         dataStore.data
@@ -3993,6 +4014,44 @@ class MusicService :
         }
     }
 
+    fun startManualTrackTransition(targetIndex: Int) {
+        if (isCrossfading) {
+            player.seekTo(targetIndex, 0L)
+            return
+        }
+        if (targetIndex < 0 || targetIndex >= player.mediaItemCount) return
+
+        val savedRepeatMode = player.repeatMode
+        val savedShuffleEnabled = player.shuffleModeEnabled
+
+        secondaryPlayer = createExoPlayer()
+        val secPlayer = secondaryPlayer!!
+        secPlayer.addListener(secondaryPlayerListener)
+
+        val itemCount = player.mediaItemCount
+        val items = mutableListOf<MediaItem>()
+        for (i in 0 until itemCount) {
+            items.add(player.getMediaItemAt(i))
+        }
+
+        secPlayer.setMediaItems(items)
+        secPlayer.seekTo(targetIndex, 0L)
+        secPlayer.volume = 0f
+
+        secPlayer.repeatMode = savedRepeatMode
+        secPlayer.shuffleModeEnabled = savedShuffleEnabled
+
+        secPlayer.prepare()
+        secPlayer.playWhenReady = true
+
+        performCrossfadeSwap(manualCrossfadeDuration.toLong())
+
+        if (savedShuffleEnabled) {
+            val shufflePlaylistFirst = dataStore.get(ShufflePlaylistFirstKey, false)
+            applyShuffleOrder(player.currentMediaItemIndex, player.mediaItemCount, shufflePlaylistFirst)
+        }
+    }
+
     /**
      * Releases the incoming player exactly on one of the outgoing track's
      * beats, which is the difference between two tracks playing at the same
@@ -4077,7 +4136,7 @@ class MusicService :
         }
     }
 
-    private fun performCrossfadeSwap() {
+    private fun performCrossfadeSwap(durationMs: Long = crossfadeDuration.toLong()) {
         isCrossfading = true
         val nextPlayer = secondaryPlayer ?: return
         val currentPlayer = player
@@ -4125,7 +4184,7 @@ class MusicService :
         }
 
         crossfadeJob = scope.launch {
-            val duration = crossfadeDuration.toLong()
+            val duration = durationMs
             val steps = 20
             val stepTime = duration / steps
             // Use the user's intended volume, not the fading player's current

@@ -285,6 +285,7 @@ class ListenTogetherManager @Inject constructor(
             oldConnection?.onSkipPrevious = null
             oldConnection?.onSkipNext = null
             oldConnection?.onRestartSong = null
+            oldConnection?.onLocalPlayPauseRequest = null
             
             playerConnection = connection
             
@@ -340,6 +341,38 @@ class ListenTogetherManager @Inject constructor(
                         }
                     } catch (e: Exception) {
                         Timber.tag(TAG).e(e, "Error in onRestartSong")
+                    }
+                }
+
+                // Hook up play/pause actions with 0.3s delay
+                connection.onLocalPlayPauseRequest = { play ->
+                    try {
+                        if (canControlPlayback && !isSyncing && isInRoom) {
+                            scope.launch {
+                                val targetTime = System.currentTimeMillis() + 300
+                                isSyncing = true
+                                Timber.tag(TAG).d("Local sync play/pause action triggered: play=$play. Sending to peer...")
+                                client.sendPlaybackAction(
+                                    action = if (play) PlaybackActions.PLAY else PlaybackActions.PAUSE,
+                                    position = playerConnection?.player?.currentPosition ?: 0L,
+                                    serverTime = targetTime
+                                )
+                                val delayMs = targetTime - System.currentTimeMillis()
+                                if (delayMs > 0) delay(delayMs)
+                                playerConnection?.let { conn ->
+                                    conn.allowInternalSync = true
+                                    if (play) {
+                                        conn.player.play()
+                                    } else {
+                                        conn.player.pause()
+                                    }
+                                    conn.allowInternalSync = false
+                                }
+                                isSyncing = false
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Timber.tag(TAG).e(e, "Error in onLocalPlayPauseRequest")
                     }
                 }
             }
@@ -915,102 +948,121 @@ class ListenTogetherManager @Inject constructor(
                 PlaybackActions.PLAY -> {
                     val basePos = action.position ?: 0L
                     val now = System.currentTimeMillis()
-                    val adjustedPos = action.serverTime?.let { serverTime ->
-                        basePos + kotlin.math.max(0L, now - serverTime)
-                    } ?: basePos
-
-                    Timber.tag(TAG).d("Guest: PLAY at position $adjustedPos, currently playing=${player.playWhenReady}")
-
-                    if (bufferingTrackId != null) {
-                        pendingSyncState = (pendingSyncState ?: SyncStatePayload(
-                            currentTrack = roomState.value?.currentTrack,
-                            isPlaying = true,
-                            position = adjustedPos,
-                            lastUpdate = now
-                        )).copy(
-                            isPlaying = true,
-                            position = adjustedPos,
-                            lastUpdate = now
-                        )
-                        applyPendingSyncIfReady()
-                        return
-                    }
-
-                    // Debounce PLAY actions when already playing and in sync
-                    val posDiff = kotlin.math.abs(player.currentPosition - adjustedPos)
-                    val alreadyPlaying = player.playWhenReady
+                    val targetTime = action.serverTime ?: now
                     
-                    if (alreadyPlaying && posDiff < POSITION_TOLERANCE_MS && (now - lastSyncActionTime) < SYNC_DEBOUNCE_THRESHOLD_MS) {
-                        Timber.tag(TAG).d("Guest: PLAY debounced - already playing and in sync (diff ${posDiff}ms)")
-                        return
-                    }
+                    scope.launch {
+                        isSyncing = true
+                        val delayMs = targetTime - System.currentTimeMillis()
+                        if (delayMs > 0) delay(delayMs)
+                        
+                        val adjustedPos = action.serverTime?.let { serverTime ->
+                            basePos + kotlin.math.max(0L, System.currentTimeMillis() - serverTime)
+                        } ?: basePos
 
-                    // CRITICAL: Only seek during active playback if position is VERY far off
-                    // This prevents interrupting the audio for small drifts
-                    if (alreadyPlaying) {
-                        if (posDiff > PLAYBACK_POSITION_TOLERANCE_MS) {
-                            Timber.tag(TAG).d("Guest: PLAY seeking during playback ${player.currentPosition} -> $adjustedPos (diff ${posDiff}ms)")
-                            connection.seekTo(adjustedPos)
-                        } else {
-                            Timber.tag(TAG).d("Guest: PLAY skipping seek - already playing, drift acceptable (${posDiff}ms < ${PLAYBACK_POSITION_TOLERANCE_MS}ms)")
+                        val conn = playerConnection ?: return@launch
+                        val pl = conn.player
+                        
+                        Timber.tag(TAG).d("Guest: PLAY at position $adjustedPos, currently playing=${pl.playWhenReady}")
+                        
+                        if (bufferingTrackId != null) {
+                            pendingSyncState = (pendingSyncState ?: SyncStatePayload(
+                                currentTrack = roomState.value?.currentTrack,
+                                isPlaying = true,
+                                position = adjustedPos,
+                                lastUpdate = System.currentTimeMillis()
+                            )).copy(
+                                isPlaying = true,
+                                position = adjustedPos,
+                                lastUpdate = System.currentTimeMillis()
+                            )
+                            applyPendingSyncIfReady()
+                            delay(200)
+                            isSyncing = false
+                            return@launch
                         }
-                    } else {
-                        // When paused/stopped, we can seek more aggressively
+
+                        val posDiff = kotlin.math.abs(pl.currentPosition - adjustedPos)
+                        val alreadyPlaying = pl.playWhenReady
+                        
+                        if (alreadyPlaying && posDiff < POSITION_TOLERANCE_MS && (System.currentTimeMillis() - lastSyncActionTime) < SYNC_DEBOUNCE_THRESHOLD_MS) {
+                            Timber.tag(TAG).d("Guest: PLAY debounced - already playing and in sync (diff ${posDiff}ms)")
+                            delay(200)
+                            isSyncing = false
+                            return@launch
+                        }
+
+                        conn.allowInternalSync = true
                         if (posDiff > POSITION_TOLERANCE_MS) {
-                            Timber.tag(TAG).d("Guest: PLAY seeking while paused ${player.currentPosition} -> $adjustedPos (diff ${posDiff}ms)")
-                            connection.seekTo(adjustedPos)
+                            Timber.tag(TAG).d("Guest: PLAY seeking ${pl.currentPosition} -> $adjustedPos (diff ${posDiff}ms)")
+                            conn.seekTo(adjustedPos)
                         }
-                        // Start playback
-                        Timber.tag(TAG).d("Guest: Starting playback")
-                        connection.play()
+                        if (!pl.playWhenReady) {
+                            Timber.tag(TAG).d("Guest: Starting playback")
+                            conn.play()
+                        }
+                        conn.allowInternalSync = false
+                        lastSyncActionTime = System.currentTimeMillis()
+                        delay(200)
+                        isSyncing = false
                     }
-                    lastSyncActionTime = now
                 }
                 
                 PlaybackActions.PAUSE -> {
                     val pos = action.position ?: 0L
                     val now = System.currentTimeMillis()
+                    val targetTime = action.serverTime ?: now
                     
-                    Timber.tag(TAG).d("Guest: PAUSE at position $pos, currently playing=${player.playWhenReady}")
+                    scope.launch {
+                        isSyncing = true
+                        val delayMs = targetTime - System.currentTimeMillis()
+                        if (delayMs > 0) delay(delayMs)
+                        
+                        val conn = playerConnection ?: return@launch
+                        val pl = conn.player
+                        
+                        Timber.tag(TAG).d("Guest: PAUSE at position $pos, currently playing=${pl.playWhenReady}")
 
-                    if (bufferingTrackId != null) {
-                        pendingSyncState = (pendingSyncState ?: SyncStatePayload(
-                            currentTrack = roomState.value?.currentTrack,
-                            isPlaying = false,
-                            position = pos,
-                            lastUpdate = now
-                        )).copy(
-                            isPlaying = false,
-                            position = pos,
-                            lastUpdate = now
-                        )
-                        applyPendingSyncIfReady()
-                        return
-                    }
+                        if (bufferingTrackId != null) {
+                            pendingSyncState = (pendingSyncState ?: SyncStatePayload(
+                                currentTrack = roomState.value?.currentTrack,
+                                isPlaying = false,
+                                position = pos,
+                                lastUpdate = System.currentTimeMillis()
+                            )).copy(
+                                isPlaying = false,
+                                position = pos,
+                                lastUpdate = System.currentTimeMillis()
+                            )
+                            applyPendingSyncIfReady()
+                            delay(200)
+                            isSyncing = false
+                            return@launch
+                        }
 
-                    // Debounce PAUSE actions when already paused and in sync
-                    val posDiff = kotlin.math.abs(player.currentPosition - pos)
-                    val alreadyPaused = !player.playWhenReady
-                    
-                    if (alreadyPaused && posDiff < POSITION_TOLERANCE_MS && (now - lastSyncActionTime) < SYNC_DEBOUNCE_THRESHOLD_MS) {
-                        Timber.tag(TAG).d("Guest: PAUSE debounced - already paused and in sync (diff ${posDiff}ms)")
-                        return
-                    }
+                        val posDiff = kotlin.math.abs(pl.currentPosition - pos)
+                        val alreadyPaused = !pl.playWhenReady
+                        
+                        if (alreadyPaused && posDiff < POSITION_TOLERANCE_MS && (System.currentTimeMillis() - lastSyncActionTime) < SYNC_DEBOUNCE_THRESHOLD_MS) {
+                            Timber.tag(TAG).d("Guest: PAUSE debounced - already paused and in sync (diff ${posDiff}ms)")
+                            delay(200)
+                            isSyncing = false
+                            return@launch
+                        }
 
-                    // Pause playback first
-                    if (player.playWhenReady) {
-                        Timber.tag(TAG).d("Guest: Pausing playback")
-                        connection.pause()
+                        conn.allowInternalSync = true
+                        if (pl.playWhenReady) {
+                            Timber.tag(TAG).d("Guest: Pausing playback")
+                            conn.pause()
+                        }
+                        if (posDiff > POSITION_TOLERANCE_MS) {
+                            Timber.tag(TAG).d("Guest: PAUSE seeking ${pl.currentPosition} -> $pos (diff ${posDiff}ms)")
+                            conn.seekTo(pos)
+                        }
+                        conn.allowInternalSync = false
+                        lastSyncActionTime = System.currentTimeMillis()
+                        delay(200)
+                        isSyncing = false
                     }
-                    
-                    // Only seek if position difference is significant
-                    if (posDiff > POSITION_TOLERANCE_MS) {
-                        Timber.tag(TAG).d("Guest: PAUSE seeking ${player.currentPosition} -> $pos (diff ${posDiff}ms)")
-                        connection.seekTo(pos)
-                    } else {
-                        Timber.tag(TAG).d("Guest: PAUSE skipping seek (diff ${posDiff}ms < ${POSITION_TOLERANCE_MS}ms)")
-                    }
-                    lastSyncActionTime = now
                 }
 
                 PlaybackActions.SEEK -> {
@@ -1189,9 +1241,12 @@ class ListenTogetherManager @Inject constructor(
             }
         } finally {
             // Minimal delay to prevent feedback loops
-            scope.launch {
-                delay(200)
-                isSyncing = false
+            val wasDelayed = action.action == PlaybackActions.PLAY || action.action == PlaybackActions.PAUSE
+            if (!wasDelayed) {
+                scope.launch {
+                    delay(200)
+                    isSyncing = false
+                }
             }
         }
     }
@@ -1817,5 +1872,21 @@ class ListenTogetherManager @Inject constructor(
     fun sendChatMessage(message: String, replyTo: RepliedMessage? = null) {
         if (message.isBlank()) return
         client.sendChatMessage(message, replyTo)
+    }
+
+    fun hostLocalSync(username: String) {
+        client.hostLocalSync(username)
+    }
+
+    fun startLocalDiscovery(onDeviceDiscovered: (String, String) -> Unit) {
+        client.startLocalDiscovery(onDeviceDiscovered)
+    }
+
+    fun stopLocalDiscovery() {
+        client.stopLocalDiscovery()
+    }
+
+    fun joinLocalSync(hostIp: String, username: String) {
+        client.joinLocalSync(hostIp, username)
     }
 }

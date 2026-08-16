@@ -98,6 +98,8 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.runtime.remember
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.foundation.layout.heightIn
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -201,6 +203,9 @@ fun ListenTogetherSettings(
     var showUsernameDialog by rememberSaveable { mutableStateOf(false) }
     var showCreateRoomDialog by rememberSaveable { mutableStateOf(false) }
     var showJoinRoomDialog by rememberSaveable { mutableStateOf(false) }
+    var showLocalHostDialog by rememberSaveable { mutableStateOf(false) }
+    var showLocalJoinDialog by rememberSaveable { mutableStateOf(false) }
+    val discoveredDevices = remember { mutableStateListOf<Pair<String, String>>() }
     var showLogsDialog by rememberSaveable { mutableStateOf(false) }
     var showBlockedUsersDialog by rememberSaveable { mutableStateOf(false) }
     var roomCodeInput by rememberSaveable { mutableStateOf("") }
@@ -397,6 +402,162 @@ fun ListenTogetherSettings(
         }
     }
     
+    if (showLocalHostDialog) {
+        var hostUsername by rememberSaveable(showLocalHostDialog) { mutableStateOf(username) }
+
+        DefaultDialog(
+            onDismiss = { showLocalHostDialog = false },
+            icon = { Icon(painterResource(R.drawable.sync), contentDescription = null) },
+            title = { Text(stringResource(R.string.listen_together_host_local)) },
+            buttons = {
+                TextButton(onClick = { showLocalHostDialog = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        val finalUsername = hostUsername.trim()
+                        if (finalUsername.isNotBlank()) {
+                            username = finalUsername
+                            viewModel.hostLocalSync(finalUsername)
+                            showLocalHostDialog = false
+                        } else {
+                            Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    enabled = hostUsername.trim().isNotBlank()
+                ) {
+                    Text(stringResource(R.string.create))
+                }
+            }
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "Broadcast playback directly over your local Wi-Fi or Mobile Hotspot.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = hostUsername,
+                    onValueChange = { hostUsername = it },
+                    label = { Text(stringResource(R.string.listen_together_username)) },
+                    leadingIcon = {
+                        Icon(painterResource(R.drawable.person), contentDescription = null)
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+
+    if (showLocalJoinDialog) {
+        var joinUsername by rememberSaveable(showLocalJoinDialog) { mutableStateOf(username) }
+
+        LaunchedEffect(showLocalJoinDialog) {
+            discoveredDevices.clear()
+            viewModel.startLocalDiscovery { name, ip ->
+                if (discoveredDevices.none { it.second == ip }) {
+                    discoveredDevices.add(name to ip)
+                }
+            }
+        }
+
+        DefaultDialog(
+            onDismiss = { 
+                viewModel.stopLocalDiscovery()
+                showLocalJoinDialog = false 
+            },
+            icon = { Icon(painterResource(R.drawable.connect_people), contentDescription = null) },
+            title = { Text(stringResource(R.string.listen_together_join_local)) },
+            buttons = {
+                TextButton(
+                    onClick = { 
+                        viewModel.stopLocalDiscovery()
+                        showLocalJoinDialog = false 
+                    }
+                ) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            }
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = joinUsername,
+                    onValueChange = { joinUsername = it },
+                    label = { Text(stringResource(R.string.listen_together_username)) },
+                    leadingIcon = {
+                        Icon(painterResource(R.drawable.person), contentDescription = null)
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                Text(
+                    text = stringResource(R.string.listen_together_discovering_devices),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                if (discoveredDevices.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(100.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.listen_together_no_devices_found),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth().heightIn(max = 200.dp).verticalScroll(rememberScrollState())
+                    ) {
+                        discoveredDevices.forEach { device ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .bounceClick {
+                                        val finalUsername = joinUsername.trim()
+                                        if (finalUsername.isNotBlank()) {
+                                            username = finalUsername
+                                            viewModel.stopLocalDiscovery()
+                                            viewModel.joinLocalSync(device.second, finalUsername)
+                                            showLocalJoinDialog = false
+                                        } else {
+                                            Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
+                                        }
+                                    },
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.person),
+                                        contentDescription = null,
+                                        modifier = Modifier.padding(end = 12.dp)
+                                    )
+                                    Column {
+                                        Text(device.first, style = MaterialTheme.typography.bodyLarge)
+                                        Text(device.second, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     if (showLogsDialog) {
         LogsDialog(
             logs = logs,
@@ -579,6 +740,36 @@ fun ListenTogetherSettings(
                             Text(stringResource(R.string.listen_together_view_logs_desc))
                         },
                         onClick = { showLogsDialog = true }
+                    )
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            IntegrationCard(
+                title = stringResource(R.string.listen_together_local_offline_sync),
+                items = listOf(
+                    IntegrationCardItem(
+                        icon = painterResource(R.drawable.sync),
+                        title = { Text(stringResource(R.string.listen_together_host_local)) },
+                        description = { Text(stringResource(R.string.listen_together_host_local_desc)) },
+                        onClick = if (roomState == null) {
+                            { showLocalHostDialog = true }
+                        } else {
+                            { Toast.makeText(context, "Leave your current room to host a local session", Toast.LENGTH_SHORT).show() }
+                        }
+                    ),
+                    IntegrationCardItem(
+                        icon = painterResource(R.drawable.connect_people),
+                        title = { Text(stringResource(R.string.listen_together_join_local)) },
+                        description = { Text(stringResource(R.string.listen_together_join_local_desc)) },
+                        onClick = if (roomState == null) {
+                            { showLocalJoinDialog = true }
+                        } else {
+                            { Toast.makeText(context, "Leave your current room to join a local session", Toast.LENGTH_SHORT).show() }
+                        }
                     )
                 )
             )

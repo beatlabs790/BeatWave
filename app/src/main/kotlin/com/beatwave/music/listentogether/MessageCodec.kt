@@ -245,6 +245,30 @@ class MessageCodec(
             is TransferHostPayload -> Listentogether.TransferHostPayload.newBuilder()
                 .setNewHostId(payload.newHostId)
                 .build()
+            is JoinApprovedPayload -> Listentogether.JoinApprovedPayload.newBuilder()
+                .setRoomCode(payload.roomCode)
+                .setUserId(payload.userId)
+                .setSessionToken(payload.sessionToken)
+                .setState(roomStateToProto(payload.state))
+                .build()
+            is UserJoinedPayload -> Listentogether.UserJoinedPayload.newBuilder()
+                .setUserId(payload.userId)
+                .setUsername(payload.username)
+                .build()
+            is UserLeftPayload -> Listentogether.UserLeftPayload.newBuilder()
+                .setUserId(payload.userId)
+                .setUsername(payload.username)
+                .build()
+            is SyncStatePayload -> {
+                val builder = Listentogether.SyncStatePayload.newBuilder()
+                    .setIsPlaying(payload.isPlaying)
+                    .setPosition(payload.position)
+                    .setLastUpdate(payload.lastUpdate)
+                    .setVolume(payload.volume)
+                payload.currentTrack?.let { builder.setCurrentTrack(trackInfoToProto(it)) }
+                payload.queue?.forEach { builder.addQueue(trackInfoToProto(it)) }
+                builder.build()
+            }
             else -> throw IllegalArgumentException("Unsupported payload type: ${payload::class.simpleName}")
         }
     }
@@ -464,6 +488,31 @@ class MessageCodec(
             queue = proto.queueList.map { protoToTrackInfo(it) }
         )
     }
+
+    private fun userInfoToProto(user: UserInfo): Listentogether.UserInfo {
+        return Listentogether.UserInfo.newBuilder()
+            .setUserId(user.userId)
+            .setUsername(user.username)
+            .setIsHost(user.isHost)
+            .setIsConnected(user.isConnected)
+            .build()
+    }
+
+    private fun roomStateToProto(state: RoomState): Listentogether.RoomState {
+        val builder = Listentogether.RoomState.newBuilder()
+            .setRoomCode(state.roomCode)
+            .setHostId(state.hostId)
+            .setIsPlaying(state.isPlaying)
+            .setPosition(state.position)
+            .setLastUpdate(state.lastUpdate)
+            .setVolume(state.volume)
+
+        state.users.forEach { builder.addUsers(userInfoToProto(it)) }
+        state.currentTrack?.let { builder.setCurrentTrack(trackInfoToProto(it)) }
+        state.queue.forEach { builder.addQueue(trackInfoToProto(it)) }
+
+        return builder.build()
+    }
     
     @Suppress("UNCHECKED_CAST")
     private fun <T> serializer(value: T): kotlinx.serialization.KSerializer<T> {
@@ -481,6 +530,10 @@ class MessageCodec(
             is ReconnectPayload -> ReconnectPayload.serializer()
             is TransferHostPayload -> TransferHostPayload.serializer()
             is ChatPayload -> ChatPayload.serializer()
+            is JoinApprovedPayload -> JoinApprovedPayload.serializer()
+            is UserJoinedPayload -> UserJoinedPayload.serializer()
+            is UserLeftPayload -> UserLeftPayload.serializer()
+            is SyncStatePayload -> SyncStatePayload.serializer()
             // Outbound v2 verbs. Adding a payload to decodePayload alone is not
             // enough — anything the client SENDS also needs a branch here, or it
             // throws at encode time and the action silently never leaves.

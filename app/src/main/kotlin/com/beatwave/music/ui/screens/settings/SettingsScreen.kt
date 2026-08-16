@@ -162,7 +162,7 @@ fun SettingsScreen(
 
         // Section: Account
         item(key = "account_header") { SettingsSectionHeader("ACCOUNT") }
-        item(key = \"account_section\") {
+        item(key = "account_section") {
             SettingsSection {
                 SettingsNavItem(
                     icon = painterResource(R.drawable.account),

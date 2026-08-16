@@ -215,10 +215,12 @@ fun ListenTogetherSettings(
         viewModel.events.collectLatest { event ->
             when (event) {
                 is ListenTogetherEvent.RoomCreated -> {
-                    // Room created toast is shown globally by the client
+                    Toast.makeText(context, "Local Sync Hosted! Room: ${event.roomCode}", Toast.LENGTH_SHORT).show()
+                    navController.navigateUp()
                 }
                 is ListenTogetherEvent.JoinApproved -> {
                     Toast.makeText(context, "Joined room: ${event.roomCode}", Toast.LENGTH_SHORT).show()
+                    navController.navigateUp()
                 }
                 is ListenTogetherEvent.JoinRejected -> {
                     Toast.makeText(context, "Join rejected: ${event.reason}", Toast.LENGTH_SHORT).show()
@@ -473,6 +475,19 @@ fun ListenTogetherSettings(
             icon = { Icon(painterResource(R.drawable.connect_people), contentDescription = null) },
             title = { Text(stringResource(R.string.listen_together_join_local)) },
             buttons = {
+                TextButton(
+                    onClick = {
+                        discoveredDevices.clear()
+                        viewModel.stopLocalDiscovery()
+                        viewModel.startLocalDiscovery { name, ip ->
+                            if (discoveredDevices.none { it.second == ip }) {
+                                discoveredDevices.add(name to ip)
+                            }
+                        }
+                    }
+                ) {
+                    Text("Refresh")
+                }
                 TextButton(
                     onClick = { 
                         viewModel.stopLocalDiscovery()

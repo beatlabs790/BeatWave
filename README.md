@@ -3,45 +3,14 @@
   <h3>BeatWave is an open-source, Liquid Glass music player for Android</h3>
 
   <p>
-    <a href="https://github.com/beatlabs790/BeatWave/releases/tag/v1.5.2">
-      <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F%20DOWNLOAD%20BEATWAVE%201.5.2-4CAF50?style=for-the-badge&logo=android&logoColor=white" alt="Download BeatWave 1.5.2">
+    <a href="https://github.com/beatlabs790/BeatWave/releases/tag/v5.0.0">
+      <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F%20DOWNLOAD%20BEATWAVE%201.5.2-4CAF50?style=for-the-badge&logo=android&logoColor=white" alt="Download BeatWave v5.0.0">
     </a>
   </p>
   <p>
-    <b><a href="https://github.com/beatlabs790/BeatWave/releases/tag/v1.5.2">⬇️ DOWNLOAD BEATWAVE 1.5.2</a></b>
+    <b><a href="https://github.com/beatlabs790/BeatWave/releases/tag/v5.0.0">⬇️ DOWNLOAD BEATWAVE v5.0.0</a></b>
     — Latest release. Works on Android 8.0+.
   </p>
-
-  <h3>📸 Screenshots</h3>
-  <div>
-    <img src="docs/screenshots/Screenshot_20260802_202411_BeatWave-portrait.png" width="30%" alt="BeatWave Liquid Glass music player now playing screen with frosted glass controls">
-    <img src="docs/screenshots/Screenshot_20260802_205400_BeatWave-portrait.png" width="30%" alt="BeatWave Android music player home screen with glass chrome">
-    <img src="docs/screenshots/Screenshot_20260802_205417_BeatWave-portrait.png" width="30%" alt="BeatWave music player library view with Liquid Glass blur">
-    <br>
-    <img src="docs/screenshots/Screenshot_20260802_205427_BeatWave-portrait.png" width="30%" alt="BeatWave music player search screen with frosted glass UI">
-    <img src="docs/screenshots/mobile%20%283%29-portrait.png" width="30%" alt="BeatWave Liquid Glass music player UI showing the frosted player screen">
-    <img src="docs/screenshots/mobile%20%284%29-portrait.png" width="30%" alt="BeatWave music player now playing screen with artwork and glass controls">
-    <br>
-    <img src="docs/screenshots/mobile%20%285%29-portrait.png" width="30%" alt="BeatWave music player queue screen with Liquid Glass surfaces">
-    <img src="docs/screenshots/mobile%20%287%29-portrait.png" width="30%" alt="BeatWave Android music player synced lyrics screen">
-    <img src="docs/screenshots/mobile%20%289%29-portrait.png" width="30%" alt="BeatWave music player album page with refractive glass chrome">
-    <br>
-    <img src="docs/screenshots/mobile%20%2810%29-portrait.png" width="30%" alt="BeatWave music player settings screen with frosted glass panels">
-    <img src="docs/screenshots/mobile%20%2811%29-portrait.png" width="30%" alt="BeatWave music player artist page with glass design">
-    <img src="docs/screenshots/mobile%20%2812%29-portrait.png" width="30%" alt="BeatWave music player Android Auto playback controls">
-    <br>
-    <img src="docs/screenshots/mobile%20%2813%29-portrait.png" width="30%" alt="BeatWave music player equalizer with Liquid Glass UI">
-    <img src="docs/screenshots/lyrics%20screen-portrait.png" width="30%" alt="BeatWave music player karaoke-style lyrics with word-by-word highlighting">
-    <img src="docs/screenshots/users%20%282%29-portrait.png" width="30%" alt="BeatWave Listen Together shared playback with friends">
-    <br>
-    <img src="docs/screenshots/tabview%20%281%29-landscape.png" width="30%" alt="BeatWave Liquid Glass music player tablet home view">
-    <img src="docs/screenshots/tabview%20%282%29-landscape.png" width="30%" alt="BeatWave music player tablet library browsing">
-    <img src="docs/screenshots/tabview%20%283%29-landscape.png" width="30%" alt="BeatWave music player tablet now playing screen">
-    <br>
-    <img src="docs/screenshots/users%20%283%29-portrait.png" width="30%" alt="BeatWave Discord Rich Presence showing what you are listening to">
-    <img src="docs/screenshots/users%20%285%29-landscape.png" width="30%" alt="BeatWave music player shared sessions and community">
-  </div>
-
   <p>
     <a href="https://github.com/beatlabs790/BeatWave/releases">
       <img src="https://img.shields.io/github/downloads/beatlabs790/BeatWave/total?style=for-the-badge&color=blue" alt="Downloads">
@@ -67,7 +36,7 @@
 
 <p><b>BeatWave</b> is a free, open-source music player for Android that streams from YouTube Music, built with <b>Jetpack Compose</b> on a <b>Media3</b> ExoPlayer core. The UI is a custom <b>Liquid Glass</b> design system — frosted, refractive surfaces, iOS-style bouncy scrolling, and progressive blur chrome — instead of stock Material widgets.</p>
 
-<p>BeatWave started as a fork of <a href="https://github.com/vivizzz007/vivi-music">vivi-music</a>; see <a href="#-credits">Credits</a> below.</p>
+<p>BeatWave started as a fork of <a href="https://github.com/cosmictaserdev-creator/Convx">CONVX</a>; see <a href="#-credits">Credits</a> below.</p>
 
 <hr>
 

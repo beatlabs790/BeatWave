@@ -411,6 +411,7 @@ class ListenTogetherClient @Inject constructor(
     private val codec = MessageCodec(MessageFormat.JSON, false)
 
     private var webSocket: WebSocket? = null
+    private var localSocketTransport: LocalSocketTransport? = null
     private var pingJob: Job? = null
     private var reconnectAttempts = 0
     
@@ -1806,15 +1807,18 @@ class ListenTogetherClient @Inject constructor(
                         _role.value = RoomRole.HOST
                         storedRoomCode = "LOCAL"
                         connectedRoomCode = "LOCAL"
-                        _roomState.value = RoomStatePayload(
+                        _roomState.value = RoomState(
                             roomCode = "LOCAL",
                             hostId = "local_host",
                             users = listOf(UserInfo(userId = "local_host", username = username)),
                             currentTrack = null,
+                            isPlaying = false,
+                            position = 0L,
+                            lastUpdate = System.currentTimeMillis(),
                             controlMode = ControlModes.EVERYONE
                         )
                         scope.launch {
-                            _events.emit(ListenTogetherEvent.RoomCreated("LOCAL"))
+                            _events.emit(ListenTogetherEvent.RoomCreated("LOCAL", "local_host"))
                         }
                     }
                 }
@@ -1862,8 +1866,22 @@ class ListenTogetherClient @Inject constructor(
                         _role.value = RoomRole.GUEST
                         storedRoomCode = "LOCAL"
                         connectedRoomCode = "LOCAL"
+                        
+                        val mockRoomState = RoomState(
+                            roomCode = "LOCAL",
+                            hostId = "local_host",
+                            users = listOf(
+                                UserInfo(userId = "local_host", username = "Host"),
+                                UserInfo(userId = "local_guest", username = username)
+                            ),
+                            isPlaying = false,
+                            position = 0L,
+                            lastUpdate = System.currentTimeMillis(),
+                            controlMode = ControlModes.EVERYONE
+                        )
+                        _roomState.value = mockRoomState
                         scope.launch {
-                            _events.emit(ListenTogetherEvent.JoinApproved("LOCAL"))
+                            _events.emit(ListenTogetherEvent.JoinApproved("LOCAL", "local_guest", mockRoomState))
                         }
                     }
                 }

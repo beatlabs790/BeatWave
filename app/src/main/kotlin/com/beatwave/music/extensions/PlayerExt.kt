@@ -15,6 +15,9 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import com.beatwave.music.models.MediaMetadata
 import java.util.ArrayDeque
+import androidx.media3.exoplayer.ExoPlayer
+import com.beatwave.music.playback.CrossfadeForwardingPlayer
+import androidx.media3.common.ShuffleOrder
 
 fun Player.togglePlayPause() {
     if (!playWhenReady) {
@@ -129,4 +132,25 @@ fun Player.setOffloadEnabled(enabled: Boolean) {
                 )
                 .build()
         ).build()
+}
+
+val Player.audioSessionId: Int
+    get() = when (this) {
+        is CrossfadeForwardingPlayer -> this.rawPlayer.audioSessionId
+        is ExoPlayer -> this.audioSessionId
+        else -> C.AUDIO_SESSION_ID_UNSET
+    }
+
+val Player.audioFormat: androidx.media3.common.Format?
+    get() = when (this) {
+        is CrossfadeForwardingPlayer -> this.rawPlayer.audioFormat
+        is ExoPlayer -> this.audioFormat
+        else -> null
+    }
+
+fun Player.setShuffleOrder(shuffleOrder: ShuffleOrder) {
+    when (this) {
+        is CrossfadeForwardingPlayer -> this.rawPlayer.setShuffleOrder(shuffleOrder)
+        is ExoPlayer -> this.setShuffleOrder(shuffleOrder)
+    }
 }

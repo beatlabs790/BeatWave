@@ -558,7 +558,7 @@ class PlayerConnection(
 }
 
 class CrossfadeForwardingPlayer(
-    val rawPlayer: Player,
+    val rawPlayer: ExoPlayer,
     private val service: MusicService
 ) : ForwardingPlayer(rawPlayer) {
     override fun seekToDefaultPosition(mediaItemIndex: Int) {

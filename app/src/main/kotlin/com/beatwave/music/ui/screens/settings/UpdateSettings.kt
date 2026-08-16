@@ -162,7 +162,7 @@ fun UpdateSettings(
                     onClick = {
                         val isFoss = !BuildConfig.CAST_AVAILABLE
                         if (isFoss) {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/beatlabs790/BeatWave"))
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/beatlabs790/BeatWave/releases"))
                             context.startActivity(intent)
                         } else {
                             navController.navigate("update")

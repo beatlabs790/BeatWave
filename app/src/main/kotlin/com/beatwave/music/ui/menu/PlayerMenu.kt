@@ -597,6 +597,22 @@ fun PlayerMenu(
                             onClick = { showListenTogetherDialog = true }
                         )
                     )
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(text = stringResource(R.string.offline_sync)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.sync),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            onClick = {
+                                onDismiss()
+                                navController.navigate("settings/integrations/listen_together")
+                            }
+                        )
+                    )
                     if (isListenTogetherGuest) {
                         add(
                             Material3MenuItemData(

@@ -220,6 +220,17 @@ fun AboutScreen(
             )
         )
         Spacer(modifier = Modifier.height(20.dp))
+
+        Image(
+            painter = painterResource(R.drawable.make_in_india),
+            contentDescription = "Make in India",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .padding(vertical = 16.dp),
+            contentScale = ContentScale.Fit
+        )
+        Spacer(modifier = Modifier.height(20.dp))
     }
 
     TopAppBar(

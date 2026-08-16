@@ -229,10 +229,10 @@ import com.beatwave.music.viewmodels.DailyDiscoverItem
  * grids used to stack 4 rows each, so ~40 rows could be live simultaneously. Two rows
  * matches the survey's "2x2 grid" preference for recent activity and halves that.
  */
-private const val SongGridRows = 2
-private const val QuickPicksGridRows = 4
-private const val MaxSimilarSections = 2
-private const val MaxHomePageSections = 3
+private const val SongGridRows = 4
+private const val QuickPicksGridRows = 6
+private const val MaxSimilarSections = 5
+private const val MaxHomePageSections = 5
 
 sealed class HomeSection(val id: String, val baseWeight: Int) {
     /** The "star of the day" card. Always first, never shuffled. */

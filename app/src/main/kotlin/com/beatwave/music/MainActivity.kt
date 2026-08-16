@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
@@ -519,7 +519,7 @@ class MainActivity : ComponentActivity() {
         // initialize() keeps the client from ever connecting or reconnecting to a persisted
         // room in the background; the CompositionLocal below is also nulled so every UI entry
         // point falls back to its existing "manager not available" state instead.
-        // listenTogetherManager.initialize()
+        listenTogetherManager.initialize()
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             val locale = dataStore[AppLanguageKey]
@@ -1374,7 +1374,7 @@ class MainActivity : ComponentActivity() {
                     // Temporarily disabled — see the initialize() comment in onCreate. Every
                     // current entry point (PlayerMenu's ListenTogetherDialog, ListenTogetherScreen)
                     // already has a null-manager fallback, so this alone turns the whole feature off.
-                    LocalListenTogetherManager provides null,
+                    LocalListenTogetherManager provides listenTogetherManager,
                     LocalGlassEffectConfig provides glassEffectConfig,
                     LocalTabView provides showRail,
                     LocalAppBackdrop provides appBackdrop,

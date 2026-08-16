@@ -759,6 +759,7 @@
     <string name="listen_together_notification_channel_desc">Notifications for Listen Together events</string>
     <string name="listen_together_room_created">Room created: %s</string>
     <string name="listen_together_local_offline_sync">Local Offline Sync</string>
+    <string name="offline_sync">Offline Sync</string>
     <string name="listen_together_host_local">Host Local Sync</string>
     <string name="listen_together_host_local_desc">Broadcast music stream on Wi-Fi / Hotspot</string>
     <string name="listen_together_join_local">Join Local Sync</string>

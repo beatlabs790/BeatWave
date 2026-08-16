@@ -162,7 +162,7 @@ fun SettingsScreen(
 
         // Section: Account
         item(key = "account_header") { SettingsSectionHeader("ACCOUNT") }
-        item(key = "account_section") {
+        item(key = \"account_section\") {
             SettingsSection {
                 SettingsNavItem(
                     icon = painterResource(R.drawable.account),
@@ -172,8 +172,15 @@ fun SettingsScreen(
                 )
                 SettingsDivider()
                 SettingsNavItem(
-                    icon = painterResource(R.drawable.group),
+                    icon = painterResource(R.drawable.sync),
                     iconTint = Color(0xFF5856D6),
+                    title = stringResource(R.string.offline_sync),
+                    onClick = { navController.navigate("settings/integrations/listen_together") },
+                )
+                SettingsDivider()
+                SettingsNavItem(
+                    icon = painterResource(R.drawable.group),
+                    iconTint = Color(0xFF5AC8FA),
                     title = stringResource(R.string.listen_together),
                     onClick = { navController.navigate(Screens.ListenTogether.route) },
                 )

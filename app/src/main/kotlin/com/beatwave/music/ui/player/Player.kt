@@ -200,6 +200,8 @@ import com.beatwave.music.constants.UseNewPlayerDesignKey
 import com.beatwave.music.constants.ShowAudioQualityBadgeKey
 import com.beatwave.music.db.entities.LyricsEntity
 import com.beatwave.music.extensions.SwipeGesture
+import com.beatwave.music.extensions.audioFormat
+import com.beatwave.music.extensions.audioSessionId
 import com.beatwave.music.extensions.togglePlayPause
 import com.beatwave.music.extensions.toggleRepeatMode
 import com.beatwave.music.listentogether.RoomRole
@@ -456,7 +458,7 @@ fun BottomSheetPlayer(
     // listener to the new instance instead of silently tracking the old,
     // fading-out one forever.
     val activePlayer by playerConnection.service.playerFlow.collectAsStateWithLifecycle(
-        initialValue = playerConnection.player
+        initialValue = playerConnection.service.playerFlow.value
     )
     val playerFormat by produceState(initialValue = activePlayer?.audioFormat, activePlayer) {
         val target = activePlayer ?: return@produceState

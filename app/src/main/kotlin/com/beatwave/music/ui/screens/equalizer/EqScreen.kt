@@ -53,6 +53,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
 import com.beatwave.music.eq.data.SavedEQProfile
+import com.beatwave.music.extensions.audioSessionId
 import timber.log.Timber
 
 /**

@@ -123,6 +123,7 @@ import com.beatwave.music.constants.ShowCommentButtonKey
 import com.beatwave.music.constants.UseNewPlayerDesignKey
 import com.beatwave.music.extensions.metadata
 import com.beatwave.music.extensions.move
+import com.beatwave.music.extensions.setShuffleOrder
 import com.beatwave.music.extensions.toggleRepeatMode
 import com.beatwave.music.listentogether.RoomRole
 import com.beatwave.music.models.MediaMetadata

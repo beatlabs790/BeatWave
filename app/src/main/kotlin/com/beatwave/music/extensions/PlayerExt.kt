@@ -136,21 +136,21 @@ fun Player.setOffloadEnabled(enabled: Boolean) {
 
 val Player.audioSessionId: Int
     get() = when (this) {
-        is CrossfadeForwardingPlayer -> this.rawPlayer.audioSessionId
-        is ExoPlayer -> this.audioSessionId
+        is CrossfadeForwardingPlayer -> rawPlayer.audioSessionId
+        is ExoPlayer -> (this as ExoPlayer).audioSessionId
         else -> C.AUDIO_SESSION_ID_UNSET
     }
 
 val Player.audioFormat: androidx.media3.common.Format?
     get() = when (this) {
-        is CrossfadeForwardingPlayer -> this.rawPlayer.audioFormat
-        is ExoPlayer -> this.audioFormat
+        is CrossfadeForwardingPlayer -> rawPlayer.audioFormat
+        is ExoPlayer -> (this as ExoPlayer).audioFormat
         else -> null
     }
 
 fun Player.setShuffleOrder(shuffleOrder: ShuffleOrder) {
     when (this) {
-        is CrossfadeForwardingPlayer -> this.rawPlayer.setShuffleOrder(shuffleOrder)
-        is ExoPlayer -> this.setShuffleOrder(shuffleOrder)
+        is CrossfadeForwardingPlayer -> rawPlayer.setShuffleOrder(shuffleOrder)
+        is ExoPlayer -> (this as ExoPlayer).setShuffleOrder(shuffleOrder)
     }
 }

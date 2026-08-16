@@ -17,7 +17,7 @@ import com.beatwave.music.models.MediaMetadata
 import java.util.ArrayDeque
 import androidx.media3.exoplayer.ExoPlayer
 import com.beatwave.music.playback.CrossfadeForwardingPlayer
-import androidx.media3.common.ShuffleOrder
+import androidx.media3.exoplayer.source.ShuffleOrder
 
 fun Player.togglePlayPause() {
     if (!playWhenReady) {

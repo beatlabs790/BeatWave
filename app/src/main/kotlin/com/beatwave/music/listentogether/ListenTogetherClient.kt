@@ -1795,14 +1795,14 @@ class ListenTogetherClient @Inject constructor(
             onMessageReceived = { handleMessage(it) },
             onConnectionStateChanged = { localState ->
                 when (localState) {
-                    LocalSocketTransport.ConnectionState.DISCONNECTED -> {
+                    ConnectionState.DISCONNECTED -> {
                         _connectionState.value = ConnectionState.DISCONNECTED
                         handleDisconnect()
                     }
-                    LocalSocketTransport.ConnectionState.CONNECTING -> {
+                    ConnectionState.CONNECTING -> {
                         _connectionState.value = ConnectionState.CONNECTING
                     }
-                    LocalSocketTransport.ConnectionState.CONNECTED -> {
+                    ConnectionState.CONNECTED -> {
                         _connectionState.value = ConnectionState.CONNECTED
                         _role.value = RoomRole.HOST
                         storedRoomCode = "LOCAL"
@@ -1810,7 +1810,7 @@ class ListenTogetherClient @Inject constructor(
                         _roomState.value = RoomState(
                             roomCode = "LOCAL",
                             hostId = "local_host",
-                            users = listOf(UserInfo(userId = "local_host", username = username)),
+                            users = listOf(UserInfo(userId = "local_host", username = username, isHost = true)),
                             currentTrack = null,
                             isPlaying = false,
                             position = 0L,
@@ -1821,6 +1821,7 @@ class ListenTogetherClient @Inject constructor(
                             _events.emit(ListenTogetherEvent.RoomCreated("LOCAL", "local_host"))
                         }
                     }
+                    else -> {}
                 }
             },
             onLog = { log(LogLevel.INFO, "LocalSync", it) }
@@ -1854,14 +1855,14 @@ class ListenTogetherClient @Inject constructor(
             onMessageReceived = { handleMessage(it) },
             onConnectionStateChanged = { localState ->
                 when (localState) {
-                    LocalSocketTransport.ConnectionState.DISCONNECTED -> {
+                    ConnectionState.DISCONNECTED -> {
                         _connectionState.value = ConnectionState.DISCONNECTED
                         handleDisconnect()
                     }
-                    LocalSocketTransport.ConnectionState.CONNECTING -> {
+                    ConnectionState.CONNECTING -> {
                         _connectionState.value = ConnectionState.CONNECTING
                     }
-                    LocalSocketTransport.ConnectionState.CONNECTED -> {
+                    ConnectionState.CONNECTED -> {
                         _connectionState.value = ConnectionState.CONNECTED
                         _role.value = RoomRole.GUEST
                         storedRoomCode = "LOCAL"
@@ -1871,8 +1872,8 @@ class ListenTogetherClient @Inject constructor(
                             roomCode = "LOCAL",
                             hostId = "local_host",
                             users = listOf(
-                                UserInfo(userId = "local_host", username = "Host"),
-                                UserInfo(userId = "local_guest", username = username)
+                                UserInfo(userId = "local_host", username = "Host", isHost = true),
+                                UserInfo(userId = "local_guest", username = username, isHost = false)
                             ),
                             isPlaying = false,
                             position = 0L,
@@ -1884,6 +1885,7 @@ class ListenTogetherClient @Inject constructor(
                             _events.emit(ListenTogetherEvent.JoinApproved("LOCAL", "local_guest", mockRoomState))
                         }
                     }
+                    else -> {}
                 }
             },
             onLog = { log(LogLevel.INFO, "LocalSync", it) }

@@ -47,9 +47,13 @@ class LocalSocketTransport(
         onConnectionStateChanged(ConnectionState.CONNECTING)
         scope.launch {
             try {
-                serverSocket = ServerSocket(port)
-                registerService(port)
-                onLog("Local Server started on port $port. Advertising via NSD...")
+                serverSocket = ServerSocket(0)
+                val assignedPort = serverSocket!!.localPort
+                registerService(assignedPort)
+                onLog("Local Server started on port $assignedPort. Advertising via NSD...")
+                
+                // Immediately notify that we are connected/hosting so the UI can show the room
+                onConnectionStateChanged(ConnectionState.CONNECTED)
                 
                 acceptJob = launch {
                     while (isActive) {
@@ -57,9 +61,9 @@ class LocalSocketTransport(
                             val socket = serverSocket?.accept() ?: break
                             onLog("Client connected from ${socket.inetAddress}")
                             clientSocket = socket
-                            onConnectionStateChanged(ConnectionState.CONNECTED)
                             startReading(socket)
-                            break
+                            // Note: we only support 1 client at a time currently
+                            // We don't need to call onConnectionStateChanged here because the Host is already CONNECTED
                         } catch (e: Exception) {
                             if (!isActive) break
                         }
@@ -102,10 +106,11 @@ class LocalSocketTransport(
                         override fun onServiceResolved(resolvedServiceInfo: NsdServiceInfo?) {
                             if (resolvedServiceInfo == null) return
                             val hostIp = resolvedServiceInfo.host.hostAddress
+                            val resolvedPort = resolvedServiceInfo.port
                             val name = resolvedServiceInfo.serviceName
-                            onLog("Service resolved: $name at $hostIp")
+                            onLog("Service resolved: $name at $hostIp:$resolvedPort")
                             if (hostIp != null) {
-                                onDeviceDiscovered(name, hostIp)
+                                onDeviceDiscovered(name, "$hostIp:$resolvedPort")
                             }
                         }
                     })
@@ -128,13 +133,13 @@ class LocalSocketTransport(
         } catch (e: Exception) {}
     }
 
-    fun connectToHost(hostIp: String) {
+    fun connectToHost(hostIp: String, hostPort: Int = this.port) {
         isHost = false
         onConnectionStateChanged(ConnectionState.CONNECTING)
         scope.launch {
             try {
-                onLog("Connecting to host at $hostIp:$port...")
-                val socket = Socket(hostIp, port)
+                onLog("Connecting to host at $hostIp:$hostPort...")
+                val socket = Socket(hostIp, hostPort)
                 clientSocket = socket
                 onLog("Connected to host!")
                 onConnectionStateChanged(ConnectionState.CONNECTED)

@@ -902,6 +902,27 @@ class ListenTogetherClient @Inject constructor(
                     }
                 }
                 
+                MessageTypes.JOIN_ROOM -> {
+                    // This is only received by the host in Local Sync mode
+                    if (_role.value == RoomRole.HOST && localSocketTransport != null) {
+                        val payload = codec.decodePayload(msgType, payloadBytes, detectedFormat) as? JoinRoomPayload ?: return
+                        val currentRoom = _roomState.value ?: return
+                        val guestId = "local_guest_${System.currentTimeMillis()}"
+                        val newUser = UserInfo(userId = guestId, username = payload.username, isHost = false)
+                        
+                        val newUsers = currentRoom.users.filter { it.isHost } + newUser
+                        val newRoom = currentRoom.copy(users = newUsers)
+                        _roomState.value = newRoom
+                        
+                        // Send JOIN_APPROVED back to guest
+                        val joinApproved = JoinApprovedPayload(currentRoom.roomCode, guestId, newRoom, "local_token")
+                        sendMessage(MessageTypes.JOIN_APPROVED, joinApproved)
+                        
+                        // Notify host UI that a user joined
+                        scope.launch { _events.emit(ListenTogetherEvent.UserJoined(guestId, payload.username)) }
+                    }
+                }
+                
                 MessageTypes.JOIN_REQUEST -> {
                     val payload = codec.decodePayload(msgType, payloadBytes, detectedFormat) as? JoinRequestPayload ?: return
                     
@@ -1849,6 +1870,10 @@ class ListenTogetherClient @Inject constructor(
         disconnect()
         storedUsername = username
         _connectionState.value = ConnectionState.CONNECTING
+        
+        val parts = hostIp.split(":")
+        val ip = parts[0]
+        val port = if (parts.size > 1) parts[1].toInt() else 8282
 
         val transport = LocalSocketTransport(
             context = context,
@@ -1864,34 +1889,17 @@ class ListenTogetherClient @Inject constructor(
                     }
                     ConnectionState.CONNECTED -> {
                         _connectionState.value = ConnectionState.CONNECTED
-                        _role.value = RoomRole.GUEST
-                        storedRoomCode = "LOCAL"
-                        connectedRoomCode = "LOCAL"
                         
-                        val mockRoomState = RoomState(
-                            roomCode = "LOCAL",
-                            hostId = "local_host",
-                            users = listOf(
-                                UserInfo(userId = "local_host", username = "Host", isHost = true),
-                                UserInfo(userId = "local_guest", username = username, isHost = false)
-                            ),
-                            isPlaying = false,
-                            position = 0L,
-                            lastUpdate = System.currentTimeMillis(),
-                            controlMode = ControlModes.EVERYONE
-                        )
-                        _roomState.value = mockRoomState
-                        scope.launch {
-                            _events.emit(ListenTogetherEvent.JoinApproved("LOCAL", "local_guest", mockRoomState))
-                        }
+                        // Send JOIN_ROOM to the host
+                        val joinPayload = JoinRoomPayload("LOCAL", username)
+                        sendMessage(MessageTypes.JOIN_ROOM, joinPayload)
                     }
                     else -> {}
                 }
             },
             onLog = { log(LogLevel.INFO, "LocalSync", it) }
         )
-        localSocketTransport?.disconnect()
         localSocketTransport = transport
-        localSocketTransport?.connectToHost(hostIp)
+        transport.connectToHost(ip, port)
     }
 }

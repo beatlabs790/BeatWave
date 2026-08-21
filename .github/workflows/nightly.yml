@@ -58,14 +58,10 @@ jobs:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-<<<<<<< HEAD
-          ./gradlew assembleUniversalFossRelease -Pnightly=true --no-configuration-cache --console=plain --warning-mode summary -x lint
-=======
           ./gradlew assembleUniversalGmsRelease -Pnightly=true -PnightlyRun=${{ github.run_number }} --no-configuration-cache --console=plain --warning-mode summary -x lint
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a
 
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: beatwave-foss-nightly
-          path: app/build/outputs/apk/universalFoss/release/*.apk
+          name: beatwave-gms-nightly
+          path: app/build/outputs/apk/universalGms/release/*.apk

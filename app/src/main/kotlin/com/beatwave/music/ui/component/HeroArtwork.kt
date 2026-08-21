@@ -53,18 +53,6 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/component/HeroArtwork.kt
-import com.beatwave.music.R
-import com.beatwave.music.constants.DynamicThemeKey
-import com.beatwave.music.constants.PureBlackHeroBackgroundKey
-import com.beatwave.music.constants.SelectedThemeColorKey
-import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
-import com.beatwave.music.ui.theme.AppleTokens
-import com.beatwave.music.ui.theme.DefaultThemeColor
-import com.beatwave.music.ui.theme.LocalAccentColor
-import com.beatwave.music.ui.theme.extractThemeColor
-import com.beatwave.music.utils.rememberPreference
-=======
 import com.beatwave.music.R
 import com.beatwave.music.constants.DynamicThemeKey
 import com.beatwave.music.constants.PureBlackHeroBackgroundKey
@@ -76,7 +64,6 @@ import com.beatwave.music.ui.theme.LocalAccentColor
 import com.beatwave.music.ui.theme.extractThemeColor
 import com.beatwave.music.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/component/HeroArtwork.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch

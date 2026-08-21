@@ -52,23 +52,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import androidx.navigation.NavController
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/diy/PlayerIconsScreen.kt
-import com.beatwave.music.R
-import com.beatwave.music.constants.PlayerIconsKey
-import com.beatwave.music.ui.component.IconButton
-import com.beatwave.music.ui.player.customize.DiyOrientation
-import com.beatwave.music.ui.player.customize.DiyPlayerMockup
-import com.beatwave.music.ui.player.customize.PlayerIconOverride
-import com.beatwave.music.ui.player.customize.PlayerIconSet
-import com.beatwave.music.ui.player.customize.PlayerIconSlot
-import com.beatwave.music.ui.player.customize.PlayerIconStore
-import com.beatwave.music.ui.player.customize.rememberPlayerIcon
-import com.beatwave.music.ui.utils.appTopBarWindowInsets
-import com.beatwave.music.ui.utils.backToMain
-import com.beatwave.music.utils.MediaImport
-import com.beatwave.music.utils.dataStore
-import com.beatwave.music.utils.rememberPreference
-=======
 import com.beatwave.music.R
 import com.beatwave.music.constants.PlayerIconsKey
 import com.beatwave.music.constants.UseAppleMusicPlayerKey
@@ -86,7 +69,6 @@ import com.beatwave.music.ui.utils.backToMain
 import com.beatwave.music.utils.MediaImport
 import com.beatwave.music.utils.dataStore
 import com.beatwave.music.utils.rememberPreference
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/diy/PlayerIconsScreen.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

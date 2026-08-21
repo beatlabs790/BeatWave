@@ -22,16 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.music.innertube.models.YTItem
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/component/SpeedDialGridItem.kt
-import com.beatwave.music.R
-import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
-import com.beatwave.music.ui.theme.AppleTokens
-=======
 import com.beatwave.music.R
 import com.beatwave.music.constants.ThumbnailRoundedShape
 import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
 import com.beatwave.music.ui.theme.AppleTokens
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/component/SpeedDialGridItem.kt
 
 @Composable
 fun SpeedDialGridItem(

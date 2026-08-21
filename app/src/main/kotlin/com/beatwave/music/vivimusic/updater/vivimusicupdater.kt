@@ -656,12 +656,12 @@ fun isNewerVersion(latestVersion: String, currentVersion: String): Boolean {
 // Returns "" on failure so the UI simply omits the size rather than lying about it.
 private fun fetchNightlyArtifactSize(runId: Long): String = try {
     val artifactsUrl =
-        URL("https://api.github.com/repos/cosmictaserdev-creator/Convx/actions/runs/$runId/artifacts")
+        URL("https://api.github.com/repos/beatlabs790/BeatWave/actions/runs/$runId/artifacts")
     val artifacts = JSONObject(artifactsUrl.openStream().bufferedReader().use { it.readText() })
         .optJSONArray("artifacts")
     val bytes = (0 until (artifacts?.length() ?: 0))
         .map { artifacts!!.getJSONObject(it) }
-        .firstOrNull { it.optString("name") == "convx-gms-nightly" }
+        .firstOrNull { it.optString("name") == "beatwave-gms-nightly" }
         ?.optLong("size_in_bytes") ?: 0L
     if (bytes > 0) String.format("%.1f", bytes / (1024.0 * 1024.0)) else ""
 } catch (e: Exception) {
@@ -726,14 +726,8 @@ suspend fun checkForUpdate(
                 changelogList.add(ChangelogSection(context.getString(R.string.changelog), listOf(subjectLine)))
                 
                 val formattedReleaseDate = formatGitHubDate(runUpdatedAt)
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/vivimusic/updater/vivimusicupdater.kt
                 val apkDownloadUrl = "https://nightly.link/beatlabs790/BeatWave/workflows/nightly.yml/main/beatwave-gms-nightly.zip"
-                
-=======
-                val apkDownloadUrl = "https://nightly.link/cosmictaserdev-creator/Convx/workflows/nightly.yml/main/convx-gms-nightly.zip"
                 val apkSize = fetchNightlyArtifactSize(nightlyRunObject.getLong("id"))
-
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/vivimusic/updater/vivimusicupdater.kt
                 withContext(Dispatchers.Main) {
                     onSuccess(displayTag, true, changelogList, apkSize, formattedReleaseDate, "Bleeding-edge nightly build from main branch.", null, apkDownloadUrl)
                 }

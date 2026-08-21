@@ -16,12 +16,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/utils/DataStore.kt
-import com.beatwave.music.extensions.toEnum
-=======
 import com.beatwave.music.extensions.toEnum
 import kotlinx.coroutines.CoroutineScope
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/utils/DataStore.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged

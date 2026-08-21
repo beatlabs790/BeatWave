@@ -18,13 +18,9 @@ import androidx.compose.ui.node.GlobalPositionAwareModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.platform.InspectorInfo
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/component/backdrop/backdrops/LayerBackdropModifier.kt
 import com.beatwave.music.ui.component.backdrop.internal.recordLayer
-=======
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.beatwave.music.ui.component.backdrop.internal.recordLayer
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/component/backdrop/backdrops/LayerBackdropModifier.kt
 
 /**
  * @param frozen while this returns true the source is NOT re-recorded: the content is

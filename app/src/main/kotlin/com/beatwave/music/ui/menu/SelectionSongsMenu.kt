@@ -41,7 +41,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.offline.Download
 import com.music.innertube.YouTube
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/menu/SelectionSongsMenu.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalPlayerConnection
@@ -59,24 +58,6 @@ import com.beatwave.music.ui.component.Material3MenuGroup
 import com.beatwave.music.ui.component.Material3MenuItemData
 import com.beatwave.music.ui.component.NewAction
 import com.beatwave.music.ui.component.NewActionGrid
-=======
-import com.beatwave.music.LocalDatabase
-import com.beatwave.music.LocalDownloadUtil
-import com.beatwave.music.LocalPlayerConnection
-import com.beatwave.music.LocalSyncUtils
-import com.beatwave.music.R
-import com.beatwave.music.db.entities.PlaylistSongMap
-import com.beatwave.music.db.entities.Song
-import com.beatwave.music.extensions.toMediaItem
-import com.beatwave.music.models.MediaMetadata
-import com.beatwave.music.models.toMediaMetadata
-import com.beatwave.music.playback.queues.ListQueue
-import com.beatwave.music.ui.component.DefaultDialog
-import com.beatwave.music.ui.component.Material3MenuGroup
-import com.beatwave.music.ui.component.Material3MenuItemData
-import com.beatwave.music.ui.component.NewAction
-import com.beatwave.music.ui.component.NewActionGrid
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/menu/SelectionSongsMenu.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

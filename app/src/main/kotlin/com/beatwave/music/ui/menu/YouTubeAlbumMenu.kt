@@ -55,7 +55,6 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import com.music.innertube.YouTube
 import com.music.innertube.models.AlbumItem
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/menu/YouTubeAlbumMenu.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalListenTogetherManager
@@ -63,8 +62,8 @@ import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
 import com.beatwave.music.constants.ListItemHeight
 import com.beatwave.music.constants.ListThumbnailSize
-import com.beatwave.music.db.entities.SpeedDialItem
 import com.beatwave.music.db.entities.Song
+import com.beatwave.music.db.entities.SpeedDialItem
 import com.beatwave.music.extensions.toMediaItem
 import com.beatwave.music.playback.ExoDownloadService
 import com.beatwave.music.playback.queues.YouTubeAlbumRadio
@@ -76,27 +75,6 @@ import com.beatwave.music.ui.component.NewActionGrid
 import com.beatwave.music.ui.component.SongListItem
 import com.beatwave.music.ui.component.YouTubeListItem
 import com.beatwave.music.utils.reportException
-=======
-import com.beatwave.music.LocalDatabase
-import com.beatwave.music.LocalDownloadUtil
-import com.beatwave.music.LocalListenTogetherManager
-import com.beatwave.music.LocalPlayerConnection
-import com.beatwave.music.R
-import com.beatwave.music.constants.ListItemHeight
-import com.beatwave.music.constants.ListThumbnailSize
-import com.beatwave.music.db.entities.SpeedDialItem
-import com.beatwave.music.db.entities.Song
-import com.beatwave.music.extensions.toMediaItem
-import com.beatwave.music.playback.queues.YouTubeAlbumRadio
-import com.beatwave.music.ui.component.ListDialog
-import com.beatwave.music.ui.component.Material3MenuGroup
-import com.beatwave.music.ui.component.Material3MenuItemData
-import com.beatwave.music.ui.component.NewAction
-import com.beatwave.music.ui.component.NewActionGrid
-import com.beatwave.music.ui.component.SongListItem
-import com.beatwave.music.ui.component.YouTubeListItem
-import com.beatwave.music.utils.reportException
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/menu/YouTubeAlbumMenu.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.beatwave.music.playback.DownloadTarget

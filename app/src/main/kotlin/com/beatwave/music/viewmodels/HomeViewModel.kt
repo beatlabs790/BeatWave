@@ -24,42 +24,9 @@ import com.music.innertube.models.filterYoutubeShorts
 import com.music.innertube.pages.ExplorePage
 import com.music.innertube.pages.HomePage
 import com.music.innertube.utils.completed
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/viewmodels/HomeViewModel.kt
+import com.beatwave.music.constants.DataSaverEnabledKey
 import com.beatwave.music.constants.HideExplicitKey
 import com.beatwave.music.constants.HideVideoSongsKey
-import com.beatwave.music.constants.DataSaverEnabledKey
-import com.beatwave.music.constants.HideYoutubeShortsKey
-import com.beatwave.music.constants.InnerTubeCookieKey
-import com.beatwave.music.constants.LocalOnlyModeKey
-import com.beatwave.music.constants.LocalSongSortDescendingKey
-import com.beatwave.music.constants.LocalSongSortTypeKey
-import com.beatwave.music.constants.PlaylistSortType
-import com.beatwave.music.constants.SongSortType
-import com.beatwave.music.constants.QuickPicks
-import com.beatwave.music.constants.QuickPicksKey
-import com.beatwave.music.constants.ShowWrappedCardKey
-import com.beatwave.music.constants.WrappedSeenKey
-import com.beatwave.music.db.MusicDatabase
-import com.beatwave.music.db.entities.Album
-import com.beatwave.music.db.entities.LocalItem
-import com.beatwave.music.db.entities.Playlist
-import com.beatwave.music.db.entities.Song
-import com.beatwave.music.db.entities.SpeedDialItem
-import com.beatwave.music.extensions.filterVideoSongs
-import com.beatwave.music.extensions.toEnum
-import com.beatwave.music.models.SimilarRecommendation
-import com.beatwave.music.ui.screens.wrapped.WrappedAudioService
-import com.beatwave.music.ui.screens.wrapped.WrappedManager
-import com.beatwave.music.utils.LocalAudioScanner
-import com.beatwave.music.utils.LocalFolderIndex
-import com.beatwave.music.utils.SyncUtils
-import com.beatwave.music.utils.dataStore
-import com.beatwave.music.utils.get
-import com.beatwave.music.utils.reportException
-=======
-import com.beatwave.music.constants.HideExplicitKey
-import com.beatwave.music.constants.HideVideoSongsKey
-import com.beatwave.music.constants.DataSaverEnabledKey
 import com.beatwave.music.constants.HideYoutubeShortsKey
 import com.beatwave.music.constants.InnerTubeCookieKey
 import com.beatwave.music.constants.LocalAlbumsByYearKey
@@ -67,10 +34,10 @@ import com.beatwave.music.constants.LocalOnlyModeKey
 import com.beatwave.music.constants.LocalSongSortDescendingKey
 import com.beatwave.music.constants.LocalSongSortTypeKey
 import com.beatwave.music.constants.PlaylistSortType
-import com.beatwave.music.constants.SongSortType
 import com.beatwave.music.constants.QuickPicks
 import com.beatwave.music.constants.QuickPicksKey
 import com.beatwave.music.constants.ShowWrappedCardKey
+import com.beatwave.music.constants.SongSortType
 import com.beatwave.music.constants.WrappedSeenKey
 import com.beatwave.music.db.MusicDatabase
 import com.beatwave.music.db.entities.Album
@@ -89,7 +56,6 @@ import com.beatwave.music.utils.SyncUtils
 import com.beatwave.music.utils.dataStore
 import com.beatwave.music.utils.get
 import com.beatwave.music.utils.reportException
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/viewmodels/HomeViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -179,7 +145,7 @@ class HomeViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val localArtists: StateFlow<List<com.beatwave.music.db.entities.Artist>> = database.artistsLocalByNameAsc()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    // Playlists the user made here — a synced YouTube playlist has a browseId.
+    // Playlists the user made here ï¿½ a synced YouTube playlist has a browseId.
     val localPlaylists: StateFlow<List<Playlist>> =
         database.playlists(PlaylistSortType.CREATE_DATE, true)
             .map { playlists -> playlists.filter { it.playlist.browseId == null } }
@@ -678,7 +644,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun load() {
         isLoading.value = true
 
-        // Local-only mode never touches the network — the Room flows above already
+        // Local-only mode never touches the network ï¿½ the Room flows above already
         // feed Home, so the only thing left to fetch is the folder index.
         if (localOnlyMode.value) {
             localFolders.value = runCatching { LocalFolderIndex.load(context) }.getOrDefault(emptyList())

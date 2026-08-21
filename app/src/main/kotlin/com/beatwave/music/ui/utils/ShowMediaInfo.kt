@@ -54,7 +54,6 @@ import com.music.innertube.YouTube
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.music.innertube.models.MediaInfo
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/utils/ShowMediaInfo.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
@@ -63,18 +62,8 @@ import com.beatwave.music.db.entities.Song
 import com.beatwave.music.ui.component.LocalBottomSheetPageState
 import com.beatwave.music.ui.component.shimmer.ShimmerHost
 import com.beatwave.music.ui.component.shimmer.TextPlaceholder
-=======
-import com.beatwave.music.LocalDatabase
-import com.beatwave.music.LocalPlayerConnection
-import com.beatwave.music.R
 import com.beatwave.music.utils.LocalAudioProperties
 import com.beatwave.music.utils.readLocalAudioProperties
-import com.beatwave.music.db.entities.FormatEntity
-import com.beatwave.music.db.entities.Song
-import com.beatwave.music.ui.component.LocalBottomSheetPageState
-import com.beatwave.music.ui.component.shimmer.ShimmerHost
-import com.beatwave.music.ui.component.shimmer.TextPlaceholder
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/utils/ShowMediaInfo.kt
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

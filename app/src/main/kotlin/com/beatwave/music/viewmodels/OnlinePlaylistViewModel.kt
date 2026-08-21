@@ -1,13 +1,9 @@
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/viewmodels/OnlinePlaylistViewModel.kt
 ﻿/**
  * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
 package com.beatwave.music.viewmodels
-=======
-package com.beatwave.music.viewmodels
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/viewmodels/OnlinePlaylistViewModel.kt
 
 import android.content.Context
 import android.util.LruCache

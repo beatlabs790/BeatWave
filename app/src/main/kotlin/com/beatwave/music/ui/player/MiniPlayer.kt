@@ -32,26 +32,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/player/MiniPlayer.kt
-import com.beatwave.music.ui.component.ScrollingWaveformSeekBar
-import com.beatwave.music.ui.component.rememberPlaybackFraction
 import com.beatwave.music.constants.MiniPlayerWaveformKey
 import com.beatwave.music.constants.PlayerGradientAngleKey
 import com.beatwave.music.constants.PlayerGradientStopsKey
-import com.beatwave.music.ui.theme.decodeGradientStops
-import com.beatwave.music.ui.theme.tiltedGradient
 import com.beatwave.music.constants.PlayerStaticColorKey
-=======
 import com.beatwave.music.ui.component.ScrollingWaveformSeekBar
 import com.beatwave.music.ui.component.rememberPlaybackFraction
 import com.beatwave.music.ui.component.thumbnailPx
-import com.beatwave.music.constants.MiniPlayerWaveformKey
-import com.beatwave.music.constants.PlayerGradientAngleKey
-import com.beatwave.music.constants.PlayerGradientStopsKey
 import com.beatwave.music.ui.theme.decodeGradientStops
 import com.beatwave.music.ui.theme.tiltedGradient
-import com.beatwave.music.constants.PlayerStaticColorKey
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/player/MiniPlayer.kt
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight

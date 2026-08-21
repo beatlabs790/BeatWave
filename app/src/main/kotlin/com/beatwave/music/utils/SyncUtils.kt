@@ -16,21 +16,6 @@ import com.music.innertube.models.SongItem
 import com.music.innertube.utils.completed
 import com.music.innertube.utils.parseCookieString
 import com.music.lastfm.LastFM
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/utils/SyncUtils.kt
-import com.beatwave.music.constants.InnerTubeCookieKey
-import com.beatwave.music.constants.LastFMUseSendLikes
-import com.beatwave.music.constants.LastFullSyncKey
-import com.beatwave.music.constants.SYNC_COOLDOWN
-import com.beatwave.music.db.MusicDatabase
-import com.beatwave.music.db.entities.ArtistEntity
-import com.beatwave.music.db.entities.PlaylistEntity
-import com.beatwave.music.db.entities.PlaylistSongMap
-import com.beatwave.music.db.entities.SongEntity
-import com.beatwave.music.extensions.collectLatest
-import com.beatwave.music.extensions.isInternetConnected
-import com.beatwave.music.extensions.isSyncEnabled
-import com.beatwave.music.models.toMediaMetadata
-=======
 import com.beatwave.music.constants.InnerTubeCookieKey
 import com.beatwave.music.constants.LastFMUseSendLikes
 import com.beatwave.music.constants.LastFullSyncKey
@@ -45,7 +30,6 @@ import com.beatwave.music.extensions.collectLatest
 import com.beatwave.music.extensions.isInternetConnected
 import com.beatwave.music.extensions.isSyncEnabled
 import com.beatwave.music.models.toMediaMetadata
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/utils/SyncUtils.kt
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler

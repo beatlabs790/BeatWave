@@ -16,7 +16,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/utils/preset/PresetStore.kt
 import com.beatwave.music.constants.CustomFontPathKey
 import com.beatwave.music.constants.DiyLayoutKey
 import com.beatwave.music.constants.HomeBackgroundPathKey
@@ -24,25 +23,7 @@ import com.beatwave.music.constants.PlayerIconsKey
 import com.beatwave.music.constants.PrefType
 import com.beatwave.music.constants.PresetCategory
 import com.beatwave.music.constants.PresetKeys
-import com.beatwave.music.constants.presetKeyTypes
-import com.beatwave.music.ui.player.customize.DIY_MAX_STICKERS
-import com.beatwave.music.ui.player.customize.DiyLayout
-import com.beatwave.music.ui.player.customize.DiyStickerKind
-import com.beatwave.music.ui.player.customize.DiyStore
-import com.beatwave.music.ui.player.customize.PlayerIconSet
-import com.beatwave.music.ui.player.customize.PlayerIconStore
-import com.beatwave.music.ui.theme.customFontDir
-import com.beatwave.music.utils.MediaImport
-import com.beatwave.music.utils.dataStore
-=======
-import com.beatwave.music.constants.CustomFontPathKey
-import com.beatwave.music.constants.DiyLayoutKey
-import com.beatwave.music.constants.HomeBackgroundPathKey
-import com.beatwave.music.constants.PlayerIconsKey
 import com.beatwave.music.constants.V2PlayerIconsKey
-import com.beatwave.music.constants.PrefType
-import com.beatwave.music.constants.PresetCategory
-import com.beatwave.music.constants.PresetKeys
 import com.beatwave.music.constants.presetKeyTypes
 import com.beatwave.music.ui.player.customize.DIY_MAX_STICKERS
 import com.beatwave.music.ui.player.customize.DiyLayout
@@ -53,7 +34,6 @@ import com.beatwave.music.ui.player.customize.PlayerIconStore
 import com.beatwave.music.ui.theme.customFontDir
 import com.beatwave.music.utils.MediaImport
 import com.beatwave.music.utils.dataStore
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/utils/preset/PresetStore.kt
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
 import org.json.JSONObject

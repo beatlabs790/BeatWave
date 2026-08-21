@@ -51,7 +51,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/SettingsScreen.kt
 import com.beatwave.music.BuildConfig
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.ui.component.IconButton
@@ -62,17 +61,6 @@ import com.beatwave.music.ui.theme.AppleTokens
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.ui.utils.backToMain
 import com.beatwave.music.vivimusic.updater.getUpdateAvailableState
-=======
-import com.beatwave.music.BuildConfig
-import com.beatwave.music.LocalPlayerAwareWindowInsets
-import com.beatwave.music.ui.component.IconButton
-import com.beatwave.music.ui.component.Material3SettingsGroup
-import com.beatwave.music.ui.component.Material3SettingsItem
-import com.beatwave.music.ui.theme.AppleTokens
-import com.beatwave.music.ui.utils.appTopBarWindowInsets
-import com.beatwave.music.ui.utils.backToMain
-import com.beatwave.music.vivimusic.updater.getUpdateAvailableState
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/SettingsScreen.kt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -61,33 +61,19 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.size.Size as CoilSize
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LocalMusicScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
-import com.beatwave.music.ui.theme.rememberGlobalAccentColors
 import com.beatwave.music.db.entities.Album
 import com.beatwave.music.db.entities.Artist
 import com.beatwave.music.db.entities.Song
 import com.beatwave.music.extensions.toMediaItem
 import com.beatwave.music.playback.queues.ListQueue
 import com.beatwave.music.ui.component.DraggableScrollbar
-import com.beatwave.music.ui.component.LocalMenuState
-import com.beatwave.music.ui.menu.SongMenu
-=======
-import com.beatwave.music.LocalPlayerAwareWindowInsets
-import com.beatwave.music.LocalPlayerConnection
-import com.beatwave.music.R
-import com.beatwave.music.ui.theme.rememberGlobalAccentColors
-import com.beatwave.music.db.entities.Album
-import com.beatwave.music.db.entities.Artist
-import com.beatwave.music.db.entities.Song
-import com.beatwave.music.extensions.toMediaItem
-import com.beatwave.music.playback.queues.ListQueue
 import com.beatwave.music.ui.component.ListScrollRail
 import com.beatwave.music.ui.component.LocalMenuState
 import com.beatwave.music.ui.menu.SongMenu
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LocalMusicScreen.kt
+import com.beatwave.music.ui.theme.rememberGlobalAccentColors
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)

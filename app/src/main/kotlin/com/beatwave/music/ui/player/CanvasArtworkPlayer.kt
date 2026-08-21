@@ -1,14 +1,10 @@
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/player/CanvasArtworkPlayer.kt
-package com.beatwave.music.ui.player
-=======
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 // Apple Music player UI ported from vivizzz007/vivi-music (https://github.com/vivizzz007/vivi-music), GPL-3.0.
 
 package com.beatwave.music.ui.player
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/player/CanvasArtworkPlayer.kt
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

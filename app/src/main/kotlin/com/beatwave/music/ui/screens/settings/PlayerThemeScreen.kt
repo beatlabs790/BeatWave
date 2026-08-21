@@ -74,7 +74,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/PlayerThemeScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
@@ -87,46 +86,17 @@ import com.beatwave.music.constants.PlayerGradientStopsKey
 import com.beatwave.music.constants.PlayerLayoutHiddenSlotsKey
 import com.beatwave.music.constants.PlayerLayoutOrderKey
 import com.beatwave.music.constants.PlayerStaticColorKey
-import com.beatwave.music.constants.SliderStyle
-import com.beatwave.music.constants.SliderStyleKey
-import com.beatwave.music.models.MediaMetadata
-import com.beatwave.music.ui.component.ColorPickerDialog
-import com.beatwave.music.ui.component.IconButton as AppIconButton
-import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
-import com.beatwave.music.ui.player.PlayerLayoutRegistry
-import com.beatwave.music.ui.player.PlayerSlot
-import com.beatwave.music.ui.theme.DefaultGradientStops
-import com.beatwave.music.ui.theme.decodeGradientStops
-import com.beatwave.music.ui.theme.encodeGradientStops
-import com.beatwave.music.ui.theme.tiltedGradient
-import com.beatwave.music.ui.utils.appTopBarWindowInsets
-import com.beatwave.music.ui.utils.backToMain
-import com.beatwave.music.utils.rememberEnumPreference
-import com.beatwave.music.utils.rememberPreference
-=======
-import com.beatwave.music.LocalPlayerAwareWindowInsets
-import com.beatwave.music.LocalPlayerConnection
-import com.beatwave.music.R
-import com.beatwave.music.constants.PlayerArtworkStyle
-import com.beatwave.music.constants.PlayerArtworkStyleKey
-import com.beatwave.music.constants.PlayerBackgroundStyle
-import com.beatwave.music.constants.PlayerBackgroundStyleKey
-import com.beatwave.music.constants.UseAppleMusicPlayerKey
+import com.beatwave.music.constants.PlayerThumbnailShadowElevationKey
 import com.beatwave.music.constants.ShowPlayerThumbnailShadowKey
 import com.beatwave.music.constants.ShowUpNextKey
-import com.beatwave.music.constants.PlayerThumbnailShadowElevationKey
-import com.beatwave.music.constants.PlayerGradientAngleKey
-import com.beatwave.music.constants.PlayerGradientStopsKey
-import com.beatwave.music.constants.PlayerLayoutHiddenSlotsKey
-import com.beatwave.music.constants.PlayerLayoutOrderKey
-import com.beatwave.music.constants.PlayerStaticColorKey
 import com.beatwave.music.constants.SliderStyle
 import com.beatwave.music.constants.SliderStyleKey
+import com.beatwave.music.constants.UseAppleMusicPlayerKey
 import com.beatwave.music.models.MediaMetadata
 import com.beatwave.music.ui.component.ColorPickerDialog
-import com.beatwave.music.ui.component.SwitchPreference
-import com.beatwave.music.ui.component.SliderPreference
 import com.beatwave.music.ui.component.IconButton as AppIconButton
+import com.beatwave.music.ui.component.SliderPreference
+import com.beatwave.music.ui.component.SwitchPreference
 import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
 import com.beatwave.music.ui.player.PlayerLayoutRegistry
 import com.beatwave.music.ui.player.PlayerSlot
@@ -138,7 +108,6 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.ui.utils.backToMain
 import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.utils.rememberPreference
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/PlayerThemeScreen.kt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.roundToInt
 import sh.calvin.reorderable.ReorderableItem
@@ -287,7 +256,7 @@ fun PlayerThemeScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     androidx.compose.foundation.Image(
-                        painter = painterResource(R.drawable.convx_logo),
+                        painter = painterResource(R.drawable.beatwave_logo),
                         contentDescription = null,
                         modifier = Modifier.size(48.dp),
                     )

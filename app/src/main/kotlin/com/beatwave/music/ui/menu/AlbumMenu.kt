@@ -62,7 +62,6 @@ import androidx.media3.exoplayer.offline.Download.STATE_STOPPED
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.music.innertube.YouTube
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/menu/AlbumMenu.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalListenTogetherManager
@@ -71,36 +70,15 @@ import com.beatwave.music.R
 import com.beatwave.music.constants.ListItemHeight
 import com.beatwave.music.constants.ListThumbnailSize
 import com.beatwave.music.db.entities.Album
-import com.beatwave.music.db.entities.SpeedDialItem
 import com.beatwave.music.db.entities.Song
-import com.beatwave.music.extensions.toMediaItem
-import com.beatwave.music.playback.ExoDownloadService
-import com.beatwave.music.playback.queues.ListQueue
-import com.beatwave.music.ui.component.AlbumListItem
-import com.beatwave.music.ui.component.ListDialog
-import com.beatwave.music.ui.component.ListItem
-import com.beatwave.music.ui.component.Material3MenuGroup
-import com.beatwave.music.ui.component.Material3MenuItemData
-import com.beatwave.music.ui.component.NewAction
-import com.beatwave.music.ui.component.NewActionGrid
-import com.beatwave.music.ui.component.SongListItem
-=======
-import com.beatwave.music.LocalDatabase
-import com.beatwave.music.LocalDownloadUtil
-import com.beatwave.music.LocalListenTogetherManager
-import com.beatwave.music.LocalPlayerConnection
-import com.beatwave.music.R
-import com.beatwave.music.constants.ListItemHeight
-import com.beatwave.music.constants.ListThumbnailSize
-import com.beatwave.music.db.entities.Album
 import com.beatwave.music.db.entities.SpeedDialItem
-import com.beatwave.music.db.entities.Song
 import com.beatwave.music.extensions.toMediaItem
 import com.beatwave.music.playback.DownloadTarget
+import com.beatwave.music.playback.ExoDownloadService
 import com.beatwave.music.playback.cancelDownloads
 import com.beatwave.music.playback.downloadSongs
-import com.beatwave.music.playback.removeDownloads
 import com.beatwave.music.playback.queues.ListQueue
+import com.beatwave.music.playback.removeDownloads
 import com.beatwave.music.ui.component.AlbumListItem
 import com.beatwave.music.ui.component.ListDialog
 import com.beatwave.music.ui.component.ListItem
@@ -109,7 +87,6 @@ import com.beatwave.music.ui.component.Material3MenuItemData
 import com.beatwave.music.ui.component.NewAction
 import com.beatwave.music.ui.component.NewActionGrid
 import com.beatwave.music.ui.component.SongListItem
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/menu/AlbumMenu.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

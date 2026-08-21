@@ -33,14 +33,9 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/utils/MotionModifiers.kt
 import androidx.compose.runtime.rememberUpdatedState
 import com.beatwave.music.constants.IosOverscrollKey
 import com.beatwave.music.utils.rememberPreference
-=======
-import com.beatwave.music.constants.IosOverscrollKey
-import com.beatwave.music.utils.rememberPreference
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/utils/MotionModifiers.kt
 import kotlin.math.sign
 
 /**

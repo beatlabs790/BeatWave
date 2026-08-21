@@ -19,21 +19,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/player/customize/PlayerIcons.kt
-import com.beatwave.music.R
-import com.beatwave.music.constants.PlayerIconsKey
-import com.beatwave.music.utils.dataStore
-import com.beatwave.music.utils.get
-import com.beatwave.music.utils.rememberPreference
-=======
-import com.beatwave.music.R
-import com.beatwave.music.constants.PlayerIconsKey
 import androidx.datastore.preferences.core.Preferences
+import com.beatwave.music.R
+import com.beatwave.music.constants.PlayerIconsKey
 import com.beatwave.music.constants.V2PlayerIconsKey
 import com.beatwave.music.utils.dataStore
 import com.beatwave.music.utils.get
 import com.beatwave.music.utils.rememberPreference
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/player/customize/PlayerIcons.kt
 import org.json.JSONObject
 import java.io.File
 

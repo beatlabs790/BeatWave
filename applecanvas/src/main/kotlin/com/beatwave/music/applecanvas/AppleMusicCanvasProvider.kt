@@ -1,14 +1,10 @@
-<<<<<<< HEAD:applecanvas/src/main/kotlin/com/beatwave/music/applecanvas/AppleMusicCanvasProvider.kt
-package com.beatwave.music.applecanvas
-=======
 /**
- * Convx Project (C) 2026
+ * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 // Ported from vivizzz007/vivi-music (https://github.com/vivizzz007/vivi-music), GPL-3.0.
 
 package com.beatwave.music.applecanvas
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:applecanvas/src/main/kotlin/com/beatwave/music/applecanvas/AppleMusicCanvasProvider.kt
 
 import com.beatwave.music.canvas.CanvasArtwork
 import io.ktor.client.HttpClient

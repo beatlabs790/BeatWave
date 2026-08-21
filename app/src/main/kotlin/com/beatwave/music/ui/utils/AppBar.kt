@@ -30,12 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/utils/AppBar.kt
-import com.beatwave.music.LocalPlayerAwareWindowInsets
-=======
 import androidx.compose.ui.unit.dp
 import com.beatwave.music.LocalPlayerAwareWindowInsets
->>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/utils/AppBar.kt
 
 /**
  * Window insets for a screen's TopAppBar so its title/back button clear the

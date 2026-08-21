@@ -31,9 +31,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import java.io.File
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 /**
  * Looping, muted, no-controls video loop for the Home background — the video
@@ -46,7 +48,6 @@ import java.io.File
  * way the image is (see HomeBackgroundControls), so this needs none of the
  * streaming cache/track-selector machinery the player's canvas video does.
  */
-@OptIn(UnstableApi::class)
 @Composable
 fun BoxScope.HomeVideoBackground(
     path: String,
@@ -57,11 +58,33 @@ fun BoxScope.HomeVideoBackground(
     val context = LocalContext.current
     var isReady by remember(path) { mutableStateOf(false) }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var inForeground by remember(lifecycleOwner) {
+        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+    }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START, Lifecycle.Event.ON_RESUME -> inForeground = true
+                Lifecycle.Event.ON_STOP, Lifecycle.Event.ON_PAUSE -> inForeground = false
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
             volume = 0f
-            playWhenReady = true
+            playWhenReady = inForeground
+        }
+    }
+
+    LaunchedEffect(inForeground) {
+        if (exoPlayer.playWhenReady != inForeground) {
+            exoPlayer.playWhenReady = inForeground
         }
     }
 

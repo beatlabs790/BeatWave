@@ -10,6 +10,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import com.beatwave.music.ui.utils.rememberEdgeAwareFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -233,7 +234,7 @@ fun ChartsScreen(
                 LazyColumn(
                     // No bounce here: the top pull drives the hero zoom instead.
                     overscrollEffect = heroZoom.listOverscroll(),
-                    modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::loadCharts),
+                    modifier = Modifier.heroPullZoom(heroZoom),
                     state = lazyListState,
                     contentPadding = LocalPlayerAwareWindowInsets.current
                         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
@@ -274,7 +275,10 @@ fun ChartsScreen(
                                 LazyHorizontalGrid(
                                     state = lazyGridState,
                                     rows = GridCells.Fixed(4),
-                                    flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                                    flingBehavior = rememberEdgeAwareFlingBehavior(
+                                        lazyGridState,
+                                        rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                                    ),
                                     contentPadding = WindowInsets.systemBars
                                         .only(WindowInsetsSides.Horizontal)
                                         .asPaddingValues(),

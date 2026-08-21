@@ -13,13 +13,11 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 internal object QuickJsExecutor {
 
     private const val TAG = "SpineDebug"
-    private val maxConcurrent = 4
-    private val activeInstances = AtomicInteger(0)
+    private const val maxConcurrent = 4
 
     private val syncHttpClient by lazy {
         OkHttpClient.Builder()
@@ -28,125 +26,150 @@ internal object QuickJsExecutor {
             .build()
     }
 
-    suspend fun executeModuleExport(
-        jsCode: String,
-        functionName: String,
-        args: List<String>,
-        fetchBase: String = "",
-    ): String {
-        Log.d(TAG, "▶ executeModuleExport() functionName=$functionName args=$args fetchBase=$fetchBase jsCodeLength=${jsCode.length}")
+    // Modules commonly stash session/auth state in top-level variables set up once
+    // at load time (e.g. an eager token pre-fetch that a later call reuses). The old
+    // one-shot executor re-evaluated the whole script from scratch on every single
+    // exported-function call, so that state never survived from a searchTracks()
+    // call to the getStreamUrl() call for the same track — each ran in its own
+    // throwaway VM. Keeping one QuickJS engine alive per loaded module, reused
+    // across calls, is what a normal module host does and what these modules
+    // assume. LRU-capped at maxConcurrent engines; least-recently-used is evicted
+    // (closed) to make room rather than refusing to load past that count.
+    private val engineLock = Any()
+    private val engines = LinkedHashMap<String, QuickJs>(16, 0.75f, true)
 
-        if (activeInstances.get() >= maxConcurrent) {
-            Log.e(TAG, "✗ Max concurrent QuickJS instances ($maxConcurrent) reached")
-            throw IllegalStateException("Max concurrent QuickJS instances ($maxConcurrent) reached")
-        }
-
-        activeInstances.incrementAndGet()
-        Log.d(TAG, "  Active QuickJS instances: ${activeInstances.get()}/$maxConcurrent")
-        try {
-            return withContext(Dispatchers.Default) {
-                Log.d(TAG, "  Creating QuickJS engine...")
-                val qjs = QuickJs.create(Dispatchers.Default)
-                qjs.maxStackSize = 512 * 1024L
-                try {
-                    bindConsole(qjs)
-                    bindAsyncFetch(qjs, fetchBase)
-
-                    Log.d(TAG, "  Evaluating polyfills...")
-                    qjs.evaluate<String>(POLYFILLS)
-                    Log.d(TAG, "  ✓ Polyfills loaded")
-
-                    val cleanCode = preprocessModuleCode(jsCode)
-                    Log.d(TAG, "  Preprocessed code: ${jsCode.length} → ${cleanCode.length} chars")
-                    Log.d(TAG, "  First 200 chars: ${cleanCode.take(200)}")
-
-                    Log.d(TAG, "  Evaluating IIFE wrapper...")
-                    val iifeResult = qjs.evaluate<String>(
-                        """
-                        var __spine_iife_error = null;
-                        var __spine_mod = (function() {
-                            try {
-                                var module = { exports: {} };
-                                var exports = module.exports;
-                                var self = {};
-                                $cleanCode
-                                if (module.exports && (module.exports.searchTracks || module.exports.getTrackStreamUrl)) {
-                                    return module.exports;
-                                }
-                                return {};
-                            } catch(e) {
-                                __spine_iife_error = e && e.message ? e.message : String(e);
-                                return {};
-                            }
-                        })();
-                        'ok'
-                        """.trimIndent()
-                    )
-                    Log.d(TAG, "  IIFE result: $iifeResult")
-
-                    val iifeError = qjs.evaluate<String>("__spine_iife_error || 'none'")
-                    if (iifeError != "none") {
-                        Log.e(TAG, "  ✗ IIFE error: $iifeError")
-                    } else {
-                        Log.d(TAG, "  ✓ IIFE no errors")
-                    }
-
-                    val availableKeys = qjs.evaluate<String>("Object.keys(__spine_mod).join(', ')")
-                    Log.d(TAG, "  Module exports: [$availableKeys]")
-
-                    val hasFn = qjs.evaluate<String>("typeof __spine_mod['$functionName']")
-                    Log.d(TAG, "  typeof $functionName: $hasFn")
-
-                    if (hasFn != "function") {
-                        Log.e(TAG, "  ✗ $functionName is NOT a function! Available exports: $availableKeys")
-                    }
-
-                    val argsStr = args.joinToString(",")
-                    Log.d(TAG, "  Calling $functionName($argsStr)")
-
-                    // evaluate() converts the Promise JSValue via toString() instead of
-                    // awaiting it.  Workaround: store the resolved JSON in a global var
-                    // inside the async IIFE, then read it in a second evaluate() call.
-                    Log.d(TAG, "  Running async IIFE (stores result in global)...")
-                    qjs.evaluate<String>(
-                        """
-                        var __spine_resolved_json = undefined;
-                        (async function() {
-                            var __fn = __spine_mod['$functionName'];
-                            if (!__fn) {
-                                __spine_resolved_json = JSON.stringify({ error: '$functionName not found. Available: ' + Object.keys(__spine_mod).join(', ') });
-                                return;
-                            }
-                            try {
-                                var r = await __fn($argsStr);
-                                __spine_resolved_json = typeof r === 'string' ? r : JSON.stringify(r);
-                            } catch(e) {
-                                __spine_resolved_json = JSON.stringify({ error: e && e.message ? e.message : String(e) });
-                            }
-                        })();
-                        """.trimIndent()
-                    )
-
-                    Log.d(TAG, "  Reading resolved result from global...")
-                    val rawResult = qjs.evaluate<String>("__spine_resolved_json")
-
-                    Log.d(TAG, "  ═══ RAW RESULT (${rawResult.length} chars) ═══")
-                    Log.d(TAG, "  ${rawResult.take(2000)}")
-                    if (rawResult.length > 2000) {
-                        Log.d(TAG, "  ... (${rawResult.length - 2000} more chars)")
-                    }
-                    Log.d(TAG, "  ═══ END RAW RESULT ═══")
-
-                    rawResult
-                } finally {
-                    qjs.close()
-                    Log.d(TAG, "  QuickJS engine closed")
-                }
+    suspend fun loadModule(moduleId: String, jsCode: String, fetchBase: String = ""): Result<Unit> {
+        synchronized(engineLock) {
+            if (engines.containsKey(moduleId)) {
+                Log.d(TAG, "▶ loadModule($moduleId) — ENGINE CACHE HIT")
+                return Result.success(Unit)
             }
-        } finally {
-            activeInstances.decrementAndGet()
-            Log.d(TAG, "◀ executeModuleExport() done. Active instances: ${activeInstances.get()}")
+            while (engines.size >= maxConcurrent) {
+                val lruId = engines.keys.firstOrNull() ?: break
+                Log.d(TAG, "  Evicting LRU module engine: $lruId")
+                engines.remove(lruId)?.close()
+            }
         }
+
+        Log.d(TAG, "▶ loadModule($moduleId) fetchBase=$fetchBase jsCodeLength=${jsCode.length}")
+        return withContext(Dispatchers.Default) {
+            Log.d(TAG, "  Creating QuickJS engine...")
+            val qjs = QuickJs.create(Dispatchers.Default)
+            qjs.maxStackSize = 512 * 1024L
+            runCatching {
+                bindConsole(qjs)
+                bindAsyncFetch(qjs, fetchBase)
+
+                Log.d(TAG, "  Evaluating polyfills...")
+                qjs.evaluate<String>(POLYFILLS)
+                Log.d(TAG, "  ✓ Polyfills loaded")
+
+                val cleanCode = preprocessModuleCode(jsCode)
+                Log.d(TAG, "  Preprocessed code: ${jsCode.length} → ${cleanCode.length} chars")
+                Log.d(TAG, "  First 200 chars: ${cleanCode.take(200)}")
+
+                Log.d(TAG, "  Evaluating IIFE wrapper...")
+                val iifeResult = qjs.evaluate<String>(
+                    """
+                    var __spine_iife_error = null;
+                    var __spine_mod = (function() {
+                        try {
+                            var module = { exports: {} };
+                            var exports = module.exports;
+                            var self = {};
+                            $cleanCode
+                            if (module.exports && (module.exports.searchTracks || module.exports.getTrackStreamUrl)) {
+                                return module.exports;
+                            }
+                            return {};
+                        } catch(e) {
+                            __spine_iife_error = e && e.message ? e.message : String(e);
+                            return {};
+                        }
+                    })();
+                    'ok'
+                    """.trimIndent()
+                )
+                Log.d(TAG, "  IIFE result: $iifeResult")
+
+                val iifeError = qjs.evaluate<String>("__spine_iife_error || 'none'")
+                if (iifeError != "none") {
+                    throw IllegalStateException("Module init error: $iifeError")
+                }
+                Log.d(TAG, "  ✓ IIFE no errors")
+
+                val availableKeys = qjs.evaluate<String>("Object.keys(__spine_mod).join(', ')")
+                Log.d(TAG, "  Module exports: [$availableKeys]")
+            }.onSuccess {
+                synchronized(engineLock) { engines[moduleId] = qjs }
+            }.onFailure {
+                Log.e(TAG, "  ✗ loadModule FAILED for $moduleId: ${it.message}", it)
+                qjs.close()
+            }.map { }
+        }
+    }
+
+    suspend fun callExport(moduleId: String, functionName: String, args: List<String>): Result<String> {
+        val qjs = synchronized(engineLock) { engines[moduleId] }
+            ?: return Result.failure(IllegalStateException("Module $moduleId is not loaded"))
+
+        Log.d(TAG, "▶ callExport($moduleId, $functionName) args=$args")
+        return withContext(Dispatchers.Default) {
+            runCatching {
+                val hasFn = qjs.evaluate<String>("typeof __spine_mod['$functionName']")
+                Log.d(TAG, "  typeof $functionName: $hasFn")
+                if (hasFn != "function") {
+                    throw IllegalStateException("$functionName is not a function on module $moduleId")
+                }
+
+                val argsStr = args.joinToString(",")
+                Log.d(TAG, "  Calling $functionName($argsStr)")
+
+                // evaluate() converts the Promise JSValue via toString() instead of
+                // awaiting it.  Workaround: store the resolved JSON in a global var
+                // inside the async IIFE, then read it in a second evaluate() call.
+                qjs.evaluate<String>(
+                    """
+                    var __spine_resolved_json = undefined;
+                    (async function() {
+                        var __fn = __spine_mod['$functionName'];
+                        if (!__fn) {
+                            __spine_resolved_json = JSON.stringify({ error: '$functionName not found' });
+                            return;
+                        }
+                        try {
+                            var r = await __fn($argsStr);
+                            __spine_resolved_json = typeof r === 'string' ? r : JSON.stringify(r);
+                        } catch(e) {
+                            __spine_resolved_json = JSON.stringify({ error: e && e.message ? e.message : String(e) });
+                        }
+                    })();
+                    """.trimIndent()
+                )
+
+                val rawResult = qjs.evaluate<String>("__spine_resolved_json")
+                Log.d(TAG, "  ═══ RAW RESULT (${rawResult.length} chars) ═══")
+                Log.d(TAG, "  ${rawResult.take(2000)}")
+                rawResult
+            }.onFailure {
+                Log.e(TAG, "  ✗ callExport FAILED for $moduleId.$functionName: ${it.message}", it)
+            }
+        }
+    }
+
+    fun unload(moduleId: String) {
+        synchronized(engineLock) { engines.remove(moduleId) }?.close()
+        Log.d(TAG, "Unloaded module $moduleId")
+    }
+
+    fun unloadAll() {
+        val all = synchronized(engineLock) {
+            val values = engines.values.toList()
+            engines.clear()
+            values
+        }
+        all.forEach { it.close() }
+        Log.d(TAG, "Unloaded all module engines")
     }
 
     private fun preprocessModuleCode(jsCode: String): String {

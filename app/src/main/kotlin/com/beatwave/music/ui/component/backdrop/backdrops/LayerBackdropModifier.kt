@@ -18,7 +18,13 @@ import androidx.compose.ui.node.GlobalPositionAwareModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.platform.InspectorInfo
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/component/backdrop/backdrops/LayerBackdropModifier.kt
 import com.beatwave.music.ui.component.backdrop.internal.recordLayer
+=======
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import com.beatwave.music.ui.component.backdrop.internal.recordLayer
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/component/backdrop/backdrops/LayerBackdropModifier.kt
 
 /**
  * @param frozen while this returns true the source is NOT re-recorded: the content is
@@ -71,10 +77,58 @@ private class LayerBackdropElement(
     }
 }
 
+/**
+ * Shortest gap between two whole-tree recordings, in nanoseconds.
+ *
+ * The freeze above only covers *motion* — scroll, fling, nav transition, pager
+ * slide. It does nothing for a screen that is standing still while its content
+ * keeps changing underneath, and online that is the normal case: Home alone waits
+ * on five independently-populating flows, then streams artwork in over the
+ * following seconds, and every one of those arrivals is a draw invalidation that
+ * re-records the entire tree. Locally the same screen settles once and never
+ * records again — which is the whole of why offline feels smoother than online on
+ * identical glass.
+ *
+ * Throttling bounds that regardless of what dirtied the tree. The screen itself
+ * stays live and correct the whole time (skipped frames take Compose's ordinary
+ * incremental draw path); only the blur behind the chrome lags, by at most this
+ * long, against content that is by definition still changing.
+ *
+ * 200ms is a starting point, not a measurement — pick it up with a real trace
+ * before treating it as tuned.
+ */
+private const val RecordBudgetNs = 200_000_000L
+
 private class LayerBackdropNode(
     var backdrop: LayerBackdrop,
     var frozen: () -> Boolean
 ) : DrawModifierNode, GlobalPositionAwareModifierNode, Modifier.Node() {
+
+    private var lastRecordNs = 0L
+
+    /**
+     * A trailing record is already queued, so skipped frames must not queue more.
+     *
+     * Without this every frame inside the budget window would launch its own
+     * coroutine — at 120Hz that is two dozen of them racing to invalidate the same
+     * node, which is the exact coroutine-per-frame pattern that had to be undone in
+     * `IosOverscrollEffect` and `heroPullZoom`.
+     */
+    private var trailingRecordQueued = false
+
+    /**
+     * Re-draw once the budget expires, so a burst that stops mid-window still ends
+     * on fresh pixels instead of leaving the glass on a stale capture indefinitely.
+     */
+    private fun queueTrailingRecord(delayNs: Long) {
+        if (trailingRecordQueued) return
+        trailingRecordQueued = true
+        coroutineScope.launch {
+            delay(delayNs / 1_000_000L + 1L)
+            trailingRecordQueued = false
+            invalidateDraw()
+        }
+    }
 
     override fun ContentDrawScope.draw() {
         // Cleared every generation, before children (backdropStaticRegion among
@@ -106,6 +160,19 @@ private class LayerBackdropNode(
             backdrop.onDraw(this@draw)
             return
         }
+
+        // Same cheap path as the freeze, on a timer instead of a gesture — see
+        // RecordBudgetNs.
+        if (backdrop.hasRecording) {
+            val sinceLastRecord = System.nanoTime() - lastRecordNs
+            if (sinceLastRecord < RecordBudgetNs) {
+                backdrop.onDraw(this@draw)
+                queueTrailingRecord(RecordBudgetNs - sinceLastRecord)
+                return
+            }
+        }
+
+        lastRecordNs = System.nanoTime()
         recordLayer(this@LayerBackdropNode, backdrop.graphicsLayer) { backdrop.onDraw(this@draw) }
         drawLayer(backdrop.graphicsLayer)
         // Notify sampling glass surfaces that the source pixels changed, so they

@@ -5,7 +5,12 @@
 
 package com.beatwave.music.ui.screens.playlist
 
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/TopPlaylistScreen.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.FloatingChromeSpacer
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/TopPlaylistScreen.kt
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -50,7 +55,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,13 +88,11 @@ import com.beatwave.music.ui.utils.listOverscroll
 import com.beatwave.music.utils.rememberPreference
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.compose.ui.util.fastSumBy
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.exoplayer.offline.Download
-import androidx.media3.exoplayer.offline.DownloadRequest
-import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/TopPlaylistScreen.kt
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.ui.utils.bounceClick
 import com.beatwave.music.ui.utils.combinedBounceClick
@@ -134,6 +136,51 @@ import com.beatwave.music.ui.component.LocalAppBackdrop
 import com.beatwave.music.ui.component.backdrop.backdrops.layerBackdrop
 import com.beatwave.music.ui.component.backdrop.backdrops.rememberBackdropFreeze
 import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+=======
+import com.beatwave.music.LocalDownloadUtil
+import com.beatwave.music.ui.utils.bounceClick
+import com.beatwave.music.ui.utils.combinedBounceClick
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.constants.MyTopFilter
+import com.beatwave.music.db.entities.Song
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.playback.queues.ListQueue
+import com.beatwave.music.ui.component.buildAlphabetSectionIndex
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.LargeScreenTitle
+import com.beatwave.music.ui.component.AnimatedPlayPauseIcon
+import com.beatwave.music.ui.component.DefaultDialog
+import com.beatwave.music.ui.component.EmptyPlaceholder
+import com.beatwave.music.ui.component.ExpandableText
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.SongListItem
+import com.beatwave.music.ui.component.SortHeader
+import com.beatwave.music.ui.menu.SelectionSongMenu
+import com.beatwave.music.ui.menu.SongMenu
+import com.beatwave.music.ui.menu.TopPlaylistMenu
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.utils.listItemShape
+import com.beatwave.music.utils.makeTimeString
+import com.beatwave.music.viewmodels.TopPlaylistViewModel
+import com.beatwave.music.ui.component.HeroBackground
+import com.beatwave.music.ui.component.rememberHeroTopBlur
+import com.beatwave.music.ui.component.rememberHeroSource
+import com.beatwave.music.ui.component.rememberHeroTint
+import com.beatwave.music.ui.theme.AppleTokens
+import com.beatwave.music.ui.theme.HeroTintedContent
+import com.beatwave.music.ui.component.GlassComponent
+import com.beatwave.music.ui.component.LocalGlassEffectConfig
+import com.beatwave.music.ui.component.isGlassAllowed
+import com.beatwave.music.ui.component.liquidGlass
+import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
+import com.beatwave.music.ui.component.LocalAppBackdrop
+import com.beatwave.music.ui.component.backdrop.backdrops.layerBackdrop
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberBackdropFreeze
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/TopPlaylistScreen.kt
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.material3.LocalContentColor
 import com.beatwave.music.ui.component.GlassCircleButton
@@ -141,6 +188,10 @@ import com.beatwave.music.ui.component.ChromeScrim
 import com.beatwave.music.ui.component.rememberChromeScrimProgress
 import androidx.compose.ui.draw.clip
 import java.time.LocalDateTime
+import com.beatwave.music.playback.DownloadTarget
+import com.beatwave.music.playback.cancelDownloads
+import com.beatwave.music.playback.downloadSongs
+import com.beatwave.music.playback.removeDownloads
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -216,28 +267,33 @@ fun TopPlaylistScreen(
     val name = stringResource(R.string.my_top) + " $maxSize"
 
     val downloadUtil = LocalDownloadUtil.current
-    var downloadState by remember { mutableIntStateOf(Download.STATE_STOPPED) }
+    // Collected rather than folded into a LaunchedEffect so the current state of each
+    // download is also available at click time — the download and cancel actions filter
+    // on it, see DownloadActions.
+    val downloads by downloadUtil.downloads.collectAsState()
+    val downloadState = remember(songs, downloads) {
+        // Bound to a local first: `songs` is a delegated val, which blocks the smart cast
+        // the null check below would otherwise give us.
+        val current = songs
+        when {
+            current.isNullOrEmpty() -> Download.STATE_STOPPED
+            current.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED } ->
+                Download.STATE_COMPLETED
+
+            current.all {
+                downloads[it.song.id]?.state == Download.STATE_QUEUED ||
+                    downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
+                    downloads[it.song.id]?.state == Download.STATE_COMPLETED
+            } -> Download.STATE_DOWNLOADING
+
+            else -> Download.STATE_STOPPED
+        }
+    }
 
     LaunchedEffect(songs) {
         mutableSongs.apply {
             clear()
             songs?.let { addAll(it) }
-        }
-        if (songs?.isEmpty() == true) return@LaunchedEffect
-        downloadUtil.downloads.collect { downloads ->
-            downloadState =
-                if (songs?.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED } == true) {
-                    Download.STATE_COMPLETED
-                } else if (songs?.all {
-                        downloads[it.song.id]?.state == Download.STATE_QUEUED ||
-                                downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
-                                downloads[it.song.id]?.state == Download.STATE_COMPLETED
-                    } == true
-                ) {
-                    Download.STATE_DOWNLOADING
-                } else {
-                    Download.STATE_STOPPED
-                }
         }
     }
 
@@ -263,14 +319,7 @@ fun TopPlaylistScreen(
                 TextButton(
                     onClick = {
                         showRemoveDownloadDialog = false
-                        songs!!.forEach { song ->
-                            DownloadService.sendRemoveDownload(
-                                context,
-                                ExoDownloadService::class.java,
-                                song.song.id,
-                                false,
-                            )
-                        }
+                        removeDownloads(context, songs?.map { it.song.id }.orEmpty())
                     },
                 ) {
                     Text(text = stringResource(android.R.string.ok))
@@ -336,6 +385,15 @@ fun TopPlaylistScreen(
             // directly to it doesn't reliably flatten.
             Box(modifier = Modifier
             .nestedScroll(backdropFreeze.connection)
+
+            // OUTER layer, and it must come BEFORE layerBackdrop: the layer has to
+            // enclose the backdrop node, or that node's draw re-runs whenever anything
+            // else in the window redraws. The mini player, the playing indicator and
+            // the position poll are all siblings that tick on their own schedule, and
+            // each tick was re-recording this entire list. MainActivity pairs an outer
+            // and inner layer for exactly this; the screen-local backdrops were left
+            // with only the inner half.
+            .graphicsLayer()
             .layerBackdrop(listBackdrop, frozen = backdropFreeze.frozen)
             // Content becomes ONE cached RenderNode, so the backdrop's
             // layer.record { drawContent() } records a single drawRenderNode
@@ -367,6 +425,12 @@ fun TopPlaylistScreen(
                             )
                         }
                     } else {
+                        if (isSearching) {
+                            // No hero header in search mode — reserve the floating
+                            // chrome's height so the first row doesn't start under the
+                            // status bar.
+                            item(key = "search_chrome_spacer") { FloatingChromeSpacer() }
+                        }
                         if (!isSearching) {
                             item(key = "playlist_header") {
                                 TopPlaylistHeader(
@@ -414,6 +478,7 @@ fun TopPlaylistScreen(
                     itemsIndexed(
                         items = filteredSongs,
                         key = { _, song -> song.id },
+                        contentType = { _, _ -> "song_row" },
                     ) { index, song ->
                         val onCheckedChange: (Boolean) -> Unit = {
                             if (it) {
@@ -493,15 +558,12 @@ fun TopPlaylistScreen(
             }
 
 
-            DraggableScrollbar(
-                modifier = Modifier
-                    .padding(
-                        LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime)
-                            .asPaddingValues()
-                    )
-                    .align(Alignment.CenterEnd),
-                scrollState = state,
-                headerItems = 2
+            // Ranked by play count, never alphabetically, so the rail is a
+            // proportional thumb rather than letters.
+            ListScrollRail(
+                lazyListState = state,
+                itemCount = filteredSongs.size,
+                sectionIndexMap = null,
             )
 
             // Top bar logic
@@ -675,6 +737,7 @@ private fun TopPlaylistHeader(
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
+    val downloads by LocalDownloadUtil.current.downloads.collectAsState()
     val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
@@ -824,32 +887,19 @@ private fun TopPlaylistHeader(
                                 onDownload = {
                                     when (downloadState) {
                                         Download.STATE_COMPLETED -> onShowRemoveDownloadDialog()
-                                        Download.STATE_DOWNLOADING -> {
-                                            songs.forEach { song ->
-                                                DownloadService.sendRemoveDownload(
-                                                    context,
-                                                    ExoDownloadService::class.java,
-                                                    song.id,
-                                                    false,
-                                                )
-                                            }
-                                        }
+                                        // Cancel, not remove: this used to delete every
+                                        // song in the list, finished ones included.
+                                        Download.STATE_DOWNLOADING -> cancelDownloads(
+                                            context,
+                                            songs.map { it.id },
+                                            downloads,
+                                        )
 
-                                        else -> {
-                                            songs.forEach { song ->
-                                                val downloadRequest = DownloadRequest
-                                                    .Builder(song.id, song.id.toUri())
-                                                    .setCustomCacheKey(song.id)
-                                                    .setData(song.title.toByteArray())
-                                                    .build()
-                                                DownloadService.sendAddDownload(
-                                                    context,
-                                                    ExoDownloadService::class.java,
-                                                    downloadRequest,
-                                                    false,
-                                                )
-                                            }
-                                        }
+                                        else -> downloadSongs(
+                                            context,
+                                            songs.map { DownloadTarget(it.id, it.title) },
+                                            downloads,
+                                        )
                                     }
                                 },
                                 onDismiss = { menuState.dismiss() }

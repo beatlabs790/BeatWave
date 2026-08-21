@@ -274,7 +274,7 @@ fun HistoryScreen(
 
                 if (historySource == HistorySource.REMOTE && isLoggedIn) {
                     filteredRemoteContent?.forEach { section ->
-                        stickyHeader {
+                        stickyHeader(contentType = "date_header") {
                             NavigationTitle(
                                 title = section.title,
                                 modifier = Modifier
@@ -302,7 +302,8 @@ fun HistoryScreen(
                         }
                         itemsIndexed(
                             items = section.songs,
-                            key = { index, _ -> songKeys[index] }
+                            key = { index, _ -> songKeys[index] },
+                            contentType = { _, _ -> "history_song" },
                         ) { index, song ->
                             YouTubeListItem(
                                 item = song,
@@ -361,7 +362,7 @@ fun HistoryScreen(
                     }
                 } else {
                     filteredEvents.forEach { (dateAgo, dateEvents) ->
-                        stickyHeader {
+                        stickyHeader(contentType = "date_header") {
                             NavigationTitle(
                                 title = dateAgoToString(dateAgo),
                                 modifier = Modifier
@@ -372,7 +373,8 @@ fun HistoryScreen(
 
                         itemsIndexed(
                             items = dateEvents,
-                            key = { _, event -> event.event.id }
+                            key = { _, event -> event.event.id },
+                            contentType = { _, _ -> "history_event" },
                         ) { index, event ->
                             val onCheckedChange: (Boolean) -> Unit = remember(event.event.id) {
                                 { checked ->

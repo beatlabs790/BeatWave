@@ -281,6 +281,15 @@ fun SearchScreen(
             Box(
                 modifier = Modifier
                     .nestedScroll(backdropFreeze.connection)
+
+                    // OUTER layer, and it must come BEFORE layerBackdrop: the layer has to
+                    // enclose the backdrop node, or that node's draw re-runs whenever anything
+                    // else in the window redraws. The mini player, the playing indicator and
+                    // the position poll are all siblings that tick on their own schedule, and
+                    // each tick was re-recording this entire list. MainActivity pairs an outer
+                    // and inner layer for exactly this; the screen-local backdrops were left
+                    // with only the inner half.
+                    .graphicsLayer()
                     .layerBackdrop(heroBackdrop, frozen = backdropFreeze.frozen)
                     // Content becomes ONE cached RenderNode, so the backdrop's
                     // layer.record { drawContent() } records a single

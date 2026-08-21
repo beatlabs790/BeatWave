@@ -617,10 +617,9 @@ class DjEngine(
     companion object {
         private const val TAG = "DjEngine"
 
-        /** Probe playback rate. The analyzer sits before Sonic in the processor
-         *  chain, so it always sees real-time-equivalent content regardless of
-         *  this. */
-        const val PROBE_SPEED = 6f
+        /** Probe playback rate. 4x provides ample lead time while keeping background
+         *  CPU audio decoding overhead low. */
+        const val PROBE_SPEED = 4f
 
         /** How far ahead of the crossfade to start pre-analysing. 40 s of track
          *  at 6x is ~7 s of wall clock; the rest is slack for buffering. */

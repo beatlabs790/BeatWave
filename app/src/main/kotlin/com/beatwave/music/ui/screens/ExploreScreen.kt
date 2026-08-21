@@ -9,6 +9,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import com.beatwave.music.ui.utils.rememberEdgeAwareFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -164,7 +165,7 @@ fun ExploreScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .heroPullZoom(heroZoom, onRefresh = exploreViewModel::refresh)
+                .heroPullZoom(heroZoom)
                 // No bounce here: the top pull drives the hero zoom instead.
                 .verticalScroll(scrollState, overscrollEffect = heroZoom.listOverscroll()),
         ) {
@@ -305,7 +306,10 @@ fun ExploreScreen(
                         LazyHorizontalGrid(
                             state = lazyGridState,
                             rows = GridCells.Fixed(4),
-                            flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                            flingBehavior = rememberEdgeAwareFlingBehavior(
+                                lazyGridState,
+                                rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                            ),
                             contentPadding = WindowInsets.systemBars
                                 .only(WindowInsetsSides.Horizontal)
                                 .asPaddingValues(),

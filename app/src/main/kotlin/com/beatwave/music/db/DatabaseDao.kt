@@ -789,6 +789,38 @@ interface DatabaseDao {
     )
     fun artistsLocalByNameAsc(): Flow<List<Artist>>
 
+    /**
+     * Local artists in the order they were added.
+     *
+     * artist has no created-at column, so rowId stands in for insertion order -- the same
+     * proxy [albumsLocalByRowIdAsc] already uses for local albums. Before this existed the
+     * CREATE_DATE branch below aliased to [artistsLocalByNameAsc], so choosing "Date added"
+     * on local artists silently sorted by name and the setting looked broken.
+     */
+    @Transaction
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Query(
+        """
+        SELECT artist.*,
+               (SELECT COUNT(1)
+                FROM song_artist_map
+                         JOIN song ON song_artist_map.songId = song.id
+                WHERE artistId = artist.id
+                  AND song.inLibrary IS NOT NULL) AS songCount
+        FROM artist
+                 JOIN(SELECT artistId, SUM(totalPlayTime) AS totalPlayTime
+                      FROM song_artist_map
+                               JOIN song
+                                    ON song_artist_map.songId = song.id
+                      GROUP BY artistId
+                      ORDER BY totalPlayTime)
+                     ON artist.id = artistId
+        WHERE artist.isLocal = 1
+        ORDER BY artist.rowId
+    """
+    )
+    fun artistsLocalByRowIdAsc(): Flow<List<Artist>>
+
     @Transaction
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query(
@@ -911,7 +943,7 @@ interface DatabaseDao {
 
     fun artistsLocal(sortType: ArtistSortType, descending: Boolean) =
         when (sortType) {
-            ArtistSortType.CREATE_DATE -> artistsLocalByNameAsc()
+            ArtistSortType.CREATE_DATE -> artistsLocalByRowIdAsc()
             ArtistSortType.NAME -> artistsLocalByNameAsc()
             ArtistSortType.SONG_COUNT -> artistsLocalBySongCountAsc()
             ArtistSortType.PLAY_TIME -> artistsLocalByPlayTimeAsc()

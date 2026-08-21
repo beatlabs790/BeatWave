@@ -26,7 +26,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -36,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import android.os.Build
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -50,10 +56,14 @@ import com.beatwave.music.utils.rememberPreference
 /**
  * The "star of the day" card that opens Home.
  *
- * Deliberately cheap to draw: one cropped image, one gradient scrim and two pills — no
- * blur, no glass, no backdrop sampling. Home's frame cost is dominated by how many rich
- * rows are composed at once, so the hero has to earn its place by replacing several rows
- * of tiles, not by adding to them.
+ * The lower band is the artwork itself, blurred and darkened, rather than a flat black
+ * scrim — the same frosted treatment [SpotlightCard] uses, so the title sits in the
+ * cover's own colour instead of under a grey wash.
+ *
+ * Still cheap: the blurred band is a second draw of the image Coil already decoded for
+ * the sharp one, so there is no extra decode and no backdrop sampling. Home's frame cost
+ * is dominated by how many rich rows compose at once, so the hero has to earn its place
+ * by replacing several rows of tiles, not by adding to them.
  */
 @Composable
 fun HomeHeroCard(
@@ -75,6 +85,10 @@ fun HomeHeroCard(
                 if (heightOverride > 0) Modifier.height(heightOverride.dp) else Modifier.aspectRatio(4f / 3f)
             )
             .clip(ContinuousRoundedRectangle(cornerRadius))
+            // Under the artwork, not decoration: a song whose thumbnailUrl is null or
+            // fails to load left the card fully transparent, so the section read as
+            // "the hero card never rendered" rather than as a card with no cover.
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .bounceClick(onClick = onClick),
     ) {
         // Bound the decode to the card's real on-screen pixels and skip the crossfade:
@@ -100,17 +114,55 @@ fun HomeHeroCard(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
+
+            // Frosted band over the lower portion: the cover again, blurred, revealed by
+            // an alpha ramp so it fades in rather than starting at a hard edge. Offscreen
+            // compositing is required, not cosmetic — the ramp is applied with DstIn,
+            // which needs its own layer to blend against or it would punch through the
+            // sharp artwork underneath as well.
+            //
+            // Inside this BoxWithConstraints so it can share `request` directly. Hoisting
+            // the request out through a state write would be a write during composition,
+            // which is how you get a recomposition loop.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+                        .drawWithContent {
+                            drawContent()
+                            drawRect(
+                                brush = Brush.verticalGradient(
+                                    0.3f to Color.Transparent,
+                                    0.55f to Color.White.copy(alpha = 0.65f),
+                                    0.75f to Color.White,
+                                ),
+                                blendMode = BlendMode.DstIn,
+                            )
+                        },
+                ) {
+                    AsyncImage(
+                        model = request,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(HeroFrostBlurRadius),
+                    )
+                }
+            }
         }
 
-        // Scrim only over the lower half, so the artwork stays legible up top while the
-        // title below it keeps contrast regardless of how bright the cover is.
+        // Darkening pass, kept separate from the frost so the text keeps its contrast on
+        // a bright cover, and so pre-API-31 (where Modifier.blur no-ops) still gets a
+        // legible title from the gradient alone.
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
                         0.35f to Color.Transparent,
-                        1f to Color.Black.copy(alpha = 0.78f),
+                        1f to Color.Black.copy(alpha = 0.62f),
                     )
                 ),
         )
@@ -184,3 +236,6 @@ private fun HeroPill(
         )
     }
 }
+
+/** Radius of the hero's frosted lower band. Matches [SpotlightCard]'s reflection. */
+private val HeroFrostBlurRadius = 24.dp

@@ -1,5 +1,6 @@
 package com.beatwave.music.ui.component
 
+import android.content.Context
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -52,6 +53,7 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/component/HeroArtwork.kt
 import com.beatwave.music.R
 import com.beatwave.music.constants.DynamicThemeKey
 import com.beatwave.music.constants.PureBlackHeroBackgroundKey
@@ -62,7 +64,22 @@ import com.beatwave.music.ui.theme.DefaultThemeColor
 import com.beatwave.music.ui.theme.LocalAccentColor
 import com.beatwave.music.ui.theme.extractThemeColor
 import com.beatwave.music.utils.rememberPreference
+=======
+import com.beatwave.music.R
+import com.beatwave.music.constants.DynamicThemeKey
+import com.beatwave.music.constants.PureBlackHeroBackgroundKey
+import com.beatwave.music.constants.SelectedThemeColorKey
+import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
+import com.beatwave.music.ui.theme.AppleTokens
+import com.beatwave.music.ui.theme.DefaultThemeColor
+import com.beatwave.music.ui.theme.LocalAccentColor
+import com.beatwave.music.ui.theme.extractThemeColor
+import com.beatwave.music.utils.rememberPreference
+import kotlinx.coroutines.CoroutineScope
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/component/HeroArtwork.kt
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -157,6 +174,47 @@ fun Color.asDeepTint(): Color {
     return Color(androidx.core.graphics.ColorUtils.HSLToColor(hsl))
 }
 
+/**
+ * The artwork tint for [url], from cache when it is there and by extraction when it is not.
+ *
+ * Cheap on a repeat call even when the cache misses: the 100x100 decode Coil does here
+ * lands in its own memory cache, so a second caller pays a lookup rather than a fetch.
+ */
+suspend fun heroTintOf(context: Context, url: String): Color? {
+    heroTintCache.get(url)?.let { return it }
+    return withContext(Dispatchers.IO) {
+        try {
+            val request = ImageRequest.Builder(context)
+                .data(url)
+                .size(100, 100)
+                .allowHardware(false)
+                .build()
+            context.imageLoader.execute(request).image?.toBitmap()
+                ?.extractThemeColor()?.asDeepTint()
+                // Not cached on a miss: a later visit with a working network should still
+                // get the real artwork colour rather than a stand-in pinned forever.
+                ?.also { heroTintCache.put(url, it) }
+        } catch (_: Exception) {
+            null
+        }
+    }
+}
+
+/**
+ * Starts extracting [url]'s tint now, off any composition.
+ *
+ * Called as navigation into a hero screen begins, so the colour is already in the cache by
+ * the time that screen composes -- otherwise the extraction starts on arrival and the
+ * background visibly washes in a beat after the artwork.
+ */
+fun prewarmHeroTint(context: Context, url: String?) {
+    if (url.isNullOrEmpty() || heroTintCache.get(url) != null) return
+    val appContext = context.applicationContext
+    heroTintScope.launch { heroTintOf(appContext, url) }
+}
+
+private val heroTintScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
 @Composable
 fun rememberHeroTint(url: String?): Color {
     val context = LocalContext.current
@@ -175,31 +233,10 @@ fun rememberHeroTint(url: String?): Color {
     var tint by remember(url) { mutableStateOf(url?.let { heroTintCache.get(it) } ?: Color.Black) }
 
     LaunchedEffect(url) {
-        if (url == null) {
-            tint = fallbackTint
-            return@LaunchedEffect
-        }
-        if (heroTintCache.get(url) != null) return@LaunchedEffect
-        withContext(Dispatchers.IO) {
-            try {
-                val request = ImageRequest.Builder(context)
-                    .data(url)
-                    .size(100, 100)
-                    .allowHardware(false)
-                    .build()
-                val result = context.imageLoader.execute(request)
-                val bitmap = result.image?.toBitmap()
-                tint = if (bitmap != null) {
-                    bitmap.extractThemeColor().asDeepTint().also { heroTintCache.put(url, it) }
-                } else {
-                    // Not cached: a later visit with a working network should still
-                    // get the real artwork colour rather than this stand-in.
-                    fallbackTint
-                }
-            } catch (_: Exception) {
-                tint = fallbackTint
-            }
-        }
+        // No early return on a cache hit. Extraction can already be in flight from
+        // prewarmHeroTint, and bailing out because "someone is handling it" left the
+        // tint stuck on its pending black forever.
+        tint = (url?.let { heroTintOf(context, it) }) ?: fallbackTint
     }
 
     val animatedTint = tint

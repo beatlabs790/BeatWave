@@ -153,6 +153,29 @@ object LocalAudioScanner {
                     }
 
                     if (existingSong != null) {
+                        // Rows written before the scanner recorded DATE_ADDED have a null
+                        // inLibrary, and this branch used to skip them forever — so
+                        // "Recently added" stayed a no-op for anyone whose library was
+                        // scanned by an older build, however many times they rescanned.
+                        // Backfill the dates only; everything else about the row is left
+                        // alone so a rescan never clobbers user edits.
+                        if (existingSong.song.inLibrary == null) {
+                            runCatching {
+                                database.withTransaction {
+                                    upsert(
+                                        existingSong.song.copy(
+                                            inLibrary = java.time.Instant.ofEpochSecond(dateAdded)
+                                                .atZone(java.time.ZoneId.systemDefault())
+                                                .toLocalDateTime(),
+                                            dateModified = existingSong.song.dateModified
+                                                ?: java.time.Instant.ofEpochSecond(dateModified)
+                                                    .atZone(java.time.ZoneId.systemDefault())
+                                                    .toLocalDateTime(),
+                                        ),
+                                    )
+                                }
+                            }
+                        }
                         skippedExisting++
                         continue
                     }

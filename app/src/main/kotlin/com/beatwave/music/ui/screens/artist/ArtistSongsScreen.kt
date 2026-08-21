@@ -47,7 +47,12 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.runtime.Composable
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.runtime.collectAsState
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistSongsScreen.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import androidx.compose.runtime.remember
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistSongsScreen.kt
 import androidx.compose.runtime.getValue
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.ui.Alignment
@@ -69,6 +74,7 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistSongsScreen.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -115,6 +121,56 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.viewmodels.ArtistSongsViewModel
+=======
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.R
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ArtistSongSortDescendingKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ArtistSongSortType
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ArtistSongSortTypeKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.CONTENT_TYPE_HEADER
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.HideExplicitKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.playback.queues.ListQueue
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.buildAlphabetSectionIndex
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.HideOnScrollFAB
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.SongListItem
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.SortHeader
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.menu.SongMenu
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.bounceClick
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.combinedBounceClick
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.listItemShape
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.viewmodels.ArtistSongsViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistSongsScreen.kt
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -256,6 +312,16 @@ fun ArtistSongsScreen(
                         contentDescription = null,
                     )
                 }
+            },
+        )
+
+        ListScrollRail(
+            lazyListState = lazyListState,
+            itemCount = songs.size,
+            sectionIndexMap = if (sortType == ArtistSongSortType.NAME) {
+                remember(songs) { buildAlphabetSectionIndex(songs) { it.title } }
+            } else {
+                null
             },
         )
 

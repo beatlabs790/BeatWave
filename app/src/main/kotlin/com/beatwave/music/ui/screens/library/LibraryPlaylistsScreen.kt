@@ -70,6 +70,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.music.innertube.utils.parseCookieString
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibraryPlaylistsScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.R
 import com.beatwave.music.constants.CONTENT_TYPE_HEADER
@@ -104,6 +105,44 @@ import com.beatwave.music.ui.component.SortHeader
 import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.viewmodels.LibraryPlaylistsViewModel
+=======
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.R
+import com.beatwave.music.constants.CONTENT_TYPE_HEADER
+import com.beatwave.music.constants.CONTENT_TYPE_PLAYLIST
+import com.beatwave.music.constants.GridItemSize
+import com.beatwave.music.constants.GridItemsSizeKey
+import com.beatwave.music.constants.GridThumbnailHeight
+import com.beatwave.music.constants.InnerTubeCookieKey
+import com.beatwave.music.constants.LibraryIconsOnlyKey
+import com.beatwave.music.constants.LibraryViewType
+import com.beatwave.music.constants.PlaylistSortDescendingKey
+import com.beatwave.music.constants.PlaylistSortType
+import com.beatwave.music.constants.PlaylistSortTypeKey
+import com.beatwave.music.constants.PlaylistViewTypeKey
+import com.beatwave.music.constants.ShowCachedPlaylistKey
+import com.beatwave.music.constants.ShowDownloadedPlaylistKey
+import com.beatwave.music.constants.ShowLikedPlaylistKey
+import com.beatwave.music.constants.ShowTopPlaylistKey
+import com.beatwave.music.constants.ShowUploadedPlaylistKey
+import com.beatwave.music.constants.YtmSyncKey
+import com.beatwave.music.db.entities.Playlist
+import com.beatwave.music.db.entities.PlaylistEntity
+import com.beatwave.music.ui.component.buildAlphabetSectionIndex
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.LargeScreenTitle
+import com.beatwave.music.ui.component.CreatePlaylistDialog
+import com.beatwave.music.ui.component.HideOnScrollFAB
+import com.beatwave.music.ui.component.LibraryPlaylistGridItem
+import com.beatwave.music.ui.component.LibraryPlaylistListItem
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.PlaylistGridItem
+import com.beatwave.music.ui.component.PlaylistListItem
+import com.beatwave.music.ui.component.SortHeader
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.viewmodels.LibraryPlaylistsViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibraryPlaylistsScreen.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -312,6 +351,10 @@ fun LibraryPlaylistsScreen(
         }
     }
 
+    // Hoisted: both view types de-duped the same list separately, and the scroll rail
+    // needs the resulting count too.
+    val visiblePlaylists = remember(playlists) { playlists.distinctBy { it.id } }
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -320,7 +363,7 @@ fun LibraryPlaylistsScreen(
                 LazyColumn(
                     state = lazyListState,
                     overscrollEffect = heroZoom.listOverscroll(),
-                    modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::sync),
+                    modifier = Modifier.heroPullZoom(heroZoom),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -426,7 +469,7 @@ fun LibraryPlaylistsScreen(
                         }
 
                         items(
-                            items = playlists.distinctBy { it.id },
+                            items = visiblePlaylists,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_PLAYLIST },
                         ) { playlist ->
@@ -454,7 +497,7 @@ fun LibraryPlaylistsScreen(
                 LazyVerticalGrid(
                     state = lazyGridState,
                     overscrollEffect = heroZoom.listOverscroll(),
-                    modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::sync),
+                    modifier = Modifier.heroPullZoom(heroZoom),
                     columns = rememberGridColumns(),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
@@ -564,7 +607,7 @@ fun LibraryPlaylistsScreen(
                         }
 
                         items(
-                            items = playlists.distinctBy { it.id },
+                            items = visiblePlaylists,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_PLAYLIST },
                         ) { playlist ->
@@ -588,6 +631,20 @@ fun LibraryPlaylistsScreen(
                 )
             }
         }
+
+        ListScrollRail(
+            lazyListState = lazyListState,
+            lazyGridState = lazyGridState,
+            isGrid = viewType == LibraryViewType.GRID,
+            itemCount = visiblePlaylists.size,
+            sectionIndexMap = if (sortType == PlaylistSortType.NAME) {
+                remember(visiblePlaylists) {
+                    buildAlphabetSectionIndex(visiblePlaylists) { it.playlist.name }
+                }
+            } else {
+                null
+            },
+        )
     }
 }
 

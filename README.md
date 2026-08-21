@@ -219,7 +219,12 @@
       <td width="40%" align="left">
         <b>💡 Built On</b>
         <ul>
+<<<<<<< HEAD
           <li><strong><a href="https://github.com/vivizzz007/vivi-music">vivi-music</a></strong> by <strong>Vividh P Ashokan</strong> — the project BeatWave was forked from.</li>
+=======
+          <li><strong><a href="https://github.com/vivizzz007/vivi-music">vivi-music</a></strong> by <strong>Vividh P Ashokan</strong> — the project Convx was forked from.</li>
+          <li>The <strong>Apple Music Player V17</strong> full-screen player style (Settings → Player Theme) is ported from <a href="https://github.com/vivizzz007/vivi-music">vivi-music</a>'s Apple Music player UI, GPL-3.0.</li>
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a
         </ul>
       </td>
       <td width="60%" align="left">

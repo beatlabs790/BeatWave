@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibraryArtistsScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.R
 import com.beatwave.music.ui.utils.rememberGridColumns
@@ -80,6 +82,38 @@ import com.beatwave.music.ui.component.SortHeader
 import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.viewmodels.LibraryArtistsViewModel
+=======
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.R
+import com.beatwave.music.ui.utils.rememberGridColumns
+import com.beatwave.music.constants.ArtistFilter
+import com.beatwave.music.constants.ArtistFilterKey
+import com.beatwave.music.constants.LocalOnlyModeKey
+import com.beatwave.music.constants.ArtistSortDescendingKey
+import com.beatwave.music.constants.ArtistSortType
+import com.beatwave.music.constants.ArtistSortTypeKey
+import com.beatwave.music.constants.ArtistViewTypeKey
+import com.beatwave.music.constants.CONTENT_TYPE_ARTIST
+import com.beatwave.music.constants.CONTENT_TYPE_HEADER
+import com.beatwave.music.constants.GridItemSize
+import com.beatwave.music.constants.GridItemsSizeKey
+import com.beatwave.music.constants.GridThumbnailHeight
+import com.beatwave.music.constants.LibraryIconsOnlyKey
+import com.beatwave.music.constants.LibraryViewType
+import com.beatwave.music.constants.YtmSyncKey
+import com.beatwave.music.ui.component.buildAlphabetSectionIndex
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.LargeScreenTitle
+import com.beatwave.music.ui.component.ChipsRow
+import com.beatwave.music.ui.component.EmptyPlaceholder
+import com.beatwave.music.ui.component.LibraryArtistGridItem
+import com.beatwave.music.ui.component.LibraryArtistListItem
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.SortHeader
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.viewmodels.LibraryArtistsViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibraryArtistsScreen.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.beatwave.music.ui.theme.AppleTokens
@@ -236,6 +270,10 @@ fun LibraryArtistsScreen(
         }
     }
 
+    // Hoisted: both view types de-duped the same list separately, and the scroll rail
+    // needs the resulting count too.
+    val visibleArtists = remember(artists) { artists.distinctBy { it.id } }
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -244,7 +282,7 @@ fun LibraryArtistsScreen(
                 LazyColumn(
                     state = lazyListState,
                     overscrollEffect = heroZoom.listOverscroll(),
-                    modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::sync),
+                    modifier = Modifier.heroPullZoom(heroZoom),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -280,7 +318,7 @@ fun LibraryArtistsScreen(
                         }
 
                         items(
-                            items = artists.distinctBy { it.id },
+                            items = visibleArtists,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ARTIST },
                         ) { artist ->
@@ -300,7 +338,7 @@ fun LibraryArtistsScreen(
                 LazyVerticalGrid(
                     state = lazyGridState,
                     overscrollEffect = heroZoom.listOverscroll(),
-                    modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::sync),
+                    modifier = Modifier.heroPullZoom(heroZoom),
                     columns = rememberGridColumns(),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
@@ -340,7 +378,7 @@ fun LibraryArtistsScreen(
                         }
 
                         items(
-                            items = artists.distinctBy { it.id },
+                            items = visibleArtists,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ARTIST },
                         ) { artist ->
@@ -356,5 +394,19 @@ fun LibraryArtistsScreen(
                     }
                 }
         }
+
+        ListScrollRail(
+            lazyListState = lazyListState,
+            lazyGridState = lazyGridState,
+            isGrid = viewType == LibraryViewType.GRID,
+            itemCount = visibleArtists.size,
+            sectionIndexMap = if (sortType == ArtistSortType.NAME) {
+                remember(visibleArtists) {
+                    buildAlphabetSectionIndex(visibleArtists) { it.artist.name }
+                }
+            } else {
+                null
+            },
+        )
     }
 }

@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibrarySongsScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
@@ -87,6 +88,42 @@ import com.beatwave.music.ui.theme.AppleTokens
 import com.beatwave.music.ui.utils.heroPullZoom
 import com.beatwave.music.ui.utils.listOverscroll
 import com.beatwave.music.ui.utils.rememberHeroZoom
+=======
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.constants.CONTENT_TYPE_HEADER
+import com.beatwave.music.constants.CONTENT_TYPE_SONG
+import com.beatwave.music.constants.HideExplicitKey
+import com.beatwave.music.constants.LibraryIconsOnlyKey
+import com.beatwave.music.constants.SongFilter
+import com.beatwave.music.constants.SongFilterKey
+import com.beatwave.music.constants.LocalOnlyModeKey
+import com.beatwave.music.constants.SongSortDescendingKey
+import com.beatwave.music.constants.SongSortType
+import com.beatwave.music.constants.SongSortTypeKey
+import com.beatwave.music.constants.YtmSyncKey
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.playback.queues.ListQueue
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.LargeScreenTitle
+import com.beatwave.music.ui.component.buildAlphabetSectionIndex
+import com.beatwave.music.ui.component.ChipsRow
+import com.beatwave.music.ui.component.HideOnScrollFAB
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.SongListItem
+import com.beatwave.music.ui.component.SortOption
+import com.beatwave.music.ui.component.SortPopupButton
+import com.beatwave.music.ui.menu.SongMenu
+import com.beatwave.music.utils.listItemShape
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.viewmodels.LibrarySongsViewModel
+import com.beatwave.music.ui.theme.AppleTokens
+import com.beatwave.music.ui.utils.heroPullZoom
+import com.beatwave.music.ui.utils.listOverscroll
+import com.beatwave.music.ui.utils.rememberHeroZoom
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibrarySongsScreen.kt
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -178,14 +215,7 @@ fun LibrarySongsScreen(
         LazyColumn(
             state = lazyListState,
             overscrollEffect = heroZoom.listOverscroll(),
-            modifier = Modifier.heroPullZoom(heroZoom, onRefresh = {
-                when (filter) {
-                    SongFilter.LIKED -> viewModel.syncLikedSongs()
-                    SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
-                    SongFilter.UPLOADED -> viewModel.syncUploadedSongs()
-                    else -> Unit
-                }
-            }),
+            modifier = Modifier.heroPullZoom(heroZoom),
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             item(
@@ -356,21 +386,24 @@ fun LibrarySongsScreen(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = AppleTokens.Gutter),
+                    modifier = Modifier.padding(
+                        start = AppleTokens.Gutter,
+                        end = AppleTokens.Gutter - 8.dp,
+                    ),
                 ) {
-                    SortHeader(
-                        sortType = sortType,
-                        sortDescending = sortDescending,
-                        onSortTypeChange = onSortTypeChange,
-                        onSortDescendingChange = onSortDescendingChange,
-                        sortTypeText = { sortType ->
+                    // The current sort reads from this label rather than from the control,
+                    // which is what lets the control itself shrink to an icon.
+                    Text(
+                        text = stringResource(
                             when (sortType) {
                                 SongSortType.CREATE_DATE -> R.string.sort_by_create_date
                                 SongSortType.NAME -> R.string.sort_by_name
                                 SongSortType.ARTIST -> R.string.sort_by_artist
                                 SongSortType.PLAY_TIME -> R.string.sort_by_play_time
                             }
-                        },
+                        ),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
 
                     Spacer(Modifier.weight(1f))
@@ -383,6 +416,14 @@ fun LibrarySongsScreen(
                         ),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.secondary,
+                    )
+
+                    SortPopupButton(
+                        options = songSortOptions,
+                        selected = sortType,
+                        descending = sortDescending,
+                        onSelectedChange = onSortTypeChange,
+                        onDescendingChange = onSortDescendingChange,
                     )
                 }
             }
@@ -439,6 +480,19 @@ fun LibrarySongsScreen(
             }
         }
 
+        // Fast-scrub rail. Present at every sort: letters when the list is ordered by
+        // name, a proportional thumb otherwise. A scrubber that vanishes when you change
+        // the sort order is one nobody can rely on.
+        ListScrollRail(
+            lazyListState = lazyListState,
+            itemCount = filteredSongs.size,
+            sectionIndexMap = if (sortType == SongSortType.NAME) {
+                remember(filteredSongs) { buildAlphabetSectionIndex(filteredSongs) { it.title } }
+            } else {
+                null
+            },
+        )
+
         HideOnScrollFAB(
             visible = filteredSongs.isNotEmpty(),
             lazyListState = lazyListState,
@@ -454,3 +508,10 @@ fun LibrarySongsScreen(
         )
     }
 }
+
+private val songSortOptions = listOf(
+    SortOption(SongSortType.CREATE_DATE, R.string.sort_by_create_date),
+    SortOption(SongSortType.NAME, R.string.sort_by_name),
+    SortOption(SongSortType.ARTIST, R.string.sort_by_artist),
+    SortOption(SongSortType.PLAY_TIME, R.string.sort_by_play_time),
+)

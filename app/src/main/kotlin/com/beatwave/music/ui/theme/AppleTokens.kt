@@ -1,5 +1,8 @@
 package com.beatwave.music.ui.theme
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
@@ -84,6 +87,33 @@ object AppleTokens {
     val Control = 12.dp
     val CardCorner = 22.dp
     val CardCornerLarge = 28.dp
+
+    // Motion — one spring, three tempers, modelled on SwiftUI's `.smooth`: a spring
+    // with a 0.5s natural period and zero bounce. That is the default here, and
+    // bounce is reserved for selection feedback and hero entrances.
+    //
+    // Compose takes stiffness where SwiftUI takes a period: stiffness =
+    // (2*pi / period)^2. SwiftUI `bounce` maps to `1 - dampingRatio`.
+    //
+    // Not yet adopted app-wide — motion is currently scattered across
+    // Spring.StiffnessMedium, tween(200) and hand-picked specs. Convert call
+    // sites deliberately, checking each one, rather than sweeping them.
+    object Motion {
+        /** (2*pi / 0.5s)^2. The period behind every spec below. */
+        const val Stiffness = 158f
+
+        /** SwiftUI `.smooth` — the default for essentially everything. */
+        fun <T> standard() = spring<T>(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Stiffness)
+
+        /** SwiftUI `.snappy` / `bounce: 0.15` — selection, toggles, emphasis. */
+        fun <T> emphasis() = spring<T>(dampingRatio = 0.85f, stiffness = Stiffness)
+
+        /** `bounce: 0.24` — hero and entrance transitions only. */
+        fun <T> expressive() = spring<T>(dampingRatio = 0.76f, stiffness = Stiffness)
+
+        /** SwiftUI `.easeInOut(duration: 0.2)` — cross-fades, where a spring has nothing to overshoot. */
+        fun <T> fade() = tween<T>(durationMillis = 200)
+    }
 
     // Adaptive contrast helpers
 

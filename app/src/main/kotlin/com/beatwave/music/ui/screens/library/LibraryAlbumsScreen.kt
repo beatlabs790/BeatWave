@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibraryAlbumsScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
@@ -82,6 +84,40 @@ import com.beatwave.music.ui.component.SortHeader
 import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.viewmodels.LibraryAlbumsViewModel
+=======
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.ui.utils.rememberGridColumns
+import com.beatwave.music.constants.AlbumFilter
+import com.beatwave.music.constants.AlbumFilterKey
+import com.beatwave.music.constants.LocalOnlyModeKey
+import com.beatwave.music.constants.AlbumSortDescendingKey
+import com.beatwave.music.constants.AlbumSortType
+import com.beatwave.music.constants.AlbumSortTypeKey
+import com.beatwave.music.constants.AlbumViewTypeKey
+import com.beatwave.music.constants.CONTENT_TYPE_ALBUM
+import com.beatwave.music.constants.CONTENT_TYPE_HEADER
+import com.beatwave.music.constants.GridItemSize
+import com.beatwave.music.constants.GridItemsSizeKey
+import com.beatwave.music.constants.GridThumbnailHeight
+import com.beatwave.music.constants.HideExplicitKey
+import com.beatwave.music.constants.LibraryIconsOnlyKey
+import com.beatwave.music.constants.LibraryViewType
+import com.beatwave.music.constants.YtmSyncKey
+import com.beatwave.music.ui.component.buildAlphabetSectionIndex
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.ChipsRow
+import com.beatwave.music.ui.component.LargeScreenTitle
+import com.beatwave.music.ui.component.EmptyPlaceholder
+import com.beatwave.music.ui.component.LibraryAlbumGridItem
+import com.beatwave.music.ui.component.LibraryAlbumListItem
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.SortHeader
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.viewmodels.LibraryAlbumsViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/library/LibraryAlbumsScreen.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.beatwave.music.ui.theme.AppleTokens
@@ -244,6 +280,13 @@ fun LibraryAlbumsScreen(
         }
     }
 
+    // Hoisted: both view types filtered and de-duped the same list separately, and the
+    // scroll rail needs the resulting count too.
+    val visibleAlbums = remember(albums, hideExplicit) {
+        (if (hideExplicit) albums.filter { !it.album.explicit } else albums)
+            .distinctBy { it.id }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -252,7 +295,7 @@ fun LibraryAlbumsScreen(
                 LazyColumn(
                     state = lazyListState,
                     overscrollEffect = heroZoom.listOverscroll(),
-                    modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::sync),
+                    modifier = Modifier.heroPullZoom(heroZoom),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -287,13 +330,8 @@ fun LibraryAlbumsScreen(
                             }
                         }
 
-                        val filteredAlbumsForList = if (hideExplicit) {
-                            albums.filter { !it.album.explicit }
-                        } else {
-                            albums
-                        }
                         items(
-                            items = filteredAlbumsForList.distinctBy { it.id },
+                            items = visibleAlbums,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ALBUM },
                         ) { album ->
@@ -315,7 +353,7 @@ fun LibraryAlbumsScreen(
                 LazyVerticalGrid(
                     state = lazyGridState,
                     overscrollEffect = heroZoom.listOverscroll(),
-                    modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::sync),
+                    modifier = Modifier.heroPullZoom(heroZoom),
                     columns = rememberGridColumns(),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
@@ -354,13 +392,8 @@ fun LibraryAlbumsScreen(
                             }
                         }
 
-                        val filteredAlbumsForGrid = if (hideExplicit) {
-                            albums.filter { !it.album.explicit }
-                        } else {
-                            albums
-                        }
                         items(
-                            items = filteredAlbumsForGrid.distinctBy { it.id },
+                            items = visibleAlbums,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ALBUM },
                         ) { album ->
@@ -379,5 +412,27 @@ fun LibraryAlbumsScreen(
                     }
                 }
         }
+
+        ListScrollRail(
+            lazyListState = lazyListState,
+            lazyGridState = lazyGridState,
+            isGrid = viewType == LibraryViewType.GRID,
+            itemCount = visibleAlbums.size,
+            sectionIndexMap = when (sortType) {
+                AlbumSortType.NAME ->
+                    remember(visibleAlbums) {
+                        buildAlphabetSectionIndex(visibleAlbums) { it.album.title }
+                    }
+
+                AlbumSortType.ARTIST ->
+                    remember(visibleAlbums) {
+                        buildAlphabetSectionIndex(visibleAlbums) { album ->
+                            album.artists.firstOrNull()?.name.orEmpty()
+                        }
+                    }
+
+                else -> null
+            },
+        )
     }
 }

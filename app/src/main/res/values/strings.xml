@@ -30,6 +30,18 @@
     <string name="forgotten_favorites">Forgotten favorites</string>
     <string name="keep_listening">Keep listening</string>
     <string name="recently_played">Recently Played</string>
+    <string name="recently_added">Recently Added</string>
+    <string name="home_section_hero">Featured card</string>
+    <string name="home_section_community">From the community</string>
+    <string name="home_section_daily_discover">Daily discover</string>
+    <string name="home_section_account_playlists">Your playlists</string>
+    <string name="home_section_forgotten_favorites">Forgotten favourites</string>
+    <string name="show_mood_filters">Mood filters</string>
+    <string name="show_mood_filters_desc">Show Energize, Relax and other filters at the top of Home</string>
+    <string name="home_feed_order">Arrange home feed (Beta)</string>
+    <string name="home_feed_order_desc">Drag to choose the order sections appear in. Sections that come and go with your recommendations always follow the ones you arrange here.</string>
+    <string name="home_feed_order_reset">Reset to default order</string>
+
     <string name="listen_now">Listen Now</string>
     <string name="your_youtube_playlists">Your YouTube playlists</string>
     <string name="similar_to">Similar to</string>
@@ -131,6 +143,11 @@
     <string name="tempo_and_pitch">Tempo and Pitch</string>
 
     <!-- Sort menu -->
+    <string name="client_probe">Stream client probe</string>
+    <string name="client_probe_desc">Test which YouTube clients can still return a playable stream</string>
+    <string name="client_probe_running">Probing clients, one at a time. This takes a moment.</string>
+    <string name="sort_by">Sort</string>
+    <string name="sort_descending">Descending</string>
     <string name="sort_by_create_date">Date added</string>
     <string name="sort_by_name">Name</string>
     <string name="sort_by_artist">Artist</string>

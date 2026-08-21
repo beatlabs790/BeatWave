@@ -78,6 +78,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -116,6 +118,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.window.Dialog
@@ -135,6 +138,7 @@ import androidx.media3.common.Player
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import coil3.imageLoader
@@ -143,9 +147,25 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.request.crossfade
 import coil3.toBitmap
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/MainActivity.kt
 import com.beatwave.music.ui.component.backdrop.backdrops.layerBackdrop
 import com.beatwave.music.ui.component.backdrop.backdrops.rememberBackdropFreeze
 import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+=======
+import com.beatwave.music.ui.component.backdrop.backdrops.layerBackdrop
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberBackdropFreeze
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberNavTransitionFreeze
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberPagerTransitionFreeze
+import com.beatwave.music.ui.screens.search.SearchScreen
+import com.beatwave.music.ui.utils.Motion
+import com.beatwave.music.ui.utils.LocalSharedTransitionScope
+import com.beatwave.music.ui.utils.markSharedArtworkSource
+import com.beatwave.music.ui.utils.markMorphDirection
+import com.beatwave.music.ui.utils.morphArtworkId
+import com.beatwave.music.ui.utils.isMorphRoute
+import com.beatwave.music.ui.component.prewarmHeroTint
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/MainActivity.kt
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -153,6 +173,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.music.innertube.YouTube
 import com.music.innertube.models.SongItem
 import com.music.innertube.models.WatchEndpoint
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/MainActivity.kt
 import com.beatwave.music.constants.AppBarHeight
 import com.beatwave.music.constants.AppLanguageKey
 import com.beatwave.music.constants.DarkModeKey
@@ -295,6 +316,155 @@ import com.beatwave.music.vivimusic.updater.checkForUpdate
 import com.beatwave.music.vivimusic.updater.getAutoUpdateCheckSetting
 import com.beatwave.music.vivimusic.updater.getUpdateNotificationsSetting
 import com.beatwave.music.vivimusic.updater.saveUpdateAvailableState
+=======
+import com.beatwave.music.constants.AppBarHeight
+import com.beatwave.music.constants.AppLanguageKey
+import com.beatwave.music.constants.DarkModeKey
+import com.beatwave.music.constants.DefaultOpenTabKey
+import com.beatwave.music.constants.DisableScreenshotKey
+import com.beatwave.music.constants.DynamicThemeKey
+import com.beatwave.music.constants.SearchSource
+import com.beatwave.music.constants.LocalOnlyModeKey
+import com.beatwave.music.constants.SearchSourceKey
+import com.beatwave.music.constants.EnableHighRefreshRateKey
+import com.beatwave.music.constants.EnableSettingsPopupKey
+import com.beatwave.music.constants.ListenTogetherInTopBarKey
+import com.beatwave.music.constants.ListenTogetherUsernameKey
+import com.beatwave.music.constants.MiniPlayerBottomSpacing
+import com.beatwave.music.constants.MiniPlayerHeight
+import com.beatwave.music.constants.DockedAccessoryHeight
+import com.beatwave.music.constants.NavigationBarAnimationSpec
+import com.beatwave.music.constants.NavigationBarHeight
+import com.beatwave.music.constants.OverlayMenuStyleKey
+import com.beatwave.music.constants.PauseListenHistoryKey
+import com.beatwave.music.constants.LiquidGlassGlobalEnabledKey
+import com.beatwave.music.constants.LiquidGlassPlayerEnabledKey
+import com.beatwave.music.constants.LiquidGlassMiniPlayerEnabledKey
+import com.beatwave.music.constants.LiquidGlassNavBarEnabledKey
+import com.beatwave.music.constants.LiquidGlassSidePanelEnabledKey
+import com.beatwave.music.constants.LiquidGlassSidePanelVibrancyKey
+import com.beatwave.music.constants.LiquidGlassSidePanelBlurRadiusKey
+import com.beatwave.music.constants.LiquidGlassSidePanelLensHeightKey
+import com.beatwave.music.constants.LiquidGlassSidePanelLensAmountKey
+import com.beatwave.music.constants.LiquidGlassSidePanelColorKey
+import com.beatwave.music.constants.LiquidGlassSidePanelSurfaceOpacityKey
+import com.beatwave.music.constants.LiquidGlassSidePanelTextColorKey
+import com.beatwave.music.constants.SideBarCollapsedKey
+import com.beatwave.music.constants.LiquidGlassVibrancyKey
+import com.beatwave.music.constants.LiquidGlassBlurRadiusKey
+import com.beatwave.music.constants.LiquidGlassLensHeightKey
+import com.beatwave.music.constants.LiquidGlassLensAmountKey
+import com.beatwave.music.constants.LiquidGlassChromaticAberrationKey
+import com.beatwave.music.constants.LiquidGlassDepthEffectKey
+import com.beatwave.music.constants.LiquidGlassSurfaceTintColorKey
+import com.beatwave.music.constants.LiquidGlassPuckColorKey
+import com.beatwave.music.constants.LiquidGlassPuckOpacityKey
+import com.beatwave.music.constants.LiquidGlassStyleKey
+import com.beatwave.music.constants.LiquidGlassHighlightColorKey
+import com.beatwave.music.constants.LiquidGlassHighlightOpacityKey
+import com.beatwave.music.constants.LiquidGlassSurfaceOpacityKey
+import com.beatwave.music.constants.LiquidGlassAdaptiveContrastKey
+import com.beatwave.music.constants.LiquidGlassTextColorKey
+import com.beatwave.music.constants.ShowHistoryButtonKey
+import com.beatwave.music.constants.ShowStatsButtonKey
+import com.beatwave.music.constants.AppleMusicUiKey
+import com.beatwave.music.constants.PauseSearchHistoryKey
+import com.beatwave.music.constants.AppBackgroundColorKey
+import com.beatwave.music.constants.PureBlackKey
+import com.beatwave.music.constants.SYSTEM_DEFAULT
+import com.beatwave.music.constants.SelectedThemeColorKey
+import com.beatwave.music.constants.SlimNavBarHeight
+import com.beatwave.music.constants.ForceTabletLayoutKey
+import com.beatwave.music.constants.PlaylistSortType
+import com.beatwave.music.constants.SlimNavBarKey
+import com.beatwave.music.constants.StopMusicOnTaskClearKey
+import com.beatwave.music.constants.UseNewMiniPlayerDesignKey
+import com.beatwave.music.db.MusicDatabase
+import com.beatwave.music.db.entities.SearchHistory
+import com.beatwave.music.extensions.toEnum
+import com.beatwave.music.models.toMediaMetadata
+import com.beatwave.music.playback.DownloadUtil
+import com.beatwave.music.playback.MusicService
+import com.beatwave.music.playback.MusicService.MusicBinder
+import com.beatwave.music.playback.PlayerConnection
+import com.beatwave.music.playback.queues.YouTubeQueue
+import com.beatwave.music.ui.component.AppFloatingNavBar
+import com.beatwave.music.ui.component.LocalDownloads
+import com.beatwave.music.ui.component.LocalItemPrefs
+import com.beatwave.music.ui.component.LocalNavSearchState
+import com.beatwave.music.ui.component.rememberAppBackgroundTint
+import com.beatwave.music.ui.component.rememberItemPrefs
+import com.beatwave.music.ui.component.NavSearchState
+import com.beatwave.music.ui.component.GlassEffectConfig
+import com.beatwave.music.ui.component.LocalGlassEffectConfig
+import com.beatwave.music.ui.component.LocalAppBackdrop
+import com.beatwave.music.ui.component.GlassStyle
+import com.beatwave.music.ui.component.glassContentColorFor
+import com.beatwave.music.ui.component.LocalAppleMusicUi
+import com.beatwave.music.ui.component.isGlassAllowed
+import com.beatwave.music.ui.component.AppFloatingNowPlayingPill
+import com.beatwave.music.ui.component.FloatingMiniPlayerWidthFraction
+import com.beatwave.music.ui.component.NavBarSearchInputBar
+import com.beatwave.music.ui.component.GlassCircleButton
+import com.beatwave.music.ui.component.AppFloatingSideBar
+import com.beatwave.music.ui.component.SideBarAccountRow
+import com.beatwave.music.ui.component.SideBarContentInset
+import com.beatwave.music.ui.component.SideBarMargin
+import com.beatwave.music.ui.component.SideBarCollapsedWidth
+import com.beatwave.music.ui.component.SideBarLink
+import com.beatwave.music.ui.component.SideBarSection
+import com.beatwave.music.ui.component.TabletWidthThreshold
+import com.beatwave.music.ui.component.AppNavigationRail
+import com.beatwave.music.ui.component.BottomSheetMenu
+import com.beatwave.music.ui.component.OverlayMenu
+import com.beatwave.music.ui.component.BottomSheetPage
+import com.beatwave.music.ui.component.ListenTogetherOverlay
+import com.beatwave.music.ui.component.LocalBottomSheetPageState
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.rememberBottomSheetState
+import com.beatwave.music.ui.component.shimmer.ShimmerTheme
+import com.beatwave.music.ui.menu.YouTubeSongMenu
+import com.beatwave.music.ui.player.BottomSheetPlayer
+import com.beatwave.music.ui.player.InstallPlayerMorphLayers
+import com.beatwave.music.ui.player.PlayerMorph
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.rememberPagerState
+import com.beatwave.music.ui.screens.Screens
+import com.beatwave.music.ui.screens.SettingDialoge
+import com.beatwave.music.ui.screens.navigationBuilder
+import com.beatwave.music.ui.screens.settings.DarkMode
+import com.beatwave.music.ui.screens.settings.NavigationTab
+import com.beatwave.music.ui.theme.ColorSaver
+import com.beatwave.music.ui.theme.DefaultThemeColor
+import com.beatwave.music.ui.theme.BrandName
+import com.beatwave.music.ui.theme.LocalAccentTextColor
+import com.beatwave.music.ui.theme.rememberBrandFontFamily
+import com.beatwave.music.ui.theme.extractThemeColor
+import com.beatwave.music.ui.theme.extractThemeColorFromVideoFrame
+import com.beatwave.music.ui.theme.vivimusicTheme
+import com.beatwave.music.ui.utils.appBarScrollBehavior
+import com.beatwave.music.ui.utils.resetHeightOffset
+import com.beatwave.music.utils.SyncUtils
+import com.beatwave.music.utils.dataStore
+import com.beatwave.music.utils.get
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.constants.CanvasSource
+import com.beatwave.music.constants.CanvasSourceKey
+import com.beatwave.music.ui.player.CanvasArtworkPlaybackCache
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.constants.IosOverscrollKey
+import com.beatwave.music.ui.utils.rememberIosOverscrollFactory
+import com.beatwave.music.utils.reportException
+import com.beatwave.music.utils.setAppLocale
+import com.beatwave.music.viewmodels.HistoryViewModel
+import com.beatwave.music.ui.component.floatingtabbar.rememberFloatingTabBarScrollConnection
+import com.beatwave.music.viewmodels.HomeViewModel
+import com.beatwave.music.vivimusic.UpdateNotificationHelper
+import com.beatwave.music.vivimusic.updater.checkForUpdate
+import com.beatwave.music.vivimusic.updater.getAutoUpdateCheckSetting
+import com.beatwave.music.vivimusic.updater.getUpdateNotificationsSetting
+import com.beatwave.music.vivimusic.updater.saveUpdateAvailableState
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/MainActivity.kt
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -326,6 +496,8 @@ private val themeColorCache = android.util.LruCache<String, androidx.compose.ui.
 // Measured 2026-08-05 on SM-M346B, Home scroll p50: true => record 1.9ms / issue 4.6ms,
 // false => record 16.9ms / issue 19.7ms. The gap is the forced full-tree re-record in
 // LayerBackdropNode.draw(); the fix is to give the subtree RenderNodes, not to drop glass.
+private val TabRootRoutes = setOf(Screens.Home.route, Screens.Library.route, Screens.Settings.route)
+
 private const val DIAG_DISABLE_BACKDROP = false
 
 /**
@@ -484,6 +656,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        // Covers a deliberate back-out, where the activity really is finishing. The swipe
+        // -from-recents case is handled in MusicService.onTaskRemoved instead: there
+        // isFinishing is false and this branch never ran, which is why the setting looked
+        // broken to everyone who used the gesture rather than the back button.
         if (dataStore.get(StopMusicOnTaskClearKey, false) &&
             playerConnection?.isPlaying?.value == true &&
             isFinishing
@@ -507,7 +683,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -556,7 +732,11 @@ class MainActivity : ComponentActivity() {
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+    @OptIn(
+        ExperimentalMaterial3Api::class,
+        ExperimentalLayoutApi::class,
+        ExperimentalSharedTransitionApi::class,
+    )
     @Composable
     private fun vivimusicApp(
         playerConnection: PlayerConnection?,
@@ -596,10 +776,27 @@ class MainActivity : ComponentActivity() {
             val window = this@MainActivity.window
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 val layoutParams = window.attributes
+                val modes = window.windowManager.defaultDisplay.supportedModes
+                val currentMode = window.windowManager.defaultDisplay.mode
                 if (enableHighRefreshRate) {
-                    layoutParams.preferredDisplayModeId = 0
+                    // preferredDisplayModeId = 0 means "no preference", i.e. exactly what
+                    // the window already had. It does not ask for anything, so with the
+                    // setting ON the app was leaving the choice to the platform, and an
+                    // adaptive-refresh panel showing mostly-static content will happily
+                    // settle at 60. Ask for the fastest mode explicitly instead.
+                    //
+                    // Restricted to modes at the current resolution: supportedModes also
+                    // lists lower-resolution modes, and some devices offer their highest
+                    // refresh rates only there. Switching resolution to chase a refresh
+                    // rate would reflow the whole UI.
+                    val fastest = modes
+                        .filter {
+                            it.physicalWidth == currentMode.physicalWidth &&
+                                it.physicalHeight == currentMode.physicalHeight
+                        }
+                        .maxByOrNull { it.refreshRate }
+                    layoutParams.preferredDisplayModeId = fastest?.modeId ?: 0
                 } else {
-                    val modes = window.windowManager.defaultDisplay.supportedModes
                     val mode60 = modes.firstOrNull { kotlin.math.abs(it.refreshRate - 60f) < 1f }
                         ?: modes.minByOrNull { kotlin.math.abs(it.refreshRate - 60f) }
 
@@ -610,10 +807,13 @@ class MainActivity : ComponentActivity() {
                 window.attributes = layoutParams
             } else {
                 val params = window.attributes
-                if (enableHighRefreshRate) {
-                    params.preferredRefreshRate = 0f
+                params.preferredRefreshRate = if (enableHighRefreshRate) {
+                    // Same fix as the R+ branch above: 0f is "no preference", not "fastest".
+                    window.windowManager.defaultDisplay.supportedRefreshRates
+                        .maxOrNull()
+                        ?: 0f
                 } else {
-                    params.preferredRefreshRate = 60f
+                    60f
                 }
                 window.attributes = params
             }
@@ -747,6 +947,40 @@ class MainActivity : ComponentActivity() {
                 val bottomInsetDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
 
                 val navController = rememberNavController()
+
+                // Nominates the artwork morph's source from the destination being opened,
+                // rather than from each of the dozens of tap handlers that can open one.
+                // The id in the route arguments IS the id of the tile that was tapped, so
+                // one listener covers every screen -- including ones added later, which a
+                // per-call-site approach would keep missing.
+                //
+                // If the tile is not on screen (deep link, restored back stack, or the
+                // same id opened from somewhere with no artwork) nothing claims the source
+                // key and the destination simply cross-fades in, which is the pre-existing
+                // behaviour.
+                DisposableEffect(navController) {
+                    // -1 sentinel: the very first destination change (app launch) is
+                    // neither a push nor a pop, and comparing against an unset size would
+                    // otherwise read as a pop (0 < -1 is false, so it's actually safe
+                    // either way, but the explicit sentinel makes that not an accident).
+                    var previousBackStackSize = -1
+                    val listener = NavController.OnDestinationChangedListener { controller, _, args ->
+                        val currentSize = controller.currentBackStack.value.size
+                        val isPop = previousBackStackSize != -1 && currentSize < previousBackStackSize
+                        previousBackStackSize = currentSize
+                        markMorphDirection(isPop)
+
+                        val thumbnailUrl = markSharedArtworkSource(args.morphArtworkId())
+                        // Extract the hero tint from the tile's own artwork now, while the
+                        // morph is still playing, rather than when the destination first
+                        // composes -- that is what makes the colour already be there as the
+                        // screen finishes growing instead of washing in a beat later.
+                        prewarmHeroTint(this@MainActivity, thumbnailUrl)
+                    }
+                    navController.addOnDestinationChangedListener(listener)
+                    onDispose { navController.removeOnDestinationChangedListener(listener) }
+                }
+
                 val homeViewModel: HomeViewModel = hiltViewModel()
                 // Pre-warm HistoryViewModel at Activity scope so history data loads
                 // in background immediately â€” zero lag when user taps the history icon
@@ -756,16 +990,20 @@ class MainActivity : ComponentActivity() {
                 val (previousTab, setPreviousTab) = rememberSaveable { mutableStateOf("home") }
 
                 val (listenTogetherInTopBar) = rememberPreference(ListenTogetherInTopBarKey, defaultValue = true)
-                val navigationItems = remember(listenTogetherInTopBar) {
+                // Read here rather than at its old spot further down: the tab row now
+                // depends on it, and a second rememberPreference for the same key would
+                // mean a second DataStore collector for one boolean.
+                val (localOnlyMode) = rememberPreference(LocalOnlyModeKey, false)
+                val navigationItems = remember(listenTogetherInTopBar, localOnlyMode) {
+                    // Local-only mode adds the flat all-songs tab after Home.
+                    val screens = Screens.mainScreens(localOnlyMode)
                     if (listenTogetherInTopBar) {
-                        Screens.MainScreens.filter { it != Screens.ListenTogether }
+                        screens.filter { it != Screens.ListenTogether }
                     } else {
-                        Screens.MainScreens
+                        screens
                     }
                 }
                 val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
-                // Legacy classic nav bar/mini player removed â€” floating pill system always on.
-                val useFloatingNavBar = true
                 val (appleMusicUi) = rememberPreference(AppleMusicUiKey, defaultValue = true)
                 // The Settings tab is exclusive to the floating (iOS-style) tab bar â€”
                 // the classic nav bar keeps settings behind the top bar icon.
@@ -849,7 +1087,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val glassEffectConfig = remember(
-                    liquidGlassGlobalEnabled, useFloatingNavBar, liquidGlassVibrancy, liquidGlassBlurRadius,
+                    liquidGlassGlobalEnabled, liquidGlassVibrancy, liquidGlassBlurRadius,
                     liquidGlassLensHeight, liquidGlassLensAmount, liquidGlassChromaticAberration,
                     liquidGlassDepthEffect, liquidGlassSurfaceTintColorInt,
                     liquidGlassSurfaceOpacity, liquidGlassTextColorInt, liquidGlassPlayerEnabled,
@@ -867,7 +1105,7 @@ class MainActivity : ComponentActivity() {
                     GlassEffectConfig(
                         // The glass look is part of the floating nav bar experience, so it
                         // only activates when that bar is enabled too.
-                        globalEnabled = liquidGlassGlobalEnabled && useFloatingNavBar,
+                        globalEnabled = liquidGlassGlobalEnabled,
                         vibrancy = liquidGlassVibrancy,
                         blurRadius = liquidGlassBlurRadius,
                         lensHeight = liquidGlassLensHeight,
@@ -915,6 +1153,28 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                // Home/Search/Library/ListenTogether/Settings render as pages of one
+                // pager (see MainTabsPager.kt) instead of five separate NavHost
+                // destinations, so switching between them is a pager scroll rather
+                // than a destination swap -- no AnimatedContent transition, no
+                // backdrop re-record. The initial page still honors a launch
+                // shortcut / the user's default-open-tab preference exactly like the
+                // old startDestination selection did.
+                // Search is not a NavHost destination -- opening on it means opening
+                // Home and raising the search overlay over it below.
+                val openSearchOnLaunch = remember {
+                    (tabOpenedFromShortcut ?: defaultOpenTab) == NavigationTab.SEARCH
+                }
+                // NavHost's startDestination is read once at first composition, so this
+                // is where "open on a specific tab" (launch shortcut / default-open-tab
+                // preference) is actually decided -- see the NavHost call below.
+                val initialMainTabRoute = remember {
+                    when (tabOpenedFromShortcut ?: defaultOpenTab) {
+                        NavigationTab.HOME, NavigationTab.SEARCH -> Screens.Home.route
+                        NavigationTab.LIBRARY -> Screens.Library.route
+                    }
+                }
+
                 val topLevelScreens = remember {
                     listOf(
                         Screens.Home.route,
@@ -933,7 +1193,6 @@ class MainActivity : ComponentActivity() {
                 // navigation leaves both search routes.
                 var searchKeyboardActive by rememberSaveable { mutableStateOf(false) }
                 var storedSearchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
-                val (localOnlyMode) = rememberPreference(LocalOnlyModeKey, false)
                 // Local-only mode pins search to the on-device library; the stored
                 // preference is left alone so it returns when the mode is turned off.
                 val searchSource = if (localOnlyMode) SearchSource.LOCAL else storedSearchSource
@@ -977,14 +1236,41 @@ class MainActivity : ComponentActivity() {
                     Timber.tag("Navigation").d("route -> $currentRoute")
                 }
 
+                /**
+                 * Search is an overlay drawn above the pager, not one of its pages.
+                 *
+                 * It was a page, at index 1 -- between Home and Library -- while the bar
+                 * has always drawn it as the standalone circle on the far right. Opening
+                 * search therefore slid the pager sideways past a tab, and every real tab
+                 * switch slid past search. Neither matched what the bar showed. Making it
+                 * a page at the END instead would have cost two intervening pages'
+                 * composition on the way there, so it is not a page at all: the pager is
+                 * exactly the three tabs the bar draws, and search opens in place over
+                 * them for zero page travel.
+                 */
+                var searchOverlayOpen by rememberSaveable { mutableStateOf(openSearchOnLaunch) }
+
+                // Home/Library/Settings are real NavHost destinations again, so
+                // currentRoute already IS the tab route -- no pager-page lookup needed.
+                // The only thing layered on top is search, which is an overlay rather
+                // than a destination, so nothing in the back stack reports it; every
+                // "which tab is this" check downstream (search-mode detection, top-bar
+                // visibility, the nav bar's puck) still wants to hear "we are in
+                // search" while the overlay is up, so answer for it here.
+                val effectiveRoute by remember {
+                    derivedStateOf {
+                        if (searchOverlayOpen) Screens.Search.route else currentRoute
+                    }
+                }
+
                 val inSearchScreen by remember {
                     derivedStateOf {
                         currentRoute?.startsWith("search/") == true ||
-                            currentRoute == Screens.Search.route
+                            effectiveRoute == Screens.Search.route
                     }
                 }
                 val inSearchInputScreen by remember {
-                    derivedStateOf { currentRoute == Screens.Search.route }
+                    derivedStateOf { effectiveRoute == Screens.Search.route }
                 }
                 LaunchedEffect(inSearchScreen) {
                     if (!inSearchScreen) searchKeyboardActive = false
@@ -992,18 +1278,13 @@ class MainActivity : ComponentActivity() {
                 // The floating nav bar keeps Settings as one of its own tabs (see
                 // floatingNavigationItems above), so it should stay visible there too â€”
                 // only the classic nav bar treats Settings as a top-bar-only destination.
-                val navigationItemRoutes = remember(navigationItems, floatingNavigationItems, useFloatingNavBar) {
-                    (if (useFloatingNavBar) floatingNavigationItems else navigationItems)
-                        .map { it.route }.toSet()
+                val navigationItemRoutes = remember(floatingNavigationItems) {
+                    floatingNavigationItems.map { it.route }.toSet()
                 }
 
                 val isKeyboardOpen = WindowInsets.isImeVisible
-                val shouldShowNavigationBar = remember(currentRoute, inSearchInputScreen, useFloatingNavBar) {
+                val shouldShowNavigationBar = remember(currentRoute) {
                     when {
-                        // The floating nav bar renders its own search-mode chrome on
-                        // search_input instead of hiding â€” only the classic bar still
-                        // hides there.
-                        inSearchInputScreen && !useFloatingNavBar -> false
                         // By design: nav bar shows only at Settings root ("settings"
                         // bare route); every drilled-in sub-page ("settings/...") is a
                         // focused detail/editor context and hides it, same as the other
@@ -1029,8 +1310,7 @@ class MainActivity : ComponentActivity() {
                 // A real tablet gets the side bar on its own; the toggle only exists
                 // to force it onto a device that wouldn't otherwise qualify.
                 val isWideScreen = configuration.containerDpSize.width >= TabletWidthThreshold
-                val showRail = forceTabletLayout || isWideScreen ||
-                    (isLandscape && !useFloatingNavBar && !inSearchInputScreen)
+                val showRail = forceTabletLayout || isWideScreen
                 val (sideBarCollapsed, onSideBarCollapsedChange) = rememberPreference(SideBarCollapsedKey, defaultValue = false)
                 val sideBarContentInset by animateDpAsState(
                     targetValue = if (sideBarCollapsed) SideBarCollapsedWidth + SideBarMargin * 2 else SideBarContentInset,
@@ -1060,16 +1340,22 @@ class MainActivity : ComponentActivity() {
                 // which is a different component and reads as a different app.
                 val playerBottomSheetState = rememberBottomSheetState(
                     dismissedBound = 0.dp,
-                    collapsedBound = if (useFloatingNavBar || showRail || inSearchScreen) {
-                        0.dp
-                    } else {
-                        bottomInset +
-                            (if (!showRail && shouldShowNavigationBar) navPadding else 0.dp) +
-                            (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
-                            MiniPlayerHeight
-                    },
+                    // The mini player always docks into the tab bar (or, in tab view, the
+                    // sidebar footer), so the sheet's collapsed state always coincides with
+                    // dismissed and the standalone collapsed mini player never shows.
+                    collapsedBound = 0.dp,
                     expandedBound = maxHeight,
                 )
+
+                // Both ends of the mini-to-full morph are recorded into GraphicsLayers
+                // owned here, above both the player and the nav bar the pill docks into --
+                // remembering them any lower would release them mid-gesture.
+                InstallPlayerMorphLayers()
+
+                // See the zIndex on the player below.
+                val playerAboveBars by remember(playerBottomSheetState) {
+                    derivedStateOf { playerBottomSheetState.progress > 0f }
+                }
 
                 // Only reserve space for the docked player accessory on screens where the
                 // floating tab bar is actually visible; other screens (e.g. settings) get
@@ -1077,7 +1363,7 @@ class MainActivity : ComponentActivity() {
                 // the search-expanded/search-inline chrome) â€” it only drops out once the
                 // keyboard takes over the bar entirely.
                 val hasDockedPlayerAccessory =
-                    useFloatingNavBar && playerMediaMetadata != null && !showRail && shouldShowNavigationBar &&
+                    playerMediaMetadata != null && !showRail && shouldShowNavigationBar &&
                         (!inSearchScreen || !searchKeyboardActive)
                 val playerAwareWindowInsets = remember(
                     bottomInset,
@@ -1123,8 +1409,14 @@ class MainActivity : ComponentActivity() {
                 // or while scrolling back up â€” see TopBarChromeVisibility.
                 val topBarChrome = remember { TopBarChromeVisibility() }
 
-                // Navigation tracking
-                LaunchedEffect(navBackStackEntry) {
+                // Navigation tracking. Keyed on effectiveRoute too, not just
+                // navBackStackEntry -- a pager tab switch (Home/Search/Library/
+                // ListenTogether/Settings) no longer changes the real back stack
+                // entry at all, so navBackStackEntry alone would miss it entirely.
+                // Still keyed on navBackStackEntry as well: resubmitting a new
+                // search query pushes a new entry on the SAME destination template
+                // ("search/{query}"), which would not otherwise register as a change.
+                LaunchedEffect(navBackStackEntry, effectiveRoute) {
                     // Only the results route (search/{query}) carries a query arg;
                     // the search_input landing does not â€” guard against a null arg
                     // so tapping search never NPEs.
@@ -1143,12 +1435,12 @@ class MainActivity : ComponentActivity() {
                                 TextRange(searchQuery.length)
                             )
                         )
-                    } else if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }) {
+                    } else if (navigationItems.fastAny { it.route == effectiveRoute }) {
                         onQueryChange(TextFieldValue())
                     }
 
                     // Reset scroll behavior for main navigation items
-                    if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }) {
+                    if (navigationItems.fastAny { it.route == effectiveRoute }) {
                         if (navigationItems.fastAny { it.route == previousTab }) {
                             topAppBarScrollBehavior.state.resetHeightOffset()
                         }
@@ -1157,7 +1449,7 @@ class MainActivity : ComponentActivity() {
                     topAppBarScrollBehavior.state.resetHeightOffset()
 
                     // Track previous tab for animations
-                    navController.currentBackStackEntry?.destination?.route?.let {
+                    effectiveRoute?.let {
                         setPreviousTab(it)
                     }
                 }
@@ -1198,13 +1490,15 @@ class MainActivity : ComponentActivity() {
 
                 var shouldShowTopBar by rememberSaveable { mutableStateOf(false) }
 
-                LaunchedEffect(navBackStackEntry, listenTogetherInTopBar, showRail) {
-                    val currentRoute = navBackStackEntry?.destination?.route
-                    val isListenTogetherScreen = currentRoute == Screens.ListenTogether.route || 
+                // Keyed on effectiveRoute (not navBackStackEntry) so this reacts to a
+                // pager tab switch too -- the real NavHost entry no longer changes
+                // when switching between Home/Search/Library/ListenTogether/Settings.
+                LaunchedEffect(effectiveRoute, listenTogetherInTopBar, showRail) {
+                    val isListenTogetherScreen = effectiveRoute == Screens.ListenTogether.route ||
                         currentRoute == "listen_together_from_topbar"
                     shouldShowTopBar = !showRail &&
-                        currentRoute in topLevelScreens &&
-                        currentRoute != "settings" &&
+                        effectiveRoute in topLevelScreens &&
+                        effectiveRoute != "settings" &&
                         !(isListenTogetherScreen && listenTogetherInTopBar)
                 }
 
@@ -1237,8 +1531,8 @@ class MainActivity : ComponentActivity() {
                     onDispose { removeOnNewIntentListener(listener) }
                 }
 
-                val currentTitleRes = remember(navBackStackEntry) {
-                    when (navBackStackEntry?.destination?.route) {
+                val currentTitleRes = remember(effectiveRoute) {
+                    when (effectiveRoute) {
                         Screens.Home.route -> R.string.music
                         Screens.Search.route -> R.string.search
                         Screens.Library.route -> R.string.filter_library
@@ -1285,11 +1579,25 @@ class MainActivity : ComponentActivity() {
                 // any scroll (266 frames/7s at rest). Same trap as LayerBackdrop.contentVersion.
                 val backdropFreeze = rememberBackdropFreeze()
                 val backdropFreezeConnection = backdropFreeze.connection
-                val backdropFrozenProvider = backdropFreeze.frozen
+                // A plain nav transition (slide+fade between two screens) is neither a
+                // scroll nor a fling, so backdropFreeze never caught it — the backdrop
+                // re-recorded every frame of every navigation for the whole ~200ms
+                // transition, at the same per-frame cost already measured and fixed for
+                // scroll. OR'd in here rather than folded into BackdropFreeze itself,
+                // which many other screens also use for their own local backdrops.
+                val navTransitionFreeze = rememberNavTransitionFreeze(currentRoute)
+                // Home/Library/Settings are real NavHost destinations again, so a tab
+                // switch IS a route change and navTransitionFreeze above already covers
+                // it -- the separate pager-motion freeze this used to need doesn't
+                // apply once there is no pager motion to miss.
+                val backdropFrozenProvider = {
+                    backdropFreeze.frozen() ||
+                        navTransitionFreeze.frozen()
+                }
 
                 // One provider replaces Android's stretch/glow edge effect with the
                 // iOS rubber-band for every scroll container in the app.
-                val iosOverscroll by rememberPreference(IosOverscrollKey, defaultValue = false)
+                val iosOverscroll by rememberPreference(IosOverscrollKey, defaultValue = true)
                 val iosOverscrollFactory = rememberIosOverscrollFactory()
 
                 // Entering/exiting search: hold the nav bar's visual state at the
@@ -1301,7 +1609,14 @@ class MainActivity : ComponentActivity() {
                         searchVisualOverride = true
                         coroutineScope.launch {
                             delay(SearchNavTransitionDelayMs)
-                            navController.navigate(Screens.Search.route) { launchSingleTop = true }
+                            // Search opens over whatever tab is showing. Drilled into a
+                            // detail screen, pop back to the tab root first so the overlay
+                            // does not sit on top of an album page the user can no longer
+                            // see the back button for.
+                            if (navController.currentDestination?.route !in TabRootRoutes) {
+                                navController.popBackStack(navController.graph.startDestinationId, inclusive = false)
+                            }
+                            searchOverlayOpen = true
                             searchVisualOverride = null
                         }
                     }
@@ -1312,15 +1627,14 @@ class MainActivity : ComponentActivity() {
                         searchVisualOverride = false
                         coroutineScope.launch {
                             delay(SearchNavTransitionDelayMs)
-                            // Pop the WHOLE search flow, not a single level. Searching
-                            // pushes search_input and then search/{query} on top of it,
-                            // so navigateUp() from a results screen landed on the hint
-                            // screen â€” which renders nothing once the keyboard is closed,
-                            // and read as "the screen I came from lost all its content".
-                            // Cancelling search must return to whatever preceded it.
-                            if (!navController.popBackStack(Screens.Search.route, inclusive = true)) {
+                            // search/{query} (the results screen) is still a real pushed
+                            // NavHost destination -- leave it the normal way. The input
+                            // overlay itself just closes, and whatever tab was underneath
+                            // is still exactly where it was: no page to scroll back to.
+                            if (navController.currentDestination?.route?.startsWith("search/") == true) {
                                 navController.navigateUp()
                             }
+                            searchOverlayOpen = false
                             searchVisualOverride = null
                         }
                     }
@@ -1345,10 +1659,11 @@ class MainActivity : ComponentActivity() {
                     onTapBar = {
                         if (inSearchScreen && !inSearchInputScreen) {
                             // Tapping the bar again from a results screen (search/{query})
-                            // pops back to the hint screen (search_input) and opens the
-                            // keyboard there instead â€” a normal, working search, rather
-                            // than trying to resubmit in place.
-                            navController.popBackStack(Screens.Search.route, inclusive = false)
+                            // pops that screen and reopens the search overlay's keyboard
+                            // instead of trying to resubmit in place.
+                            if (navController.currentDestination?.route !in TabRootRoutes) {
+                                navController.popBackStack(navController.graph.startDestinationId, inclusive = false)
+                            }
                         }
                         searchKeyboardActive = true
                     },
@@ -1466,8 +1781,7 @@ class MainActivity : ComponentActivity() {
                                         title = {
                                             // Home shows the wordmark; every other tab keeps
                                             // its own title.
-                                            val isHome =
-                                                navBackStackEntry?.destination?.route == Screens.Home.route
+                                            val isHome = effectiveRoute == Screens.Home.route
                                             Text(
                                                 text = if (isHome) {
                                                     BrandName
@@ -1499,11 +1813,7 @@ class MainActivity : ComponentActivity() {
                                                   if (enableSettingsPopup) {
                                                       showSettingDialoge = true
                                                   } else {
-                                                      // Same multi-back-stack pattern as onNavItemClick below:
-                                                      // without it this push skips saveState/restoreState and
-                                                      // can dead-end (back stack doesn't reconcile with the
-                                                      // tab bar's own popUpTo group).
-                                                      navController.navigate("settings") {
+                                                      navController.navigate(Screens.Settings.route) {
                                                           popUpTo(navController.graph.startDestinationId) {
                                                               saveState = true
                                                           }
@@ -1567,7 +1877,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         bottomBar = {
-                            val onNavItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, topAppBarScrollBehavior, playerBottomSheetState) {
+                            val onNavItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, topAppBarScrollBehavior, playerBottomSheetState, enterSearch) {
                                 var lastNavRoute: String? = null
                                 var lastNavTimeMs = 0L
                                 { screen: Screens, isSelected: Boolean ->
@@ -1575,7 +1885,14 @@ class MainActivity : ComponentActivity() {
                                         playerBottomSheetState.collapseSoft()
                                     }
 
-                                    if (isSelected) {
+                                    // Search is an overlay, not a NavHost destination -- the
+                                    // fallback below would navigate("search_input"), a route that
+                                    // doesn't exist in the graph. The tablet side bar still lists
+                                    // Search as an item, so this cannot live only on the phone
+                                    // bar's search circle.
+                                    if (screen == Screens.Search) {
+                                        enterSearch()
+                                    } else if (isSelected) {
                                         navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                         coroutineScope.launch {
                                             topAppBarScrollBehavior.state.resetHeightOffset()
@@ -1589,7 +1906,9 @@ class MainActivity : ComponentActivity() {
                                         // meant a tab tap within the debounce window was silently
                                         // swallowed and you stayed on the previous screen, which
                                         // is why Home sometimes did nothing.
-                                        if (navController.currentDestination?.route != lastNavRoute) {
+                                        // effectiveRoute (not the raw destination route): it also
+                                        // reflects the search overlay, which the raw route can't.
+                                        if (effectiveRoute != lastNavRoute) {
                                             lastNavRoute = null
                                         }
                                         // Guards against a double-fire from the floating tab bar's
@@ -1598,11 +1917,9 @@ class MainActivity : ComponentActivity() {
                                         if (screen.route != lastNavRoute || now - lastNavTimeMs >= NavDebounceMs) {
                                             lastNavRoute = screen.route
                                             lastNavTimeMs = now
+                                            // Plain navigate() with the standard multi-back-stack
+                                            // pattern, same as every other route.
                                             navController.navigate(screen.route) {
-                                                // Preserve each tab's own back stack across tab
-                                                // switches (multi-back-stack): drilling into a
-                                                // detail on one tab, switching away and back
-                                                // restores where you were instead of the tab root.
                                                 popUpTo(navController.graph.startDestinationId) {
                                                     saveState = true
                                                 }
@@ -1631,7 +1948,7 @@ class MainActivity : ComponentActivity() {
                                     // the floating glass bar instead of hard-clipping, so the bar
                                     // stays legible over bright artwork.  The horizontal gradient
                                     // on the left/right edges mimics Apple Music's edge blur.
-                                    if (appleMusicUi && useFloatingNavBar && isGlassAllowed()) {
+                                    if (appleMusicUi && isGlassAllowed()) {
                                         Box(
                                             modifier = Modifier
                                                 .align(Alignment.BottomCenter)
@@ -1649,11 +1966,21 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
 
-                                    BottomSheetPlayer(
-                                        state = playerBottomSheetState,
-                                        navController = navController,
-                                        pureBlack = pureBlack
-                                    )
+                                    Box(
+                                        // Above the bars for as long as the player is anything
+                                        // other than fully collapsed, so the growing container
+                                        // covers them instead of the bars having to get out of
+                                        // its way. Melox's own full player does exactly this.
+                                        // Derived, so it flips twice a gesture rather than
+                                        // recomposing per frame.
+                                        modifier = Modifier.zIndex(if (playerAboveBars) 1f else 0f),
+                                    ) {
+                                        BottomSheetPlayer(
+                                            state = playerBottomSheetState,
+                                            navController = navController,
+                                            pureBlack = pureBlack
+                                        )
+                                    }
 
                                     // Use graphicsLayer instead of offset to avoid recomposition
                                     // graphicsLayer runs during draw phase, not composition phase
@@ -1670,83 +1997,60 @@ class MainActivity : ComponentActivity() {
                                             val hideOffset = totalHeightPx * (1 - navBarHeightPx / NavigationBarHeight.toPx())
                                             slideOffset + hideOffset
                                         }
+
                                     }
 
-                                    if (useFloatingNavBar) {
-                                        AppFloatingNavBar(
-                                            navigationItems = floatingNavigationItems,
-                                            currentRoute = currentRoute,
-                                            onItemClick = onNavItemClick,
-                                            scrollConnection = floatingNavBarScrollConnection,
-                                            pureBlack = pureBlack,
-                                            showPlayerAccessory = hasDockedPlayerAccessory,
-                                            onAccessoryClick = { playerBottomSheetState.expandSoft() },
-                                            onAccessoryLyricsClick = {
-                                                playerBottomSheetState.expandSoft()
-                                                playerConnection?.requestShowLyrics?.value = true
-                                            },
-                                            onAccessoryQueueClick = {
-                                                playerBottomSheetState.expandSoft()
-                                                playerConnection?.requestShowQueue?.value = true
-                                            },
-                                            modifier = Modifier
-                                                .align(Alignment.BottomCenter)
-                                                // Keep the bar compact/portrait-width in landscape
-                                                // instead of stretching across the wide screen.
-                                                .widthIn(max = 500.dp)
-                                                .padding(horizontal = 16.dp)
-                                                .padding(bottom = bottomInset + 8.dp)
-                                                .graphicsLayer {
-                                                    // The floating bar (especially with the docked
-                                                    // player accessory) is taller than the classic
-                                                    // nav bar, so hide it by its own measured height
-                                                    // instead of the fixed nav bar height.
-                                                    val hiddenOffset =
-                                                        size.height + (bottomInset + 8.dp).toPx()
-                                                    val navBarHeightPx = navigationBarHeight.toPx()
-                                                    translationY = if (navBarHeightPx == 0f) {
-                                                        hiddenOffset
-                                                    } else {
-                                                        val progress = playerBottomSheetState.progress.coerceIn(0f, 1f)
-                                                        val slideOffset = hiddenOffset * progress
-                                                        val hideOffset = hiddenOffset * (1 - navBarHeightPx / NavigationBarHeight.toPx())
-                                                        slideOffset + hideOffset
-                                                    }
+                                    AppFloatingNavBar(
+                                        navigationItems = floatingNavigationItems,
+                                        currentRoute = effectiveRoute,
+                                        onItemClick = onNavItemClick,
+                                        scrollConnection = floatingNavBarScrollConnection,
+                                        pureBlack = pureBlack,
+                                        showPlayerAccessory = hasDockedPlayerAccessory,
+                                        onAccessoryClick = { playerBottomSheetState.expandSoft() },
+                                        onAccessoryLyricsClick = {
+                                            playerBottomSheetState.expandSoft()
+                                            playerConnection?.requestShowLyrics?.value = true
+                                        },
+                                        onAccessoryQueueClick = {
+                                            playerBottomSheetState.expandSoft()
+                                            playerConnection?.requestShowQueue?.value = true
+                                        },
+                                        // tabPosition omitted (defaults to null): there is no
+                                        // pager to follow now that the tabs are real NavHost
+                                        // destinations again, so the puck goes back to its
+                                        // normal selectedTabKey-driven spring. The parameter and
+                                        // its plumbing through FloatingTabBar/FloatingNavBar are
+                                        // left in place, unused, rather than torn out.
+                                        modifier = Modifier
+                                            .align(Alignment.BottomCenter)
+                                            // Keep the bar compact/portrait-width in landscape
+                                            // instead of stretching across the wide screen.
+                                            .widthIn(max = 500.dp)
+                                            .padding(horizontal = 16.dp)
+                                            .padding(bottom = bottomInset + 8.dp)
+                                            .graphicsLayer {
+                                                // The floating bar (especially with the docked
+                                                // player accessory) is taller than the classic
+                                                // nav bar, so hide it by its own measured height
+                                                // instead of the fixed nav bar height.
+                                                val hiddenOffset =
+                                                    size.height + (bottomInset + 8.dp).toPx()
+                                                val navBarHeightPx = navigationBarHeight.toPx()
+                                                // Held still for the whole gesture -- see the
+                                                // classic bar above. The pill docks in here, so
+                                                // a bar that slides drags the morph's source
+                                                // rect along with it.
+                                                translationY = if (navBarHeightPx == 0f) {
+                                                    hiddenOffset
+                                                } else {
+                                                    hiddenOffset * (1 - navBarHeightPx / NavigationBarHeight.toPx())
                                                 }
-                                        )
-                                    } else {
-                                        AppNavigationBar(
-                                            glassEnabled = true,
-                                            navigationItems = navigationItems,
-                                            currentRoute = currentRoute,
-                                            onItemClick = onNavItemClick,
-                                            pureBlack = pureBlack,
-                                            slimNav = slimNav,
-                                            onSearchLongClick = onSearchLongClick,
-                                            modifier = Modifier
-                                                .align(Alignment.BottomCenter)
-                                                .height(bottomInset + navPadding)
-                                                .then(navBarGraphicsLayer)
-                                        )
-                                    }
+
+                                            }
+                                    )
 
 
-                                    // The floating nav bar is edge-to-edge, so skip the opaque
-                                    // strip that backs the classic nav bar's system inset area.
-                                    if (!useFloatingNavBar) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .align(Alignment.BottomCenter)
-                                                .height(bottomInsetDp)
-                                                // Use graphicsLayer for background color changes
-                                                .graphicsLayer {
-                                                    val progress = playerBottomSheetState.progress
-                                                    alpha = if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
-                                                }
-                                                .background(baseBg)
-                                        )
-                                    }
                                 }
                             } else {
                                 if (currentRoute != "wrapped" && currentRoute != "update" && currentRoute != "listen_together/chat" && currentRoute != "ambient_mode") {
@@ -1776,7 +2080,7 @@ class MainActivity : ComponentActivity() {
                             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                     ) {
                         Box(Modifier.fillMaxSize()) {
-                            val onRailItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, topAppBarScrollBehavior, playerBottomSheetState) {
+                            val onRailItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, topAppBarScrollBehavior, playerBottomSheetState, enterSearch) {
                                 var lastNavRoute: String? = null
                                 var lastNavTimeMs = 0L
                                 { screen: Screens, isSelected: Boolean ->
@@ -1784,7 +2088,14 @@ class MainActivity : ComponentActivity() {
                                         playerBottomSheetState.collapseSoft()
                                     }
 
-                                    if (isSelected) {
+                                    // Search is an overlay, not a NavHost destination -- the
+                                    // fallback below would navigate("search_input"), a route that
+                                    // doesn't exist in the graph. The tablet side bar still lists
+                                    // Search as an item, so this cannot live only on the phone
+                                    // bar's search circle.
+                                    if (screen == Screens.Search) {
+                                        enterSearch()
+                                    } else if (isSelected) {
                                         navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                         coroutineScope.launch {
                                             topAppBarScrollBehavior.state.resetHeightOffset()
@@ -1794,11 +2105,9 @@ class MainActivity : ComponentActivity() {
                                         if (screen.route != lastNavRoute || now - lastNavTimeMs >= NavDebounceMs) {
                                             lastNavRoute = screen.route
                                             lastNavTimeMs = now
+                                            // Plain navigate() with the standard multi-back-stack
+                                            // pattern, same as every other route.
                                             navController.navigate(screen.route) {
-                                                // Preserve each tab's own back stack across tab
-                                                // switches (multi-back-stack): drilling into a
-                                                // detail on one tab, switching away and back
-                                                // restores where you were instead of the tab root.
                                                 popUpTo(navController.graph.startDestinationId) {
                                                     saveState = true
                                                 }
@@ -1819,70 +2128,20 @@ class MainActivity : ComponentActivity() {
                             }
 
                             Box(Modifier.fillMaxSize()) {
-                                // NavHost with animations (Material 3 Expressive style)
-                                NavHost(
-                                    navController = navController,
-                                    startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
-                                        NavigationTab.HOME -> Screens.Home
-                                        NavigationTab.LIBRARY -> Screens.Library
-                                        else -> Screens.Home
-                                    }.route,
-                                    // Enter Transition - smoother with smaller offset and longer duration
-                                    enterTransition = {
-                                        val currentRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == targetState.destination.route
-                                        }
-                                        val previousRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == initialState.destination.route
-                                        }
-
-                                        if (currentRouteIndex == -1 || currentRouteIndex > previousRouteIndex)
-                                            slideInHorizontally { it / 8 } + fadeIn(tween(200))
-                                        else
-                                            slideInHorizontally { -it / 8 } + fadeIn(tween(200))
-                                    },
-                                    // Exit Transition - smoother with smaller offset and longer duration
-                                    exitTransition = {
-                                        val currentRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == initialState.destination.route
-                                        }
-                                        val targetRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == targetState.destination.route
-                                        }
-
-                                        if (targetRouteIndex == -1 || targetRouteIndex > currentRouteIndex)
-                                            slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
-                                        else
-                                            slideOutHorizontally { it / 8 } + fadeOut(tween(200))
-                                    },
-                                    // Pop Enter Transition - smoother with smaller offset and longer duration
-                                    popEnterTransition = {
-                                        val currentRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == targetState.destination.route
-                                        }
-                                        val previousRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == initialState.destination.route
-                                        }
-
-                                        if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
-                                            slideInHorizontally { it / 8 } + fadeIn(tween(200))
-                                        else
-                                            slideInHorizontally { -it / 8 } + fadeIn(tween(200))
-                                    },
-                                    // Pop Exit Transition - smoother with smaller offset and longer duration
-                                    popExitTransition = {
-                                        val currentRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == initialState.destination.route
-                                        }
-                                        val targetRouteIndex = navigationItems.indexOfFirst {
-                                            it.route == targetState.destination.route
-                                        }
-
-                                        if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
-                                            slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
-                                        else
-                                            slideOutHorizontally { it / 8 } + fadeOut(tween(200))
-                                    },
+                                // Everything the NavHost renders sits inside one shared
+                                // transition scope, so a tile's artwork on one destination
+                                // and the hero on the next are two ends of the same element
+                                // rather than two images that cross-fade. Destinations opt
+                                // in individually -- see sharedComposable in
+                                // NavigationBuilder.kt and Modifier.sharedArtwork.
+                                SharedTransitionLayout {
+                                CompositionLocalProvider(
+                                    LocalSharedTransitionScope provides this@SharedTransitionLayout,
+                                ) {
+                                // Carries layerBackdrop now -- see the comment on the Search
+                                // AnimatedVisibility below for why this moved off NavHost's
+                                // own modifier and up to wrap both NavHost and Search.
+                                Box(
                                     modifier = Modifier
                                         // Skipped on WebView routes: layerBackdrop records
                                         // this whole subtree into a GraphicsLayer so glass
@@ -1915,7 +2174,7 @@ class MainActivity : ComponentActivity() {
                                                 // node, otherwise that node's draw still
                                                 // re-runs every time anything else in the
                                                 // window redraws. The mini player and nav bar
-                                                // are siblings of the NavHost, yet their
+                                                // are siblings of this Box, yet their
                                                 // per-frame ticks were forcing a full
                                                 // re-record of this subtree â€” 117ms/frame at
                                                 // idle with a song playing. Defaults only, so
@@ -1944,21 +2203,104 @@ class MainActivity : ComponentActivity() {
                                         .nestedScroll(backdropFreezeConnection)
                                         .nestedScroll(topBarChrome.connection)
                                         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-                                        .then(
-                                            if (useFloatingNavBar) {
-                                                Modifier.nestedScroll(floatingNavBarScrollConnection)
-                                            } else {
-                                                Modifier
-                                            }
-                                        )
+                                        .nestedScroll(floatingNavBarScrollConnection)
+                                ) {
+                                // NavHost with animations (Material 3 Expressive style)
+                                NavHost(
+                                    navController = navController,
+                                    // Which tab this opens on (launch shortcut / the
+                                    // default-open-tab preference) -- see initialMainTabRoute.
+                                    startDestination = initialMainTabRoute,
+                                    // iOS parallax push. The incoming screen travels the FULL
+                                    // width; the outgoing one slides a third of that and dims,
+                                    // and the difference between the two speeds is what reads
+                                    // as depth. Both share Motion.push()'s curve so they stay
+                                    // locked together.
+                                    //
+                                    // This replaced an index-based direction scheme that had
+                                    // been dead since the pager migration and was actively
+                                    // wrong: it looked routes up in `navigationItems`, but
+                                    // every tab now lives inside the `main_tabs` pager, so the
+                                    // outgoing route was ALWAYS `main_tabs` and both lookups
+                                    // returned -1. `exitTransition`'s `-1 > -1` is false, so
+                                    // the else branch ran and the outgoing screen slid RIGHT
+                                    // while the incoming screen also slid in from the right —
+                                    // both travelling the same way. That is what made every
+                                    // non-morph push (settings sub-pages most visibly) look
+                                    // broken. Pop happened to be correct by accident.
+                                    enterTransition = {
+                                        slideInHorizontally(Motion.push()) { it }
+                                    },
+                                    exitTransition = {
+                                        // A destination that grows out of one of this
+                                        // screen's tiles must not slide it away underneath:
+                                        // the tile is the thing the next screen is coming
+                                        // out of, so this one holds still and dims.
+                                        if (isMorphRoute(targetState.destination.route)) {
+                                            fadeOut(tween(200), targetAlpha = 0.7f)
+                                        } else {
+                                            slideOutHorizontally(Motion.push()) {
+                                                Motion.parallaxOffset(it)
+                                            } + fadeOut(Motion.push(), targetAlpha = Motion.PushDimAlpha)
+                                        }
+                                    },
+                                    // Pop is a plain crossfade -- both directions, every
+                                    // route, morph or not. Predictive back scrubs whatever
+                                    // spec is here by the GESTURE's live drag progress rather
+                                    // than running it on a timer, and only a plain alpha tween
+                                    // scrubs cleanly: a fraction of a fade is still a smaller
+                                    // fade, but a fraction of a slide-with-parallax-offset (or
+                                    // the morph's spring-driven shrink-to-tile) has no clean
+                                    // meaning at partial progress, which is what was showing up
+                                    // as the outgoing and incoming screens seemingly both
+                                    // sliding into place at once during a back-gesture drag.
+                                    // Push keeps its slide/morph above -- only pop needed to
+                                    // change, since only pop is ever gesture-driven.
+                                    popEnterTransition = {
+                                        fadeIn(tween(220))
+                                    },
+                                    popExitTransition = {
+                                        fadeOut(tween(220))
+                                    },
+                                    modifier = Modifier.fillMaxSize(),
                                 ) {
                                     navigationBuilder(
                                         navController = navController,
                                         scrollBehavior = topAppBarScrollBehavior,
                                         activity = this@MainActivity,
-                                        snackbarHostState = snackbarHostState
+                                        snackbarHostState = snackbarHostState,
                                     )
                                 }
+                                }
+
+                                // Search, over the tabs rather than beside them. This box
+                                // (not NavHost's own modifier) is what carries layerBackdrop
+                                // now -- see the comment on it below. Moved OUT of NavHost's
+                                // modifier chain and made the shared parent of both NavHost
+                                // and this AnimatedVisibility specifically so glass sampling
+                                // covers search too.
+                                //
+                                // It didn't before: layerBackdrop lived on NavHost's own
+                                // modifier, and this AnimatedVisibility was a SIBLING call
+                                // after NavHost's closing brace -- outside the element that
+                                // modifier was attached to, not inside it. appBackdrop's
+                                // recorded layer therefore never contained search's content
+                                // at all; it kept showing whatever the tab underneath had
+                                // last drawn, frozen, for as long as search stayed open. That
+                                // is the "search's backdrop still holds the previous page"
+                                // bug -- not a freeze/throttle timing issue, a structural one.
+                                AnimatedVisibility(
+                                    visible = searchOverlayOpen,
+                                    enter = fadeIn(Motion.appear()),
+                                    exit = fadeOut(Motion.appear()),
+                                ) {
+                                    SearchScreen(
+                                        navController = navController,
+                                        pureBlack = pureBlack,
+                                    )
+                                }
+                                } // CompositionLocalProvider(LocalSharedTransitionScope)
+                                } // SharedTransitionLayout
                             }
 
                             com.beatwave.music.ui.component.RingtoneTrimmerDialog(
@@ -2072,7 +2414,7 @@ class MainActivity : ComponentActivity() {
 
                                 AppFloatingSideBar(
                                     navigationItems = navigationItems,
-                                    currentRoute = currentRoute,
+                                    currentRoute = effectiveRoute,
                                     onItemClick = onRailItemClick,
                                     sections = sidebarSections,
                                     pureBlack = pureBlack,
@@ -2086,7 +2428,13 @@ class MainActivity : ComponentActivity() {
                                                 if (enableSettingsPopup) {
                                                     showSettingDialoge = true
                                                 } else {
-                                                    navController.navigate("settings")
+                                                    navController.navigate(Screens.Settings.route) {
+                                                        popUpTo(navController.graph.startDestinationId) {
+                                                            saveState = true
+                                                        }
+                                                        launchSingleTop = true
+                                                        restoreState = true
+                                                    }
                                                 }
                                             },
                                         )
@@ -2169,10 +2517,18 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    BottomSheetMenu(
-                        state = LocalMenuState.current,
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                    )
+                    // One preference decides the presentation for every long-press menu
+                    // in the app. Both hosts read the same MenuState, so the ~30 call
+                    // sites are untouched either way.
+                    val (overlayMenuStyle) = rememberPreference(OverlayMenuStyleKey, defaultValue = true)
+                    if (overlayMenuStyle) {
+                        OverlayMenu(state = LocalMenuState.current)
+                    } else {
+                        BottomSheetMenu(
+                            state = LocalMenuState.current,
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
 
                     BottomSheetPage(
                         state = LocalBottomSheetPageState.current,
@@ -2220,7 +2576,17 @@ class MainActivity : ComponentActivity() {
                             onDismissRequest = { showSettingDialoge = false },
                             onNavigate = { route ->
                                 showSettingDialoge = false
-                                navController.navigate(route)
+                                if (route in TabRootRoutes) {
+                                    navController.navigate(route) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                } else {
+                                    navController.navigate(route)
+                                }
                             },
                             homeViewModel = homeViewModel
                         )

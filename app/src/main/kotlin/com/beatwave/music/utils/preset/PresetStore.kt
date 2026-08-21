@@ -16,6 +16,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/utils/preset/PresetStore.kt
 import com.beatwave.music.constants.CustomFontPathKey
 import com.beatwave.music.constants.DiyLayoutKey
 import com.beatwave.music.constants.HomeBackgroundPathKey
@@ -33,6 +34,26 @@ import com.beatwave.music.ui.player.customize.PlayerIconStore
 import com.beatwave.music.ui.theme.customFontDir
 import com.beatwave.music.utils.MediaImport
 import com.beatwave.music.utils.dataStore
+=======
+import com.beatwave.music.constants.CustomFontPathKey
+import com.beatwave.music.constants.DiyLayoutKey
+import com.beatwave.music.constants.HomeBackgroundPathKey
+import com.beatwave.music.constants.PlayerIconsKey
+import com.beatwave.music.constants.V2PlayerIconsKey
+import com.beatwave.music.constants.PrefType
+import com.beatwave.music.constants.PresetCategory
+import com.beatwave.music.constants.PresetKeys
+import com.beatwave.music.constants.presetKeyTypes
+import com.beatwave.music.ui.player.customize.DIY_MAX_STICKERS
+import com.beatwave.music.ui.player.customize.DiyLayout
+import com.beatwave.music.ui.player.customize.DiyStickerKind
+import com.beatwave.music.ui.player.customize.DiyStore
+import com.beatwave.music.ui.player.customize.PlayerIconSet
+import com.beatwave.music.ui.player.customize.PlayerIconStore
+import com.beatwave.music.ui.theme.customFontDir
+import com.beatwave.music.utils.MediaImport
+import com.beatwave.music.utils.dataStore
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/utils/preset/PresetStore.kt
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
 import org.json.JSONObject
@@ -57,6 +78,14 @@ object PresetStore {
     private const val THUMB = "thumb.webp"
     private const val ASSETS = "assets"
     private const val FORMAT_VERSION = 1
+
+    /**
+     * The archive's asset directory is flat, and a V1 and a V2 slot can produce the same
+     * file name, so V2 glyphs are stored under a prefix. Anything that walks the asset
+     * directory has to know about it -- see [sanitiseAssets].
+     */
+    private const val V2_ASSET_PREFIX = "v2_"
+
 
     // --- Import limits. A preset can arrive from anywhere, so every one of these is a hard stop.
     private const val MAX_ARCHIVE_BYTES = 20L * 1024 * 1024
@@ -154,6 +183,19 @@ object PresetStore {
                 if (source.isFile) source.copyTo(File(assetDir, override.fileName), overwrite = true)
             }
             manifest.put("playerIcons", JSONObject(set.toJson()))
+
+            // The V2 (Apple-style) player keeps its glyphs under a separate key and a
+            // separate directory. Without this a preset silently dropped every icon the
+            // user had chosen there. Asset names are prefixed because the archive is one
+            // flat directory and a V1 and V2 slot can produce the same file name.
+            val v2Set = PlayerIconStore.load(context, V2PlayerIconsKey)
+            v2Set.overrides.values.forEach { override ->
+                val source = PlayerIconStore.fileFor(context, override, isV2 = true)
+                if (source.isFile) {
+                    source.copyTo(File(assetDir, V2_ASSET_PREFIX + override.fileName), overwrite = true)
+                }
+            }
+            manifest.put("v2PlayerIcons", JSONObject(v2Set.toJson()))
         }
         if (PresetCategory.DIY in categories) {
             val layout = DiyStore.load(context)
@@ -238,6 +280,18 @@ object PresetStore {
                 }
                 context.dataStore.edit { it[PlayerIconsKey] = set.toJson() }
                 PlayerIconStore.pruneOrphans(context, set)
+            }
+            // Absent from presets written before V2 existed, so a missing block leaves
+            // whatever the user already had rather than clearing it.
+            manifest.optJSONObject("v2PlayerIcons")?.let { icons ->
+                val v2Set = PlayerIconSet.fromJson(icons.toString())
+                val dest = PlayerIconStore.v2Dir(context)
+                v2Set.overrides.values.forEach { override ->
+                    File(assetDir, V2_ASSET_PREFIX + override.fileName).takeIf { it.isFile }
+                        ?.copyTo(File(dest, override.fileName), overwrite = true)
+                }
+                context.dataStore.edit { it[V2PlayerIconsKey] = v2Set.toJson() }
+                PlayerIconStore.pruneOrphans(context, v2Set, isV2 = true)
             }
         }
         if (PresetCategory.DIY in categories) {
@@ -451,6 +505,13 @@ object PresetStore {
                 icons.keys().forEach { slot ->
                     icons.optJSONObject(slot)?.optString("file")
                         ?.takeIf { it.isNotEmpty() }?.let(::add)
+                }
+            }
+            manifest.optJSONObject("v2PlayerIcons")?.let { icons ->
+                icons.keys().forEach { slot ->
+                    icons.optJSONObject(slot)?.optString("file")
+                        ?.takeIf { it.isNotEmpty() }
+                        ?.let { add(V2_ASSET_PREFIX + it) }
                 }
             }
             manifest.optJSONObject("diy")?.optJSONArray("stickers")?.let { arr ->

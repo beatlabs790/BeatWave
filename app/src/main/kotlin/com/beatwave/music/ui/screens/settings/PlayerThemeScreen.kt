@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/PlayerThemeScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
@@ -102,6 +103,42 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.ui.utils.backToMain
 import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.utils.rememberPreference
+=======
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.constants.PlayerArtworkStyle
+import com.beatwave.music.constants.PlayerArtworkStyleKey
+import com.beatwave.music.constants.PlayerBackgroundStyle
+import com.beatwave.music.constants.PlayerBackgroundStyleKey
+import com.beatwave.music.constants.UseAppleMusicPlayerKey
+import com.beatwave.music.constants.ShowPlayerThumbnailShadowKey
+import com.beatwave.music.constants.ShowUpNextKey
+import com.beatwave.music.constants.PlayerThumbnailShadowElevationKey
+import com.beatwave.music.constants.PlayerGradientAngleKey
+import com.beatwave.music.constants.PlayerGradientStopsKey
+import com.beatwave.music.constants.PlayerLayoutHiddenSlotsKey
+import com.beatwave.music.constants.PlayerLayoutOrderKey
+import com.beatwave.music.constants.PlayerStaticColorKey
+import com.beatwave.music.constants.SliderStyle
+import com.beatwave.music.constants.SliderStyleKey
+import com.beatwave.music.models.MediaMetadata
+import com.beatwave.music.ui.component.ColorPickerDialog
+import com.beatwave.music.ui.component.SwitchPreference
+import com.beatwave.music.ui.component.SliderPreference
+import com.beatwave.music.ui.component.IconButton as AppIconButton
+import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
+import com.beatwave.music.ui.player.PlayerLayoutRegistry
+import com.beatwave.music.ui.player.PlayerSlot
+import com.beatwave.music.ui.theme.DefaultGradientStops
+import com.beatwave.music.ui.theme.decodeGradientStops
+import com.beatwave.music.ui.theme.encodeGradientStops
+import com.beatwave.music.ui.theme.tiltedGradient
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.utils.rememberPreference
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/PlayerThemeScreen.kt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.roundToInt
 import sh.calvin.reorderable.ReorderableItem
@@ -138,6 +175,16 @@ fun PlayerThemeScreen(
     val (gradientAngle, onGradientAngleChange) = rememberPreference(
         PlayerGradientAngleKey, defaultValue = 90f
     )
+    val (useAppleMusicPlayer, onUseAppleMusicPlayerChange) = rememberPreference(
+        UseAppleMusicPlayerKey, defaultValue = false
+    )
+    val (showPlayerThumbnailShadow, onShowPlayerThumbnailShadowChange) = rememberPreference(
+        ShowPlayerThumbnailShadowKey, defaultValue = false
+    )
+    val (playerThumbnailShadowElevation, onPlayerThumbnailShadowElevationChange) = rememberPreference(
+        PlayerThumbnailShadowElevationKey, defaultValue = 8f
+    )
+    val (showUpNext, onShowUpNextChange) = rememberPreference(ShowUpNextKey, defaultValue = false)
     val gradientStops = remember(gradientStopsRaw) { decodeGradientStops(gradientStopsRaw) }
 
     var showStaticPicker by rememberSaveable { mutableStateOf(false) }
@@ -156,6 +203,8 @@ fun PlayerThemeScreen(
     // Apple Music draws its own square artwork treatment, so the shape presets
     // have nothing to act on while it is selected.
     val artworkLocked = background == PlayerBackgroundStyle.APPLE_MUSIC
+    // V17 uses its own thumbnail layout — VINYL and CLOVER don't apply.
+    val v17Active = useAppleMusicPlayer
 
     // Preview the song that is actually playing; fall back to the app icon.
     val playerConnection = LocalPlayerConnection.current
@@ -170,11 +219,12 @@ fun PlayerThemeScreen(
             .verticalScroll(rememberScrollState()),
     ) {
         SectionTitle(stringResource(R.string.player_theme_artwork))
-        if (artworkLocked) {
-            LockedNote(stringResource(R.string.player_theme_artwork_locked))
+        if (artworkLocked || v17Active) {
+            LockedNote(stringResource(if (v17Active) R.string.player_theme_artwork_locked_v17 else R.string.player_theme_artwork_locked))
         }
         PresetRow {
             PlayerArtworkStyle.entries.forEach { style ->
+                val disabledByV17 = v17Active && style != PlayerArtworkStyle.CARD
                 PresetCard(
                     label = when (style) {
                         PlayerArtworkStyle.CARD -> stringResource(R.string.player_theme_card)
@@ -182,7 +232,7 @@ fun PlayerThemeScreen(
                         PlayerArtworkStyle.CLOVER -> stringResource(R.string.player_theme_clover)
                     },
                     selected = artworkStyle == style,
-                    enabled = !artworkLocked,
+                    enabled = !artworkLocked && !disabledByV17,
                     onClick = { onArtworkStyleChange(style) },
                 ) {
                     PlayerPreview(
@@ -203,9 +253,11 @@ fun PlayerThemeScreen(
             PlayerBackgroundStyle.entries.filter {
                 it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             }.forEach { style ->
+                val disabledByV17 = v17Active && style == PlayerBackgroundStyle.APPLE_MUSIC
                 PresetCard(
                     label = backgroundLabel(style),
                     selected = background == style,
+                    enabled = !disabledByV17,
                     onClick = { onBackgroundChange(style) },
                 ) {
                     PlayerPreview(
@@ -220,6 +272,49 @@ fun PlayerThemeScreen(
                 }
             }
         }
+
+        SectionTitle(stringResource(R.string.apple_music_player_v17))
+        PresetRow {
+            PresetCard(
+                label = stringResource(R.string.apple_music_player_v17),
+                selected = useAppleMusicPlayer,
+                onClick = { onUseAppleMusicPlayerChange(!useAppleMusicPlayer) },
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    androidx.compose.foundation.Image(
+                        painter = painterResource(R.drawable.convx_logo),
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                    )
+                }
+            }
+        }
+        if (useAppleMusicPlayer) {
+            LockedNote(stringResource(R.string.apple_music_player_v17_description))
+            SwitchPreference(
+                title = { Text(stringResource(R.string.player_thumbnail_shadow)) },
+                checked = showPlayerThumbnailShadow,
+                onCheckedChange = onShowPlayerThumbnailShadowChange,
+            )
+            if (showPlayerThumbnailShadow) {
+                SliderPreference(
+                    title = { Text(stringResource(R.string.player_thumbnail_shadow_elevation)) },
+                    value = playerThumbnailShadowElevation,
+                    onValueChange = onPlayerThumbnailShadowElevationChange,
+                )
+            }
+        }
+        SwitchPreference(
+            title = { Text(stringResource(R.string.show_up_next)) },
+            description = stringResource(R.string.show_up_next_desc),
+            checked = showUpNext,
+            onCheckedChange = onShowUpNextChange,
+        )
 
         if (background == PlayerBackgroundStyle.STATIC) {
             SettingRow(

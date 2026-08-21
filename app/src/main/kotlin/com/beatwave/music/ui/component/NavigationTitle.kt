@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.beatwave.music.R
@@ -44,35 +42,16 @@ fun NavigationTitle(
     color: Color? = null,
     onClick: (() -> Unit)? = null,
     onPlayAllClick: (() -> Unit)? = null,
-    showDivider: Boolean = false,
 ) {
     // Headings take the accent-contrast colour rather than plain content colour.
     // Hero screens provide their own artwork tint into this local, so a section
     // title matches the screen it is on rather than the app-wide accent.
     val contentColor = color ?: LocalAccentTextColor.current
 
-    Column(modifier = modifier.fillMaxWidth()) {
-
-    // Hairline rule above the header, inset to the gutter: it separates sections
-    // without spending vertical space the way a blank gap does.
-    if (showDivider) {
-        HorizontalDivider(
-            thickness = Dp.Hairline,
-            color = AppleTokens.divider,
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                .padding(
-                    start = AppleTokens.Gutter,
-                    end = AppleTokens.Gutter,
-                    top = AppleTokens.SectionGap,
-                ),
-        )
-    }
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .clickable(enabled = onClick != null) {
@@ -135,6 +114,5 @@ fun NavigationTitle(
                 modifier = Modifier.clickable(onClick = action),
             )
         }
-    }
     }
 }

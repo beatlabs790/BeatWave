@@ -445,11 +445,13 @@ fun UpdateScreen(navController: NavHostController) {
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                    Text(
-                                        text = stringResource(R.string.update_size_v, currentStatus.size),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                    if (currentStatus.size.isNotBlank()) {
+                                        Text(
+                                            text = stringResource(R.string.update_size_v, currentStatus.size),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
                                     Spacer(modifier = Modifier.height(24.dp))
                                     if (!currentStatus.imageUrl.isNullOrBlank()) {
                                         AsyncImage(
@@ -650,6 +652,23 @@ fun isNewerVersion(latestVersion: String, currentVersion: String): Boolean {
     return false
 }
 
+// Real download size of the nightly zip, from the workflow run's artifact listing.
+// Returns "" on failure so the UI simply omits the size rather than lying about it.
+private fun fetchNightlyArtifactSize(runId: Long): String = try {
+    val artifactsUrl =
+        URL("https://api.github.com/repos/cosmictaserdev-creator/Convx/actions/runs/$runId/artifacts")
+    val artifacts = JSONObject(artifactsUrl.openStream().bufferedReader().use { it.readText() })
+        .optJSONArray("artifacts")
+    val bytes = (0 until (artifacts?.length() ?: 0))
+        .map { artifacts!!.getJSONObject(it) }
+        .firstOrNull { it.optString("name") == "convx-gms-nightly" }
+        ?.optLong("size_in_bytes") ?: 0L
+    if (bytes > 0) String.format("%.1f", bytes / (1024.0 * 1024.0)) else ""
+} catch (e: Exception) {
+    Timber.tag("UpdateCheck").e(e, "Error fetching nightly artifact size: ${e.message}")
+    ""
+}
+
 // Fetches ALL releases, finds the latest version > current, and returns its info
 suspend fun checkForUpdate(
     context: Context,
@@ -676,30 +695,13 @@ suspend fun checkForUpdate(
                     val runs = nightlyData.optJSONArray("workflow_runs")
                     if (runs != null && runs.length() > 0) {
                         val firstRun = runs.getJSONObject(0)
-                        val runUpdatedAt = firstRun.getString("updated_at")
-                        val githubFormatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                        val runTime = java.time.LocalDateTime.parse(runUpdatedAt, githubFormatter)
-                        val runTimeEpoch = runTime.toInstant(java.time.ZoneOffset.UTC).toEpochMilli()
-
-                        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                        val currentAppInstallTime = packageInfo.lastUpdateTime
-
-                        val sharedPreferences = context.getSharedPreferences("update_settings", Context.MODE_PRIVATE)
-                        if (!BuildConfig.IS_NIGHTLY) {
-                            sharedPreferences.edit().remove("last_installed_nightly_run").apply()
-                        }
-                        val lastInstalledRun = sharedPreferences.getInt("last_installed_nightly_run", -1)
                         val runNumber = firstRun.getInt("run_number")
 
-                        val isNewer = if (lastInstalledRun != -1) {
-                            runNumber > lastInstalledRun
-                        } else if (!BuildConfig.IS_NIGHTLY) {
-                            true
-                        } else {
-                            runTimeEpoch > (currentAppInstallTime + 300_000)
-                        }
-
-                        if (isNewer) {
+                        // The running build stamps its own nightly run number at compile time
+                        // (BuildConfig.NIGHTLY_RUN), so "is this newer" is a plain comparison
+                        // instead of a guess from install timestamps or a download-time marker.
+                        // Stable/local builds report 0, so any published nightly counts as newer.
+                        if (runNumber > BuildConfig.NIGHTLY_RUN) {
                             isNightlyUpdate = true
                             nightlyRunObject = firstRun
                         }
@@ -724,10 +726,16 @@ suspend fun checkForUpdate(
                 changelogList.add(ChangelogSection(context.getString(R.string.changelog), listOf(subjectLine)))
                 
                 val formattedReleaseDate = formatGitHubDate(runUpdatedAt)
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/vivimusic/updater/vivimusicupdater.kt
                 val apkDownloadUrl = "https://nightly.link/beatlabs790/BeatWave/workflows/nightly.yml/main/beatwave-gms-nightly.zip"
                 
+=======
+                val apkDownloadUrl = "https://nightly.link/cosmictaserdev-creator/Convx/workflows/nightly.yml/main/convx-gms-nightly.zip"
+                val apkSize = fetchNightlyArtifactSize(nightlyRunObject.getLong("id"))
+
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/vivimusic/updater/vivimusicupdater.kt
                 withContext(Dispatchers.Main) {
-                    onSuccess(displayTag, true, changelogList, "~30", formattedReleaseDate, "Bleeding-edge nightly build from main branch.", null, apkDownloadUrl)
+                    onSuccess(displayTag, true, changelogList, apkSize, formattedReleaseDate, "Bleeding-edge nightly build from main branch.", null, apkDownloadUrl)
                 }
                 return@withContext
             }

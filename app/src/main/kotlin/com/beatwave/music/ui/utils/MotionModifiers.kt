@@ -23,21 +23,24 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/utils/MotionModifiers.kt
 import androidx.compose.runtime.rememberUpdatedState
 import com.beatwave.music.constants.IosOverscrollKey
 import com.beatwave.music.utils.rememberPreference
+=======
+import com.beatwave.music.constants.IosOverscrollKey
+import com.beatwave.music.utils.rememberPreference
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/utils/MotionModifiers.kt
 import kotlin.math.sign
 
 /**
@@ -91,7 +94,7 @@ fun rememberHeroZoom(maxPull: Dp = 220.dp): HeroZoom {
     val rawPull = remember { mutableFloatStateOf(0f) }
     val viewport = remember { mutableFloatStateOf(0f) }
     val maxPullPx = with(LocalDensity.current) { maxPull.toPx() }
-    val enabled by rememberPreference(IosOverscrollKey, defaultValue = false)
+    val enabled by rememberPreference(IosOverscrollKey, defaultValue = true)
     return remember(rawPull, viewport, maxPullPx, enabled) {
         HeroZoom(rawPull, viewport, maxPullPx, enabled)
     }
@@ -107,37 +110,25 @@ fun rememberHeroZoom(maxPull: Dp = 220.dp): HeroZoom {
 fun HeroZoom.listOverscroll(): OverscrollEffect? =
     if (enabled) null else rememberOverscrollEffect()
 
-/** Displayed pull past which releasing fires [heroPullZoom]'s `onRefresh`. */
-private val RefreshThreshold = 120.dp
-
 /**
  * Rubber-band overscroll for a hero-header list, on the same [rubberBand] curve as
  * the plain list bounce. The top pull additionally drives the zoom: pass
  * [HeroZoom.scale] to `HeroBackground(heroScale = …)`. The bottom edge is a plain
  * bounce. No-ops when the iOS-motion preference is off.
  *
- * When [onRefresh] is non-null the top pull doubles as pull-to-refresh: crossing
- * [RefreshThreshold] ticks a haptic, and releasing past it fires [onRefresh]. There
- * is deliberately no spinner — the stretch IS the indicator, so the gesture costs
- * no extra chrome and the zoom is not given up to get a reload.
+ * Deliberately gesture-only: the top pull used to double as pull-to-refresh, which
+ * meant a plain overscroll could kick off a network reload nobody asked for. The
+ * stretch is a stretch now; reloading is the screen's own affair.
  */
 fun Modifier.heroPullZoom(
     zoom: HeroZoom,
-    onRefresh: (() -> Unit)? = null,
 ): Modifier = composed {
     if (!zoom.enabled) return@composed this
 
     val rawPull = zoom.rawPull
     val viewport = zoom.viewport
-    val thresholdPx = with(LocalDensity.current) { RefreshThreshold.toPx() }
-    val haptics = LocalHapticFeedback.current
-    // Kept live so a screen swapping its refresh lambda doesn't rebuild the
-    // connection (and lose the in-flight gesture's state with it).
-    val refresh = rememberUpdatedState(onRefresh)
-    val connection = remember(zoom, thresholdPx, haptics) {
+    val connection = remember(zoom) {
         object : NestedScrollConnection {
-            /** Pull has crossed the refresh threshold during the current gesture. */
-            private var armed = false
             // Scrolling back toward rest pays down the existing stretch before the
             // list itself gets to scroll, otherwise the content jumps. In raw
             // (finger) space, so the return trip is damped by the same curve as
@@ -174,43 +165,66 @@ fun Modifier.heroPullZoom(
                 // in rubberBand, which starts 1:1 and stiffens as it goes rather
                 // than starting at half speed and clamping.
                 rawPull.floatValue += available.y
-
-                // Threshold is on the DISPLAYED offset, not the raw finger travel:
-                // the tick has to land where the user sees the stretch reach it.
-                if (refresh.value != null) {
-                    val past = zoom.offset >= thresholdPx
-                    if (past != armed) {
-                        armed = past
-                        if (past) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    }
-                }
                 return available
             }
 
             override suspend fun onPreFling(available: Velocity): Velocity {
-                // Fire before the spring, not after: the reload should start the
-                // instant the finger lifts, not ~350ms later when the stretch has
-                // finished retracting.
-                if (armed) {
-                    armed = false
-                    refresh.value?.invoke()
-                }
                 if (rawPull.floatValue != 0f) {
-                    // Snappy spring-back on release — StiffnessLow read as "waits,
-                    // then drifts down"; Medium gives the immediate iOS rubber-band.
                     // Critically damped: iOS returns and stops dead, it does not
                     // wobble at the end, and a wobbling hero zoom is the tell.
+                    //
+                    // Tuning is shared with the plain-list bounce rather than set
+                    // here. This used to be Spring.StiffnessMedium (1500), roughly
+                    // 2.5x faster than the list bounce's 247 -- so the ~25 hero
+                    // screens (album, artist, charts, explore, history, library,
+                    // every playlist) snapped back on visibly different timing from
+                    // every other scroller in the app. It also seeded the spring
+                    // with NO velocity at all while consuming the whole fling, so a
+                    // hard flick into the top edge produced no overshoot whatsoever.
+                    val seedVelocity = bounceSeedVelocity(available.y)
                     animate(
                         initialValue = rawPull.floatValue,
                         targetValue = 0f,
+                        initialVelocity = seedVelocity,
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioNoBouncy,
-                            stiffness = Spring.StiffnessMedium,
+                            stiffness = bounceStiffnessFor(seedVelocity),
                         ),
                     ) { value, _ -> rawPull.floatValue = value }
                     return available
                 }
                 return Velocity.Zero
+            }
+
+            /**
+             * The bounce for a flick that reaches an edge under its own momentum.
+             *
+             * This connection had no `onPostFling` at all, which is why hero screens
+             * (artist, album, every playlist, charts, explore, history, library) never
+             * overshot: [onPreFling] only springs when a stretch already exists, and a
+             * pure fling never builds one — [onPostScroll] ignores everything that is
+             * not `UserInput`, precisely so the scrollable's decay ends at the edge
+             * instead of being held at full stretch for its whole duration. So the
+             * leftover velocity arrived here and was dropped on the floor. Plain lists
+             * bounced anyway because the ambient effect owns their fling; these lists
+             * hand it a null effect (see [listOverscroll]) and own it themselves.
+             *
+             * Same spring and same seeding as [onPreFling] and the plain-list bounce,
+             * so a flick into an edge settles on identical timing everywhere.
+             */
+            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                if (available.y == 0f) return Velocity.Zero
+                val seedVelocity = bounceSeedVelocity(available.y)
+                animate(
+                    initialValue = rawPull.floatValue,
+                    targetValue = 0f,
+                    initialVelocity = seedVelocity,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = bounceStiffnessFor(seedVelocity),
+                    ),
+                ) { value, _ -> rawPull.floatValue = value }
+                return available
             }
         }
     }

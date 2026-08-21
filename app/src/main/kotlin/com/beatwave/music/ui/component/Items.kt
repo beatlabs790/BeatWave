@@ -94,12 +94,16 @@ import androidx.media3.exoplayer.offline.Download.STATE_DOWNLOADING
 import androidx.media3.exoplayer.offline.Download.STATE_QUEUED
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.request.bitmapConfig
+import coil3.request.crossfade
 import coil3.size.Size as CoilSize
 import com.music.innertube.models.AlbumItem
 import com.music.innertube.models.ArtistItem
 import com.music.innertube.models.PlaylistItem
 import com.music.innertube.models.SongItem
 import com.music.innertube.models.YTItem
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/component/Items.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalPlayerConnection
@@ -123,6 +127,32 @@ import com.beatwave.music.ui.utils.rememberGridSpacing
 import com.beatwave.music.ui.utils.resize
 import com.beatwave.music.utils.joinByBullet
 import com.beatwave.music.utils.makeTimeString
+=======
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.LocalDownloadUtil
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.constants.GridItemSize
+import com.beatwave.music.constants.GridThumbnailHeight
+import com.beatwave.music.constants.ListItemHeight
+import com.beatwave.music.constants.ListThumbnailSize
+import com.beatwave.music.constants.SmallGridThumbnailHeight
+import com.beatwave.music.constants.ThumbnailCornerRadius
+import com.beatwave.music.constants.ThumbnailRoundedShape
+import com.beatwave.music.db.entities.Album
+import com.beatwave.music.db.entities.Artist
+import com.beatwave.music.db.entities.Playlist
+import com.beatwave.music.db.entities.Song
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.models.MediaMetadata
+import com.beatwave.music.ui.theme.AppleTokens
+import com.beatwave.music.ui.utils.marqueeWhenVisible
+import com.beatwave.music.ui.utils.rememberGridSpacing
+import com.beatwave.music.ui.utils.resize
+import com.beatwave.music.ui.utils.sharedArtworkSource
+import com.beatwave.music.utils.joinByBullet
+import com.beatwave.music.utils.makeTimeString
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/component/Items.kt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -555,7 +585,7 @@ fun SongGridItem(
                 makeTimeString(song.song.duration * 1000L)
             ),
             style = MaterialTheme.typography.bodySmall,
-            color = LocalContentColor.current.copy(alpha = 0.6f),
+            color = AppleTokens.Metadata,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -624,7 +654,7 @@ fun ArtistListItem(
             Box(
                 modifier = Modifier
                     .size(ListThumbnailSize)
-                    .clip(CircleShape)
+                    .clip(ThumbnailRoundedShape)
                     .background(LocalContentColor.current.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
@@ -650,7 +680,7 @@ fun ArtistListItem(
                 contentDescription = null,
                 modifier = Modifier
                     .size(ListThumbnailSize)
-                    .clip(CircleShape),
+                    .clip(ThumbnailRoundedShape),
             )
         }
     },
@@ -680,7 +710,7 @@ fun ArtistGridItem(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(CircleShape)
+                    .clip(ThumbnailRoundedShape)
                     .background(LocalContentColor.current.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
@@ -707,7 +737,7 @@ fun ArtistGridItem(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(CircleShape)
+                    .clip(ThumbnailRoundedShape)
             )
         }
     },
@@ -740,6 +770,10 @@ fun AlbumListItem(
                     when {
                         songs.all { allDownloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
                         songs.any { allDownloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
+                        // Distinguishing this from STOPPED is what makes a failed
+                        // download visible here instead of the row silently looking
+                        // like it was never downloaded at all.
+                        songs.any { allDownloads[it.id]?.state == Download.STATE_FAILED } -> Download.STATE_FAILED
                         else -> Download.STATE_STOPPED
                     }
                 }
@@ -789,6 +823,7 @@ fun AlbumListItem(
                 isPlaying = isPlaying,
                 shape = ThumbnailRoundedShape,
                 targetSizePx = thumbnailPx(ListThumbnailSize),
+                sharedArtworkId = album.id,
                 modifier = Modifier.size(ListThumbnailSize)
             )
         }
@@ -823,6 +858,10 @@ fun AlbumGridItem(
                     when {
                         songs.all { allDownloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
                         songs.any { allDownloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
+                        // Distinguishing this from STOPPED is what makes a failed
+                        // download visible here instead of the row silently looking
+                        // like it was never downloaded at all.
+                        songs.any { allDownloads[it.id]?.state == Download.STATE_FAILED } -> Download.STATE_FAILED
                         else -> Download.STATE_STOPPED
                     }
                 }
@@ -856,7 +895,7 @@ fun AlbumGridItem(
         Text(
             text = album.artists.joinToString { it.name },
             style = MaterialTheme.typography.bodySmall,
-            color = LocalContentColor.current.copy(alpha = 0.6f),
+            color = AppleTokens.Metadata,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -884,6 +923,7 @@ fun AlbumGridItem(
                 isActive = isActive,
                 isPlaying = isPlaying,
                 shape = ThumbnailRoundedShape,
+                sharedArtworkId = album.id,
             )
         }
     },
@@ -930,6 +970,10 @@ fun PlaylistListItem(
                     when {
                         songs.all { allDownloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
                         songs.any { allDownloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
+                        // Distinguishing this from STOPPED is what makes a failed
+                        // download visible here instead of the row silently looking
+                        // like it was never downloaded at all.
+                        songs.any { allDownloads[it.id]?.state == Download.STATE_FAILED } -> Download.STATE_FAILED
                         else -> Download.STATE_STOPPED
                     }
                 }
@@ -1042,6 +1086,10 @@ fun PlaylistGridItem(
                     when {
                         songs.all { allDownloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
                         songs.any { allDownloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
+                        // Distinguishing this from STOPPED is what makes a failed
+                        // download visible here instead of the row silently looking
+                        // like it was never downloaded at all.
+                        songs.any { allDownloads[it.id]?.state == Download.STATE_FAILED } -> Download.STATE_FAILED
                         else -> Download.STATE_STOPPED
                     }
                 }
@@ -1084,7 +1132,7 @@ fun PlaylistGridItem(
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodySmall,
-            color = LocalContentColor.current.copy(alpha = 0.6f),
+            color = AppleTokens.Metadata,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -1193,15 +1241,23 @@ fun MediaMetadataListItem(
 }
 
 
-/** Per-row DB lookup for a badge, used only when the screen did not hoist the data.
- *  Screens that render many rows should collect a map once and pass it down instead
- *  — these two exist so that leaving them alone stays correct, not fast. */
+private val rowSongCache = android.util.LruCache<String, Song>(256)
+private val rowAlbumCache = android.util.LruCache<String, Album>(128)
+
+/** Per-row DB lookup for a badge, cached in memory so fast scroll does not spam SQLite. */
 @Composable
 private fun rememberRowSong(item: YTItem): Song? {
     if (item !is SongItem) return null
+    val cached = rowSongCache.get(item.id)
+    if (cached != null) return cached
+
     val database = LocalDatabase.current
     val song by produceState<Song?>(initialValue = null, item.id) {
-        value = database.song(item.id).firstOrNull()
+        val result = database.song(item.id).firstOrNull()
+        if (result != null) {
+            rowSongCache.put(item.id, result)
+        }
+        value = result
     }
     return song
 }
@@ -1209,9 +1265,16 @@ private fun rememberRowSong(item: YTItem): Song? {
 @Composable
 private fun rememberRowAlbum(item: YTItem): Album? {
     if (item !is AlbumItem) return null
+    val cached = rowAlbumCache.get(item.id)
+    if (cached != null) return cached
+
     val database = LocalDatabase.current
     val album by produceState<Album?>(initialValue = null, item.id) {
-        value = database.album(item.id).firstOrNull()
+        val result = database.album(item.id).firstOrNull()
+        if (result != null) {
+            rowAlbumCache.put(item.id, result)
+        }
+        value = result
     }
     return album
 }
@@ -1271,8 +1334,13 @@ fun YouTubeListItem(
                     isSelected = isSelected,
                     isActive = isActive,
                     isPlaying = isPlaying,
-                    shape = if (item is ArtistItem) CircleShape else ThumbnailRoundedShape,
+                    // List rows keep one artwork shape for every item type; the circle
+                    // stays on artist tiles and heroes, where it reads as a portrait.
+                    shape = ThumbnailRoundedShape,
                     targetSizePx = thumbnailPx(ListThumbnailSize),
+                    // Songs open the player, not a detail screen with a hero, so they
+                    // stay out of the artwork morph -- the sheet has its own transition.
+                    sharedArtworkId = if (item is SongItem) null else item.id,
                     modifier = Modifier.size(ListThumbnailSize)
                 )
             },
@@ -1354,7 +1422,7 @@ fun YouTubeGridItem(
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
-                color = LocalContentColor.current.copy(alpha = 0.6f),
+                color = AppleTokens.Metadata,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -1366,7 +1434,8 @@ fun YouTubeGridItem(
             thumbnailUrl = item.thumbnail,
             isActive = isActive,
             isPlaying = isPlaying,
-            shape = if (item is ArtistItem) CircleShape else ThumbnailRoundedShape,
+            shape = ThumbnailRoundedShape,
+            sharedArtworkId = if (item is SongItem) null else item.id,
         )
     },
     thumbnailRatio = thumbnailRatio,
@@ -1422,7 +1491,7 @@ fun LocalArtistsGrid(
             thumbnailUrl = thumbnailUrl,
             isActive = false,
             isPlaying = false,
-            shape = CircleShape,
+            shape = ThumbnailRoundedShape,
             modifier = if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier,
             showCenterPlay = false,
             playButtonVisible = false
@@ -1486,6 +1555,11 @@ fun ItemThumbnail(
      *  user's general album-art setting, e.g. Home's Speed Dial. */
     forceContentScale: ContentScale? = null,
     showPausedPlayIcon: Boolean = true,
+    /** Id of the album/artist/playlist/song this artwork belongs to. Supplying it makes
+     *  the thumbnail the source of the artwork morph into that item's detail screen --
+     *  but only for the tile actually being opened, so the same album appearing in two
+     *  rails does not put two claimants on one key. See [sharedArtworkSource]. */
+    sharedArtworkId: String? = null,
 ) {
     val cropAlbumArtPref = LocalItemPrefs.current.cropAlbumArt
     val cropAlbumArt = forceContentScale == ContentScale.Crop || (forceContentScale == null && cropAlbumArtPref)
@@ -1501,6 +1575,9 @@ fun ItemThumbnail(
             // key for every distinct decode size requested across the app.
             .diskCacheKey(thumbnailUrl)
             .size(CoilSize(actualTargetSizePx, actualTargetSizePx))
+            .allowHardware(true)
+            .bitmapConfig(android.graphics.Bitmap.Config.HARDWARE)
+            .crossfade(false)
             .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
             .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
             .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
@@ -1512,6 +1589,9 @@ fun ItemThumbnail(
         modifier = modifier
             .fillMaxSize()
             .aspectRatio(thumbnailRatio)
+            // Before the clip, so the overlay animates the rounded artwork rather than a
+            // square that gets clipped at each end of the flight.
+            .sharedArtworkSource(sharedArtworkId, thumbnailUrl)
             .clip(shape)
     ) {
         if (albumIndex == null) {
@@ -1943,6 +2023,18 @@ object Icon {
                 strokeWidth = 2.dp,
                 modifier = Modifier
                     .size(16.dp)
+                    .padding(end = 2.dp)
+            )
+            // A failed download used to fall into the same "no icon" bucket as
+            // "never downloaded" — the row just silently reverted to looking like
+            // nothing had happened, with no notification either, so a failure was
+            // completely invisible. Surfacing it distinctly is the whole fix.
+            Download.STATE_FAILED -> Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = stringResource(R.string.download_failed),
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .size(18.dp)
                     .padding(end = 2.dp)
             )
             else -> { /* no icon */ }

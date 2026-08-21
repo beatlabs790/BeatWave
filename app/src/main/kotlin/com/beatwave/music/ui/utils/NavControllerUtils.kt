@@ -9,10 +9,8 @@ import androidx.navigation.NavController
 import com.beatwave.music.ui.screens.Screens
 
 fun NavController.backToMain() {
-    val mainRoutes = Screens.MainScreens.map { it.route }
-
     while (previousBackStackEntry != null &&
-        currentBackStackEntry?.destination?.route !in mainRoutes
+        currentBackStackEntry?.destination?.route !in Screens.MainRoutes
     ) {
         popBackStack()
     }

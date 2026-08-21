@@ -66,6 +66,7 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.music.innertube.YouTube
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/menu/SongMenu.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalListenTogetherManager
@@ -94,6 +95,38 @@ import com.beatwave.music.ui.component.TextFieldDialog
 import com.beatwave.music.utils.listItemShape
 import com.beatwave.music.ui.utils.ShowMediaInfo
 import com.beatwave.music.viewmodels.CachePlaylistViewModel
+=======
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.LocalDownloadUtil
+import com.beatwave.music.LocalListenTogetherManager
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.LocalSyncUtils
+import com.beatwave.music.R
+import com.beatwave.music.constants.ListItemHeight
+import com.beatwave.music.constants.ListThumbnailSize
+import com.beatwave.music.db.entities.ArtistEntity
+import com.beatwave.music.db.entities.Event
+import com.beatwave.music.db.entities.SpeedDialItem
+import com.beatwave.music.db.entities.PlaylistSong
+import com.beatwave.music.db.entities.Song
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.models.toMediaMetadata
+import com.beatwave.music.playback.ExoDownloadService
+import com.beatwave.music.playback.queues.YouTubeQueue
+import com.beatwave.music.ui.component.ListDialog
+import com.beatwave.music.ui.component.LocalBottomSheetPageState
+import com.beatwave.music.ui.component.Material3MenuGroup
+import com.beatwave.music.ui.component.Material3MenuItemData
+import com.beatwave.music.ui.component.NewAction
+import com.beatwave.music.ui.component.NewActionGrid
+import com.beatwave.music.ui.component.SongListItem
+import com.beatwave.music.ui.component.TextFieldDialog
+import android.widget.Toast
+import com.beatwave.music.utils.ExternalTagEditor
+import com.beatwave.music.utils.listItemShape
+import com.beatwave.music.ui.utils.ShowMediaInfo
+import com.beatwave.music.viewmodels.CachePlaylistViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/menu/SongMenu.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -717,6 +750,36 @@ fun SongMenu(
                                 }
                             )
                         }
+                        // A failed download used to fall into the same branch as
+                        // "never downloaded" below — same icon, same "Download" label,
+                        // no sign anything had gone wrong. Surfacing it distinctly (and
+                        // letting the same tap re-queue it) is the whole fix.
+                        Download.STATE_FAILED -> {
+                            Material3MenuItemData(
+                                title = { Text(text = stringResource(R.string.download_failed)) },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.error),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error,
+                                    )
+                                },
+                                onClick = {
+                                    val downloadRequest =
+                                        DownloadRequest
+                                            .Builder(song.id, song.id.toUri())
+                                            .setCustomCacheKey(song.id)
+                                            .setData(song.song.title.toByteArray())
+                                            .build()
+                                    DownloadService.sendAddDownload(
+                                        context,
+                                        ExoDownloadService::class.java,
+                                        downloadRequest,
+                                        false,
+                                    )
+                                }
+                            )
+                        }
                         else -> {
                             Material3MenuItemData(
                                 title = { Text(text = stringResource(R.string.action_download)) },
@@ -839,6 +902,40 @@ fun SongMenu(
                             }
                         )
                     )
+                    // Local files only: a song's id is its MediaStore content URI, which
+                    // is the one thing an external editor can actually be handed. There
+                    // is nothing on disk to edit for a YouTube track.
+                    if (song.song.isLocal) {
+                        add(
+                            Material3MenuItemData(
+                                title = { Text(text = stringResource(R.string.edit_tags)) },
+                                description = {
+                                    Text(text = stringResource(R.string.edit_tags_desc))
+                                },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.edit),
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {
+                                    onDismiss()
+                                    val opened = ExternalTagEditor.launch(
+                                        context = context,
+                                        contentUri = song.id,
+                                        mimeType = null,
+                                    )
+                                    if (!opened) {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.edit_tags_no_app),
+                                            Toast.LENGTH_SHORT,
+                                        ).show()
+                                    }
+                                }
+                            )
+                        )
+                    }
                 }
             )
         }

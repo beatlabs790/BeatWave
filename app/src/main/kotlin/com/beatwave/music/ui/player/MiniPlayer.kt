@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/player/MiniPlayer.kt
 import com.beatwave.music.ui.component.ScrollingWaveformSeekBar
 import com.beatwave.music.ui.component.rememberPlaybackFraction
 import com.beatwave.music.constants.MiniPlayerWaveformKey
@@ -40,6 +41,17 @@ import com.beatwave.music.constants.PlayerGradientStopsKey
 import com.beatwave.music.ui.theme.decodeGradientStops
 import com.beatwave.music.ui.theme.tiltedGradient
 import com.beatwave.music.constants.PlayerStaticColorKey
+=======
+import com.beatwave.music.ui.component.ScrollingWaveformSeekBar
+import com.beatwave.music.ui.component.rememberPlaybackFraction
+import com.beatwave.music.ui.component.thumbnailPx
+import com.beatwave.music.constants.MiniPlayerWaveformKey
+import com.beatwave.music.constants.PlayerGradientAngleKey
+import com.beatwave.music.constants.PlayerGradientStopsKey
+import com.beatwave.music.ui.theme.decodeGradientStops
+import com.beatwave.music.ui.theme.tiltedGradient
+import com.beatwave.music.constants.PlayerStaticColorKey
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/player/MiniPlayer.kt
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -63,6 +75,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State as ComposeState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -430,7 +443,8 @@ private fun NewMiniPlayer(
             MiniPlayerBackgroundLayer(
                 style = miniPlayerBackground,
                 mediaMetadata = mediaMetadata,
-                gradientColors = gradientColors
+                gradientColors = gradientColors,
+                isPlaying = isPlaying,
             )
 
             val waveColor = LocalGlassEffectConfig.current.textColor
@@ -451,7 +465,7 @@ private fun NewMiniPlayer(
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(metadata.thumbnailUrl)
-                                .size(CoilSize(96, 96))
+                                .size(CoilSize(thumbnailPx(36.dp), thumbnailPx(36.dp)))
                                 .crossfade(false)
                                 .build(),
                             contentDescription = null,
@@ -688,7 +702,7 @@ private fun NewMiniPlayerPlayButton(
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(metadata.thumbnailUrl)
-                            .size(CoilSize(96, 96))
+                            .size(CoilSize(thumbnailPx(innerSize), thumbnailPx(innerSize)))
                             .crossfade(false)
                             .build(),
                         contentDescription = null,
@@ -1065,7 +1079,7 @@ private fun LegacyMiniMediaInfo(
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(mediaMetadata.thumbnailUrl)
-                    .size(CoilSize(96, 96))
+                    .size(CoilSize(thumbnailPx(48.dp), thumbnailPx(48.dp)))
                     .crossfade(false)
                     .build(),
                 contentDescription = null,
@@ -1167,7 +1181,7 @@ private fun FavoriteButton(
     }
 }
 @Composable
-private fun MiniPlayerColorExtractor(
+internal fun MiniPlayerColorExtractor(
     mediaMetadata: MediaMetadata?,
     miniPlayerBackground: PlayerBackgroundStyle,
     onGradientColorsChange: (List<Color>) -> Unit
@@ -1238,10 +1252,11 @@ private fun MiniPlayerColorExtractor(
 private val miniPlayerGradientCache = android.util.LruCache<String, List<Color>>(64)
 
 @Composable
-private fun MiniPlayerBackgroundLayer(
+internal fun MiniPlayerBackgroundLayer(
     style: PlayerBackgroundStyle,
     mediaMetadata: MediaMetadata?,
-    gradientColors: List<Color>
+    gradientColors: List<Color>,
+    isPlaying: Boolean = true,
 ) {
     val context = LocalContext.current
     
@@ -1283,16 +1298,20 @@ private fun MiniPlayerBackgroundLayer(
         }
         PlayerBackgroundStyle.GLOW_ANIMATED -> {
             if (gradientColors.isNotEmpty()) {
-                val infiniteTransition = rememberInfiniteTransition(label = "GlowAnimation")
-                val progress = infiniteTransition.animateFloat(
-                    initialValue = 0f,
-                    targetValue = 1f,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(20000, easing = LinearEasing),
-                        repeatMode = RepeatMode.Restart
-                    ),
-                    label = "glowProgress"
-                )
+                val progress: ComposeState<Float> = if (isPlaying) {
+                    val infiniteTransition = rememberInfiniteTransition(label = "GlowAnimation")
+                    infiniteTransition.animateFloat(
+                        initialValue = 0f,
+                        targetValue = 1f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(20000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                        ),
+                        label = "glowProgress"
+                    )
+                } else {
+                    remember { mutableFloatStateOf(0f) }
+                }
 
                 val colors = gradientColors
                 Box(
@@ -1313,7 +1332,7 @@ private fun MiniPlayerBackgroundLayer(
                             }
 
                             fun oscillate(min: Float, max: Float, phase: Float): Float {
-                                val v = kotlin.math.sin(2f * kotlin.math.PI.toFloat() * (p + phase))
+                                val v = kotlin.math.sin(2.0 * kotlin.math.PI * (p + phase).toDouble()).toFloat()
                                 return min + (max - min) * ((v + 1f) * 0.5f)
                             }
 
@@ -1345,16 +1364,20 @@ private fun MiniPlayerBackgroundLayer(
         }
 
         PlayerBackgroundStyle.LIVE_MESH -> {
-            val infiniteTransition = rememberInfiniteTransition(label = "liveMesh")
-            val rotation = infiniteTransition.animateFloat(
-                initialValue = 0f,
-                targetValue = 360f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(60000, easing = LinearEasing),
-                    repeatMode = RepeatMode.Restart
-                ),
-                label = "rotation"
-            )
+            val rotation: ComposeState<Float> = if (isPlaying) {
+                val infiniteTransition = rememberInfiniteTransition(label = "liveMesh")
+                infiniteTransition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 360f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(60000, easing = LinearEasing),
+                        repeatMode = RepeatMode.Restart
+                    ),
+                    label = "rotation"
+                )
+            } else {
+                remember { mutableFloatStateOf(0f) }
+            }
 
             Box(
                 modifier = Modifier

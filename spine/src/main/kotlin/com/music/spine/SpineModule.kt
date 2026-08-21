@@ -12,7 +12,15 @@ data class SpineModule(
     @SerialName("code") val code: Int = 0,
     @SerialName("type") val type: String = "MODULE",
     @SerialName("description") val description: String = "",
-    @SerialName("tags") val tags: List<String> = emptyList(),
+    @SerialName("tags") private val declaredTags: List<String> = emptyList(),
+    /**
+     * Some sources publish the same list under "labels" instead of "tags", with no "tags"
+     * key at all -- the monochrome/ricky source is one, and it is the first link the
+     * community hands out for setting up lossless. Reading only "tags" left those modules
+     * with an empty list, so Claudo and Qobuz (whose labels literally say FLAC / LOSSLESS
+     * / HI-RES) reported isLossless = false and showed no chips.
+     */
+    @SerialName("labels") private val declaredLabels: List<String> = emptyList(),
     @SerialName("size") val size: Long = 0,
     @SerialName("sizeLabel") val sizeLabel: String = "",
     @SerialName("download") val download: String = "",
@@ -24,6 +32,9 @@ data class SpineModule(
     @SerialName("nsfw") val nsfw: Boolean = false,
     @SerialName("sources") val sources: List<SpineSource> = emptyList(),
 ) {
+    /** The module's labels, whichever key the source published them under. */
+    val tags: List<String> get() = if (declaredTags.isNotEmpty()) declaredTags else declaredLabels
+
     val isLossless: Boolean get() = tags.any { it.uppercase().contains("LOSSLESS") || it.uppercase().contains("HI-RES") || it.uppercase().contains("FLAC") }
     val hasHiRes: Boolean get() = tags.any { it.uppercase().contains("HI-RES") }
     val isDolbyAtmos: Boolean get() = tags.any { it.uppercase().contains("ATMOS") || it.uppercase().contains("DOLBY") }

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
@@ -24,6 +24,7 @@ import com.music.innertube.models.filterYoutubeShorts
 import com.music.innertube.pages.ExplorePage
 import com.music.innertube.pages.HomePage
 import com.music.innertube.utils.completed
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/viewmodels/HomeViewModel.kt
 import com.beatwave.music.constants.HideExplicitKey
 import com.beatwave.music.constants.HideVideoSongsKey
 import com.beatwave.music.constants.DataSaverEnabledKey
@@ -55,6 +56,40 @@ import com.beatwave.music.utils.SyncUtils
 import com.beatwave.music.utils.dataStore
 import com.beatwave.music.utils.get
 import com.beatwave.music.utils.reportException
+=======
+import com.beatwave.music.constants.HideExplicitKey
+import com.beatwave.music.constants.HideVideoSongsKey
+import com.beatwave.music.constants.DataSaverEnabledKey
+import com.beatwave.music.constants.HideYoutubeShortsKey
+import com.beatwave.music.constants.InnerTubeCookieKey
+import com.beatwave.music.constants.LocalAlbumsByYearKey
+import com.beatwave.music.constants.LocalOnlyModeKey
+import com.beatwave.music.constants.LocalSongSortDescendingKey
+import com.beatwave.music.constants.LocalSongSortTypeKey
+import com.beatwave.music.constants.PlaylistSortType
+import com.beatwave.music.constants.SongSortType
+import com.beatwave.music.constants.QuickPicks
+import com.beatwave.music.constants.QuickPicksKey
+import com.beatwave.music.constants.ShowWrappedCardKey
+import com.beatwave.music.constants.WrappedSeenKey
+import com.beatwave.music.db.MusicDatabase
+import com.beatwave.music.db.entities.Album
+import com.beatwave.music.db.entities.LocalItem
+import com.beatwave.music.db.entities.Playlist
+import com.beatwave.music.db.entities.Song
+import com.beatwave.music.db.entities.SpeedDialItem
+import com.beatwave.music.extensions.filterVideoSongs
+import com.beatwave.music.extensions.toEnum
+import com.beatwave.music.models.SimilarRecommendation
+import com.beatwave.music.ui.screens.wrapped.WrappedAudioService
+import com.beatwave.music.ui.screens.wrapped.WrappedManager
+import com.beatwave.music.utils.LocalAudioScanner
+import com.beatwave.music.utils.LocalFolderIndex
+import com.beatwave.music.utils.SyncUtils
+import com.beatwave.music.utils.dataStore
+import com.beatwave.music.utils.get
+import com.beatwave.music.utils.reportException
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/viewmodels/HomeViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -132,11 +167,19 @@ class HomeViewModel @Inject constructor(
         .distinctUntilChanged()
         .flatMapLatest { (sortType, descending) -> database.localSongs(sortType, descending) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    val localAlbums: StateFlow<List<Album>> = database.albumsLocalByNameAsc()
+    // Newest release first by default, not A-Z: an on-device library is something the
+    // user assembled over time, so release order says more about it than the alphabet
+    // does. Files with no year tag sort last -- SQLite puts NULLs at the end on DESC.
+    val localAlbums: StateFlow<List<Album>> = context.dataStore.data
+        .map { it[LocalAlbumsByYearKey] ?: true }
+        .distinctUntilChanged()
+        .flatMapLatest { byYear ->
+            if (byYear) database.albumsLocalByYearDesc() else database.albumsLocalByNameAsc()
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val localArtists: StateFlow<List<com.beatwave.music.db.entities.Artist>> = database.artistsLocalByNameAsc()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    // Playlists the user made here — a synced YouTube playlist has a browseId.
+    // Playlists the user made here � a synced YouTube playlist has a browseId.
     val localPlaylists: StateFlow<List<Playlist>> =
         database.playlists(PlaylistSortType.CREATE_DATE, true)
             .map { playlists -> playlists.filter { it.playlist.browseId == null } }
@@ -479,14 +522,20 @@ class HomeViewModel @Inject constructor(
 
         getQuickPicks()
 
+        // On-device tracks are the whole of local-only mode, which is a separate Home
+        // (see localHomeContent). Leaking them into the online feed put files with no
+        // artwork and no metadata beside YouTube rows that have both, so every shelf
+        // they landed in looked broken.
+        quickPicks.value = quickPicks.value?.filterNot { it.song.isLocal }
+
         forgottenFavorites.value = database.forgottenFavorites().first()
-            .filterVideoSongs(hideVideoSongs).shuffled().take(20)
+            .filterVideoSongs(hideVideoSongs).filterNot { it.song.isLocal }.shuffled().take(20)
 
         val fromTimeStamp = System.currentTimeMillis() - 86400000L * 7 * 2
         val keepListeningSongs = database.mostPlayedSongs(fromTimeStamp, limit = 15, offset = 5).first()
-            .filterVideoSongs(hideVideoSongs).shuffled().take(10)
+            .filterVideoSongs(hideVideoSongs).filterNot { it.song.isLocal }.shuffled().take(10)
         val keepListeningAlbums = database.mostPlayedAlbums(fromTimeStamp, limit = 8, offset = 2).first()
-            .filter { it.album.thumbnailUrl != null }.shuffled().take(5)
+            .filter { !it.album.isLocal && it.album.thumbnailUrl != null }.shuffled().take(5)
         val keepListeningArtists = database.mostPlayedArtists(fromTimeStamp).first()
             .filter { it.artist.isYouTubeArtist && it.artist.thumbnailUrl != null }.shuffled().take(5)
         keepListening.value = (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
@@ -585,7 +634,7 @@ class HomeViewModel @Inject constructor(
     /**
      * Phase 2: Fires all network sections concurrently.
      * Because isLoading is already false, each section streams into the UI
-     * as its data arrives â€” no spinner blocking the user.
+     * as its data arrives — no spinner blocking the user.
      */
     private suspend fun loadNetworkDataPhase() {
         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
@@ -629,7 +678,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun load() {
         isLoading.value = true
 
-        // Local-only mode never touches the network — the Room flows above already
+        // Local-only mode never touches the network � the Room flows above already
         // feed Home, so the only thing left to fetch is the folder index.
         if (localOnlyMode.value) {
             localFolders.value = runCatching { LocalFolderIndex.load(context) }.getOrDefault(emptyList())
@@ -637,11 +686,11 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        // Phase 1: Local DB only â€” UI renders immediately after this
+        // Phase 1: Local DB only — UI renders immediately after this
         loadLocalDataPhase()
         isLoading.value = false
 
-        // Phase 2: All network sections in parallel â€” streams in progressively
+        // Phase 2: All network sections in parallel — streams in progressively
         loadNetworkDataPhase()
     }
 

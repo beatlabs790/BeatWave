@@ -19,6 +19,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import com.beatwave.music.ui.utils.rememberEdgeAwareFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -63,6 +64,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -490,7 +492,10 @@ fun Thumbnail(
                     LazyHorizontalGrid(
                         state = thumbnailLazyGridState,
                         rows = GridCells.Fixed(1),
-                        flingBehavior = rememberSnapFlingBehavior(thumbnailSnapLayoutInfoProvider),
+                        flingBehavior = rememberEdgeAwareFlingBehavior(
+                            thumbnailLazyGridState,
+                            rememberSnapFlingBehavior(thumbnailSnapLayoutInfoProvider),
+                        ),
                         userScrollEnabled = isScrollEnabled,
                         modifier = if (isLandscape) {
                             Modifier.size(dimensions.thumbnailSize + (PlayerHorizontalPadding * 2))
@@ -520,11 +525,12 @@ fun Thumbnail(
                                 currentMediaThumbnail = mediaMetadata?.thumbnailUrl,
                                 playerBackground = playerBackground
                             )
-                        }
-                    }
                 }
             }
         }
+
+    }
+}
 
         // Seek effect
         LaunchedEffect(showSeekEffect) {
@@ -716,9 +722,24 @@ private fun ThumbnailItem(
             },
         contentAlignment = Alignment.Center
     ) {
+        val artworkDensity = androidx.compose.ui.platform.LocalDensity.current
         Box(
             modifier = Modifier
                 .size(dimensions.thumbnailSize)
+                // Target end of the mini-to-full cover morph, registered on the node that
+                // KNOWS the shape: a vinyl or clover is a circle for morph purposes (half
+                // its size), a card is its own corner radius. Also the copy that has to be
+                // hidden while the travelling one is in flight, or the cover is on screen
+                // twice from the handoff onward.
+                .registerFullArtworkRect(
+                    with(artworkDensity) {
+                        when (artworkStyle) {
+                            PlayerArtworkStyle.CARD -> dimensions.cornerRadius.toPx()
+                            else -> dimensions.thumbnailSize.toPx() / 2f
+                        }
+                    }
+                )
+                .hideWhileMorphing()
                 .graphicsLayer {
                     rotationZ = rotation.value
                 }
@@ -933,6 +954,49 @@ private fun ThumbnailItem(
                 }
             }
         }
+
+        // Non-rotating light overlay — stays fixed while the vinyl spins underneath
+        if (artworkStyle == PlayerArtworkStyle.VINYL && !hidePlayerThumbnail) {
+            Canvas(
+                Modifier
+                    .size(dimensions.thumbnailSize)
+                    .clip(CircleShape)
+            ) {
+                val r = size.minDimension / 2f
+                val c = Offset(size.width / 2f, size.height / 2f)
+
+                // Edge rim light
+                drawCircle(
+                    color = Color.White.copy(alpha = 0.18f),
+                    radius = r * 0.98f,
+                    center = c,
+                    style = Stroke(width = 1.2.dp.toPx()),
+                )
+                drawCircle(
+                    color = Color.White.copy(alpha = 0.06f),
+                    radius = r * 0.95f,
+                    center = c,
+                    style = Stroke(width = 0.6.dp.toPx()),
+                )
+
+                // Diagonal gloss shine — stays in place as if lit from above-right
+                drawOval(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White.copy(alpha = 0.09f),
+                            Color.White.copy(alpha = 0.14f),
+                            Color.White.copy(alpha = 0.09f),
+                            Color.Transparent,
+                        ),
+                        start = Offset(size.width * 0.15f, 0f),
+                        end = Offset(size.width * 0.85f, size.height),
+                    ),
+                    topLeft = Offset(size.width * 0.08f, size.height * 0.22f),
+                    size = androidx.compose.ui.geometry.Size(size.width * 0.84f, size.height * 0.32f),
+                )
+            }
+        }
     }
 }
 
@@ -985,12 +1049,13 @@ private fun ThumbnailImage(
                 .diskCachePolicy(CachePolicy.ENABLED)
                 .networkCachePolicy(CachePolicy.ENABLED)
                 .build(),
-            onError = {
-                val url = currentUrl
-                if (url != null && url.contains("maxresdefault.jpg")) {
-                    currentUrl = url.replace("maxresdefault.jpg", "hqdefault.jpg")
-                }
-            },
+            // Step DOWN the ladder, one rung at a time. This used to jump straight from
+            // maxresdefault to hqdefault, and since maxresdefault (1280x720) simply does
+            // not exist for most YouTube tracks, the common case was a 404 followed by a
+            // 480x360 image blown up ~2.5x on a ~1200px player artwork -- which is the
+            // soft, mushy cover people notice. sddefault (640x480) exists far more often
+            // and is the rung that was being skipped.
+            onError = { currentUrl = nextThumbnailFallback(currentUrl) },
             contentDescription = null,
             contentScale = if (cropArtwork) ContentScale.Crop else ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
@@ -1076,3 +1141,20 @@ internal fun splitAndNormalizeArtists(raw: String): List<String> {
         .filter { it.isNotBlank() }
 }
 
+/**
+ * Next-lower YouTube thumbnail filename, or null once there is nothing left to try.
+ *
+ * i.ytimg.com serves a fixed ladder of filenames rather than arbitrary sizes, and which
+ * rungs exist varies per video: maxresdefault is frequently absent, sddefault usually is
+ * not. Walking down one rung per failure keeps the best available image instead of
+ * collapsing to the smallest on the first miss.
+ */
+internal fun nextThumbnailFallback(url: String?): String? = when {
+    url == null -> null
+    url.contains("maxresdefault.jpg") -> url.replace("maxresdefault.jpg", "sddefault.jpg")
+    url.contains("sddefault.jpg") -> url.replace("sddefault.jpg", "hqdefault.jpg")
+    url.contains("hqdefault.jpg") -> url.replace("hqdefault.jpg", "mqdefault.jpg")
+    // Either already at the bottom rung, or not an i.ytimg.com URL at all -- a
+    // googleusercontent size parameter has no ladder to walk.
+    else -> null
+}

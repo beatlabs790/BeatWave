@@ -48,9 +48,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import coil3.compose.AsyncImage
 import com.music.innertube.YouTube
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.music.innertube.models.MediaInfo
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/utils/ShowMediaInfo.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
@@ -59,6 +63,18 @@ import com.beatwave.music.db.entities.Song
 import com.beatwave.music.ui.component.LocalBottomSheetPageState
 import com.beatwave.music.ui.component.shimmer.ShimmerHost
 import com.beatwave.music.ui.component.shimmer.TextPlaceholder
+=======
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.utils.LocalAudioProperties
+import com.beatwave.music.utils.readLocalAudioProperties
+import com.beatwave.music.db.entities.FormatEntity
+import com.beatwave.music.db.entities.Song
+import com.beatwave.music.ui.component.LocalBottomSheetPageState
+import com.beatwave.music.ui.component.shimmer.ShimmerHost
+import com.beatwave.music.ui.component.shimmer.TextPlaceholder
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/utils/ShowMediaInfo.kt
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -83,6 +99,39 @@ fun ShowMediaInfo(videoId: String) {
     }
     LaunchedEffect(Unit, videoId) {
         database.format(videoId).collect { currentFormat = it }
+    }
+
+    // Local songs never get a FormatEntity row — only the YouTube playback/download path
+    // writes one — so contentLength was always null for them and the field read "N/A".
+    // A local song's id IS its MediaStore content URI, so the size can just be read off
+    // the file. Done on demand rather than stored: no schema change, and it stays right
+    // if the file is replaced.
+    var localFileSize by remember { mutableStateOf<Long?>(null) }
+    LaunchedEffect(song?.song?.isLocal, videoId) {
+        localFileSize = if (song?.song?.isLocal != true) {
+            null
+        } else {
+            withContext(Dispatchers.IO) {
+                runCatching {
+                    context.contentResolver
+                        .openAssetFileDescriptor(videoId.toUri(), "r")
+                        ?.use { it.length }
+                        ?.takeIf { it >= 0 }
+                }.getOrNull()
+            }
+        }
+    }
+
+    // Same reasoning as localFileSize above: only the YouTube playback and download
+    // paths write a FormatEntity, so for an on-device file every one of the format rows
+    // below (codec, bitrate, sample rate) read "N/A". These come off the file itself.
+    var localProperties by remember { mutableStateOf<LocalAudioProperties?>(null) }
+    LaunchedEffect(song?.song?.isLocal, videoId) {
+        localProperties = if (song?.song?.isLocal != true) {
+            null
+        } else {
+            readLocalAudioProperties(context, videoId)
+        }
     }
 
     // Shapes
@@ -244,12 +293,15 @@ fun ShowMediaInfo(videoId: String) {
                     ) {
                         InfoItem(
                             label = stringResource(R.string.mime_type),
-                            value = currentFormat?.mimeType?.substringBefore(";") ?: stringResource(R.string.song_info_standard),
+                            value = currentFormat?.mimeType?.substringBefore(";")
+                                ?: localProperties?.mimeType
+                                ?: stringResource(R.string.song_info_standard),
                             modifier = Modifier.weight(1f)
                         )
                         InfoItem(
                             label = stringResource(R.string.bitrate),
-                            value = currentFormat?.bitrate?.let { "${it / 1000} Kbps" } ?: "N/A",
+                            value = (currentFormat?.bitrate ?: localProperties?.bitrateBps)
+                                ?.let { "${it / 1000} Kbps" } ?: "N/A",
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -261,12 +313,26 @@ fun ShowMediaInfo(videoId: String) {
                     ) {
                         InfoItem(
                             label = stringResource(R.string.codecs),
-                            value = currentFormat?.codecs ?: "N/A",
+                            // A local file has no "codecs" string of its own, so the
+                            // container subtype stands in for it, with the bit depth
+                            // appended when the format declares one.
+                            value = currentFormat?.codecs
+                                ?: localProperties?.let { props ->
+                                    val codec = props.mimeType?.substringAfterLast('/')?.uppercase()
+                                    val depth = props.bitsPerSample?.let { "${'$'}it-bit " }.orEmpty()
+                                    codec?.let { depth + it }
+                                }
+                                ?: "N/A",
                             modifier = Modifier.weight(1f)
                         )
                         InfoItem(
                             label = stringResource(R.string.sample_rate),
-                            value = currentFormat?.sampleRate?.let { "$it Hz" } ?: "N/A",
+                            value = (currentFormat?.sampleRate ?: localProperties?.sampleRateHz)
+                                ?.let { rate ->
+                                    val channels = localProperties?.channelCount
+                                        ?.let { " \u00b7 ${it}ch" }.orEmpty()
+                                    "$rate Hz$channels"
+                                } ?: "N/A",
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -278,7 +344,7 @@ fun ShowMediaInfo(videoId: String) {
                     ) {
                         InfoItem(
                             label = stringResource(R.string.file_size),
-                            value = currentFormat?.contentLength?.let {
+                            value = (localFileSize ?: currentFormat?.contentLength)?.let {
                                 Formatter.formatShortFileSize(context, it)
                             } ?: "N/A",
                             modifier = Modifier.weight(1f)

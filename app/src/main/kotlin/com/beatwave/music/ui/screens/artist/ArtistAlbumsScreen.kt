@@ -86,6 +86,7 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistAlbumsScreen.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -115,6 +116,38 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.viewmodels.ArtistAlbumsViewModel
+=======
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.R
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.rememberGridColumns
+import com.beatwave.music.constants.CONTENT_TYPE_ALBUM
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.CONTENT_TYPE_HEADER
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.GridItemSize
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.GridItemsSizeKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.GridThumbnailHeight
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.LibraryAlbumGridItem
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.viewmodels.ArtistAlbumsViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistAlbumsScreen.kt
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -152,6 +185,8 @@ fun ArtistAlbumsScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val visibleAlbums = remember(albums) { albums.distinctBy { it.id } }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -180,7 +215,7 @@ fun ArtistAlbumsScreen(
             }
 
             items(
-                items = albums.distinctBy { it.id },
+                items = visibleAlbums,
                 key = { it.id },
                 contentType = { CONTENT_TYPE_ALBUM }
             ) { album ->
@@ -195,6 +230,14 @@ fun ArtistAlbumsScreen(
                 )
             }
         }
+
+        // No sort control on this screen -- albums arrive in release order -- so the rail
+        // is a proportional thumb rather than letters.
+        ListScrollRail(
+            lazyGridState = lazyGridState,
+            itemCount = visibleAlbums.size,
+            sectionIndexMap = null,
+        )
 
         TopAppBar(
             windowInsets = appTopBarWindowInsets(),

@@ -91,11 +91,17 @@ class ExoDownloadService : DownloadService(
             finalException: Exception?,
         ) {
             if (download.state == Download.STATE_FAILED) {
+                // Name the reason, not just the song. "Download failed" on its own is
+                // what made the "half my songs don't download" reports impossible to act
+                // on — a region block, a dead stream URL and a dropped connection all
+                // looked identical.
+                val title = Util.fromUtf8Bytes(download.request.data)
+                val reason = finalException?.message?.takeIf { it.isNotBlank() }
                 val notification = notificationHelper.buildDownloadFailedNotification(
                     context,
                     R.drawable.error,
                     null,
-                    Util.fromUtf8Bytes(download.request.data)
+                    if (reason != null) "$title — $reason" else title
                 )
                 NotificationUtil.setNotification(context, nextNotificationId++, notification)
             }

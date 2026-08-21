@@ -5,13 +5,19 @@
 
 package com.beatwave.music.ui.screens.playlist
 
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/LocalPlaylistScreen.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.FloatingChromeSpacer
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/LocalPlaylistScreen.kt
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.datastore.preferences.core.edit
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -107,7 +113,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/LocalPlaylistScreen.kt
 import com.beatwave.music.ui.component.AnimatedPlayPauseIcon
+=======
+import com.beatwave.music.ui.component.buildAlphabetSectionIndex
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.AnimatedPlayPauseIcon
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/LocalPlaylistScreen.kt
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -122,17 +134,15 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.compose.ui.util.fastSumBy
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
-import androidx.media3.exoplayer.offline.DownloadRequest
-import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.music.innertube.YouTube
 import com.music.innertube.models.SongItem
 import com.music.innertube.utils.completed
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/LocalPlaylistScreen.kt
 import com.beatwave.music.ui.utils.bounceClick
 import com.beatwave.music.ui.utils.combinedBounceClick
 import com.beatwave.music.LocalDatabase
@@ -201,6 +211,76 @@ import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.utils.reportException
 import com.beatwave.music.viewmodels.LocalPlaylistViewModel
+=======
+import com.beatwave.music.ui.utils.bounceClick
+import com.beatwave.music.ui.utils.combinedBounceClick
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.LocalDownloadUtil
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.LocalSyncUtils
+import com.beatwave.music.R
+import com.beatwave.music.constants.DarkModeKey
+import com.beatwave.music.constants.PendingPlaylistDeletesKey
+import com.beatwave.music.constants.PlaylistEditLockKey
+import com.beatwave.music.constants.PlaylistSongSortDescendingKey
+import com.beatwave.music.constants.PlaylistSongSortType
+import com.beatwave.music.constants.PlaylistSongSortTypeKey
+import com.beatwave.music.constants.SwipeToRemoveSongKey
+import com.beatwave.music.db.entities.Playlist
+import com.beatwave.music.db.entities.PlaylistSong
+import com.beatwave.music.db.entities.PlaylistSongMap
+import com.beatwave.music.extensions.move
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.models.toMediaMetadata
+import com.beatwave.music.playback.queues.ListQueue
+import com.beatwave.music.ui.component.ActionPromptDialog
+import com.beatwave.music.ui.component.DefaultDialog
+import com.beatwave.music.ui.component.EmptyPlaceholder
+import com.beatwave.music.ui.component.GlassCircleButton
+import com.beatwave.music.ui.component.ChromeScrim
+import com.beatwave.music.ui.component.rememberChromeScrimProgress
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.component.LocalAppBackdrop
+import com.beatwave.music.ui.component.GlassComponent
+import com.beatwave.music.ui.component.LocalGlassEffectConfig
+import com.beatwave.music.ui.component.backdrop.backdrops.layerBackdrop
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberBackdropFreeze
+import com.beatwave.music.ui.component.LocalItemPrefs
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.OverlayEditButton
+import com.beatwave.music.ui.component.SongListItem
+import com.beatwave.music.ui.component.SortHeader
+import com.beatwave.music.ui.component.isGlassAllowed
+import com.beatwave.music.ui.component.liquidGlass
+import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
+import com.beatwave.music.ui.menu.CustomThumbnailMenu
+import com.beatwave.music.ui.component.ExpandableText
+import com.beatwave.music.ui.menu.LocalPlaylistMenu
+import com.beatwave.music.ui.menu.SelectionSongMenu
+import com.beatwave.music.ui.menu.SongMenu
+import com.beatwave.music.ui.screens.settings.DarkMode
+import com.beatwave.music.ui.component.AlbumStyleHeroImage
+import com.beatwave.music.LocalTabView
+import com.beatwave.music.ui.utils.rememberHeroZoom
+import com.beatwave.music.ui.utils.heroPullZoom
+import com.beatwave.music.ui.utils.listOverscroll
+import com.beatwave.music.ui.component.HeroBackground
+import com.beatwave.music.ui.component.HeroCardHeader
+import com.beatwave.music.ui.component.rememberHeroSource
+import com.beatwave.music.ui.component.rememberHeroTint
+import com.beatwave.music.ui.theme.AppleTokens
+import com.beatwave.music.ui.theme.HeroTintedContent
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.utils.dataStore
+import com.beatwave.music.utils.listItemShape
+import com.beatwave.music.utils.makeTimeString
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.utils.reportException
+import com.beatwave.music.viewmodels.LocalPlaylistViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/playlist/LocalPlaylistScreen.kt
 import com.yalantis.ucrop.UCrop
 import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers
@@ -210,6 +290,10 @@ import kotlinx.coroutines.withContext
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.time.LocalDateTime
+import com.beatwave.music.playback.DownloadTarget
+import com.beatwave.music.playback.cancelDownloads
+import com.beatwave.music.playback.downloadSongs
+import com.beatwave.music.playback.removeDownloads
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -437,14 +521,7 @@ fun LocalPlaylistScreen(
                                 playlist?.id?.let { clearPlaylist(it) }
                             }
                         }
-                        songs.forEach { song ->
-                            DownloadService.sendRemoveDownload(
-                                context,
-                                ExoDownloadService::class.java,
-                                song.song.id,
-                                false
-                            )
-                        }
+                        removeDownloads(context, songs.map { it.song.id })
                     }
                 ) {
                     Text(text = stringResource(android.R.string.ok))
@@ -494,8 +571,17 @@ fun LocalPlaylistScreen(
                         database.query {
                             playlist?.let { delete(it.playlist) }
                         }
+                        val browseId = playlist?.playlist?.browseId
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            playlist?.playlist?.browseId?.let { YouTube.deletePlaylist(it) }
+                            if (browseId == null) return@launch
+                            // Marked pending before the network call: if the delete
+                            // fails, or a library sync races it while it's still in
+                            // flight, the sync sees this browseId as pending and
+                            // won't resurrect the playlist it was just told to remove.
+                            context.dataStore.edit {
+                                it[PendingPlaylistDeletesKey] = (it[PendingPlaylistDeletesKey] ?: emptySet()) + browseId
+                            }
+                            YouTube.deletePlaylist(browseId)
                         }
                         navController.popBackStack()
                     }
@@ -637,6 +723,15 @@ fun LocalPlaylistScreen(
         // it, same as it would any other already-rendered composable.
         Box(modifier = Modifier
             .nestedScroll(backdropFreeze.connection)
+
+            // OUTER layer, and it must come BEFORE layerBackdrop: the layer has to
+            // enclose the backdrop node, or that node's draw re-runs whenever anything
+            // else in the window redraws. The mini player, the playing indicator and
+            // the position poll are all siblings that tick on their own schedule, and
+            // each tick was re-recording this entire list. MainActivity pairs an outer
+            // and inner layer for exactly this; the screen-local backdrops were left
+            // with only the inner half.
+            .graphicsLayer()
             .layerBackdrop(listBackdrop, frozen = backdropFreeze.frozen)
             // Content becomes ONE cached RenderNode, so the backdrop's
             // layer.record { drawContent() } records a single drawRenderNode
@@ -646,7 +741,7 @@ fun LocalPlaylistScreen(
             state = lazyListState,
             // No bounce here: the top pull drives the hero zoom instead.
             overscrollEffect = heroZoom.listOverscroll(),
-            modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::refresh),
+            modifier = Modifier.heroPullZoom(heroZoom),
             contentPadding = LocalPlayerAwareWindowInsets.current
                 .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
                 .union(WindowInsets.ime)
@@ -662,6 +757,11 @@ fun LocalPlaylistScreen(
                         )
                     }
                 } else {
+                    if (isSearching) {
+                        // No hero header in search mode — reserve the floating chrome's
+                        // height so the first row doesn't start under the status bar.
+                        item(key = "search_chrome_spacer") { FloatingChromeSpacer() }
+                    }
                     if (!isSearching) {
                         item(key = "playlist_header") {
                             LocalPlaylistHeader(
@@ -736,6 +836,7 @@ fun LocalPlaylistScreen(
             itemsIndexed(
                 items = if (isSearching) filteredSongs else mutableSongs,
                 key = { _, song -> song.map.id },
+                contentType = { _, _ -> "song_row" },
             ) { index, song ->
                 ReorderableItem(
                     state = reorderableState,
@@ -896,15 +997,24 @@ fun LocalPlaylistScreen(
         }
         }
 
-        DraggableScrollbar(
-            modifier = Modifier
-                .padding(
-                    LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime)
-                        .asPaddingValues()
-                )
-                .align(Alignment.CenterEnd),
-            scrollState = lazyListState,
-            headerItems = 2
+        ListScrollRail(
+            lazyListState = lazyListState,
+            itemCount = filteredSongs.size,
+            sectionIndexMap = when (sortType) {
+                PlaylistSongSortType.NAME ->
+                    remember(filteredSongs) {
+                        buildAlphabetSectionIndex(filteredSongs) { it.song.song.title }
+                    }
+
+                PlaylistSongSortType.ARTIST ->
+                    remember(filteredSongs) {
+                        buildAlphabetSectionIndex(filteredSongs) { entry ->
+                            entry.song.artists.firstOrNull()?.name.orEmpty()
+                        }
+                    }
+
+                else -> null
+            },
         )
 
         // Floating glass chrome over the tinted background, replacing the
@@ -1123,8 +1233,24 @@ fun LocalPlaylistHeader(
         }
 
     val downloadUtil = LocalDownloadUtil.current
-    var downloadState by remember {
-        mutableIntStateOf(Download.STATE_STOPPED)
+    // Collected rather than folded into a LaunchedEffect so the current state of each
+    // download is also available at click time — the download and cancel actions filter
+    // on it, see DownloadActions.
+    val downloads by downloadUtil.downloads.collectAsState()
+    val downloadState = remember(songs, downloads) {
+        when {
+            songs.isEmpty() -> Download.STATE_STOPPED
+            songs.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED } ->
+                Download.STATE_COMPLETED
+
+            songs.all {
+                downloads[it.song.id]?.state == Download.STATE_QUEUED ||
+                    downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
+                    downloads[it.song.id]?.state == Download.STATE_COMPLETED
+            } -> Download.STATE_DOWNLOADING
+
+            else -> Download.STATE_STOPPED
+        }
     }
 
     val liked = playlist.playlist.bookmarkedAt != null
@@ -1222,25 +1348,6 @@ fun LocalPlaylistHeader(
                     }
                 }
             }
-        }
-    }
-
-    LaunchedEffect(songs) {
-        if (songs.isEmpty()) return@LaunchedEffect
-        downloadUtil.downloads.collect { downloads ->
-            downloadState =
-                if (songs.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED }) {
-                    Download.STATE_COMPLETED
-                } else if (songs.all {
-                        downloads[it.song.id]?.state == Download.STATE_QUEUED ||
-                                downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
-                                downloads[it.song.id]?.state == Download.STATE_COMPLETED
-                    }
-                ) {
-                    Download.STATE_DOWNLOADING
-                } else {
-                    Download.STATE_STOPPED
-                }
         }
     }
 
@@ -1468,31 +1575,21 @@ fun LocalPlaylistHeader(
                                 onDownload = {
                                     when (downloadState) {
                                         Download.STATE_COMPLETED -> onShowRemoveDownloadDialog()
-                                        Download.STATE_DOWNLOADING -> {
-                                            songs.forEach { song ->
-                                                DownloadService.sendRemoveDownload(
-                                                    context,
-                                                    ExoDownloadService::class.java,
-                                                    song.song.id,
-                                                    false
-                                                )
-                                            }
-                                        }
-                                        else -> {
-                                            songs.forEach { song ->
-                                                val downloadRequest = DownloadRequest
-                                                    .Builder(song.song.id, song.song.id.toUri())
-                                                    .setCustomCacheKey(song.song.id)
-                                                    .setData(song.song.song.title.toByteArray())
-                                                    .build()
-                                                DownloadService.sendAddDownload(
-                                                    context,
-                                                    ExoDownloadService::class.java,
-                                                    downloadRequest,
-                                                    false
-                                                )
-                                            }
-                                        }
+                                        // Cancel, not remove: this used to delete every
+                                        // song in the playlist, finished ones included.
+                                        Download.STATE_DOWNLOADING -> cancelDownloads(
+                                            context,
+                                            songs.map { it.song.id },
+                                            downloads,
+                                        )
+
+                                        else -> downloadSongs(
+                                            context,
+                                            songs.map {
+                                                DownloadTarget(it.song.id, it.song.song.title)
+                                            },
+                                            downloads,
+                                        )
                                     }
                                 },
                                 onQueue = {

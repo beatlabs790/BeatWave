@@ -16,6 +16,7 @@ object LyricsProviderRegistry {
     private val providerMap = mapOf(
         "YouLyPlus"       to YouLyPlusLyricsProvider,
         "Paxsenix"        to PaxSenixLyricsProvider,
+        "Musixmatch"      to MusixmatchLyricsProvider,
         "BetterLyrics"    to BetterLyricsProvider,
         "SimpMusic"       to SimpMusicLyricsProvider,
         "LrcLib"          to LrcLibLyricsProvider,
@@ -39,6 +40,7 @@ object LyricsProviderRegistry {
     fun getDefaultProviderOrder(): List<String> = listOf(
         "YouLyPlus",
         "Paxsenix",
+        "Musixmatch",
         "BetterLyrics",
         "SimpMusic",
         "LrcLib",
@@ -64,6 +66,7 @@ object LyricsProviderRegistry {
     fun getDisplayName(name: String): String = when (name) {
         "YouLyPlus"       -> "YouLyPlus"
         "Paxsenix"        -> "PaxSenix"
+        "Musixmatch"      -> "Musixmatch"
         "BetterLyrics"    -> "Better Lyrics"
         "SimpMusic"       -> "SimpMusic"
         "LrcLib"          -> "LrcLib"

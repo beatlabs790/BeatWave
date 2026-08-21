@@ -48,17 +48,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.ui.Alignment
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/menu/PlaylistMenu.kt
 import com.beatwave.music.constants.InnerTubeCookieKey
 import com.beatwave.music.utils.dataStore
+=======
+import com.beatwave.music.constants.InnerTubeCookieKey
+import com.beatwave.music.constants.PendingPlaylistDeletesKey
+import com.beatwave.music.utils.dataStore
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/menu/PlaylistMenu.kt
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.beatwave.music.utils.rememberPreference
 import com.music.innertube.utils.parseCookieString
-import androidx.core.net.toUri
 import androidx.media3.exoplayer.offline.Download
-import androidx.media3.exoplayer.offline.DownloadRequest
-import androidx.media3.exoplayer.offline.DownloadService
 import com.music.innertube.YouTube
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/menu/PlaylistMenu.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalListenTogetherManager
@@ -80,6 +84,32 @@ import com.beatwave.music.ui.component.NewAction
 import com.beatwave.music.ui.component.NewActionGrid
 import com.beatwave.music.ui.component.PlaylistListItem
 import com.beatwave.music.ui.component.TextFieldDialog
+=======
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.LocalDownloadUtil
+import com.beatwave.music.LocalListenTogetherManager
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.db.entities.Playlist
+import com.beatwave.music.db.entities.SpeedDialItem
+import com.beatwave.music.db.entities.PlaylistSong
+import com.beatwave.music.db.entities.Song
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.playback.DownloadTarget
+import com.beatwave.music.playback.cancelDownloads
+import com.beatwave.music.playback.downloadSongs
+import com.beatwave.music.playback.removeDownloads
+import com.beatwave.music.playback.queues.ListQueue
+import com.beatwave.music.playback.queues.YouTubeQueue
+import com.beatwave.music.ui.component.DefaultDialog
+import com.beatwave.music.ui.component.Material3MenuGroup
+import com.beatwave.music.ui.component.Material3MenuItemData
+import com.beatwave.music.ui.component.rememberPlaylistCoverPicker
+import com.beatwave.music.ui.component.NewAction
+import com.beatwave.music.ui.component.NewActionGrid
+import com.beatwave.music.ui.component.PlaylistListItem
+import com.beatwave.music.ui.component.TextFieldDialog
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/menu/PlaylistMenu.kt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -128,8 +158,24 @@ fun PlaylistMenu(
         }
     }
 
-    var downloadState by remember {
-        mutableIntStateOf(Download.STATE_STOPPED)
+    // Collected rather than folded into a LaunchedEffect so the current state of each
+    // download is also available at click time — the download and cancel actions filter
+    // on it, see DownloadActions.
+    val downloads by downloadUtil.downloads.collectAsState()
+    val downloadState = remember(songs, downloads) {
+        when {
+            songs.isEmpty() -> Download.STATE_STOPPED
+            songs.all { downloads[it.id]?.state == Download.STATE_COMPLETED } ->
+                Download.STATE_COMPLETED
+
+            songs.all {
+                downloads[it.id]?.state == Download.STATE_QUEUED ||
+                    downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                    downloads[it.id]?.state == Download.STATE_COMPLETED
+            } -> Download.STATE_DOWNLOADING
+
+            else -> Download.STATE_STOPPED
+        }
     }
 
     val editable: Boolean = playlist.playlist.isEditable == true
@@ -148,25 +194,6 @@ fun PlaylistMenu(
     )
 
     val isPinned by database.speedDialDao.isPinned(playlist.id).collectAsState(initial = false)
-
-    LaunchedEffect(songs) {
-        if (songs.isEmpty()) return@LaunchedEffect
-        downloadUtil.downloads.collect { downloads ->
-            downloadState =
-                if (songs.all { downloads[it.id]?.state == Download.STATE_COMPLETED }) {
-                    Download.STATE_COMPLETED
-                } else if (songs.all {
-                        downloads[it.id]?.state == Download.STATE_QUEUED ||
-                                downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
-                                downloads[it.id]?.state == Download.STATE_COMPLETED
-                    }
-                ) {
-                    Download.STATE_DOWNLOADING
-                } else {
-                    Download.STATE_STOPPED
-                }
-        }
-    }
 
     var showEditDialog by remember {
         mutableStateOf(false)
@@ -228,14 +255,7 @@ fun PlaylistMenu(
                 TextButton(
                     onClick = {
                         showRemoveDownloadDialog = false
-                        songs.forEach { song ->
-                            DownloadService.sendRemoveDownload(
-                                context,
-                                ExoDownloadService::class.java,
-                                song.id,
-                                false,
-                            )
-                        }
+                        removeDownloads(context, songs.map { it.id })
                     },
                 ) {
                     Text(text = stringResource(android.R.string.ok))
@@ -281,8 +301,17 @@ fun PlaylistMenu(
                             delete(playlist.playlist)
                         }
 
+                        val browseId = playlist.playlist.browseId
                         coroutineScope.launch(Dispatchers.IO) {
-                            playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
+                            if (browseId == null) return@launch
+                            // Marked pending before the network call: if the delete
+                            // fails, or a library sync races it while it's still in
+                            // flight, the sync sees this browseId as pending and
+                            // won't resurrect the playlist it was just told to remove.
+                            context.dataStore.edit {
+                                it[PendingPlaylistDeletesKey] = (it[PendingPlaylistDeletesKey] ?: emptySet()) + browseId
+                            }
+                            YouTube.deletePlaylist(browseId)
                         }
                     }
                 ) {
@@ -607,7 +636,11 @@ fun PlaylistMenu(
                                             )
                                         },
                                         onClick = {
-                                            showRemoveDownloadDialog = true
+                                            // Cancel, not remove: this used to open the
+                                            // remove-download dialog, which deleted every
+                                            // song in the playlist including the ones that
+                                            // had already finished.
+                                            cancelDownloads(context, songs.map { it.id }, downloads)
                                         }
                                     )
                                 }
@@ -622,20 +655,11 @@ fun PlaylistMenu(
                                             )
                                         },
                                         onClick = {
-                                            songs.forEach { song ->
-                                                val downloadRequest =
-                                                    DownloadRequest
-                                                        .Builder(song.id, song.id.toUri())
-                                                        .setCustomCacheKey(song.id)
-                                                        .setData(song.song.title.toByteArray())
-                                                        .build()
-                                                DownloadService.sendAddDownload(
-                                                    context,
-                                                    ExoDownloadService::class.java,
-                                                    downloadRequest,
-                                                    false,
-                                                )
-                                            }
+                                            downloadSongs(
+                                                context,
+                                                songs.map { DownloadTarget(it.id, it.song.title) },
+                                                downloads,
+                                            )
                                         }
                                     )
                                 }

@@ -43,6 +43,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.animation.animateColorAsState
+import com.beatwave.music.ui.utils.Motion
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -108,7 +110,7 @@ private val NavBarMinTabWidth = 56.dp
 private const val KeyboardOpenDelayMs = 260L
 
 /**
- * The iOS 26 style floating navigation bar, an alternative to [AppNavigationBar].
+ * The iOS 26 style floating navigation bar — the app's only bottom bar.
  *
  * Collapses to an inline pill while scrolling down (driven by [scrollConnection]) and
  * expands back on scroll up. The search destination is rendered as the standalone
@@ -137,6 +139,10 @@ fun AppFloatingNavBar(
     onAccessoryClick: () -> Unit = {},
     onAccessoryLyricsClick: (() -> Unit)? = null,
     onAccessoryQueueClick: (() -> Unit)? = null,
+    // Live fractional tab index while the main tabs pager is moving, null otherwise --
+    // see FloatingTabBar's own `tabPosition`. This is what makes the puck travel WITH
+    // the page instead of springing to it once the page has already arrived.
+    tabPosition: (() -> Float?)? = null,
 ) {
     val navSearch = LocalNavSearchState.current
 
@@ -186,6 +192,7 @@ fun AppFloatingNavBar(
                 onAccessoryQueueClick = onAccessoryQueueClick,
                 searchModeActive = navSearch.visualActive,
                 navSearch = navSearch,
+                tabPosition = tabPosition,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -205,6 +212,7 @@ private fun AppFloatingNavBarChrome(
     onAccessoryQueueClick: (() -> Unit)?,
     searchModeActive: Boolean,
     navSearch: NavSearchState,
+    tabPosition: (() -> Float?)?,
     modifier: Modifier,
 ) {
     // System back while search-expanded/search-inline (keyboard not active yet,
@@ -237,7 +245,18 @@ private fun AppFloatingNavBarChrome(
     // The app-wide AppTextColorKey override (Theme screen) wins whenever the
     // user set one, glass on or off — glassConfig.textColor is only the
     // fallback for "no explicit override chosen".
-    val tabTextColor = if (appTextColorInt != 0) Color(appTextColorInt) else glassConfig.textColor
+    // Animated: this used to snap instantly whenever the source changed --
+    // switching tabs into a screen with a different hero tint, or the app-wide
+    // override being toggled -- which on a bar that is otherwise all springs and
+    // glass reads as a glitch rather than a colour change. Motion.appear() rather
+    // than the puck's own morph/select curves: a colour isn't travelling anywhere,
+    // it's arriving, which is what appear() is for.
+    val rawTabTextColor = if (appTextColorInt != 0) Color(appTextColorInt) else glassConfig.textColor
+    val tabTextColor by animateColorAsState(
+        targetValue = rawTabTextColor,
+        animationSpec = Motion.appear(),
+        label = "navBarTextColor",
+    )
     val selectedContentColor = tabTextColor
     val unselectedContentColor = tabTextColor.copy(alpha = 0.6f)
 
@@ -325,6 +344,7 @@ private fun AppFloatingNavBarChrome(
 
         FloatingTabBar(
             selectedTabKey = selectedTabKey,
+            tabPosition = tabPosition,
             scrollConnection = scrollConnection,
             modifier = Modifier.fillMaxWidth(),
             tabBarContentModifier = tabBarContentModifier,

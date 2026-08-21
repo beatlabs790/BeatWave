@@ -1,11 +1,16 @@
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/viewmodels/OnlinePlaylistViewModel.kt
 ﻿/**
  * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
 package com.beatwave.music.viewmodels
+=======
+package com.beatwave.music.viewmodels
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/viewmodels/OnlinePlaylistViewModel.kt
 
 import android.content.Context
+import android.util.LruCache
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +36,56 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class CachedPlaylistData(
+    val playlist: PlaylistItem,
+    val songs: List<SongItem>,
+    val related: List<YTItem> = emptyList(),
+    val continuation: String? = null,
+    val timestamp: Long = System.currentTimeMillis(),
+)
+
+object PlaylistMemoryCache {
+    private const val MAX_ENTRIES = 30
+    private const val TTL_MILLIS = 30 * 60 * 1000L // 30 minutes in RAM
+
+    private val cache = LruCache<String, CachedPlaylistData>(MAX_ENTRIES)
+
+    @Synchronized
+    fun get(playlistId: String): CachedPlaylistData? {
+        val entry = cache.get(playlistId) ?: return null
+        if (System.currentTimeMillis() - entry.timestamp > TTL_MILLIS) {
+            cache.remove(playlistId)
+            return null
+        }
+        return entry
+    }
+
+    @Synchronized
+    fun put(
+        playlistId: String,
+        playlist: PlaylistItem,
+        songs: List<SongItem>,
+        related: List<YTItem> = emptyList(),
+        continuation: String? = null,
+    ) {
+        cache.put(
+            playlistId,
+            CachedPlaylistData(
+                playlist = playlist,
+                songs = songs,
+                related = related,
+                continuation = continuation,
+                timestamp = System.currentTimeMillis(),
+            )
+        )
+    }
+
+    @Synchronized
+    fun clear() {
+        cache.evictAll()
+    }
+}
 
 @HiltViewModel
 class OnlinePlaylistViewModel @Inject constructor(
@@ -62,28 +117,51 @@ class OnlinePlaylistViewModel @Inject constructor(
     private var proactiveLoadJob: Job? = null
 
     init {
+        // Fast sync restore from memory cache
+        val cached = PlaylistMemoryCache.get(playlistId)
+        if (cached != null) {
+            playlist.value = cached.playlist
+            playlistSongs.value = applySongFilters(cached.songs)
+            relatedItems.value = cached.related
+            continuation = cached.continuation
+            _isLoading.value = false
+        }
         fetchInitialPlaylistData()
     }
 
     private fun fetchInitialPlaylistData() {
         viewModelScope.launch(Dispatchers.IO) {
-            _isLoading.value = true
+            if (playlistSongs.value.isEmpty() && playlist.value == null) {
+                _isLoading.value = true
+            }
             _error.value = null
-            continuation = null
             proactiveLoadJob?.cancel() // Cancel any ongoing proactive load
 
             YouTube.playlist(playlistId)
                 .onSuccess { playlistPage ->
                     playlist.value = playlistPage.playlist
-                    playlistSongs.value = applySongFilters(playlistPage.songs)
-                    relatedItems.value = playlistPage.related ?: emptyList()
+                    val filteredSongs = applySongFilters(playlistPage.songs)
+                    playlistSongs.value = filteredSongs
+                    val related = playlistPage.related ?: emptyList()
+                    relatedItems.value = related
                     continuation = playlistPage.songsContinuation
                     _isLoading.value = false
+
+                    PlaylistMemoryCache.put(
+                        playlistId = playlistId,
+                        playlist = playlistPage.playlist,
+                        songs = playlistPage.songs,
+                        related = related,
+                        continuation = playlistPage.songsContinuation,
+                    )
+
                     if (continuation != null) {
                         startProactiveBackgroundLoading()
                     }
                 }.onFailure { throwable ->
-                    _error.value = throwable.message ?: "Failed to load playlist"
+                    if (playlistSongs.value.isEmpty()) {
+                        _error.value = throwable.message ?: "Failed to load playlist"
+                    }
                     _isLoading.value = false
                     reportException(throwable)
                 }
@@ -97,8 +175,6 @@ class OnlinePlaylistViewModel @Inject constructor(
             while (currentProactiveToken != null && isActive) {
                 // If a manual loadMore is happening, pause proactive loading
                 if (_isLoadingMore.value) {
-                    // Wait until manual load is finished, then re-evaluate
-                    // This simple break and restart strategy from loadMoreSongs is preferred
                     break 
                 }
 
@@ -106,16 +182,25 @@ class OnlinePlaylistViewModel @Inject constructor(
                     .onSuccess { playlistContinuationPage ->
                         val currentSongs = playlistSongs.value.toMutableList()
                         currentSongs.addAll(playlistContinuationPage.songs)
-                        playlistSongs.value = applySongFilters(currentSongs)
+                        val filteredSongs = applySongFilters(currentSongs)
+                        playlistSongs.value = filteredSongs
                         currentProactiveToken = playlistContinuationPage.continuation
-                        // Update the class-level continuation for manual loadMore if needed
-                        this@OnlinePlaylistViewModel.continuation = currentProactiveToken 
+                        this@OnlinePlaylistViewModel.continuation = currentProactiveToken
+
+                        playlist.value?.let { currentPlaylist ->
+                            PlaylistMemoryCache.put(
+                                playlistId = playlistId,
+                                playlist = currentPlaylist,
+                                songs = currentSongs,
+                                related = relatedItems.value,
+                                continuation = currentProactiveToken,
+                            )
+                        }
                     }.onFailure { throwable ->
                         reportException(throwable)
                         currentProactiveToken = null // Stop proactive loading on error
                     }
             }
-            // If loop finishes because currentProactiveToken is null, all songs are loaded proactively.
         }
     }
 
@@ -132,8 +217,19 @@ class OnlinePlaylistViewModel @Inject constructor(
                 .onSuccess { playlistContinuationPage ->
                     val currentSongs = playlistSongs.value.toMutableList()
                     currentSongs.addAll(playlistContinuationPage.songs)
-                    playlistSongs.value = applySongFilters(currentSongs)
+                    val filteredSongs = applySongFilters(currentSongs)
+                    playlistSongs.value = filteredSongs
                     continuation = playlistContinuationPage.continuation
+
+                    playlist.value?.let { currentPlaylist ->
+                        PlaylistMemoryCache.put(
+                            playlistId = playlistId,
+                            playlist = currentPlaylist,
+                            songs = currentSongs,
+                            related = relatedItems.value,
+                            continuation = continuation,
+                        )
+                    }
                 }.onFailure { throwable ->
                     reportException(throwable)
                 }.also {

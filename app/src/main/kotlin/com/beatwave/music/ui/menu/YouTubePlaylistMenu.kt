@@ -37,7 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -51,15 +50,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.media3.exoplayer.offline.Download
-import androidx.media3.exoplayer.offline.DownloadRequest
-import androidx.media3.exoplayer.offline.DownloadService
 import coil3.compose.AsyncImage
 import com.music.innertube.YouTube
 import com.music.innertube.models.PlaylistItem
 import com.music.innertube.models.SongItem
 import com.music.innertube.utils.completed
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/menu/YouTubePlaylistMenu.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalListenTogetherManager
@@ -86,10 +83,41 @@ import com.beatwave.music.ui.component.YouTubeListItem
 import com.beatwave.music.ui.utils.resize
 import com.beatwave.music.utils.joinByBullet
 import com.beatwave.music.utils.makeTimeString
+=======
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.LocalDownloadUtil
+import com.beatwave.music.LocalListenTogetherManager
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.constants.ListThumbnailSize
+import com.beatwave.music.constants.ThumbnailCornerRadius
+import com.beatwave.music.constants.ThumbnailRoundedShape
+import com.beatwave.music.db.entities.SpeedDialItem
+import com.beatwave.music.db.entities.PlaylistEntity
+import com.beatwave.music.db.entities.PlaylistSongMap
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.models.MediaMetadata
+import com.beatwave.music.models.toMediaMetadata
+import com.beatwave.music.playback.queues.YouTubeQueue
+import com.beatwave.music.ui.component.DefaultDialog
+import com.beatwave.music.ui.component.ListDialog
+import com.beatwave.music.ui.component.Material3MenuGroup
+import com.beatwave.music.ui.component.Material3MenuItemData
+import com.beatwave.music.ui.component.NewAction
+import com.beatwave.music.ui.component.NewActionGrid
+import com.beatwave.music.ui.component.YouTubeListItem
+import com.beatwave.music.ui.utils.resize
+import com.beatwave.music.utils.joinByBullet
+import com.beatwave.music.utils.makeTimeString
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/menu/YouTubePlaylistMenu.kt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.beatwave.music.playback.DownloadTarget
+import com.beatwave.music.playback.cancelDownloads
+import com.beatwave.music.playback.downloadSongs
+import com.beatwave.music.playback.removeDownloads
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("MutableCollectionMutableState")
@@ -199,23 +227,23 @@ fun YouTubePlaylistMenu(
     )
     HorizontalDivider()
 
-    var downloadState by remember {
-        mutableIntStateOf(Download.STATE_STOPPED)
-    }
-    LaunchedEffect(songs) {
-        if (songs.isEmpty()) return@LaunchedEffect
-        downloadUtil.downloads.collect { downloads ->
-            downloadState =
-                if (songs.all { downloads[it.id]?.state == Download.STATE_COMPLETED })
-                    Download.STATE_COMPLETED
-                else if (songs.all {
-                        downloads[it.id]?.state == Download.STATE_QUEUED
-                                || downloads[it.id]?.state == Download.STATE_DOWNLOADING
-                                || downloads[it.id]?.state == Download.STATE_COMPLETED
-                    })
-                    Download.STATE_DOWNLOADING
-                else
-                    Download.STATE_STOPPED
+    // Collected rather than folded into a LaunchedEffect so the current state of each
+    // download is also available at click time — the download and cancel actions filter
+    // on it, see DownloadActions.
+    val downloads by downloadUtil.downloads.collectAsState()
+    val downloadState = remember(songs, downloads) {
+        when {
+            songs.isEmpty() -> Download.STATE_STOPPED
+            songs.all { downloads[it.id]?.state == Download.STATE_COMPLETED } ->
+                Download.STATE_COMPLETED
+
+            songs.all {
+                downloads[it.id]?.state == Download.STATE_QUEUED ||
+                    downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                    downloads[it.id]?.state == Download.STATE_COMPLETED
+            } -> Download.STATE_DOWNLOADING
+
+            else -> Download.STATE_STOPPED
         }
     }
     var showRemoveDownloadDialog by remember {
@@ -243,14 +271,7 @@ fun YouTubePlaylistMenu(
                 TextButton(
                     onClick = {
                         showRemoveDownloadDialog = false
-                        songs.forEach { song ->
-                            DownloadService.sendRemoveDownload(
-                                context,
-                                ExoDownloadService::class.java,
-                                song.id,
-                                false
-                            )
-                        }
+                        removeDownloads(context, songs.map { it.id })
                     }
                 ) {
                     Text(text = stringResource(android.R.string.ok))
@@ -549,7 +570,14 @@ fun YouTubePlaylistMenu(
                                             )
                                         },
                                         onClick = {
-                                            showRemoveDownloadDialog = true
+                                            // Cancel, not remove: this used to open the
+                                            // remove-download dialog, which deleted every
+                                            // song including the already-finished ones.
+                                            cancelDownloads(
+                                                context,
+                                                songs.map { it.id },
+                                                downloads,
+                                            )
                                         }
                                     )
                                 }
@@ -564,19 +592,11 @@ fun YouTubePlaylistMenu(
                                             )
                                         },
                                         onClick = {
-                                            songs.forEach { song ->
-                                                val downloadRequest =
-                                                    DownloadRequest.Builder(song.id, song.id.toUri())
-                                                        .setCustomCacheKey(song.id)
-                                                        .setData(song.title.toByteArray())
-                                                        .build()
-                                                DownloadService.sendAddDownload(
-                                                    context,
-                                                    ExoDownloadService::class.java,
-                                                    downloadRequest,
-                                                    false
-                                                )
-                                            }
+                                            downloadSongs(
+                                                context,
+                                                songs.map { DownloadTarget(it.id, it.title) },
+                                                downloads,
+                                            )
                                         }
                                     )
                                 }

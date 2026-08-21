@@ -41,6 +41,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -73,6 +74,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -193,6 +195,17 @@ fun FloatingTabBar(
     // slot expands to fill the rest of the row with searchBarContent. The
     // inline (scrolled) state is unaffected — it stays the normal collapsed
     // icon+accessory+standalone row regardless of searchMode.
+    // Vendored addition: the puck's live position, when something outside the bar is
+    // already animating the selection -- the main tabs pager. Returns the fractional
+    // tab index while that driver is moving, and null the rest of the time so the
+    // ordinary selectedTabKey settle takes back over.
+    //
+    // Without this the puck waited for the pager to FINISH: `selectedTabKey` derives
+    // from `pagerState.currentPage`, which only flips near the end of
+    // `animateScrollToPage`, and only then did the puck start its own spring. Two
+    // springs in series, so the puck arrived roughly a full animation after the page
+    // it marks -- the "selected icon puck comes after a second" report.
+    tabPosition: (() -> Float?)? = null,
     searchMode: Boolean = false,
     searchBarContent: (@Composable (Modifier) -> Unit)? = null,
     // Vendored addition: caller-held width (from a previous onExpandedWidthChanged
@@ -256,12 +269,14 @@ fun FloatingTabBar(
             { transition.currentState != transition.targetState }
         }
         CompositionLocalProvider(LocalTabBarBackdropFrozen provides frozenWhileAnimating) {
-        val gooeyModifier = if (gooeyProgress > 0.01f) Modifier.gooey { gooeyBlurPx * gooeyProgress } else Modifier
-        Box(gooeyModifier) {
-            transition.AnimatedContent(
-                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                contentAlignment = Alignment.BottomCenter
-            ) { targetVisual ->
+            Box {
+                transition.AnimatedContent(
+                    transitionSpec = {
+                        fadeIn(tween(220, easing = FastOutSlowInEasing)) togetherWith
+                            fadeOut(tween(180, easing = FastOutSlowInEasing))
+                    },
+                    contentAlignment = Alignment.BottomCenter
+                ) { targetVisual ->
             when (targetVisual) {
                 FloatingTabBarVisual.INLINE -> InlineBar(
                     scope = scope,
@@ -279,6 +294,7 @@ fun FloatingTabBar(
                 FloatingTabBarVisual.EXPANDED -> ExpandedBar(
                     scope = scope,
                     selectedTabKey = selectedTabKey,
+                    tabPosition = tabPosition,
                     accessory = expandedAccessory,
                     isAccessoryShared = isAccessoryShared,
                     colors = colors,
@@ -750,6 +766,7 @@ private fun SharedTransitionScope.InlineAccessory(
 private fun SharedTransitionScope.ExpandedBar(
     scope: FloatingTabBarScopeImpl,
     selectedTabKey: Any?,
+    tabPosition: (() -> Float?)?,
     accessory: (@Composable SharedTransitionScope.(Modifier, AnimatedVisibilityScope) -> Unit)?,
     isAccessoryShared: Boolean,
     colors: FloatingTabBarColors,
@@ -816,6 +833,7 @@ private fun SharedTransitionScope.ExpandedBar(
                 ExpandedTabs(
                     scope = scope,
                     selectedTabKey = selectedTabKey,
+                    tabPosition = tabPosition,
                     shapes = shapes,
                     sizes = sizes,
                     colors = colors,
@@ -1048,6 +1066,7 @@ private fun SharedTransitionScope.ExpandedAccessory(
 private fun SharedTransitionScope.ExpandedTabs(
     scope: FloatingTabBarScopeImpl,
     selectedTabKey: Any?,
+    tabPosition: (() -> Float?)?,
     shapes: FloatingTabBarShapes,
     sizes: FloatingTabBarSizes,
     colors: FloatingTabBarColors,
@@ -1181,6 +1200,24 @@ private fun SharedTransitionScope.ExpandedTabs(
     // the indicator appears to pop in late and twitch. On that first pass the
     // position is already correct, so there is nothing to animate.
     var hasSyncedSelection by remember(tabsCount) { mutableStateOf(false) }
+
+    // While the pager is moving, the puck IS the pager: same value, same frame, no
+    // spring of its own. `tabPosition` returns null the moment that driver settles, so
+    // the selectedTabKey effect below resumes ownership and a drag on the puck is never
+    // fought over. One collector for the whole gesture, not a coroutine per frame --
+    // see DampedDragAnimation.snapValue.
+    //
+    // Tab index and page index are deliberately the same number: `scope.tabs` here is
+    // Home/Library/Settings and so is MainTabsScreens, because search was taken out of
+    // the pager and made an overlay. Nothing has to map between them.
+    if (tabPosition != null) {
+        LaunchedEffect(dampedDragAnimation, tabPosition) {
+            snapshotFlow { tabPosition() }.collect { position ->
+                if (position != null) dampedDragAnimation.snapValue(position)
+            }
+        }
+    }
+
     // Keeps the puck synced when selection changes from a tap (or external
     // navigation) rather than a drag on this bar.
     LaunchedEffect(selectedTabKey, tabsCount) {

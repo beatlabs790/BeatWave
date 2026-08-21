@@ -128,7 +128,7 @@ fun NewReleaseScreen(
             LazyVerticalGrid(
                 // No bounce here: the top pull drives the hero zoom instead.
                 overscrollEffect = heroZoom.listOverscroll(),
-                modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::refresh).fillMaxSize(),
+                modifier = Modifier.heroPullZoom(heroZoom).fillMaxSize(),
                 columns = rememberGridColumns(),
                 contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             ) {

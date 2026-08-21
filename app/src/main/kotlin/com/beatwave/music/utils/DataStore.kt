@@ -16,29 +16,76 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/utils/DataStore.kt
 import com.beatwave.music.extensions.toEnum
+=======
+import com.beatwave.music.extensions.toEnum
+import kotlinx.coroutines.CoroutineScope
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/utils/DataStore.kt
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.properties.ReadOnlyProperty
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-operator fun <T> DataStore<Preferences>.get(key: Preferences.Key<T>): T? =
-    runBlocking(Dispatchers.IO) {
-        data.first()[key]
+/**
+ * Last known full [Preferences] snapshot, kept current by [preferenceMirror].
+ *
+ * Every seed read below used to be its own `runBlocking(Dispatchers.IO) { data.first() }`:
+ * a main-thread block, a dispatcher hop, and a deserialisation of the WHOLE preferences
+ * file, to pull out one key. That is per call site, not per key — a screen reading
+ * fourteen preferences paid it fourteen times on the frame it first composed, and again
+ * for any call site that first composes later (a lazy item scrolling into view). With
+ * ~200 call sites across the app it is a steady background tax on every screen entry.
+ *
+ * One mirror serves all of them. After the first read the cost is a map lookup.
+ */
+private val preferenceSnapshot = AtomicReference<Preferences?>(null)
+
+private val preferenceMirrorStarted = AtomicBoolean(false)
+
+/**
+ * Keeps [preferenceSnapshot] in step with the store. Started on first access and never
+ * cancelled — it is process-wide state backing a process-wide store, so there is no
+ * scope narrower than the process that would be correct to tie it to.
+ */
+private fun DataStore<Preferences>.startPreferenceMirror() {
+    if (!preferenceMirrorStarted.compareAndSet(false, true)) return
+    CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+        data.collect { preferenceSnapshot.set(it) }
     }
+}
+
+/**
+ * The current snapshot, blocking only if nothing has been read yet.
+ *
+ * The mirror lags a write by however long DataStore takes to emit it. That window does
+ * not affect the UI: writes go through the [MutableState] returned by
+ * [rememberPreference], which updates its own value immediately, and the Flow
+ * collectors there observe the store directly rather than through this cache. This is
+ * only ever the *seed* for a call site's first frame.
+ */
+private fun DataStore<Preferences>.snapshot(): Preferences {
+    startPreferenceMirror()
+    preferenceSnapshot.get()?.let { return it }
+    return runBlocking(Dispatchers.IO) { data.first() }
+        .also { preferenceSnapshot.set(it) }
+}
+
+operator fun <T> DataStore<Preferences>.get(key: Preferences.Key<T>): T? =
+    snapshot()[key]
 
 fun <T> DataStore<Preferences>.get(
     key: Preferences.Key<T>,
     defaultValue: T,
-): T =
-    runBlocking(Dispatchers.IO) {
-        data.first()[key] ?: defaultValue
-    }
+): T = snapshot()[key] ?: defaultValue
 
 fun <T> preference(
     context: Context,

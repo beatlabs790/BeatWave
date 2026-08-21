@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -24,7 +25,15 @@ val DonationPromptDismissedKey = booleanPreferencesKey("donationPromptDismissed"
 val AppIconKey = stringPreferencesKey("appIcon")
 
 /** JSON map of player-control slot -> user-supplied glyph. See ui/player/customize/PlayerIcons.kt. */
+/**
+ * Long-press menus as a full-screen overlay (true) rather than a bottom sheet (false).
+ * One switch for the whole app -- see OverlayMenu, which shares MenuState with
+ * BottomSheetMenu so no call site knows which is in use.
+ */
+val OverlayMenuStyleKey = booleanPreferencesKey("overlayMenuStyle")
 val PlayerIconsKey = stringPreferencesKey("playerIcons")
+/** JSON map of V2 player-control slot -> user-supplied glyph. Separate from [PlayerIconsKey]. */
+val V2PlayerIconsKey = stringPreferencesKey("v2PlayerIcons")
 
 /** JSON sticker arrangement drawn over the player. See ui/player/customize/DiyLayout.kt. */
 val DiyLayoutKey = stringPreferencesKey("diyLayout")
@@ -35,6 +44,9 @@ val DarkModeKey = stringPreferencesKey("darkMode")
 val PureBlackKey = booleanPreferencesKey("pureBlack")
 val PureBlackMiniPlayerKey = booleanPreferencesKey("pureBlackMiniPlayer")
 val MiniPlayerOutlineKey = booleanPreferencesKey("miniPlayerOutline")
+val UseAppleMusicPlayerKey = booleanPreferencesKey("useAppleMusicPlayer")
+val ShowPlayerThumbnailShadowKey = booleanPreferencesKey("showPlayerThumbnailShadow")
+val PlayerThumbnailShadowElevationKey = floatPreferencesKey("playerThumbnailShadowElevation")
 val SelectedFontKey = stringPreferencesKey("selected_font")
 
 enum class AppFont(val value: String) {
@@ -83,6 +95,7 @@ val SwipeToSongKey = booleanPreferencesKey("SwipeToSong")
 val SwipeToRemoveSongKey = booleanPreferencesKey("SwipeToRemoveSong")
 val UseNewPlayerDesignKey= booleanPreferencesKey("useNewPlayerDesign")
 val UseNewMiniPlayerDesignKey = booleanPreferencesKey("useNewMiniPlayerDesign")
+val ShowUpNextKey = booleanPreferencesKey("showUpNext")
 /** Tab view only: caps the expanded player to a phone-like width instead of stretching
  *  it across the wide screen. The mini player stays full-width either way. */
 val CompactPlayerInTabViewKey = booleanPreferencesKey("compactPlayerInTabView")
@@ -117,6 +130,7 @@ val EnableBetterLyricsKey = booleanPreferencesKey("enableBetterLyrics")
 val EnableSimpMusicKey = booleanPreferencesKey("enableSimpMusic")
 val EnableYouLyPlusKey = booleanPreferencesKey("enableYouLyPlus")
 val EnablePaxsenixKey = booleanPreferencesKey("enablePaxsenix")
+val EnableMusixmatchKey = booleanPreferencesKey("enableMusixmatch")
 val HideExplicitKey = booleanPreferencesKey("hideExplicit")
 val HideVideoSongsKey = booleanPreferencesKey("hideVideoSongs")
 val DataSaverEnabledKey = booleanPreferencesKey("dataSaverEnabled")
@@ -124,6 +138,12 @@ val DataSaverEnabledKey = booleanPreferencesKey("dataSaverEnabled")
 // Local-only mode: one switch that rewires Home, Library and Search to the
 // on-device library. The screens and routes stay exactly where they are — only
 // what they read changes — so turning it off restores the normal app instantly.
+/**
+ * Home's local Albums shelf ordered by release year (true) rather than A-Z.
+ *
+ * Year comes from the file's own tag via MediaStore; untagged albums sort last.
+ */
+val LocalAlbumsByYearKey = booleanPreferencesKey("localAlbumsByYear")
 val LocalOnlyModeKey = booleanPreferencesKey("localOnlyMode")
 /** Folder paths (LocalFolderIndex.Folder.path) excluded from local scanning, joined by "". Empty = nothing excluded. */
 val LocalExcludedFoldersKey = stringPreferencesKey("localExcludedFolders") // delimiter-joined paths; see LocalFolderExclusion.kt
@@ -315,6 +335,13 @@ val LastAlbumSyncKey = longPreferencesKey("last_album_sync")
 val LastArtistSyncKey = longPreferencesKey("last_artist_sync")
 val LastPlaylistSyncKey = longPreferencesKey("last_playlist_sync")
 val LastFullSyncKey = longPreferencesKey("last_full_sync")
+
+/** browseIds the user deleted locally whose remote YouTube delete hasn't been
+ *  confirmed gone yet — the playlist sync consults this so it doesn't
+ *  resurrect a playlist the user just deleted while the remote delete is
+ *  still in flight (or retried after a failure), and clears an id once the
+ *  remote library listing no longer includes it. */
+val PendingPlaylistDeletesKey = stringSetPreferencesKey("pending_playlist_deletes")
 
 // Sync cooldown in seconds (30 minutes)
 const val SYNC_COOLDOWN = 30 * 60L
@@ -640,6 +667,28 @@ val HomeCardCornerRadiusOverrideKey = intPreferencesKey("homeCardCornerRadiusOve
  * it shows the same content without spending a screen height on one track.
  */
 val HomeHeroCardEnabledKey = booleanPreferencesKey("homeHeroCardEnabled")
+
+/**
+ * User's own Home section order: section ids, most-important first, newline separated.
+ *
+ * Stored as ids rather than indices so it survives sections being added, removed or
+ * renamed between versions — an unknown id is ignored and a section missing from the
+ * list falls back to its default weight, which means a release that adds a new section
+ * does not scramble everyone's saved arrangement.
+ *
+ * Empty means "no custom order", which is distinct from "an order that happens to match
+ * the default": clearing it re-enables the default weights for good.
+ */
+/**
+ * Newline-separated ids of Home sections the user switched off, same id space as
+ * [HomeSectionOrderKey]. Absent means shown, so a section added by a later release
+ * is visible by default rather than silently hidden.
+ */
+val HomeSectionHiddenKey = stringPreferencesKey("homeSectionHidden")
+val HomeSectionOrderKey = stringPreferencesKey("homeSectionOrder")
+
+/** Show YouTube's mood/genre filter chips (Energize, Relax, Feel good) in Home's top bar. */
+val ShowHomeMoodFiltersKey = booleanPreferencesKey("showHomeMoodFilters")
 
 /** Columns in Home's vertical "Keep Listening" grid. 0 (default) = 2. */
 val HomeGridColumnsOverrideKey = intPreferencesKey("homeGridColumnsOverride")

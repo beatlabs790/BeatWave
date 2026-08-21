@@ -55,6 +55,10 @@ android {
 //add nightly build label support
         val isNightly = project.hasProperty("nightly") && project.property("nightly") == "true"
         buildConfigField("Boolean", "IS_NIGHTLY", isNightly.toString())
+        // CI stamps the workflow run number so a nightly build knows which one it is.
+        // 0 for local/stable builds, which makes any published nightly look newer.
+        val nightlyRun = (project.findProperty("nightlyRun") as String?)?.toIntOrNull() ?: 0
+        buildConfigField("int", "NIGHTLY_RUN", nightlyRun.toString())
     }
     
 
@@ -322,6 +326,7 @@ dependencies {
     implementation(project(":applecanvas"))
     implementation(project(":vivimusiccanvas"))
     implementation(project(":paxsenixlyrics"))
+    implementation(project(":musixmatchlyrics"))
     implementation(project(":jiosaavn"))
     implementation(project(":spotify"))
     implementation(project(":spine"))

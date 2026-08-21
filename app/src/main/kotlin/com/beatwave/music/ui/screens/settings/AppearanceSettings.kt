@@ -141,6 +141,7 @@ import com.beatwave.music.constants.ShowHomeFabKey
 import com.beatwave.music.ui.utils.GridColumnChoices
 import com.beatwave.music.ui.utils.GridSpacingChoices
 import androidx.compose.material3.Slider
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/AppearanceSettings.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.constants.HidePlayerThumbnailKey
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -210,6 +211,78 @@ import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.HidePlayerThumbnailKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LibraryFilter
+import com.beatwave.music.constants.LibraryIconsOnlyKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ListenTogetherInTopBarKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LyricsAnimationStyle
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LyricsAnimationStyleKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LyricsStandardBlurKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LyricsTextPositionKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LyricsTextSizeKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowCachedPlaylistKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowDownloadedPlaylistKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowLikedPlaylistKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowTopPlaylistKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowUploadedPlaylistKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SlimNavBarKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SwipeSensitivityKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SwipeThumbnailKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SwipeLyricsKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SwipeToRemoveSongKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SwipeToSongKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ThumbnailCornerRadiusKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.UseNewMiniPlayerDesignKey
+import com.beatwave.music.constants.MiniBarTabStyleKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.UseAppleMusicPlayerKey
+import com.beatwave.music.constants.UseNewPlayerDesignKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.ThumbnailCornerRadiusModal
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.DefaultDialog
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.EnumDialog
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.Material3SettingsGroup
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.Material3SettingsItem
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/AppearanceSettings.kt
 import kotlin.math.roundToInt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.constants.LyricsClickKey
@@ -242,6 +315,10 @@ fun AppearanceSettings(
     val (miniBarTabStyle, onMiniBarTabStyleChange) = rememberPreference(MiniBarTabStyleKey, defaultValue = false)
     val (_, _) = rememberPreference(DynamicThemeKey, defaultValue = true)
     val (useNewPlayerDesign, _) = rememberPreference(UseNewPlayerDesignKey, defaultValue = false)
+    // DIY stickers have no equivalent slot in the ported Apple Music Player V17
+    // layout, so its entry point is hidden rather than left dangling to a
+    // customization that would silently never render.
+    val (useAppleMusicPlayer, _) = rememberPreference(UseAppleMusicPlayerKey, defaultValue = false)
     val (showAudioQualityBadge, onShowAudioQualityBadgeChange) = rememberPreference(
         ShowAudioQualityBadgeKey,
         defaultValue = true
@@ -266,7 +343,7 @@ fun AppearanceSettings(
     )
     val (iosOverscroll, onIosOverscrollChange) = rememberPreference(
         IosOverscrollKey,
-        defaultValue = false
+        defaultValue = true
     )
     val (enableSettingsPopup, onEnableSettingsPopupChange) = rememberPreference(
         EnableSettingsPopupKey,
@@ -341,7 +418,7 @@ fun AppearanceSettings(
     val (homeHeroCardHeightOverride, onHomeHeroCardHeightOverrideChange) = rememberPreference(HomeHeroCardHeightOverrideKey, 0)
     val (speedDialCardHeightOverride, onSpeedDialCardHeightOverrideChange) = rememberPreference(SpeedDialCardHeightOverrideKey, 0)
     val (homeCardCornerRadiusOverride, onHomeCardCornerRadiusOverrideChange) = rememberPreference(HomeCardCornerRadiusOverrideKey, 0)
-    val (homeHeroCardEnabled, onHomeHeroCardEnabledChange) = rememberPreference(HomeHeroCardEnabledKey, false)
+    val (homeHeroCardEnabled, onHomeHeroCardEnabledChange) = rememberPreference(HomeHeroCardEnabledKey, true)
     val (homeGridColumnsOverride, onHomeGridColumnsOverrideChange) = rememberPreference(HomeGridColumnsOverrideKey, 0)
 
     // Density scale preferences
@@ -581,7 +658,7 @@ fun AppearanceSettings(
             Column {
         Material3SettingsGroup(
             title = stringResource(R.string.theme_colors),
-            items = listOf(
+            items = listOfNotNull(
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.palette),
                     title = { Text(stringResource(R.string.theme_colors)) },
@@ -620,12 +697,12 @@ fun AppearanceSettings(
                     description = { Text(stringResource(R.string.player_icons_desc)) },
                     onClick = { navController.navigate("settings/appearance/playericons") }
                 ),
-                Material3SettingsItem(
+                if (!useAppleMusicPlayer) Material3SettingsItem(
                     icon = painterResource(R.drawable.edit),
                     title = { Text(stringResource(R.string.diy)) },
                     description = { Text(stringResource(R.string.diy_desc)) },
                     onClick = { navController.navigate("settings/appearance/diy") }
-                )
+                ) else null
             )
         )
 

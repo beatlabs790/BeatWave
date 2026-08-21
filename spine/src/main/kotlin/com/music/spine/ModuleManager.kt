@@ -55,9 +55,8 @@ class ModuleManager {
             val body = resp.bodyAsText()
             Log.d(TAG, "  Index body: ${body.length} chars")
             Log.d(TAG, "  First 500: ${body.take(500)}")
-            val index = json.decodeFromString<ModuleIndex>(body)
-            val modules = index.allModules
-            Log.d(TAG, "  Parsed ${modules.size} modules (${index.modules.size} modules + ${index.music.size} music + ${index.debrid.size} debrid)")
+            val modules = ModuleIndex.parseModules(json, body)
+            Log.d(TAG, "  Parsed ${modules.size} modules")
             for (m in modules) {
                 Log.d(TAG, "    • [${m.id}] ${m.name} v${m.version} tags=${m.tags} download=${m.download}")
             }
@@ -94,6 +93,8 @@ class ModuleManager {
             val jsCode = resp.bodyAsText()
             val baseUrl = downloadUrl.substringBeforeLast("/")
 
+            QuickJsExecutor.loadModule(module.id, jsCode, baseUrl).getOrThrow()
+
             val loaded = LoadedModule(module = module, jsCode = jsCode, baseUrl = baseUrl)
             loadedModules[module.id] = loaded
             Log.d(TAG, "  ✓ Loaded module ${module.id}: ${jsCode.length} chars, baseUrl=$baseUrl")
@@ -116,12 +117,11 @@ class ModuleManager {
         Log.d(TAG, "  contextArg: $contextArg")
 
         runCatching {
-            val result = QuickJsExecutor.executeModuleExport(
-                jsCode = loaded.jsCode,
+            val result = QuickJsExecutor.callExport(
+                moduleId = loaded.module.id,
                 functionName = "searchTracks",
                 args = listOf("\"$query\"", limit.toString(), contextArg),
-                fetchBase = loaded.baseUrl,
-            )
+            ).getOrThrow()
 
             Log.d(TAG, "  searchTracks result: ${result.length} chars")
             Log.d(TAG, "  Full result: $result")
@@ -153,12 +153,11 @@ class ModuleManager {
         Log.d(TAG, "  contextArg: $contextArg")
 
         runCatching {
-            val result = QuickJsExecutor.executeModuleExport(
-                jsCode = loaded.jsCode,
+            val result = QuickJsExecutor.callExport(
+                moduleId = loaded.module.id,
                 functionName = "getTrackStreamUrl",
                 args = listOf("\"$trackId\"", "\"\"", contextArg),
-                fetchBase = loaded.baseUrl,
-            )
+            ).getOrThrow()
 
             Log.d(TAG, "  getStreamUrl result: ${result.length} chars")
             Log.d(TAG, "  Full result: $result")
@@ -185,11 +184,13 @@ class ModuleManager {
 
     fun unloadModule(moduleId: String) {
         loadedModules.remove(moduleId)
+        QuickJsExecutor.unload(moduleId)
         Log.d(TAG, "Unloaded module $moduleId")
     }
 
     fun unloadAll() {
         loadedModules.clear()
+        QuickJsExecutor.unloadAll()
         Log.d(TAG, "Unloaded all modules")
     }
 

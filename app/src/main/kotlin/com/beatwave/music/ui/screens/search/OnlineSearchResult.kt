@@ -368,7 +368,7 @@ fun OnlineSearchResult(
                         contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Bottom).asPaddingValues(),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heroPullZoom(heroZoom, onRefresh = viewModel::refresh)
+                            .heroPullZoom(heroZoom)
                     ) {
                         if (searchFilter == null) {
                             searchSummary?.summaries?.forEach { summary ->
@@ -381,6 +381,7 @@ fun OnlineSearchResult(
                                 itemsIndexed(
                                     items = summary.items,
                                     key = { index, item -> "${summary.title}/${item.id}/$index" },
+                                    contentType = { _, _ -> "yt_item_row" },
                                 ) { index, item ->
                                     ytItemContent(item, index, summary.items.size)
                                 }
@@ -402,6 +403,7 @@ fun OnlineSearchResult(
                             itemsIndexed(
                                 items = distinctItems,
                                 key = { _, it -> "filtered_${it.id}" },
+                                contentType = { _, _ -> "yt_item_row" },
                             ) { index, item ->
                                 ytItemContent(item, index, distinctItems.size)
                             }

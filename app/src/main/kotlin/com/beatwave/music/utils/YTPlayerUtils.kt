@@ -21,6 +21,7 @@ import com.music.innertube.models.YouTubeClient.Companion.IPADOS
 import com.music.innertube.models.YouTubeClient.Companion.MOBILE
 import com.music.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.music.innertube.models.YouTubeClient.Companion.TVHTML5_SIMPLY_EMBEDDED_PLAYER
+import com.music.innertube.models.YouTubeClient.Companion.VISIONOS
 import com.music.innertube.models.YouTubeClient.Companion.WEB
 import com.music.innertube.models.YouTubeClient.Companion.WEB_CREATOR
 import com.music.innertube.models.YouTubeClient.Companion.WEB_REMIX
@@ -129,7 +130,34 @@ object YTPlayerUtils {
      */
     private val METADATA_CLIENT: YouTubeClient = WEB_REMIX
 
+    /**
+     * Tried in order when [MAIN_CLIENT] cannot produce a stream.
+     *
+     * IOS is first, and that ordering is measured rather than assumed. Probing the live
+     * API (2026-08-19) against a track YouTube had bot-flagged, every one of ANDROID_VR
+     * (both versions), ANDROID_MUSIC, IOS_MUSIC, TVHTML5 and WEB_REMIX came back
+     * LOGIN_REQUIRED / "Sign in to confirm you're not a bot" or UNPLAYABLE -- and IOS
+     * returned OK with direct URLs. Across five popular tracks IOS answered 5/5.
+     *
+     * It used to sit ninth. So the common failure -- one bot-flagged track -- cost eight
+     * doomed round trips, several of them generating a PoToken first, before reaching the
+     * client that works. That is the shape users describe as "playing very late", and when
+     * one of those eight stalls it is the shape they describe as "song not playing".
+     *
+     * ANDROID_VR stays as MAIN_CLIENT: when it is not flagged it is fast and offers more
+     * audio formats (4 vs IOS's 2), so it remains the better first choice. This array is
+     * purely the recovery path.
+     *
+     * VISIONOS was added 2026-08-19 ahead of IOS: an unreleased/internal client YouTube
+     * hasn't started bot-flagging yet, unlike IOS which the 2026-08-19 probe caught 5/5
+     * but user reports since then show failing on bot-flagged tracks too. IOS kept second
+     * since it still works when VISIONOS doesn't.
+     *
+     * IPADOS answered 0/5 in the same probe and is kept only for completeness.
+     */
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
+        VISIONOS,
+        IOS,
         ANDROID_VR_1_61_48,
         WEB_REMIX,
         TVHTML5_SIMPLY_EMBEDDED_PLAYER,  // Try embedded player first for age-restricted content
@@ -138,10 +166,18 @@ object YTPlayerUtils {
         IPADOS,
         ANDROID_VR_NO_AUTH,
         MOBILE,
-        IOS,
         WEB,
         WEB_CREATOR
     )
+    /**
+     * Every client playback may try, in the order it tries them.
+     *
+     * Exposed for [YouTubeClientProbe] only. Deliberately derived from the same values the
+     * player path uses, so a probe result always describes the chain that actually runs.
+     */
+    internal val allStreamClients: List<YouTubeClient>
+        get() = listOf(MAIN_CLIENT) + STREAM_FALLBACK_CLIENTS
+
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
         val videoDetails: PlayerResponse.VideoDetails?,
@@ -808,20 +844,18 @@ object YTPlayerUtils {
         val isGeoRestricted = BotDetectionMitigator.isGeoError(firstAttempt.exceptionOrNull()?.message)
 
         if (firstAttempt.isFailure && !isGeoRestricted) {
-            val retryResult = if (YouTube.cookie == null) {
-                Timber.tag(TAG).w("Playback failed for guest. Rotating session and retrying...")
-                PlaybackLogManager.log(PlaybackLogLevel.BOT, "Playback failed for guest", "Triggering bot detection mitigation (rotating guest session)")
-                BotDetectionMitigator.rotateGuestSession()
-                resolvePlaybackData(videoId, playlistId, audioQuality, connectivityManager)
-            } else {
-                // Signed-in users have no guest identity to rotate, but the same
-                // failure class (e.g. a stream response missing expiry data) can
-                // still be transient — a bare retry gives them the same one
-                // extra chance a guest already gets, instead of none at all.
-                Timber.tag(TAG).w("Playback failed for signed-in user. Retrying once...")
-                PlaybackLogManager.log(PlaybackLogLevel.BOT, "Playback failed for signed-in user", "Retrying once (no session to rotate)")
-                resolvePlaybackData(videoId, playlistId, audioQuality, connectivityManager)
-            }
+            // visitorData rides in every request's client context independent of
+            // login — cookie/dataSyncId are separate fields — so a flagged
+            // visitorData can trigger bot detection on a signed-in session just
+            // as it does for a guest. A bare same-identity retry reproduces the
+            // exact same rejection; rotating visitorData actually changes
+            // something and is what gives a signed-in user a real chance too,
+            // without touching their login cookie or dataSyncId.
+            val label = if (YouTube.cookie == null) "guest" else "signed-in user"
+            Timber.tag(TAG).w("Playback failed for $label. Rotating session and retrying...")
+            PlaybackLogManager.log(PlaybackLogLevel.BOT, "Playback failed for $label", "Triggering bot detection mitigation (rotating guest session)")
+            BotDetectionMitigator.rotateGuestSession()
+            val retryResult = resolvePlaybackData(videoId, playlistId, audioQuality, connectivityManager)
             retryResult.onSuccess { BotDetectionMitigator.notifyPlaybackSuccess() }
             return retryResult
         }
@@ -847,9 +881,29 @@ object YTPlayerUtils {
         val isLoggedIn = YouTube.cookie != null
         Timber.tag(logTag).d("Session authentication status: ${if (isLoggedIn) "Logged in" else "Not logged in"}")
 
-        // Get signature timestamp (same as before for normal content)
-        val signatureTimestamp = getSignatureTimestampOrNull(videoId)
-        Timber.tag(logTag).d("Signature timestamp: ${signatureTimestamp.timestamp}")
+        // Signature timestamp, fetched ONLY if a client we actually try needs one, and at
+        // most once per call.
+        //
+        // This used to run eagerly on every single playback. Getting it means downloading
+        // and parsing YouTube's player JavaScript through NewPipe -- a blocking network
+        // round trip plus a JS parse -- in front of every song. And MAIN_CLIENT is
+        // ANDROID_VR, which declares useSignatureTimestamp = false: the value was fetched
+        // and then handed to a client that does not use one, on the hot path, every time.
+        //
+        // Two failure modes came out of that. The cost shows up as songs taking seconds to
+        // start; and when YouTube changes the player JS shape, the extraction fails on a
+        // request that never needed it in the first place.
+        var signatureTimestampValue: Int? = null
+        var signatureTimestampFetched = false
+        suspend fun signatureTimestampFor(client: YouTubeClient): Int? {
+            if (!client.useSignatureTimestamp) return null
+            if (!signatureTimestampFetched) {
+                signatureTimestampValue = getSignatureTimestampOrNull(videoId).timestamp
+                signatureTimestampFetched = true
+                Timber.tag(logTag).d("Signature timestamp obtained lazily: $signatureTimestampValue")
+            }
+            return signatureTimestampValue
+        }
 
         // Generate PoToken ONLY if MAIN_CLIENT uses it (which it now doesn't since we use ANDROID_VR)
         var poToken: PoTokenResult? = null
@@ -871,7 +925,7 @@ object YTPlayerUtils {
             val mainDeferred = async {
                 Timber.tag(logTag).d("Attempting to get player response using MAIN_CLIENT: ${MAIN_CLIENT.clientName}")
                 PlaybackLogManager.log(PlaybackLogLevel.DEBUG, "Trying ${MAIN_CLIENT.clientName} (Main)")
-                YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp.timestamp, poToken?.playerRequestPoToken).getOrThrow()
+                YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestampFor(MAIN_CLIENT), poToken?.playerRequestPoToken).getOrThrow()
             }
             val metaDeferred = async {
                 if (isLoggedIn) {
@@ -889,7 +943,7 @@ object YTPlayerUtils {
                         }
                         YouTube.player(
                             videoId, playlistId, METADATA_CLIENT,
-                            signatureTimestamp.timestamp, metaPoToken?.playerRequestPoToken
+                            signatureTimestampFor(METADATA_CLIENT), metaPoToken?.playerRequestPoToken
                         ).getOrNull().also { response ->
                             Timber.tag(logTag).d("Metadata response obtained: ${response?.playabilityStatus?.status}")
                         }
@@ -973,11 +1027,17 @@ object YTPlayerUtils {
         // Check if this is a privately owned track (uploaded song)
         val isPrivateTrack = mainPlayerResponse.videoDetails?.musicVideoType == "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK"
 
-        // For private tracks: use TVHTML5 (index 1) with PoToken + n-transform
-        // For age-restricted: skip main client, start with fallbacks
-        // For normal content: standard order
+        // Where to enter the fallback chain.
+        //   private track   -> skip to TVHTML5, which is the one that serves uploads
+        //   age-restricted  -> skip MAIN_CLIENT, start at the top of the fallbacks
+        //   otherwise       -> -1, meaning try MAIN_CLIENT's own streams first
+        //
+        // Resolved by identity, not by a literal index. The comment here used to say
+        // "index 1 = TVHTML5" while index 1 was actually WEB_REMIX -- the array had been
+        // reordered and the magic number silently stopped meaning what it claimed. Any
+        // future reordering now moves this with it.
         val startIndex = when {
-            isPrivateTrack -> 1  // TVHTML5
+            isPrivateTrack -> STREAM_FALLBACK_CLIENTS.indexOf(TVHTML5).coerceAtLeast(0)
             isAgeRestricted -> 0
             else -> -1
         }
@@ -1021,7 +1081,8 @@ object YTPlayerUtils {
                 // Only pass poToken for clients that support it
                 val clientPoToken = if (client.useWebPoTokens) poToken?.playerRequestPoToken else null
                 // Skip signature timestamp for age-restricted (faster), use it for normal content
-                val clientSigTimestamp = if (wasOriginallyAgeRestricted) null else signatureTimestamp.timestamp
+                val clientSigTimestamp =
+                    if (wasOriginallyAgeRestricted) null else signatureTimestampFor(client)
                 streamPlayerResponse =
                     YouTube.player(videoId, playlistId, client, clientSigTimestamp, clientPoToken).getOrNull()
             }

@@ -67,6 +67,7 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.ui.unit.dp
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/PlayerSettings.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.BuildConfig
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -156,6 +157,96 @@ import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.BuildConfig
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.R
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AudioNormalizationKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AudioOffload
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AudioQuality
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AudioQualityKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnableSaavnStreamingKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SaavnAudioQuality
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SaavnAudioQualityKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AutoDownloadOnLikeKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.CrossfadeDurationKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AutoDjMixingEnabledKey
+import com.beatwave.music.constants.CreativeTransitionsEnabledKey
+import com.beatwave.music.constants.CompactPlayerInTabViewKey
+import com.beatwave.music.constants.HideVolumeBarKey
+import com.beatwave.music.constants.LocalAlbumsByYearKey
+import com.beatwave.music.constants.LocalOnlyModeKey
+import com.beatwave.music.constants.CrossfadeEnabledKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.CrossfadeGaplessKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AutoLoadMoreKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AutoSkipNextOnErrorKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.DisableLoadMoreWhenRepeatAllKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnableGoogleCastKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.HistoryDuration
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.KeepScreenOn
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.PauseOnMute
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.PersistentQueueKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.PersistentShuffleAcrossQueuesKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.PreventDuplicateTracksInQueueKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.RememberShuffleAndRepeatKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ResumeOnBluetoothConnectKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SeekExtraSeconds
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShufflePlaylistFirstKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SimilarContent
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SkipSilenceInstantKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SkipSilenceKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.StopMusicOnTaskClearKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.DefaultDialog
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.EnumDialog
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.Material3SettingsGroup
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.Material3SettingsItem
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/PlayerSettings.kt
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -207,6 +298,10 @@ fun PlayerSettings(
     val (localOnlyMode, onLocalOnlyModeChange) = rememberPreference(
         LocalOnlyModeKey,
         defaultValue = false
+    )
+    val (localAlbumsByYear, onLocalAlbumsByYearChange) = rememberPreference(
+        LocalAlbumsByYearKey,
+        defaultValue = true
     )
     val (persistentQueue, onPersistentQueueChange) = rememberPreference(
         PersistentQueueKey,
@@ -650,6 +745,33 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onLocalOnlyModeChange(!localOnlyMode) }
+                ))
+                add(Material3SettingsItem(
+                    icon = painterResource(R.drawable.album),
+                    title = { Text(stringResource(R.string.local_albums_by_year)) },
+                    description = { Text(stringResource(R.string.local_albums_by_year_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = localAlbumsByYear,
+                            onCheckedChange = onLocalAlbumsByYearChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (localAlbumsByYear) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onLocalAlbumsByYearChange(!localAlbumsByYear) }
+                ))
+                add(Material3SettingsItem(
+                    icon = painterResource(R.drawable.local_songs),
+                    title = { Text(stringResource(R.string.scan_local_files)) },
+                    description = { Text(stringResource(R.string.scan_local_files_desc)) },
+                    onClick = { navController.navigate("settings/scan_music") }
                 ))
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.library_music),

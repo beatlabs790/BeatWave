@@ -110,6 +110,7 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.core.net.toUri
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/ContentSettings.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -200,6 +201,100 @@ import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.R
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AppLanguageKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ContentCountryKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ContentLanguageKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SuggestionRegionKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SuggestionRegionSlugToName
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.screens.search.suggestions.SuggestionRegionSheet
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.CountryCodeToName
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnableBetterLyricsKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnableKugouKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnableLrcLibKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnableSimpMusicKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnableYouLyPlusKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.EnablePaxsenixKey
+import com.beatwave.music.constants.EnableMusixmatchKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.HideExplicitKey
+import com.beatwave.music.constants.DataSaverEnabledKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.HideVideoSongsKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.HideYoutubeShortsKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.AlbumCanvasEnabledKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LanguageCodeToName
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.LyricsProviderOrderKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ProxyEnabledKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ProxyPasswordKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ProxyTypeKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ProxyUrlKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ProxyUsernameKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.QuickPicks
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.QuickPicksKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.RandomizeHomeOrderKey
+import com.beatwave.music.constants.ShowHomeMoodFiltersKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.SYSTEM_DEFAULT
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowArtistDescriptionKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowArtistSubscriberCountKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowMonthlyListenersKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowArtistVideoKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowArtistBackgroundVideoKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.ShowWrappedCardKey
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.constants.TopSize
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.EnumDialog
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.Material3SettingsGroup
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.Material3SettingsItem
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/ContentSettings.kt
 import androidx.compose.ui.text.font.FontWeight
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
@@ -216,11 +311,28 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.ui.component.DraggableLyricsProviderList
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import androidx.compose.runtime.mutableStateListOf
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/ContentSettings.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.PlaybackLogManager
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.ui.component.PlaybackLogsDialog
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.utils.PlaybackLogManager
+import com.beatwave.music.utils.YTPlayerUtils
+import com.beatwave.music.utils.YouTubeClientProbe
+import com.music.innertube.YouTube
+import com.beatwave.music.LocalPlayerConnection
+import android.content.ClipData
+import android.content.ClipboardManager
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.text.font.FontFamily
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.component.PlaybackLogsDialog
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/settings/ContentSettings.kt
 import androidx.compose.runtime.collectAsState
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import java.net.Proxy
@@ -267,6 +379,7 @@ fun ContentSettings(
     val (enableSimpMusic, onEnableSimpMusicChange) = rememberPreference(key = EnableSimpMusicKey, defaultValue = true)
     val (enableYouLyPlus, onEnableYouLyPlusChange) = rememberPreference(key = EnableYouLyPlusKey, defaultValue = true)
     val (enablePaxsenix, onEnablePaxsenixChange) = rememberPreference(key = EnablePaxsenixKey, defaultValue = true)
+    val (enableMusixmatch, onEnableMusixmatchChange) = rememberPreference(key = EnableMusixmatchKey, defaultValue = true)
     val (lyricsProviderOrder, onLyricsProviderOrderChange) = rememberPreference(
         key = LyricsProviderOrderKey,
         defaultValue = "",
@@ -274,6 +387,10 @@ fun ContentSettings(
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
     val (showWrappedCard, onShowWrappedCardChange) = rememberPreference(key = ShowWrappedCardKey, defaultValue = false)
+    val (showMoodFilters, onShowMoodFiltersChange) = rememberPreference(
+        key = ShowHomeMoodFiltersKey,
+        defaultValue = true,
+    )
     val (randomizeHomeOrder, onRandomizeHomeOrderChange) = rememberPreference(
         RandomizeHomeOrderKey,
         defaultValue = true
@@ -285,6 +402,10 @@ fun ContentSettings(
     val (albumCanvasEnabled, onAlbumCanvasEnabledChange) = rememberPreference(key = AlbumCanvasEnabledKey, defaultValue = false)
 
     var showPlaybackLogsDialog by rememberSaveable { mutableStateOf(false) }
+    var showClientProbeDialog by rememberSaveable { mutableStateOf(false) }
+    // Null while a run is in flight, so the dialog can show progress rather than an
+    // empty report that looks like a result.
+    var clientProbeOutput by rememberSaveable { mutableStateOf<String?>(null) }
     var showSuggestionSheet by rememberSaveable { mutableStateOf(false) }
     val playbackLogs by PlaybackLogManager.logs.collectAsState()
 
@@ -479,7 +600,7 @@ fun ContentSettings(
     if (showProviderPriorityDialog) {
         val defaultOrder = LyricsProviderRegistry.getDefaultProviderOrder()
         // User-toggleable provider names (excludes always-on YouTube providers)
-        val userToggleable = setOf("YouLyPlus", "Paxsenix", "BetterLyrics", "SimpMusic", "LrcLib", "Kugou")
+        val userToggleable = setOf("YouLyPlus", "Paxsenix", "Musixmatch", "BetterLyrics", "SimpMusic", "LrcLib", "Kugou")
         val enabledProviders = setOfNotNull(
             "LrcLib".takeIf { enableLrclib },
             "Kugou".takeIf { enableKugou },
@@ -487,6 +608,7 @@ fun ContentSettings(
             "SimpMusic".takeIf { enableSimpMusic },
             "YouLyPlus".takeIf { enableYouLyPlus },
             "Paxsenix".takeIf { enablePaxsenix },
+            "Musixmatch".takeIf { enableMusixmatch },
         )
 
         // Build a normalized order: saved order first (only known providers), then any missing ones
@@ -699,6 +821,56 @@ fun ContentSettings(
                     IpVersion.IPV6 -> stringResource(R.string.ip_version_ipv6)
                 }
             }
+        )
+    }
+
+    if (showClientProbeDialog) {
+        // Probes whatever is playing; falls back to a well-known always-available video
+        // so the check still works when nothing has been played yet.
+        val probeVideoId = LocalPlayerConnection.current?.mediaMetadata?.collectAsState()?.value?.id
+            ?: FALLBACK_PROBE_VIDEO_ID
+        LaunchedEffect(showClientProbeDialog, probeVideoId) {
+            val results = YouTubeClientProbe.run(
+                videoId = probeVideoId,
+                clients = YTPlayerUtils.allStreamClients,
+                isLoggedIn = YouTube.cookie != null,
+            )
+            clientProbeOutput = YouTubeClientProbe.format(probeVideoId, results)
+        }
+        AlertDialog(
+            onDismissRequest = { showClientProbeDialog = false },
+            title = { Text(stringResource(R.string.client_probe)) },
+            text = {
+                val output = clientProbeOutput
+                if (output == null) {
+                    Text(stringResource(R.string.client_probe_running))
+                } else {
+                    Text(
+                        text = output,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace,
+                        ),
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = clientProbeOutput != null,
+                    onClick = {
+                        clientProbeOutput?.let { text ->
+                            val clipboard = context.getSystemService(ClipboardManager::class.java)
+                            clipboard?.setPrimaryClip(ClipData.newPlainText("Convx client probe", text))
+                        }
+                        showClientProbeDialog = false
+                    },
+                ) { Text(stringResource(R.string.copy)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClientProbeDialog = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            },
         )
     }
 
@@ -1196,6 +1368,27 @@ fun ContentSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
+                    title = { Text("Musixmatch") },
+                    description = { Text("Widely used synced lyrics catalog") },
+                    trailingContent = {
+                        Switch(
+                            checked = enableMusixmatch,
+                            onCheckedChange = onEnableMusixmatchChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (enableMusixmatch) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onEnableMusixmatchChange(!enableMusixmatch) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.lyrics_provider_priority)) },
                     description = { Text(stringResource(R.string.lyrics_provider_priority_desc)) },
                     onClick = { showProviderPriorityDialog = true },
@@ -1262,6 +1455,33 @@ fun ContentSettings(
                     onClick = { onRandomizeHomeOrderChange(!randomizeHomeOrder) }
                 ),
                 Material3SettingsItem(
+                    icon = painterResource(R.drawable.drag_handle),
+                    title = { Text(stringResource(R.string.home_feed_order)) },
+                    description = { Text(stringResource(R.string.home_feed_order_desc)) },
+                    onClick = { navController.navigate("settings/home_feed_order") }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.tune),
+                    title = { Text(stringResource(R.string.show_mood_filters)) },
+                    description = { Text(stringResource(R.string.show_mood_filters_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = showMoodFilters,
+                            onCheckedChange = onShowMoodFiltersChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showMoodFilters) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShowMoodFiltersChange(!showMoodFilters) }
+                ),
+                Material3SettingsItem(
                     icon = painterResource(R.drawable.trending_up),
                     title = { Text(stringResource(R.string.top_length)) },
                     description = { Text(lengthTop) },
@@ -1293,6 +1513,15 @@ fun ContentSettings(
                     title = { Text(stringResource(R.string.playback_logs)) },
                     description = { Text(stringResource(R.string.playback_logs_desc)) },
                     onClick = { showPlaybackLogsDialog = true }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.bug_report),
+                    title = { Text(stringResource(R.string.client_probe)) },
+                    description = { Text(stringResource(R.string.client_probe_desc)) },
+                    onClick = {
+                        clientProbeOutput = null
+                        showClientProbeDialog = true
+                    }
                 )
             )
         )
@@ -1315,3 +1544,9 @@ fun ContentSettings(
         }
     )
 }
+
+/**
+ * Probed when nothing is playing. A long-lived, globally available video, so a "which
+ * clients still work" answer is about the clients rather than about that one track.
+ */
+private const val FALLBACK_PROBE_VIDEO_ID = "dQw4w9WgXcQ"

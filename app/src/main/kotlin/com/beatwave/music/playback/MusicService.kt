@@ -151,6 +151,7 @@ import okhttp3.Dns
 import java.net.InetAddress
 import java.net.Inet4Address
 import java.net.Inet6Address
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/playback/MusicService.kt
 import com.beatwave.music.db.MusicDatabase
 import com.beatwave.music.db.entities.Event
 import com.beatwave.music.db.entities.FormatEntity
@@ -205,6 +206,63 @@ import com.beatwave.music.utils.reportException
 import com.beatwave.music.widget.vivimusicWidgetManager
 import com.beatwave.music.widget.MusicWidgetReceiver
 import com.beatwave.music.widget.NowPlayingWidgetReceiver
+=======
+import com.beatwave.music.db.MusicDatabase
+import com.beatwave.music.db.entities.Event
+import com.beatwave.music.db.entities.FormatEntity
+import com.beatwave.music.db.entities.LyricsEntity
+import com.beatwave.music.db.entities.RelatedSongMap
+import com.beatwave.music.db.entities.Song
+import com.beatwave.music.di.DownloadCache
+import com.beatwave.music.di.PlayerCache
+import com.beatwave.music.eq.EqualizerService
+import com.beatwave.music.eq.audio.CustomEqualizerAudioProcessor
+import com.beatwave.music.eq.data.EQProfileRepository
+import com.beatwave.music.extensions.SilentHandler
+import com.beatwave.music.extensions.collect
+import com.beatwave.music.extensions.collectLatest
+import com.beatwave.music.extensions.currentMetadata
+import com.beatwave.music.extensions.findNextMediaItemById
+import com.beatwave.music.extensions.mediaItems
+import com.beatwave.music.extensions.metadata
+import com.beatwave.music.extensions.setOffloadEnabled
+import com.beatwave.music.extensions.toEnum
+import com.beatwave.music.extensions.toMediaItem
+import com.beatwave.music.extensions.toPersistQueue
+import com.beatwave.music.extensions.toQueue
+import com.beatwave.music.lyrics.LyricsHelper
+import com.beatwave.music.models.MediaMetadata
+import com.beatwave.music.models.PersistPlayerState
+import com.beatwave.music.models.PersistQueue
+import com.beatwave.music.models.toMediaMetadata
+import com.beatwave.music.playback.audio.TrackAnalyzerAudioProcessor
+import com.beatwave.music.playback.dj.DjEngine
+import com.beatwave.music.playback.audio.DelayAudioProcessor
+import com.beatwave.music.playback.audio.DjFilterAudioProcessor
+import com.beatwave.music.playback.audio.DjTailAudioProcessor
+import com.beatwave.music.playback.audio.DjMixPlan
+import com.beatwave.music.playback.audio.DjMixTier
+import com.beatwave.music.playback.audio.LosslessStallWatchdogAudioProcessor
+import com.beatwave.music.playback.audio.SilenceDetectorAudioProcessor
+import com.beatwave.music.playback.queues.EmptyQueue
+import com.beatwave.music.playback.queues.Queue
+import com.beatwave.music.playback.queues.YouTubeQueue
+import com.beatwave.music.playback.queues.filterExplicit
+import com.beatwave.music.playback.queues.filterVideoSongs
+import com.beatwave.music.utils.CoilBitmapLoader
+import com.beatwave.music.utils.DiscordRPC
+import com.beatwave.music.utils.NetworkConnectivityObserver
+import com.beatwave.music.utils.ScrobbleManager
+import com.beatwave.music.utils.SyncUtils
+import com.beatwave.music.utils.YTPlayerUtils
+import com.beatwave.music.constants.StopMusicOnTaskClearKey
+import com.beatwave.music.utils.dataStore
+import com.beatwave.music.utils.get
+import com.beatwave.music.utils.reportException
+import com.beatwave.music.widget.vivimusicWidgetManager
+import com.beatwave.music.widget.MusicWidgetReceiver
+import com.beatwave.music.widget.NowPlayingWidgetReceiver
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/playback/MusicService.kt
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.PI
 import kotlin.math.cos
@@ -3625,7 +3683,28 @@ class MusicService :
 
     override fun onBind(intent: Intent?) = super.onBind(intent) ?: binder
 
+    /**
+     * The user swiped the app out of recents.
+     *
+     * This is where "stop music on task clear" has to live. It used to be handled in
+     * MainActivity.onDestroy() behind an `isFinishing` check, and neither half of that
+     * holds for a task swipe: the activity is destroyed by the system rather than
+     * finishing, so `isFinishing` is false, and onDestroy is not guaranteed to run at all.
+     * The setting therefore only ever fired when someone backed out of the app
+     * deliberately -- never on the gesture it is named for.
+     *
+     * onTaskRemoved is the callback Android delivers precisely for this, and the service
+     * is the thing still holding playback, so it is also the thing that can stop it.
+     */
     override fun onTaskRemoved(rootIntent: Intent?) {
+        if (dataStore.get(StopMusicOnTaskClearKey, false)) {
+            Timber.tag(TAG).d("Task removed with stop-on-task-clear enabled, stopping playback")
+            player.stop()
+            // stopSelf as well as stop(): a paused-but-alive session leaves the
+            // notification sitting in the shade after the app is gone, which reads as the
+            // setting not having worked even though the audio did stop.
+            stopSelf()
+        }
         super.onTaskRemoved(rootIntent)
     }
 

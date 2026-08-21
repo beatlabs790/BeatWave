@@ -128,15 +128,6 @@ class UpdateDownloadWorker(private val context: Context, workerParams: WorkerPar
                 downloadFile
             }
 
-            if (version.startsWith("nightly-r")) {
-                val runNumberString = version.removePrefix("nightly-r")
-                val runNumber = runNumberString.toIntOrNull()
-                if (runNumber != null) {
-                    val sharedPreferences = context.getSharedPreferences("update_settings", Context.MODE_PRIVATE)
-                    sharedPreferences.edit().putInt("last_installed_nightly_run", runNumber).apply()
-                }
-            }
-
             DownloadNotificationManager.showDownloadComplete(version, finalFile.absolutePath)
 
             Result.success(workDataOf("file_path" to finalFile.absolutePath))

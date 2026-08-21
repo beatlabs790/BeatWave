@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistItemsScreen.kt
 import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
@@ -88,6 +89,48 @@ import com.beatwave.music.ui.utils.rememberHeroZoom
 import com.beatwave.music.utils.listItemShape
 import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.viewmodels.ArtistItemsViewModel
+=======
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.ui.utils.rememberGridColumns
+import com.beatwave.music.constants.GridItemSize
+import com.beatwave.music.constants.GridItemsSizeKey
+import com.beatwave.music.constants.GridThumbnailHeight
+import com.beatwave.music.models.toMediaMetadata
+import com.beatwave.music.playback.queues.YouTubeQueue
+import com.beatwave.music.ui.component.ListScrollRail
+import com.beatwave.music.ui.component.GlassCircleButton
+import com.beatwave.music.ui.component.HeroBackground
+import com.beatwave.music.ui.component.HeroSource
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.component.LocalAppBackdrop
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.YouTubeGridItem
+import com.beatwave.music.ui.component.YouTubeListItem
+import com.beatwave.music.ui.component.backdrop.backdrops.layerBackdrop
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberBackdropFreeze
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+import com.beatwave.music.ui.component.shimmer.GridItemPlaceHolder
+import com.beatwave.music.ui.component.shimmer.ListItemPlaceHolder
+import com.beatwave.music.ui.component.shimmer.ShimmerHost
+import com.beatwave.music.ui.menu.YouTubeAlbumMenu
+import com.beatwave.music.ui.menu.YouTubeArtistMenu
+import com.beatwave.music.ui.menu.YouTubePlaylistMenu
+import com.beatwave.music.ui.menu.YouTubeSongMenu
+import com.beatwave.music.ui.theme.AppleTokens
+import com.beatwave.music.ui.theme.HeroTintedContent
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.ui.utils.bounceClick
+import com.beatwave.music.ui.utils.combinedBounceClick
+import com.beatwave.music.ui.utils.heroPullZoom
+import com.beatwave.music.ui.utils.listOverscroll
+import com.beatwave.music.ui.utils.rememberHeroZoom
+import com.beatwave.music.utils.listItemShape
+import com.beatwave.music.utils.rememberEnumPreference
+import com.beatwave.music.viewmodels.ArtistItemsViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/artist/ArtistItemsScreen.kt
 import com.music.innertube.models.AlbumItem
 import com.music.innertube.models.ArtistItem
 import com.music.innertube.models.PlaylistItem
@@ -161,23 +204,34 @@ fun ArtistItemsScreen(
         modifier = Modifier.fillMaxSize(),
     ) {
       HeroTintedContent(tint = tint, backdrop = heroBackdrop) {
+        // Was recomputed once for `items =` and then AGAIN inside every item's
+        // listItemShape(...) call — a full distinctBy pass per row, i.e. O(n²)
+        // plus a list allocation each time, on every frame of a scroll. Hoisted out
+        // of the captured Box too, so the scroll rail can read its count without
+        // being drawn into the backdrop layer.
+        val distinctItems = remember(itemsPage) {
+            itemsPage?.items.orEmpty().distinctBy { it.id }
+        }
         Box(modifier = Modifier.fillMaxSize()) {
             // Capture from a plain Box wrapping the lists, not the lists
             // themselves: they promote items to their own RenderNodes for
             // recycling, which a capture attached directly doesn't flatten.
             Box(modifier = Modifier
             .nestedScroll(backdropFreeze.connection)
+
+            // OUTER layer, and it must come BEFORE layerBackdrop: the layer has to
+            // enclose the backdrop node, or that node's draw re-runs whenever anything
+            // else in the window redraws. The mini player, the playing indicator and
+            // the position poll are all siblings that tick on their own schedule, and
+            // each tick was re-recording this entire list. MainActivity pairs an outer
+            // and inner layer for exactly this; the screen-local backdrops were left
+            // with only the inner half.
+            .graphicsLayer()
             .layerBackdrop(listBackdrop, frozen = backdropFreeze.frozen)
             // Content becomes ONE cached RenderNode, so the backdrop's
             // layer.record { drawContent() } records a single drawRenderNode
             // instead of re-issuing every op in the list.
             .graphicsLayer()) {
-                // Was recomputed once for `items =` and then AGAIN inside every item's
-                // listItemShape(...) call — a full distinctBy pass per row, i.e. O(n²)
-                // plus a list allocation each time, on every frame of a scroll.
-                val distinctItems = remember(itemsPage) {
-                    itemsPage?.items.orEmpty().distinctBy { it.id }
-                }
                 if (itemsPage == null) {
                     ShimmerHost(
                         modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current),
@@ -193,7 +247,7 @@ fun ArtistItemsScreen(
                         state = lazyListState,
                         // No bounce here: the top pull drives the hero zoom instead.
                         overscrollEffect = heroZoom.listOverscroll(),
-                        modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::refresh),
+                        modifier = Modifier.heroPullZoom(heroZoom),
                         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                     ) {
                         itemsIndexed(
@@ -292,7 +346,7 @@ fun ArtistItemsScreen(
                         columns = rememberGridColumns(),
                         // No bounce here: the top pull drives the hero zoom instead.
                         overscrollEffect = heroZoom.listOverscroll(),
-                        modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::refresh),
+                        modifier = Modifier.heroPullZoom(heroZoom),
                         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
                     ) {
                         items(
@@ -369,6 +423,16 @@ fun ArtistItemsScreen(
                     }
                 }
             }
+
+            // Artist items arrive in YouTube's own order, so the rail is a
+            // proportional thumb rather than letters.
+            ListScrollRail(
+                lazyListState = lazyListState,
+                lazyGridState = lazyGridState,
+                isGrid = itemsPage?.items?.firstOrNull() !is SongItem,
+                itemCount = distinctItems.size,
+                sectionIndexMap = null,
+            )
 
             // `align` is resolved here, in BoxScope, because the provider
             // lambda below is not a BoxScope.

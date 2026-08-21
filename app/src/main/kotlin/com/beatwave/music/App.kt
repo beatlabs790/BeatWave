@@ -308,7 +308,15 @@ class App : Application(), SingletonImageLoader.Factory {
             } else {
                 diskCache(
                     DiskCache.Builder()
-                        .directory(cacheDir.resolve("coil"))
+                        // filesDir, not cacheDir. cacheDir is reclaimable storage: the OS
+                        // empties it whenever the device runs low, and any "clear cache"
+                        // wipes it outright — which is why artwork kept vanishing after a
+                        // while, downloaded songs included, since DownloadUtil pre-caches
+                        // their thumbnails here too. Eviction there is driven by device
+                        // pressure, not by size, so raising maxSizeBytes never helped.
+                        // Growth is still bounded: Coil LRU-evicts against the cap below,
+                        // which StorageSettings exposes and can clear on demand.
+                        .directory(filesDir.resolve("coil"))
                         .maxSizeBytes(cacheSize * 1024 * 1024L)
                         .build()
                 )

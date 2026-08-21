@@ -102,6 +102,9 @@ import androidx.navigation.NavController
 import com.beatwave.music.LocalTabView
 import com.beatwave.music.ui.component.HeroCardHeader
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.beatwave.music.ui.utils.Motion
 import com.music.innertube.YouTube
 import com.music.innertube.models.AlbumItem
 import com.music.innertube.models.ArtistItem
@@ -340,6 +343,15 @@ fun ArtistScreen(
         // it, same as it would any other already-rendered composable.
         Box(modifier = Modifier
             .nestedScroll(backdropFreeze.connection)
+
+            // OUTER layer, and it must come BEFORE layerBackdrop: the layer has to
+            // enclose the backdrop node, or that node's draw re-runs whenever anything
+            // else in the window redraws. The mini player, the playing indicator and
+            // the position poll are all siblings that tick on their own schedule, and
+            // each tick was re-recording this entire list. MainActivity pairs an outer
+            // and inner layer for exactly this; the screen-local backdrops were left
+            // with only the inner half.
+            .graphicsLayer()
             .layerBackdrop(listBackdrop, frozen = backdropFreeze.frozen)
             // Content becomes ONE cached RenderNode, so the backdrop's
             // layer.record { drawContent() } records a single drawRenderNode
@@ -349,7 +361,7 @@ fun ArtistScreen(
             state = lazyListState,
             // No bounce here: the top pull drives the hero zoom instead.
             overscrollEffect = heroZoom.listOverscroll(),
-            modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::fetchArtistsFromYTM),
+            modifier = Modifier.heroPullZoom(heroZoom),
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             if (artistPage == null && !showLocal) {
@@ -479,10 +491,25 @@ fun ArtistScreen(
                                         )
                                 ) {
                                     if (thumbnail != null) {
+                                        val heroRequest = remember(thumbnail) {
+                                            ImageRequest.Builder(context)
+                                                .data(thumbnail.resize(1200, 1200))
+                                                // The one image in the app that has to fade
+                                                // in rather than pop -- it sits inside a card
+                                                // that is itself still growing out of the
+                                                // tile that opened it. See AlbumScreen's own
+                                                // hero request for the matching comment.
+                                                .crossfade(Motion.MorphEnterMillis)
+                                                .build()
+                                        }
                                         AsyncImage(
-                                            model = thumbnail.resize(1200, 1200),
+                                            model = heroRequest,
                                             contentDescription = null,
-                                            modifier = Modifier.fillMaxSize(),
+                                            // Target half of the artwork morph -- the tile
+                                            // tapped on the previous screen grows into this
+                                            // header instead of the two cross-fading.
+                                            modifier = Modifier
+                                                .fillMaxSize(),
                                             contentScale = androidx.compose.ui.layout.ContentScale.Crop
                                         )
                                     }

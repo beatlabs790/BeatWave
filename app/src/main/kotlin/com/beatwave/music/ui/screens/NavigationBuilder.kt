@@ -6,23 +6,31 @@
 package com.beatwave.music.ui.screens
 
 import android.app.Activity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import com.beatwave.music.ui.utils.Motion
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/NavigationBuilder.kt
 import com.beatwave.music.constants.DarkModeKey
 import com.beatwave.music.constants.PureBlackKey
 import com.beatwave.music.ui.screens.artist.ArtistAlbumsScreen
@@ -84,77 +92,140 @@ import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.vivimusic.changelog.ChangelogScreen
 import com.beatwave.music.vivimusic.commitscreen.CommitScreen
 import com.beatwave.music.ui.screens.equalizer.axion.AxionEqScreen
+=======
+import com.beatwave.music.ui.utils.LocalNavAnimatedVisibilityScope
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Modifier
+import com.beatwave.music.ui.utils.morphContainer
+import com.beatwave.music.ui.utils.hasMorphSource
+import com.beatwave.music.ui.utils.morphArtworkId
+import com.beatwave.music.ui.screens.settings.HomeFeedOrderScreen
+import com.beatwave.music.ui.screens.artist.ArtistAlbumsScreen
+import com.beatwave.music.ui.screens.artist.ArtistItemsScreen
+import com.beatwave.music.ui.screens.artist.ArtistScreen
+import com.beatwave.music.ui.screens.artist.ArtistSongsScreen
+import com.beatwave.music.ui.screens.equalizer.EqScreen
+import com.beatwave.music.ui.screens.library.LocalFolderScreen
+import com.beatwave.music.ui.screens.library.LocalMusicScreen
+import com.beatwave.music.ui.screens.library.LibraryScreen
+import com.beatwave.music.ui.screens.library.LocalSongsScreen
+import com.beatwave.music.ui.screens.settings.SettingsScreen
+import com.beatwave.music.ui.screens.playlist.AutoPlaylistScreen
+import com.beatwave.music.ui.screens.playlist.CachePlaylistScreen
+import com.beatwave.music.ui.screens.playlist.LocalPlaylistScreen
+import com.beatwave.music.ui.screens.playlist.OnlinePlaylistScreen
+import com.beatwave.music.ui.screens.playlist.TopPlaylistScreen
+import com.beatwave.music.ui.screens.search.OnlineSearchResult
+import com.beatwave.music.ui.screens.settings.AboutScreen
+import com.beatwave.music.ui.screens.settings.AppearanceSettings
+import com.beatwave.music.ui.screens.settings.CanvasSelection
+import com.beatwave.music.ui.screens.settings.AppIconScreen
+import com.beatwave.music.ui.screens.settings.diy.DiyEditorScreen
+import com.beatwave.music.ui.screens.settings.diy.PlayerIconsScreen
+import com.beatwave.music.ui.screens.settings.diy.PresetsScreen
+import com.beatwave.music.ui.screens.settings.FontSelectionScreen
+import com.beatwave.music.ui.screens.settings.GlassEffectSettings
+import com.beatwave.music.ui.screens.settings.PlayerThemeScreen
+import com.beatwave.music.ui.screens.settings.BackupAndRestore
+import com.beatwave.music.ui.screens.settings.SpotifyScreen
+import com.beatwave.music.viewmodels.SpotifyImportViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.beatwave.music.ui.screens.settings.ContentSettings
+import com.beatwave.music.ui.screens.settings.DiscordLoginScreen
+import com.beatwave.music.ui.screens.settings.PlayerSettings
+import com.beatwave.music.ui.screens.settings.JioSettings
+import com.beatwave.music.ui.screens.settings.LocalFoldersSettingsScreen
+import com.beatwave.music.ui.screens.settings.ScanMusicScreen
+import com.beatwave.music.ui.screens.settings.PrivacySettings
+import com.beatwave.music.ui.screens.settings.RomanizationSettings
+import com.beatwave.music.ui.screens.settings.AccountSettingsScreen
+import com.beatwave.music.ui.screens.settings.StorageSettings
+import com.beatwave.music.ui.screens.settings.ThemeScreen
+import com.beatwave.music.ui.screens.settings.AiSettings
+import com.beatwave.music.ui.screens.settings.integrations.DiscordSettings
+import com.beatwave.music.ui.screens.settings.integrations.IntegrationScreen
+import com.beatwave.music.ui.screens.settings.integrations.LastFMSettings
+import com.beatwave.music.ui.screens.settings.integrations.ListenTogetherSettings
+import com.beatwave.music.ui.screens.ambient.AmbientModeScreen
+import com.beatwave.music.ui.screens.recognition.RecognitionScreen
+import com.beatwave.music.ui.screens.recognition.RecognitionHistoryScreen
+import com.beatwave.music.ui.screens.settings.ModuleSourceScreen
+import com.beatwave.music.ui.screens.settings.ModuleDetailScreen
+import com.beatwave.music.ui.screens.settings.UpdateSettings
+import com.beatwave.music.ui.screens.wrapped.WrappedScreen
+import com.beatwave.music.vivimusic.updater.UpdateScreen
+import com.beatwave.music.vivimusic.changelog.ChangelogScreen
+import com.beatwave.music.vivimusic.commitscreen.CommitScreen
+import com.beatwave.music.ui.screens.equalizer.axion.AxionEqScreen
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/NavigationBuilder.kt
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 fun NavGraphBuilder.navigationBuilder(
     navController: NavHostController,
     scrollBehavior: TopAppBarScrollBehavior,
     activity: Activity,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
-    composable(Screens.Home.route) {
+    // Reverted from the pager (MainTabsPager.kt, still in the tree but unused): the
+    // pager itself became the lag source it was meant to fix, so these are real
+    // NavHost destinations again -- one AnimatedContent transition per switch (the
+    // iOS parallax push set at the NavHost level in MainActivity), multi-back-stack
+    // via popUpTo/saveState/restoreState in onNavItemClick, same as everything else
+    // in this file.
+    sharedComposable(Screens.Home.route) {
         HomeScreen(navController = navController, snackbarHostState = snackbarHostState)
     }
 
-    composable(Screens.Search.route) {
-        val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
-        val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
-        val isSystemInDarkTheme = isSystemInDarkTheme()
-        val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
-            if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-        }
-        val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
-            pureBlackEnabled && useDarkTheme
-        }
-        SearchScreen(
-            navController = navController,
-            pureBlack = pureBlack
-        )
+    // Only ever reachable as a tab while local-only mode is on (see Screens.mainScreens),
+    // but the route is always registered: a saved back stack entry from a session that
+    // had the mode on must still resolve after it is turned off.
+    sharedComposable(Screens.Songs.route) {
+        LocalSongsScreen(navController)
     }
 
-    composable(Screens.Library.route) {
+    sharedComposable(Screens.Library.route) {
         LibraryScreen(navController)
     }
 
-    composable(Screens.ListenTogether.route) {
-        ListenTogetherScreen(navController, showTopBar = false)
+    sharedComposable(Screens.Settings.route) {
+        SettingsScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "listen_together_from_topbar",
     ) {
         ListenTogetherScreen(navController, showTopBar = true)
     }
 
-    composable("listen_together/chat") {
+    sharedComposable("listen_together/chat") {
         CommentTogetherScreen(navController)
     }
 
-    composable("history") {
+    sharedComposable("history") {
         HistoryScreen(navController)
     }
 
-    composable("stats") {
+    sharedComposable("stats") {
         StatsScreen(navController)
     }
 
-    composable("mood_and_genres") {
+    sharedComposable("mood_and_genres") {
         MoodAndGenresScreen(navController, scrollBehavior)
     }
 
-    composable("account") {
+    sharedComposable("account") {
         AccountScreen(navController, scrollBehavior)
     }
 
-    composable("new_release") {
+    sharedComposable("new_release") {
         NewReleaseScreen(navController, scrollBehavior)
     }
 
-    composable("charts_screen") {
+    sharedComposable("charts_screen") {
         ChartsScreen(navController)
     }
 
-    composable(
+    sharedComposable(
         route = "browse/{browseId}",
         arguments = listOf(
             navArgument("browseId") {
@@ -200,7 +271,7 @@ fun NavGraphBuilder.navigationBuilder(
         OnlineSearchResult(navController)
     }
 
-    composable(
+    sharedComposable(
         route = "album/{albumId}",
         arguments = listOf(
             navArgument("albumId") {
@@ -211,7 +282,7 @@ fun NavGraphBuilder.navigationBuilder(
         AlbumScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "artist/{artistId}",
         arguments = listOf(
             navArgument("artistId") {
@@ -222,7 +293,7 @@ fun NavGraphBuilder.navigationBuilder(
         ArtistScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "artist/{artistId}/songs",
         arguments = listOf(
             navArgument("artistId") {
@@ -233,7 +304,7 @@ fun NavGraphBuilder.navigationBuilder(
         ArtistSongsScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "artist/{artistId}/albums",
         arguments = listOf(
             navArgument("artistId") {
@@ -244,7 +315,7 @@ fun NavGraphBuilder.navigationBuilder(
         ArtistAlbumsScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "artist/{artistId}/items?browseId={browseId}?params={params}",
         arguments = listOf(
             navArgument("artistId") {
@@ -263,7 +334,7 @@ fun NavGraphBuilder.navigationBuilder(
         ArtistItemsScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "online_playlist/{playlistId}",
         arguments = listOf(
             navArgument("playlistId") {
@@ -274,7 +345,7 @@ fun NavGraphBuilder.navigationBuilder(
         OnlinePlaylistScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "local_playlist/{playlistId}",
         arguments = listOf(
             navArgument("playlistId") {
@@ -285,13 +356,13 @@ fun NavGraphBuilder.navigationBuilder(
         LocalPlaylistScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "local_music",
     ) {
         LocalMusicScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "local_folder/{path}",
         arguments = listOf(
             navArgument("path") {
@@ -302,7 +373,7 @@ fun NavGraphBuilder.navigationBuilder(
         LocalFolderScreen(navController, it.arguments?.getString("path").orEmpty())
     }
 
-    composable(
+    sharedComposable(
         route = "auto_playlist/{playlist}",
         arguments = listOf(
             navArgument("playlist") {
@@ -313,7 +384,7 @@ fun NavGraphBuilder.navigationBuilder(
         AutoPlaylistScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "cache_playlist/{playlist}",
         arguments = listOf(
             navArgument("playlist") {
@@ -324,7 +395,7 @@ fun NavGraphBuilder.navigationBuilder(
         CachePlaylistScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "top_playlist/{top}",
         arguments = listOf(
             navArgument("top") {
@@ -335,7 +406,7 @@ fun NavGraphBuilder.navigationBuilder(
         TopPlaylistScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "youtube_browse/{browseId}?params={params}",
         arguments = listOf(
             navArgument("browseId") {
@@ -351,113 +422,117 @@ fun NavGraphBuilder.navigationBuilder(
         YouTubeBrowseScreen(navController)
     }
 
-    composable("settings") {
-        SettingsScreen(navController, scrollBehavior)
-    }
-
-    composable("settings/update") {
+    sharedComposable("settings/update") {
        UpdateSettings(navController, scrollBehavior)
     }
 
-    composable("settings/account") {
+    sharedComposable("settings/account") {
         AccountSettingsScreen(navController, scrollBehavior)
     }
 
-    composable("settings/appearance") {
+    sharedComposable("settings/appearance") {
         AppearanceSettings(navController, scrollBehavior, activity, snackbarHostState)
     }
 
-    composable("settings/appearance/theme") {
+    sharedComposable("settings/home_feed_order") {
+        HomeFeedOrderScreen(navController, scrollBehavior)
+    }
+
+    sharedComposable("settings/appearance/theme") {
         ThemeScreen(navController)
     }
 
-    composable("settings/appearance/font") {
+    sharedComposable("settings/appearance/font") {
         FontSelectionScreen(navController, scrollBehavior)
     }
 
-    composable("settings/appearance/appicon") {
+    sharedComposable("settings/appearance/appicon") {
         AppIconScreen(navController, scrollBehavior)
     }
 
-    composable("settings/appearance/presets") {
+    sharedComposable("settings/appearance/presets") {
         PresetsScreen(navController, scrollBehavior)
     }
 
-    composable("settings/appearance/playericons") {
+    sharedComposable("settings/appearance/playericons") {
         PlayerIconsScreen(navController, scrollBehavior)
     }
 
-    composable("settings/appearance/diy") {
+    sharedComposable("settings/appearance/diy") {
         DiyEditorScreen(navController)
     }
 
-    composable("settings/appearance/canvas") {
+    sharedComposable("settings/appearance/canvas") {
         CanvasSelection(navController, scrollBehavior)
     }
 
-    composable("settings/appearance/playertheme") {
+    sharedComposable("settings/appearance/playertheme") {
         PlayerThemeScreen(navController, scrollBehavior)
     }
 
-    composable("settings/appearance/liquidglass") {
+    sharedComposable("settings/appearance/liquidglass") {
         GlassEffectSettings(navController, scrollBehavior)
     }
 
-    composable("settings/content") {
+    sharedComposable("settings/content") {
         ContentSettings(navController, scrollBehavior)
     }
 
-    composable("settings/content/romanization") {
+    sharedComposable("settings/content/romanization") {
         RomanizationSettings(navController, scrollBehavior)
     }
 
-    composable("settings/ai") {
+    sharedComposable("settings/ai") {
         AiSettings(navController, scrollBehavior)
     }
     
-    composable("settings/player") {
+    sharedComposable("settings/player") {
         PlayerSettings(navController, scrollBehavior)
     }
 
-    composable("settings/player/jio") {
+    sharedComposable("settings/player/jio") {
         JioSettings(navController, scrollBehavior)
     }
 
-    composable("settings/player/local_folders") {
+    sharedComposable("settings/scan_music") {
+        ScanMusicScreen(navController, scrollBehavior)
+    }
+
+    sharedComposable("settings/player/local_folders") {
         LocalFoldersSettingsScreen(navController, scrollBehavior)
     }
 
-    composable("settings/storage") {
+    sharedComposable("settings/storage") {
         StorageSettings(navController, scrollBehavior)
     }
 
-    composable("settings/equalizer") {
+    sharedComposable("settings/equalizer") {
         AxionEqScreen(onBackClick = { navController.navigateUp() })
     }
 
-    composable("settings/privacy") {
+    sharedComposable("settings/privacy") {
         PrivacySettings(navController, scrollBehavior)
     }
 
-    composable("settings/backup_restore") {
+    sharedComposable("settings/backup_restore") {
         BackupAndRestore(navController, scrollBehavior)
     }
 
-    composable("settings/spotify") {
+    sharedComposable("settings/spotify") {
         SpotifyScreen(navController, scrollBehavior)
     }
 
 
 
-    composable("settings/integrations") {
+    sharedComposable("settings/integrations") {
         IntegrationScreen(navController, scrollBehavior)
     }
 
-    composable("settings/modules") {
+    sharedComposable("settings/modules") {
         ModuleSourceScreen(navController, scrollBehavior)
     }
 
-    composable(
+    sharedComposable(
         route = "settings/modules/{moduleId}",
         arguments = listOf(
             navArgument("moduleId") {
@@ -468,47 +543,47 @@ fun NavGraphBuilder.navigationBuilder(
         ModuleDetailScreen(navController, scrollBehavior, it.arguments?.getString("moduleId") ?: "")
     }
 
-    composable("settings/integrations/discord") {
+    sharedComposable("settings/integrations/discord") {
         DiscordSettings(navController, scrollBehavior, snackbarHostState)
     }
 
-    composable("settings/integrations/lastfm") {
+    sharedComposable("settings/integrations/lastfm") {
         LastFMSettings(navController, scrollBehavior)
     }
 
-    composable(route = "settings/integrations/listen_together") {
+    sharedComposable(route = "settings/integrations/listen_together") {
         ListenTogetherSettings(navController, scrollBehavior)
     }
 
-    composable("settings/discord/login") {
+    sharedComposable("settings/discord/login") {
         DiscordLoginScreen(navController)
     }
 
-    composable("settings/about") {
+    sharedComposable("settings/about") {
         AboutScreen(navController, scrollBehavior)
     }
 
-    composable("update") {
+    sharedComposable("update") {
         UpdateScreen(navController)
     }
 
-    composable("login") {
+    sharedComposable("login") {
         LoginScreen(navController)
     }
 
-    composable("channel_picker") {
+    sharedComposable("channel_picker") {
         ChannelPickerScreen(navController)
     }
 
-    composable("switch_channel") {
+    sharedComposable("switch_channel") {
         SwitchChannelScreen(navController)
     }
 
-    composable("wrapped") {
+    sharedComposable("wrapped") {
         WrappedScreen(navController)
     }
 
-    composable("ambient_mode") {
+    sharedComposable("ambient_mode") {
         AmbientModeScreen(navController)
     }
 
@@ -516,18 +591,98 @@ fun NavGraphBuilder.navigationBuilder(
         EqScreen(navController = navController)
     }
 
-    composable("recognition") {
+    sharedComposable("recognition") {
         RecognitionScreen(navController)
     }
 
-    composable("recognition_history") {
+    sharedComposable("recognition_history") {
         RecognitionHistoryScreen(navController)
     }
-    composable("settings/changelog") {
+    sharedComposable("settings/changelog") {
         ChangelogScreen(navController,scrollBehavior)
     }
-    composable("settings/commits") {
+    sharedComposable("settings/commits") {
         CommitScreen(navController, scrollBehavior)
     }
 }
 
+/**
+ * [composable] that also publishes the destination's own [AnimatedVisibilityScope].
+ *
+ * A shared element needs both ends to name the transition they are part of, and for a
+ * NavHost destination that scope only exists inside the entry's content lambda. Rather
+ * than repeat a CompositionLocalProvider in every screen, destinations that take part in
+ * an artwork morph are declared with this instead of [composable].
+ *
+ * Applied only where there is actually a shared pair. A destination with no shared element
+ * gains nothing from the local, and wrapping all sixty-odd of them would be churn.
+ */
+
+/**
+ * A destination that grows out of the tile that opened it, and shrinks back into it.
+ *
+ * The whole screen is one shared element paired with the tapped tile's artwork box, so
+ * the detail page reads as that tile opening rather than as a new page arriving over it.
+ * See `Modifier.morphContainer` for the mechanics and for what the reference capture
+ * actually does.
+ *
+ * The enter/exit specs here deliberately do almost nothing: the morph IS the transition,
+ * and any slide or scale declared at this level would fight the shared element's own
+ * interpolation of the same bounds. What is left is the treatment of the screen BEHIND
+ * the morph -- it holds still and dims, because the tile the card is flying to and from
+ * must not travel out from under it.
+ *
+ * Falls back to a plain cross-fade when the destination carries no id, or when its tile
+ * was never on screen to be nominated (a deep link, a restored back stack): with no
+ * source half, `morphContainer` is inert and this is all that is left.
+ */
+private fun NavGraphBuilder.sharedComposable(
+    route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
+) = composable(
+    route = route,
+    arguments = arguments,
+    enterTransition = { fadeIn(tween(1)) },
+    exitTransition = { fadeOut(tween(180), targetAlpha = 0.7f) },
+    popEnterTransition = { fadeIn(tween(180), initialAlpha = 0.7f) },
+    popExitTransition = { fadeOut(tween(1)) },
+) { entry ->
+    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+        val morphId = entry.morphArtworkId()
+        // `morphContainer` no-ops with no id (deep link, restored back stack), and
+        // also finds no partner to interpolate from when the id's tile never called
+        // `sharedArtworkSource` -- a bespoke card rendering its own AsyncImage instead
+        // of going through one of Items.kt's shared composables. Both cases used to
+        // fall all the way back to the bare fadeIn(1) above: an instant pop with no
+        // motion at all. `animateEnterExit` is the generic, cheap fallback for both:
+        // a soft grow-and-fade that costs nothing but a graphicsLayer scale (no
+        // shared-element matching, no tile identity needed) -- which is the whole
+        // point: every tile-opened screen gets SOME grow-in, not only the ones that
+        // were wired into the shared-artwork system.
+        //
+        // Gated on `!hasMorphSource`, not id == null -- stacking this on TOP of an id
+        // that IS driving a real container morph would scale the card twice
+        // (morphContainer's own interpolation, then this fallback's 0.94 on top of
+        // it), which reads as the card overshooting past its target and snapping back.
+        val hasRealMorph = morphId != null && hasMorphSource(morphId)
+        Box(
+            Modifier
+                .morphContainer(morphId, isSource = false)
+                .then(
+                    if (!hasRealMorph) {
+                        Modifier.animateEnterExit(
+                            // enter (push, never gesture-driven): spring is fine.
+                            enter = fadeIn(Motion.appear()) + scaleIn(Motion.appear(), initialScale = 0.94f),
+                            // exit (pop, predictive-back-scrubbed): tween, see appearExit().
+                            exit = fadeOut(Motion.appearExit()) + scaleOut(Motion.appearExit(), targetScale = 0.94f),
+                        )
+                    } else {
+                        Modifier
+                    }
+                )
+        ) {
+            content(entry)
+        }
+    }
+}

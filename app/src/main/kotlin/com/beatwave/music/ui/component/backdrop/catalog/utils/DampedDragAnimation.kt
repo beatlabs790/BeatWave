@@ -120,6 +120,21 @@ class DampedDragAnimation(
         }
     }
 
+    /**
+     * Set the value immediately, with no animation of its own.
+     *
+     * For following an external driver frame by frame — the tab pager's own scroll
+     * position, say. [updateValue] would spring toward each sample and so trail the
+     * driver by a frame or more, and [animateToValue] would additionally press-grow
+     * the puck on every single sample.
+     *
+     * Suspend rather than launching internally so the caller keeps ONE collector
+     * coroutine for the whole gesture instead of starting a fresh one per frame.
+     */
+    suspend fun snapValue(value: Float) {
+        valueAnimation.snapTo(value.coerceIn(valueRange))
+    }
+
     fun updateValue(value: Float) {
         val targetValue = value.coerceIn(valueRange)
         animationScope.launch {

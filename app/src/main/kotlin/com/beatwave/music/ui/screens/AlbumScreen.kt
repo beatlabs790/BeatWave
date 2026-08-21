@@ -5,7 +5,12 @@
 
 package com.beatwave.music.ui.screens
 
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/AlbumScreen.kt
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
+=======
+import com.beatwave.music.ui.utils.Motion
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/AlbumScreen.kt
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -112,6 +117,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/screens/AlbumScreen.kt
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalTabView
 import com.beatwave.music.LocalDownloadUtil
@@ -161,6 +167,60 @@ import com.beatwave.music.utils.listItemShape
 import com.beatwave.music.utils.rememberPreference
 import com.beatwave.music.ui.component.AnimatedPlayPauseIcon
 import com.beatwave.music.viewmodels.AlbumViewModel
+=======
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.beatwave.music.ui.utils.resize
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.LocalTabView
+import com.beatwave.music.LocalDownloadUtil
+import com.beatwave.music.LocalPlayerAwareWindowInsets
+import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.R
+import com.beatwave.music.constants.HideExplicitKey
+import com.beatwave.music.constants.DataSaverEnabledKey
+import com.beatwave.music.constants.HideVideoSongsKey
+import com.beatwave.music.constants.AlbumCanvasEnabledKey
+import com.beatwave.music.db.entities.Album
+import com.beatwave.music.playback.ExoDownloadService
+import com.beatwave.music.playback.queues.LocalAlbumRadio
+import com.beatwave.music.ui.component.AlbumGradient
+import com.beatwave.music.ui.component.ExpandableText
+import com.beatwave.music.ui.component.GlassCircleButton
+import com.beatwave.music.ui.component.HeroCardHeader
+import com.beatwave.music.ui.component.IconButton
+import com.beatwave.music.ui.component.LinkSegment
+import com.beatwave.music.ui.component.LocalAppBackdrop
+import com.beatwave.music.ui.component.GlassComponent
+import com.beatwave.music.ui.component.LocalGlassEffectConfig
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.backdrop.backdrops.layerBackdrop
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberBackdropFreeze
+import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+import com.beatwave.music.ui.component.NavigationTitle
+import com.beatwave.music.ui.component.SongListItem
+import com.beatwave.music.ui.component.YouTubeGridItem
+import com.beatwave.music.ui.component.isGlassAllowed
+import com.beatwave.music.ui.component.liquidGlass
+import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
+import com.beatwave.music.ui.menu.AlbumMenu
+import com.beatwave.music.ui.menu.SelectionSongMenu
+import com.beatwave.music.ui.menu.SongMenu
+import com.beatwave.music.ui.menu.YouTubeAlbumMenu
+import com.beatwave.music.ui.theme.AppleTokens
+import com.beatwave.music.ui.utils.backToMain
+import com.beatwave.music.ui.utils.rememberHeroZoom
+import com.beatwave.music.ui.utils.heroPullZoom
+import com.beatwave.music.ui.utils.listOverscroll
+import com.beatwave.music.ui.utils.fadingEdge
+import com.beatwave.music.ui.player.CanvasArtworkPlayer
+import com.beatwave.music.ui.theme.HeroTintedContent
+import com.beatwave.music.ui.component.rememberHeroTint
+import com.beatwave.music.utils.listItemShape
+import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.ui.component.AnimatedPlayPauseIcon
+import com.beatwave.music.viewmodels.AlbumViewModel
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/screens/AlbumScreen.kt
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -355,6 +415,15 @@ fun AlbumScreen(
     // same as it would any other already-rendered composable.
     Box(modifier = Modifier
             .nestedScroll(backdropFreeze.connection)
+
+            // OUTER layer, and it must come BEFORE layerBackdrop: the layer has to
+            // enclose the backdrop node, or that node's draw re-runs whenever anything
+            // else in the window redraws. The mini player, the playing indicator and
+            // the position poll are all siblings that tick on their own schedule, and
+            // each tick was re-recording this entire list. MainActivity pairs an outer
+            // and inner layer for exactly this; the screen-local backdrops were left
+            // with only the inner half.
+            .graphicsLayer()
             .layerBackdrop(listBackdrop, frozen = backdropFreeze.frozen)
             // Content becomes ONE cached RenderNode, so the backdrop's
             // layer.record { drawContent() } records a single drawRenderNode
@@ -365,12 +434,12 @@ fun AlbumScreen(
         state = lazyListState,
         // No bounce here: the top pull drives the hero zoom instead.
         overscrollEffect = heroZoom.listOverscroll(),
-        modifier = Modifier.heroPullZoom(heroZoom, onRefresh = viewModel::refresh),
+        modifier = Modifier.heroPullZoom(heroZoom),
         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
         val albumWithSongs = albumWithSongs
         if (albumWithSongs != null && albumWithSongs.songs.isNotEmpty()) {
-             item(key = "album_header") {
+             item(key = "album_header", contentType = "header") {
                 val systemBarsTopPadding = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
                 val density = LocalDensity.current
                 val headerOffset = with(density) {
@@ -433,10 +502,35 @@ fun AlbumScreen(
                                     scaleY = heroZoom.scale
                                 }
                         ) {
+                            // Same request the grid tile that opened this screen made:
+                            // same data URL, same decode size, same disk key, so the morph
+                            // lands on the bitmap Coil already has in memory instead of
+                            // decoding a second copy of it mid-animation. Nothing is lost
+                            // by matching -- the tile's diskCacheKey already pins these
+                            // bytes under the raw URL, so a larger request here was being
+                            // served the same pixels anyway.
+                            val heroRequest = remember(albumWithSongs.album.thumbnailUrl) {
+                                ImageRequest.Builder(context)
+                                    .data(albumWithSongs.album.thumbnailUrl?.resize(544, 544))
+                                    .diskCacheKey(albumWithSongs.album.thumbnailUrl)
+                                    .size(544, 544)
+                                    // Only override for the morph's own hero art: this is
+                                    // the one image in the app that has to fade in rather
+                                    // than pop, since it sits inside a card that is itself
+                                    // still growing out of the tile that opened it -- a hard
+                                    // cut here is the only thing left in the morph that
+                                    // still reads as "swapped", not "grown".
+                                    .crossfade(Motion.MorphEnterMillis)
+                                    .build()
+                            }
                             AsyncImage(
-                                model = albumWithSongs.album.thumbnailUrl,
+                                model = heroRequest,
                                 contentDescription = null,
-                                modifier = Modifier.fillMaxSize(),
+                                // Target half of the artwork morph: the tapped tile on the
+                                // previous screen grows into this header rather than the two
+                                // screens cross-fading past each other.
+                                modifier = Modifier
+                                    .fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
 
@@ -818,6 +912,7 @@ fun AlbumScreen(
                 itemsIndexed(
                     items = filteredSongs,
                     key = { _, song -> song.id },
+                    contentType = { _, _ -> "song_row" },
                 ) { index, song ->
                     val onCheckedChange: (Boolean) -> Unit = {
                         if (it) {

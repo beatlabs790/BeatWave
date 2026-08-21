@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,9 +22,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.music.innertube.models.YTItem
+<<<<<<< HEAD:app/src/main/kotlin/com/beatwave/music/ui/component/SpeedDialGridItem.kt
 import com.beatwave.music.R
 import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
 import com.beatwave.music.ui.theme.AppleTokens
+=======
+import com.beatwave.music.R
+import com.beatwave.music.constants.ThumbnailRoundedShape
+import com.beatwave.music.ui.component.shapes.ContinuousRoundedRectangle
+import com.beatwave.music.ui.theme.AppleTokens
+>>>>>>> 1e2237d9f8dd56de1c8a97dffc9c31e6596c437a:app/src/main/kotlin/com/beatwave/music/ui/component/SpeedDialGridItem.kt
 
 @Composable
 fun SpeedDialGridItem(
@@ -35,15 +41,13 @@ fun SpeedDialGridItem(
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     thumbnailSizePx: Int = 544,
-    cornerRadiusDp: Int = 24,
+    cornerRadiusDp: Int = 0,
 ) {
-    // Round art with the caption underneath, not text burned into a scrim on the
-    // artwork: a circle reads as "a thing to tap" at this size, and the title is
-    // legible on any cover instead of depending on a gradient to survive a bright
-    // one. [cornerRadiusDp] still applies when the user has overridden it — a
-    // non-zero override means they asked for a card, so honour it.
-    val circular = cornerRadiusDp <= 0
-    val shape = if (circular) CircleShape else ContinuousRoundedRectangle(cornerRadiusDp.dp)
+    // Same rounded-rectangle artwork every other tile in the app uses, with the
+    // caption underneath rather than text burned into a scrim. These were circles,
+    // which made Speed Dial the one shelf on Home with its own corner vocabulary.
+    val shape =
+        if (cornerRadiusDp > 0) ContinuousRoundedRectangle(cornerRadiusDp.dp) else ThumbnailRoundedShape
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,

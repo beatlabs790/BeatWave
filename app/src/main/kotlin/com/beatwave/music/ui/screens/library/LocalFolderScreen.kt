@@ -5,6 +5,9 @@
 
 package com.beatwave.music.ui.screens.library
 
+import androidx.compose.foundation.lazy.rememberLazyListState
+import com.beatwave.music.ui.component.ListScrollRail
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -80,7 +83,11 @@ fun LocalFolderScreen(
         }
     }
 
+    val lazyListState = rememberLazyListState()
+
+    Box(modifier = Modifier.fillMaxSize()) {
     LazyColumn(
+        state = lazyListState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
@@ -169,5 +176,14 @@ fun LocalFolderScreen(
                     },
             )
         }
+    }
+
+        // The folder keeps MediaStore's own order, which is not alphabetical, so the rail
+        // is a proportional thumb.
+        ListScrollRail(
+            lazyListState = lazyListState,
+            itemCount = songs.size,
+            sectionIndexMap = null,
+        )
     }
 }

@@ -37,7 +37,7 @@ enum class AppIcon(
     ;
 
     companion object {
-        val DEFAULT = BEST
+        val DEFAULT = GLASS
 
         fun fromId(id: String?): AppIcon = entries.firstOrNull { it.id == id } ?: DEFAULT
 

@@ -205,7 +205,7 @@
 
         <activity-alias
             android:name=".LauncherBest"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_best"
             android:label="@string/app_name"
@@ -219,7 +219,7 @@
 
         <activity-alias
             android:name=".LauncherGlass"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_glass"
             android:label="@string/app_name"

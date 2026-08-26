@@ -21,7 +21,7 @@ object ListenTogetherServers {
         [
           {
             "name": "BeatWave Sync",
-            "url": "wss://beatwave-sync.cosmictaser-dev.workers.dev",
+            "url": "wss://metroserverx.meowery.eu/ws",
             "location": "Global (edge)",
             "operator": "BeatWave"
           },

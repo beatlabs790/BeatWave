@@ -3,6 +3,7 @@ package com.beatwave.music.ui.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import com.beatwave.music.ui.utils.bounceClick
 import com.beatwave.music.ui.utils.combinedBounceClick
 import androidx.compose.foundation.layout.*
@@ -114,6 +115,10 @@ fun SettingDialoge(
                         modifier = Modifier
                             .size(24.dp)
                             .clip(CircleShape)
+                            .clickable {
+                                onDismissRequest()
+                                onNavigate("settings/appearance/appicon")
+                            }
                     )
                     
                     Text(

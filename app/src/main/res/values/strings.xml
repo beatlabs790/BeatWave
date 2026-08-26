@@ -511,19 +511,9 @@
     <string name="app_icon">App icon</string>
     <string name="app_icon_desc">Pick the icon BeatWave shows on your home screen</string>
     <string name="app_icon_change_warning">The icon may take a few seconds to update, and some launchers drop the shortcut from your home screen until you re-add it.</string>
-    <string name="app_icon_white">White</string>
-    <string name="app_icon_azure">Azure</string>
-    <string name="app_icon_sky">Sky</string>
-    <string name="app_icon_teal">Teal</string>
-    <string name="app_icon_slate">Slate</string>
-    <string name="app_icon_silver">Silver</string>
-    <string name="app_icon_periwinkle">Periwinkle</string>
-    <string name="app_icon_violet">Violet</string>
-    <string name="app_icon_midnight">Midnight</string>
-    <string name="app_icon_mauve">Mauve</string>
-    <string name="app_icon_rose">Rose</string>
-    <string name="app_icon_copper">Copper</string>
-    <string name="app_icon_rust">Rust</string>
+    <string name="app_icon_og">THE OG</string>
+    <string name="app_icon_best">The Best One</string>
+    <string name="app_icon_glass">Liquid Glass</string>
 
     <!-- Presets / DIY -->
     <string name="presets">Presets</string>

@@ -31,33 +31,13 @@ enum class AppIcon(
     @DrawableRes val previewRes: Int,
     @StringRes val labelRes: Int,
 ) {
-    WHITE("white", ".LauncherWhite", R.mipmap.ic_launcher_white_fg, R.string.app_icon_white),
-    AZURE("azure", ".LauncherAzure", R.mipmap.ic_launcher_azure_fg, R.string.app_icon_azure),
-    SKY("sky", ".LauncherSky", R.mipmap.ic_launcher_sky_fg, R.string.app_icon_sky),
-    TEAL("teal", ".LauncherTeal", R.mipmap.ic_launcher_teal_fg, R.string.app_icon_teal),
-    SLATE("slate", ".LauncherSlate", R.mipmap.ic_launcher_slate_fg, R.string.app_icon_slate),
-    SILVER("silver", ".LauncherSilver", R.mipmap.ic_launcher_silver_fg, R.string.app_icon_silver),
-    PERIWINKLE(
-        "periwinkle",
-        ".LauncherPeriwinkle",
-        R.mipmap.ic_launcher_periwinkle_fg,
-        R.string.app_icon_periwinkle,
-    ),
-    VIOLET("violet", ".LauncherViolet", R.mipmap.ic_launcher_violet_fg, R.string.app_icon_violet),
-    MIDNIGHT(
-        "midnight",
-        ".LauncherMidnight",
-        R.mipmap.ic_launcher_midnight_fg,
-        R.string.app_icon_midnight,
-    ),
-    MAUVE("mauve", ".LauncherMauve", R.mipmap.ic_launcher_mauve_fg, R.string.app_icon_mauve),
-    ROSE("rose", ".LauncherRose", R.mipmap.ic_launcher_rose_fg, R.string.app_icon_rose),
-    COPPER("copper", ".LauncherCopper", R.mipmap.ic_launcher_copper_fg, R.string.app_icon_copper),
-    RUST("rust", ".LauncherRust", R.mipmap.ic_launcher_rust_fg, R.string.app_icon_rust),
+    OG("og", ".LauncherOg", R.mipmap.ic_launcher_og_fg, R.string.app_icon_og),
+    BEST("best", ".LauncherBest", R.mipmap.ic_launcher_best_fg, R.string.app_icon_best),
+    GLASS("glass", ".LauncherGlass", R.mipmap.ic_launcher_glass_fg, R.string.app_icon_glass),
     ;
 
     companion object {
-        val DEFAULT = WHITE
+        val DEFAULT = BEST
 
         fun fromId(id: String?): AppIcon = entries.firstOrNull { it.id == id } ?: DEFAULT
 

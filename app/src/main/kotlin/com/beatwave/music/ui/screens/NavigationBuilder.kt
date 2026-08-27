@@ -386,7 +386,9 @@ fun NavGraphBuilder.navigationBuilder(
 
     sharedComposable("settings/appearance/font") {
         FontSelectionScreen(navController, scrollBehavior)
-    }    sharedComposable("admin_panel") {
+    }
+
+    sharedComposable("admin_panel") {
         AdminPanelScreen(navController, scrollBehavior)
     }
 

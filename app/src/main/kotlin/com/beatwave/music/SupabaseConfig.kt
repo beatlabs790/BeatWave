@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 object SupabaseConfig {
     const val URL = "https://urltgenawxcpmxuyeuod.supabase.co"
-    const val ANON_KEY = "YOUR_ANON_KEY"
-    const val SECRET_KEY = "YOUR_SECRET_KEY"
+    const val ANON_KEY = "sb_publishable_FUbuyV6Pw9vlNqcPV_qTOA_9uzt4YNi"
+    const val SECRET_KEY = "sb_secret_X9bYfzuBpXRLZ3KiFgbmWg_4XGmYwQ7"
 }
 
 @Serializable

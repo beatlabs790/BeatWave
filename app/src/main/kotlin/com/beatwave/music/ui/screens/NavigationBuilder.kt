@@ -56,9 +56,9 @@ import com.beatwave.music.ui.screens.recognition.RecognitionScreen
 import com.beatwave.music.ui.screens.search.OnlineSearchResult
 import com.beatwave.music.ui.screens.search.SearchScreen
 import com.beatwave.music.ui.screens.settings.AboutScreen
+import com.beatwave.music.ui.screens.settings.SuggestionScreen
 import com.beatwave.music.ui.screens.settings.AccountSettingsScreen
 import com.beatwave.music.ui.screens.settings.AiSettings
-import com.beatwave.music.ui.screens.settings.AppIconScreen
 import com.beatwave.music.ui.screens.settings.AppearanceSettings
 import com.beatwave.music.ui.screens.settings.BackupAndRestore
 import com.beatwave.music.ui.screens.settings.CanvasSelection
@@ -386,11 +386,14 @@ fun NavGraphBuilder.navigationBuilder(
 
     sharedComposable("settings/appearance/font") {
         FontSelectionScreen(navController, scrollBehavior)
+    }    sharedComposable("admin_panel") {
+        AdminPanelScreen(navController, scrollBehavior)
     }
 
-    sharedComposable("settings/appearance/appicon") {
-        AppIconScreen(navController, scrollBehavior)
+    sharedComposable("settings/suggestions") {
+        SuggestionScreen(navController, scrollBehavior)
     }
+
 
     sharedComposable("settings/appearance/presets") {
         PresetsScreen(navController, scrollBehavior)

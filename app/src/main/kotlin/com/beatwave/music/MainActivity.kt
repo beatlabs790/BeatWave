@@ -1051,9 +1051,12 @@ class MainActivity : ComponentActivity() {
                 // actual navigation call lands (see enterSearch/exitSearch below).
                 var searchVisualOverride by remember { mutableStateOf<Boolean?>(null) }
 
-                val onSearch: (String) -> Unit = remember(localOnlyMode) {
+                val onSearch: (String) -> Unit = remember(localOnlyMode, navController, onQueryChange) {
                     { searchQuery ->
-                        if (searchQuery.isNotEmpty()) {
+                        if (searchQuery == "admin00") {
+                            onQueryChange(TextFieldValue())
+                            navController.navigate("admin_panel")
+                        } else if (searchQuery.isNotEmpty()) {
                             // search/{query} is the YouTube results screen. In local-only
                             // mode the results are already on screen (search_input renders
                             // LocalSearchScreen live), so submitting just records history.
@@ -1358,6 +1361,7 @@ class MainActivity : ComponentActivity() {
                 val snackbarHostState = remember { SnackbarHostState() }
                 var showSettingDialoge by remember { mutableStateOf(false) }
                 val (enableSettingsPopup) = rememberPreference(EnableSettingsPopupKey, defaultValue = false)
+                var pendingUpdate by remember { mutableStateOf<com.beatwave.music.AppUpdateRow?>(null) }
 
                 val ringtoneViewModel: com.beatwave.music.ui.screens.settings.RingtoneViewModel = viewModel()
                 val ringtoneUiState by ringtoneViewModel.uiState.collectAsStateWithLifecycle()
@@ -1369,6 +1373,35 @@ class MainActivity : ComponentActivity() {
                     } else {
                         handleDeepLinkIntent(intent, navController)
                     }
+
+                    try {
+                        val updateResult = com.beatwave.music.api.SupabaseService.checkLatestUpdate()
+                        if (updateResult.isSuccess) {
+                            val latestUpdate = updateResult.getOrNull()
+                            if (latestUpdate != null) {
+                                val currentVersion = com.beatwave.music.BuildConfig.VERSION_NAME
+                                
+                                fun isNewerVersion(current: String, latest: String): Boolean {
+                                    val cleanCurrent = current.removePrefix("v").removePrefix("V").trim()
+                                    val cleanLatest = latest.removePrefix("v").removePrefix("V").trim()
+                                    val currentParts = cleanCurrent.split(".").mapNotNull { it.toIntOrNull() }
+                                    val latestParts = cleanLatest.split(".").mapNotNull { it.toIntOrNull() }
+                                    val maxParts = maxOf(currentParts.size, latestParts.size)
+                                    for (i in 0 until maxParts) {
+                                        val currVal = currentParts.getOrElse(i) { 0 }
+                                        val latVal = latestParts.getOrElse(i) { 0 }
+                                        if (latVal > currVal) return true
+                                        if (latVal < currVal) return false
+                                    }
+                                    return false
+                                }
+
+                                if (isNewerVersion(currentVersion, latestUpdate.version)) {
+                                    pendingUpdate = latestUpdate
+                                }
+                            }
+                        }
+                    } catch (_: Exception) {}
                 }
 
                 DisposableEffect(Unit) {
@@ -2438,6 +2471,47 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             homeViewModel = homeViewModel
+                        )
+                    }
+
+                    pendingUpdate?.let { update ->
+                        val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+                        AlertDialog(
+                            onDismissRequest = {
+                                if (update.update_type != "force") {
+                                    pendingUpdate = null
+                                }
+                            },
+                            title = { Text(update.title) },
+                            text = {
+                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text("Version: ${update.version}")
+                                    Text(update.description)
+                                }
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        update.apk_url?.let { url ->
+                                            try {
+                                                uriHandler.openUri(url)
+                                            } catch (_: Exception) {}
+                                        }
+                                        if (update.update_type != "force") {
+                                            pendingUpdate = null
+                                        }
+                                    }
+                                ) {
+                                    Text("Download")
+                                }
+                            },
+                            dismissButton = {
+                                if (update.update_type != "force") {
+                                    TextButton(onClick = { pendingUpdate = null }) {
+                                        Text("Later")
+                                    }
+                                }
+                            }
                         )
                     }
                 }

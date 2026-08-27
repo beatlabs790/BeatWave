@@ -128,7 +128,6 @@ fun AboutScreen(
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                         shape = CircleShape
                     )
-                    .clickable { navController.navigate("settings/appearance/appicon") }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)

@@ -188,35 +188,6 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-                <!-- App-icon variants. Exactly one is enabled; see utils/AppIcon.kt. -->
-        <activity-alias
-            android:name=".LauncherOg"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_og"
-            android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher_og"
-            android:targetActivity=".WelcomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-
-        <activity-alias
-            android:name=".LauncherBest"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_best"
-            android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher_best"
-            android:targetActivity=".WelcomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-
         <activity-alias
             android:name=".LauncherGlass"
             android:enabled="true"

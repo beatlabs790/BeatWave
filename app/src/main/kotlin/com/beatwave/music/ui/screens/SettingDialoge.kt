@@ -115,10 +115,6 @@ fun SettingDialoge(
                         modifier = Modifier
                             .size(24.dp)
                             .clip(CircleShape)
-                            .clickable {
-                                onDismissRequest()
-                                onNavigate("settings/appearance/appicon")
-                            }
                     )
                     
                     Text(

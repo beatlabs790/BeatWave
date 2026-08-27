@@ -285,6 +285,13 @@ fun SettingsScreen(
                     title = stringResource(R.string.about),
                     onClick = { navController.navigate("settings/about") },
                 )
+                SettingsDivider()
+                SettingsNavItem(
+                    icon = painterResource(R.drawable.edit),
+                    iconTint = Color(0xFF34C759),
+                    title = "Suggestions & Feedback",
+                    onClick = { navController.navigate("settings/suggestions") },
+                )
             }
         }
 

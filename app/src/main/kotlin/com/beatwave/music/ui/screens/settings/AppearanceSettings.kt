@@ -572,12 +572,7 @@ fun AppearanceSettings(
                     },
                     onClick = { navController.navigate("settings/appearance/font") }
                 ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.beatwave_logo),
-                    title = { Text(stringResource(R.string.app_icon)) },
-                    description = { Text(stringResource(R.string.app_icon_desc)) },
-                    onClick = { navController.navigate("settings/appearance/appicon") }
-                ),
+
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.palette),
                     title = { Text(stringResource(R.string.presets)) },

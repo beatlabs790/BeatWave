@@ -31,8 +31,6 @@ enum class AppIcon(
     @DrawableRes val previewRes: Int,
     @StringRes val labelRes: Int,
 ) {
-    OG("og", ".LauncherOg", R.mipmap.ic_launcher_og_fg, R.string.app_icon_og),
-    BEST("best", ".LauncherBest", R.mipmap.ic_launcher_best_fg, R.string.app_icon_best),
     GLASS("glass", ".LauncherGlass", R.mipmap.ic_launcher_glass_fg, R.string.app_icon_glass),
     ;
 

@@ -35,7 +35,8 @@ object SupabaseService {
                 if (response.isSuccessful) {
                     Result.success(Unit)
                 } else {
-                    Result.failure(Exception("HTTP error: ${response.code} ${response.message}"))
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
                 }
             }
         } catch (e: Exception) {
@@ -58,7 +59,8 @@ object SupabaseService {
                     val updates = json.decodeFromString<List<AppUpdateRow>>(body)
                     Result.success(updates.firstOrNull())
                 } else {
-                    Result.failure(Exception("HTTP error: ${response.code} ${response.message}"))
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
                 }
             }
         } catch (e: Exception) {
@@ -73,8 +75,8 @@ object SupabaseService {
             val request = Request.Builder()
                 .url("${SupabaseConfig.URL}/rest/v1/suggestions")
                 .post(bodyStr.toRequestBody(mediaType))
-                .header("apikey", SupabaseConfig.ANON_KEY)
-                .header("Authorization", "Bearer ${SupabaseConfig.ANON_KEY}")
+                .header("apikey", SupabaseConfig.SECRET_KEY)
+                .header("Authorization", "Bearer ${SupabaseConfig.SECRET_KEY}")
                 .header("Content-Type", "application/json")
                 .header("Prefer", "return=minimal")
                 .build()
@@ -83,7 +85,8 @@ object SupabaseService {
                 if (response.isSuccessful) {
                     Result.success(Unit)
                 } else {
-                    Result.failure(Exception("HTTP error: ${response.code} ${response.message}"))
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
                 }
             }
         } catch (e: Exception) {
@@ -106,7 +109,8 @@ object SupabaseService {
                     val list = json.decodeFromString<List<SuggestionRow>>(body)
                     Result.success(list)
                 } else {
-                    Result.failure(Exception("HTTP error: ${response.code} ${response.message}"))
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
                 }
             }
         } catch (e: Exception) {
@@ -131,7 +135,8 @@ object SupabaseService {
                 if (response.isSuccessful) {
                     Result.success(Unit)
                 } else {
-                    Result.failure(Exception("HTTP error: ${response.code} ${response.message}"))
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
                 }
             }
         } catch (e: Exception) {
@@ -152,7 +157,8 @@ object SupabaseService {
                 if (response.isSuccessful) {
                     Result.success(Unit)
                 } else {
-                    Result.failure(Exception("HTTP error: ${response.code} ${response.message}"))
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
                 }
             }
         } catch (e: Exception) {

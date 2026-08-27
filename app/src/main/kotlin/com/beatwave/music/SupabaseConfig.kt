@@ -3,10 +3,17 @@ package com.beatwave.music
 import kotlinx.serialization.Serializable
 
 object SupabaseConfig {
-    val URL = BuildConfig.SUPABASE_URL
-    val ANON_KEY = BuildConfig.SUPABASE_PUBLISHABLE_KEY
-    val SECRET_KEY = BuildConfig.SUPABASE_SECRET_KEY
-    val JWKS_URL = BuildConfig.SUPABASE_JWKS_URL
+    var URL: String = BuildConfig.SUPABASE_URL
+    var ANON_KEY: String = BuildConfig.SUPABASE_PUBLISHABLE_KEY
+    var SECRET_KEY: String = BuildConfig.SUPABASE_SECRET_KEY
+    var JWKS_URL: String = BuildConfig.SUPABASE_JWKS_URL
+
+    fun init(url: String, anon: String, secret: String, jwks: String) {
+        URL = url
+        ANON_KEY = anon
+        SECRET_KEY = secret
+        JWKS_URL = jwks
+    }
 }
 
 @Serializable

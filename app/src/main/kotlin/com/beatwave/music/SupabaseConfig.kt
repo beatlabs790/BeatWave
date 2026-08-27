@@ -3,9 +3,9 @@ package com.beatwave.music
 import kotlinx.serialization.Serializable
 
 object SupabaseConfig {
-    // Supabase Credentials
-    const val URL = "https://metroserverx.meowery.eu/supabase" // Configurable placeholder or URL
+    const val URL = "https://urltgenawxcpmxuyeuod.supabase.co"
     const val ANON_KEY = "YOUR_ANON_KEY"
+    const val SECRET_KEY = "YOUR_SECRET_KEY"
 }
 
 @Serializable
@@ -23,5 +23,6 @@ data class AppUpdateRow(
 data class SuggestionRow(
     val id: Long? = null,
     val created_at: String? = null,
-    val content: String
+    val content: String,
+    val status: String = "pending"
 )

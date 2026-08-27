@@ -1,6 +1,7 @@
 package com.beatwave.music.api
 
 import com.beatwave.music.AppUpdateRow
+import com.beatwave.music.NewsUpdateRow
 import com.beatwave.music.SuggestionRow
 import com.beatwave.music.SupabaseConfig
 import kotlinx.coroutines.Dispatchers
@@ -68,9 +69,14 @@ object SupabaseService {
         }
     }
 
-    suspend fun submitSuggestion(content: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun submitSuggestion(userName: String, instaId: String?, content: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val suggestion = SuggestionRow(content = content, status = "pending")
+            val suggestion = SuggestionRow(
+                user_name = userName,
+                insta_id = instaId,
+                content = content,
+                status = "pending"
+            )
             val bodyStr = json.encodeToString(suggestion)
             val request = Request.Builder()
                 .url("${SupabaseConfig.URL}/rest/v1/suggestions")
@@ -156,6 +162,55 @@ object SupabaseService {
             client.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
                     Result.success(Unit)
+                } else {
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun publishNews(news: NewsUpdateRow): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val bodyStr = json.encodeToString(news)
+            val request = Request.Builder()
+                .url("${SupabaseConfig.URL}/rest/v1/news_updates")
+                .post(bodyStr.toRequestBody(mediaType))
+                .header("apikey", SupabaseConfig.SECRET_KEY)
+                .header("Authorization", "Bearer ${SupabaseConfig.SECRET_KEY}")
+                .header("Content-Type", "application/json")
+                .header("Prefer", "return=minimal")
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    Result.success(Unit)
+                } else {
+                    val errorBody = response.body?.string() ?: ""
+                    Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun checkLatestNews(): Result<NewsUpdateRow?> = withContext(Dispatchers.IO) {
+        try {
+            val request = Request.Builder()
+                .url("${SupabaseConfig.URL}/rest/v1/news_updates?order=created_at.desc&limit=1")
+                .get()
+                .header("apikey", SupabaseConfig.SECRET_KEY)
+                .header("Authorization", "Bearer ${SupabaseConfig.SECRET_KEY}")
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    val body = response.body?.string() ?: return@use Result.success(null)
+                    val list = json.decodeFromString<List<NewsUpdateRow>>(body)
+                    Result.success(list.firstOrNull())
                 } else {
                     val errorBody = response.body?.string() ?: ""
                     Result.failure(Exception("HTTP error: ${response.code} ${response.message} - $errorBody"))

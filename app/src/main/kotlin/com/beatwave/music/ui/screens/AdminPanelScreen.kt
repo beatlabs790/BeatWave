@@ -38,7 +38,7 @@ fun AdminPanelScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Publish Update", "Suggestions")
+    val tabs = listOf("Publish Update", "Publish News", "Suggestions")
 
     Scaffold(
         topBar = {
@@ -70,10 +70,10 @@ fun AdminPanelScreen(
             }
 
             Box(modifier = Modifier.fillMaxSize()) {
-                if (selectedTab == 0) {
-                    PublishUpdateTab(navController)
-                } else {
-                    SuggestionsTab()
+                when (selectedTab) {
+                    0 -> PublishUpdateTab(navController)
+                    1 -> PublishNewsTab(navController)
+                    else -> SuggestionsTab()
                 }
             }
         }
@@ -314,6 +314,12 @@ fun SuggestionItemCard(
             }
 
             Text(
+                text = "By: ${item.user_name}" + if (!item.insta_id.isNullOrBlank()) " (${item.insta_id})" else "",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Text(
                 text = item.content,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
@@ -382,5 +388,94 @@ fun StatusBadge(status: String) {
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
             color = textColor
         )
+    }
+}
+
+@Composable
+fun PublishNewsTab(navController: NavController) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+    var imageUrl by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Publish news or blog posts that will appear as a popup window to users on startup.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        OutlinedTextField(
+            value = title,
+            onValueChange = { title = it },
+            label = { Text("Blog/News Title") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        OutlinedTextField(
+            value = content,
+            onValueChange = { content = it },
+            label = { Text("Content / Body") },
+            modifier = Modifier.fillMaxWidth(),
+            minLines = 6
+        )
+
+        OutlinedTextField(
+            value = imageUrl,
+            onValueChange = { imageUrl = it },
+            label = { Text("Image URL (Optional)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                if (title.isBlank() || content.isBlank()) {
+                    Toast.makeText(context, "Please fill in Title and Content", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+                isLoading = true
+                coroutineScope.launch {
+                    val news = com.beatwave.music.NewsUpdateRow(
+                        title = title,
+                        content = content,
+                        image_url = imageUrl.ifBlank { null }
+                    )
+                    val result = SupabaseService.publishNews(news)
+                    isLoading = false
+                    if (result.isSuccess) {
+                        Toast.makeText(context, "News published successfully!", Toast.LENGTH_LONG).show()
+                        navController.navigateUp()
+                    } else {
+                        Toast.makeText(context, "Failed: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading,
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("Publish Post")
+            }
+        }
     }
 }

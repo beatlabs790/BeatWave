@@ -37,6 +37,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -225,6 +227,7 @@ import com.beatwave.music.constants.NavigationBarHeight
 import com.beatwave.music.constants.OverlayMenuStyleKey
 import com.beatwave.music.constants.PauseListenHistoryKey
 import com.beatwave.music.constants.PauseSearchHistoryKey
+import com.beatwave.music.constants.LastSeenNewsIdKey
 import com.beatwave.music.constants.PlaylistSortType
 import com.beatwave.music.constants.PureBlackKey
 import com.beatwave.music.constants.SYSTEM_DEFAULT
@@ -1366,6 +1369,8 @@ class MainActivity : ComponentActivity() {
                 var showSettingDialoge by remember { mutableStateOf(false) }
                 val (enableSettingsPopup) = rememberPreference(EnableSettingsPopupKey, defaultValue = false)
                 var pendingUpdate by remember { mutableStateOf<com.beatwave.music.AppUpdateRow?>(null) }
+                var pendingNews by remember { mutableStateOf<com.beatwave.music.NewsUpdateRow?>(null) }
+                val (lastSeenNewsId, onLastSeenNewsIdChange) = rememberPreference(LastSeenNewsIdKey, defaultValue = 0L)
 
                 val ringtoneViewModel: com.beatwave.music.ui.screens.settings.RingtoneViewModel = viewModel()
                 val ringtoneUiState by ringtoneViewModel.uiState.collectAsStateWithLifecycle()
@@ -1402,6 +1407,19 @@ class MainActivity : ComponentActivity() {
 
                                 if (isNewerVersion(currentVersion, latestUpdate.version)) {
                                     pendingUpdate = latestUpdate
+                                }
+                            }
+                        }
+                    } catch (_: Exception) {}
+
+                    try {
+                        val newsResult = com.beatwave.music.api.SupabaseService.checkLatestNews()
+                        if (newsResult.isSuccess) {
+                            val latestNews = newsResult.getOrNull()
+                            if (latestNews != null) {
+                                val currentSeen = lastSeenNewsId
+                                if ((latestNews.id ?: 0L) > currentSeen) {
+                                    pendingNews = latestNews
                                 }
                             }
                         }
@@ -2514,6 +2532,46 @@ class MainActivity : ComponentActivity() {
                                     TextButton(onClick = { pendingUpdate = null }) {
                                         Text("Later")
                                     }
+                                }
+                            }
+                        )
+                    }
+
+                    pendingNews?.let { news ->
+                        AlertDialog(
+                            onDismissRequest = {
+                                onLastSeenNewsIdChange(news.id ?: 0L)
+                                pendingNews = null
+                            },
+                            title = { Text(news.title) },
+                            text = {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.verticalScroll(rememberScrollState())
+                                ) {
+                                    news.image_url?.let { url ->
+                                        if (url.isNotBlank()) {
+                                            AsyncImage(
+                                                model = url,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(180.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                            )
+                                        }
+                                    }
+                                    Text(news.content)
+                                }
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        onLastSeenNewsIdChange(news.id ?: 0L)
+                                        pendingNews = null
+                                    }
+                                ) {
+                                    Text("Got it")
                                 }
                             }
                         )

@@ -24,5 +24,16 @@ data class SuggestionRow(
     val id: Long? = null,
     val created_at: String? = null,
     val content: String,
-    val status: String = "pending"
+    val status: String = "pending",
+    val user_name: String,
+    val insta_id: String? = null
+)
+
+@Serializable
+data class NewsUpdateRow(
+    val id: Long? = null,
+    val created_at: String? = null,
+    val title: String,
+    val content: String,
+    val image_url: String? = null
 )

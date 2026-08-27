@@ -26,6 +26,8 @@ fun SuggestionScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    var name by remember { mutableStateOf("") }
+    var instaId by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
@@ -58,6 +60,22 @@ fun SuggestionScreen(
             )
 
             OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Your Name (Required)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = instaId,
+                onValueChange = { instaId = it },
+                label = { Text("Instagram ID (Optional)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
                 value = content,
                 onValueChange = { content = it },
                 label = { Text("Write your suggestion here...") },
@@ -69,13 +87,21 @@ fun SuggestionScreen(
 
             Button(
                 onClick = {
+                    if (name.isBlank()) {
+                        Toast.makeText(context, "Please write your name first", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
                     if (content.isBlank()) {
                         Toast.makeText(context, "Please write a suggestion first", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
                     isLoading = true
                     coroutineScope.launch {
-                        val result = SupabaseService.submitSuggestion(content)
+                        val result = SupabaseService.submitSuggestion(
+                            userName = name,
+                            instaId = instaId.ifBlank { null },
+                            content = content
+                        )
                         isLoading = false
                         if (result.isSuccess) {
                             Toast.makeText(context, "Thank you! Suggestion submitted successfully.", Toast.LENGTH_LONG).show()

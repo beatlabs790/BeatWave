@@ -3,9 +3,10 @@ package com.beatwave.music
 import kotlinx.serialization.Serializable
 
 object SupabaseConfig {
-    const val URL = "https://urltgenawxcpmxuyeuod.supabase.co"
-    const val ANON_KEY = "sb_publishable_FUbuyV6Pw9vlNqcPV_qTOA_9uzt4YNi"
-    const val SECRET_KEY = "sb_secret_X9bYfzuBpXRLZ3KiFgbmWg_4XGmYwQ7"
+    val URL = BuildConfig.SUPABASE_URL
+    val ANON_KEY = BuildConfig.SUPABASE_PUBLISHABLE_KEY
+    val SECRET_KEY = BuildConfig.SUPABASE_SECRET_KEY
+    val JWKS_URL = BuildConfig.SUPABASE_JWKS_URL
 }
 
 @Serializable

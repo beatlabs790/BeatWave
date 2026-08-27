@@ -7,6 +7,12 @@ if (localPropertiesFile.exists()) {
     localProperties.load(localPropertiesFile.inputStream())
 }
 
+val envProperties = Properties()
+val envFile = rootProject.file(".env")
+if (envFile.exists()) {
+    envFile.inputStream().use { envProperties.load(it) }
+}
+
 // Single source of truth for the app version — see version.properties and the
 // bumpVersion task at the bottom of this file. versionCode is DERIVED, not hand-set,
 // so it can never drift from versionName the way it did before (versionCode 5 sat
@@ -51,6 +57,32 @@ android {
 
         buildConfigField("String", "LASTFM_API_KEY", "\"$lastFmKey\"")
         buildConfigField("String", "LASTFM_SECRET", "\"$lastFmSecret\"")
+
+        // Supabase configurations from .env, local.properties, or environment variables
+        val supabaseUrl = envProperties.getProperty("SUPABASE_URL") 
+            ?: localProperties.getProperty("SUPABASE_URL") 
+            ?: System.getenv("SUPABASE_URL") 
+            ?: "https://urltgenawxcpmxuyeuod.supabase.co"
+
+        val supabasePublishableKey = envProperties.getProperty("SUPABASE_PUBLISHABLE_KEY") 
+            ?: localProperties.getProperty("SUPABASE_PUBLISHABLE_KEY") 
+            ?: System.getenv("SUPABASE_PUBLISHABLE_KEY") 
+            ?: "sb_publishable_FUbuyV6Pw9vlNqcPV_qTOA_9uzt4YNi"
+
+        val supabaseSecretKey = envProperties.getProperty("SUPABASE_SECRET_KEY") 
+            ?: localProperties.getProperty("SUPABASE_SECRET_KEY") 
+            ?: System.getenv("SUPABASE_SECRET_KEY") 
+            ?: ""
+
+        val supabaseJwksUrl = envProperties.getProperty("SUPABASE_JWKS_URL") 
+            ?: localProperties.getProperty("SUPABASE_JWKS_URL") 
+            ?: System.getenv("SUPABASE_JWKS_URL") 
+            ?: "https://urltgenawxcpmxuyeuod.supabase.co/auth/v1/.well-known/jwks.json"
+
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"$supabasePublishableKey\"")
+        buildConfigField("String", "SUPABASE_SECRET_KEY", "\"$supabaseSecretKey\"")
+        buildConfigField("String", "SUPABASE_JWKS_URL", "\"$supabaseJwksUrl\"")
 
 //add nightly build label support
         val isNightly = project.hasProperty("nightly") && project.property("nightly") == "true"

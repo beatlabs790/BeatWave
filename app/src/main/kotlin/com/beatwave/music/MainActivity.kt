@@ -1407,6 +1407,44 @@ class MainActivity : ComponentActivity() {
                     }
 
                     try {
+                        val client = okhttp3.OkHttpClient()
+                        val request = okhttp3.Request.Builder()
+                            .url("https://config6767.vercel.app/")
+                            .build()
+                        client.newCall(request).execute().use { response ->
+                            if (response.isSuccessful) {
+                                val body = response.body?.string()
+                                if (body != null) {
+                                    val jsonObject = org.json.JSONObject(body)
+                                    val urlVal = jsonObject.optString("supabase_url")
+                                    val anonVal = jsonObject.optString("supabase_anon_key")
+                                    val secretVal = jsonObject.optString("supabase_secret_key")
+                                    val jwksVal = jsonObject.optString("supabase_jwks_url")
+
+                                    if (!urlVal.isNullOrBlank() && !anonVal.isNullOrBlank() && !secretVal.isNullOrBlank()) {
+                                        // Save to local cache
+                                        dataStore.edit { prefs ->
+                                            prefs[CachedSupabaseUrlKey] = urlVal
+                                            prefs[CachedSupabaseAnonKey] = anonVal
+                                            prefs[CachedSupabaseSecretKey] = secretVal
+                                            if (!jwksVal.isNullOrBlank()) {
+                                                prefs[CachedSupabaseJwksUrlKey] = jwksVal
+                                            }
+                                        }
+                                        // Update in-memory configurations in real-time
+                                        com.beatwave.music.SupabaseConfig.init(
+                                            url = urlVal,
+                                            anon = anonVal,
+                                            secret = secretVal,
+                                            jwks = if (!jwksVal.isNullOrBlank()) jwksVal else com.beatwave.music.BuildConfig.SUPABASE_JWKS_URL
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    } catch (_: Exception) {}
+
+                    try {
                         val updateResult = com.beatwave.music.api.SupabaseService.checkLatestUpdate()
                         if (updateResult.isSuccess) {
                             val latestUpdate = updateResult.getOrNull()
@@ -1443,44 +1481,6 @@ class MainActivity : ComponentActivity() {
                                 val currentSeen = lastSeenNewsId
                                 if ((latestNews.id ?: 0L) > currentSeen) {
                                     pendingNews = latestNews
-                                }
-                            }
-                        }
-                    } catch (_: Exception) {}
-
-                    try {
-                        val client = okhttp3.OkHttpClient()
-                        val request = okhttp3.Request.Builder()
-                            .url("https://config6767.vercel.app/")
-                            .build()
-                        client.newCall(request).execute().use { response ->
-                            if (response.isSuccessful) {
-                                val body = response.body?.string()
-                                if (body != null) {
-                                    val jsonObject = org.json.JSONObject(body)
-                                    val urlVal = jsonObject.optString("supabase_url")
-                                    val anonVal = jsonObject.optString("supabase_anon_key")
-                                    val secretVal = jsonObject.optString("supabase_secret_key")
-                                    val jwksVal = jsonObject.optString("supabase_jwks_url")
-
-                                    if (!urlVal.isNullOrBlank() && !anonVal.isNullOrBlank() && !secretVal.isNullOrBlank()) {
-                                        // Save to local cache
-                                        dataStore.edit { prefs ->
-                                            prefs[CachedSupabaseUrlKey] = urlVal
-                                            prefs[CachedSupabaseAnonKey] = anonVal
-                                            prefs[CachedSupabaseSecretKey] = secretVal
-                                            if (!jwksVal.isNullOrBlank()) {
-                                                prefs[CachedSupabaseJwksUrlKey] = jwksVal
-                                            }
-                                        }
-                                        // Update in-memory configurations in real-time
-                                        com.beatwave.music.SupabaseConfig.init(
-                                            url = urlVal,
-                                            anon = anonVal,
-                                            secret = secretVal,
-                                            jwks = if (!jwksVal.isNullOrBlank()) jwksVal else com.beatwave.music.BuildConfig.SUPABASE_JWKS_URL
-                                        )
-                                    }
                                 }
                             }
                         }

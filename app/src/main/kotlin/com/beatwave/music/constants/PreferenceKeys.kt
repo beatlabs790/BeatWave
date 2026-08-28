@@ -258,6 +258,8 @@ val CachedSupabaseAnonKey = stringPreferencesKey("cachedSupabaseAnon")
 val CachedSupabaseSecretKey = stringPreferencesKey("cachedSupabaseSecret")
 val CachedSupabaseJwksUrlKey = stringPreferencesKey("cachedSupabaseJwksUrl")
 val DisableScreenshotKey = booleanPreferencesKey("disableScreenshot")
+val SubmittedSuggestionIdsKey = stringPreferencesKey("submittedSuggestionIds")
+val SubmittedBugReportIdsKey = stringPreferencesKey("submittedBugReportIds")
 
 val DiscordTokenKey = stringPreferencesKey("discordToken")
 val DiscordInfoDismissedKey = booleanPreferencesKey("discordInfoDismissed")

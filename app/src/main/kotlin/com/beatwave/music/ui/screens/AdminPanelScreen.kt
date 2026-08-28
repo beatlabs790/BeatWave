@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.beatwave.music.AppUpdateRow
 import com.beatwave.music.R
 import com.beatwave.music.SuggestionRow
+import com.beatwave.music.BugReportRow
 import com.beatwave.music.api.SupabaseService
 import com.beatwave.music.ui.component.IconButton
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -38,7 +39,7 @@ fun AdminPanelScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Publish Update", "Publish News", "Suggestions")
+    val tabs = listOf("Publish Update", "Publish News", "Suggestions", "Bug Reports")
 
     Scaffold(
         topBar = {
@@ -73,7 +74,8 @@ fun AdminPanelScreen(
                 when (selectedTab) {
                     0 -> PublishUpdateTab(navController)
                     1 -> PublishNewsTab(navController)
-                    else -> SuggestionsTab()
+                    2 -> SuggestionsTab()
+                    else -> BugReportsTab()
                 }
             }
         }
@@ -475,6 +477,172 @@ fun PublishNewsTab(navController: NavController) {
                 )
             } else {
                 Text("Publish Post")
+            }
+        }
+    }
+}
+
+@Composable
+fun BugReportsTab() {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var bugReports by remember { mutableStateOf<List<BugReportRow>>(emptyList()) }
+    var isFetching by remember { mutableStateOf(true) }
+    var actionInProgressId by remember { mutableStateOf<Long?>(null) }
+
+    fun refreshBugReports() {
+        isFetching = true
+        coroutineScope.launch {
+            val result = SupabaseService.fetchBugReports()
+            isFetching = false
+            if (result.isSuccess) {
+                bugReports = result.getOrDefault(emptyList())
+            } else {
+                Toast.makeText(context, "Failed to load bug reports: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        refreshBugReports()
+    }
+
+    if (isFetching) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if (bugReports.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No bug reports submitted yet.", style = MaterialTheme.typography.bodyMedium)
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(bugReports, key = { it.id ?: 0L }) { item ->
+                BugReportItemCard(
+                    item = item,
+                    actionInProgress = actionInProgressId == item.id,
+                    onUpdateStatus = { newStatus ->
+                        item.id?.let { id ->
+                            actionInProgressId = id
+                            coroutineScope.launch {
+                                val res = SupabaseService.updateBugReportStatus(id, newStatus)
+                                actionInProgressId = null
+                                if (res.isSuccess) {
+                                    refreshBugReports()
+                                } else {
+                                    Toast.makeText(context, "Error updating status: ${res.exceptionOrNull()?.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BugReportItemCard(
+    item: BugReportRow,
+    actionInProgress: Boolean,
+    onUpdateStatus: (String) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val statusColor = when (item.status.lowercase()) {
+                    "fixed" -> Color(0xFF34C759)
+                    "investigating" -> Color(0xFF007AFF)
+                    "closed" -> Color(0xFFFF3B30)
+                    else -> Color(0xFFFF9500)
+                }
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(statusColor.copy(alpha = 0.15f))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = item.status.uppercase(),
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = statusColor
+                    )
+                }
+            }
+
+            Text(
+                text = "Reporter: ${item.user_name}" + if (!item.insta_id.isNullOrBlank()) " (${item.insta_id})" else "",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Text(
+                text = item.description,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            item.device_info?.let { info ->
+                Text(
+                    text = "Device: $info",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            item.created_at?.let { date ->
+                val cleanDate = date.substringBefore("T")
+                Text(
+                    text = "Reported: $cleanDate",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            if (actionInProgress) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextButton(
+                        onClick = { onUpdateStatus("investigating") },
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF2196F3))
+                    ) {
+                        Text("Investigate")
+                    }
+
+                    TextButton(
+                        onClick = { onUpdateStatus("fixed") },
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF4CAF50))
+                    ) {
+                        Text("Fix")
+                    }
+
+                    TextButton(
+                        onClick = { onUpdateStatus("closed") },
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFFF9800))
+                    ) {
+                        Text("Close")
+                    }
+                }
             }
         }
     }

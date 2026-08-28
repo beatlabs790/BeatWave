@@ -45,3 +45,14 @@ data class NewsUpdateRow(
     val content: String,
     val image_url: String? = null
 )
+
+@Serializable
+data class BugReportRow(
+    val id: Long? = null,
+    val created_at: String? = null,
+    val user_name: String,
+    val insta_id: String? = null,
+    val description: String,
+    val device_info: String? = null,
+    val status: String = "pending"
+)

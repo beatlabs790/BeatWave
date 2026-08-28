@@ -75,6 +75,54 @@ fun SettingsScreen(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val searchLower = searchQuery.trim().lowercase()
 
+    var showAdminPasswordDialog by rememberSaveable { mutableStateOf(false) }
+    var passwordInput by rememberSaveable { mutableStateOf("") }
+
+    if (showAdminPasswordDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = {
+                showAdminPasswordDialog = false
+                passwordInput = ""
+            },
+            title = { Text("Admin Panel Access") },
+            text = {
+                OutlinedTextField(
+                    value = passwordInput,
+                    onValueChange = { passwordInput = it },
+                    label = { Text("Enter Password") },
+                    visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(
+                    onClick = {
+                        if (passwordInput == "admin00") {
+                            showAdminPasswordDialog = false
+                            passwordInput = ""
+                            navController.navigate("admin_panel")
+                        } else {
+                            android.widget.Toast.makeText(context, "Incorrect password", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                ) {
+                    Text("Access")
+                }
+            },
+            dismissButton = {
+                androidx.compose.material3.TextButton(
+                    onClick = {
+                        showAdminPasswordDialog = false
+                        passwordInput = ""
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
     androidx.compose.foundation.lazy.LazyColumn(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal))
@@ -291,6 +339,13 @@ fun SettingsScreen(
                     iconTint = Color(0xFF34C759),
                     title = "Suggestions & Feedback",
                     onClick = { navController.navigate("settings/suggestions") },
+                )
+                SettingsDivider()
+                SettingsNavItem(
+                    icon = painterResource(R.drawable.account),
+                    iconTint = Color(0xFFFF9500),
+                    title = "Admin Panel",
+                    onClick = { showAdminPasswordDialog = true },
                 )
             }
         }

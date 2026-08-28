@@ -125,6 +125,7 @@ fun SpotifyScreen(
 
     var showSpotifyLogin by remember { mutableStateOf(false) }
     var showPlaylistsSheet by remember { mutableStateOf(false) }
+    var playlistLink by rememberSaveable { mutableStateOf("") }
     val importProgress by viewModel.importProgress.collectAsStateWithLifecycle()
 
     val refreshEnabled = state.isAuthenticated && !state.isLoading
@@ -214,6 +215,55 @@ fun SpotifyScreen(
                         onClick = { showSpotifyLogin = true }
                     )
                 }
+            )
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Material3SettingsGroup(
+            title = "Import via Playlist Link",
+            items = listOf(
+                Material3SettingsItem(
+                    title = {
+                        OutlinedTextField(
+                            value = playlistLink,
+                            onValueChange = { playlistLink = it },
+                            label = { Text("Spotify Playlist Link or ID") },
+                            placeholder = { Text("https://open.spotify.com/playlist/...") },
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            trailingIcon = {
+                                if (playlistLink.isNotEmpty()) {
+                                    IconButton(onClick = { playlistLink = "" }) {
+                                        Icon(painterResource(R.drawable.close), contentDescription = "Clear")
+                                    }
+                                }
+                            }
+                        )
+                    },
+                    description = {
+                        Button(
+                            onClick = {
+                                if (playlistLink.isBlank()) {
+                                    android.widget.Toast.makeText(context, "Please enter a Spotify link or ID first", android.widget.Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                viewModel.importPlaylistByLink(playlistLink)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            enabled = !state.isLoading
+                        ) {
+                            Text("Import Playlist")
+                        }
+                    },
+                    icon = painterResource(R.drawable.link),
+                    onClick = {}
+                )
             )
         )
 

@@ -317,13 +317,13 @@ class HomeViewModel @Inject constructor(
     private suspend fun getDailyDiscover() {
         val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false) || context.dataStore.get(DataSaverEnabledKey, false)
         val recEngine = context.dataStore.get(RecommendationEngineKey, RecommendationEngine.SPOTIFY.name)
-        val likedSongs = database.likedSongsByCreateDateAsc().first()
-        val recentSongs = database.events().first().mapNotNull { it.song }
-        val mostPlayed = database.mostPlayedSongs().first()
-        val allLocal = database.songsByCreateDateDesc().first()
-        val candidateSeeds = (likedSongs + recentSongs + mostPlayed + allLocal).distinctBy { it.id }
+        val likedSongs: List<Song> = database.likedSongsByCreateDateAsc().first()
+        val recentSongs: List<Song> = database.events().first().mapNotNull { it.song }
+        val mostPlayed: List<Song> = database.mostPlayedSongs(0L).first()
+        val allLocal: List<Song> = database.songsByCreateDateAsc().first()
+        val candidateSeeds: List<Song> = (likedSongs + recentSongs + mostPlayed + allLocal).distinctBy { it.id }
 
-        val seeds = if (candidateSeeds.isNotEmpty()) {
+        val seeds: List<Song> = if (candidateSeeds.isNotEmpty()) {
             candidateSeeds.shuffled().take(5)
         } else emptyList()
 
@@ -456,9 +456,9 @@ class HomeViewModel @Inject constructor(
                 val forgotten = database.forgottenFavorites().first().filterVideoSongs(hideVideoSongs).take(8)
                 val recEngine = context.dataStore.get(RecommendationEngineKey, RecommendationEngine.SPOTIFY.name)
 
-                val recentSong = database.events().first().firstOrNull()?.song 
-                    ?: database.likedSongsByCreateDateAsc().first().firstOrNull()?.song
-                    ?: database.songsByCreateDateDesc().first().firstOrNull()?.song
+                val recentSong: Song? = database.events().first().firstOrNull()?.song 
+                    ?: database.likedSongsByCreateDateAsc().first().firstOrNull()
+                    ?: database.songsByCreateDateAsc().first().firstOrNull()
                 val ytSimilarSongs = mutableListOf<Song>()
 
                 if (recentSong != null) {

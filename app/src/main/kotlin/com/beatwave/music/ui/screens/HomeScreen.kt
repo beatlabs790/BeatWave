@@ -576,66 +576,119 @@ fun DailyDiscoverCard(
             )
 
             if (maxWidth > 200.dp) {
+                // Subtle vertical gradient to make text & glass pod pop beautifully
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f))
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.2f),
+                                    Color.Black.copy(alpha = 0.8f)
+                                )
+                            )
+                        )
                 )
 
-                Column(
+                val messages = listOf(
+                    R.string.daily_discover_sounds_like,
+                    R.string.daily_discover_because_you_listen_to,
+                    R.string.daily_discover_similar_to,
+                    R.string.daily_discover_based_on,
+                    R.string.daily_discover_for_fans_of
+                )
+                val messageRes = remember(dailyDiscover.seed.id) {
+                    messages[kotlin.math.abs(dailyDiscover.seed.id.hashCode()) % messages.size]
+                }
+
+                // Frosted Liquid Glass Bottom Pod
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(AppleTokens.CardCornerMedium))
+                        .background(Color.White.copy(alpha = 0.14f))
+                        .border(
+                            width = 1.dp,
+                            brush = Brush.verticalGradient(
+                                listOf(
+                                    Color.White.copy(alpha = 0.4f),
+                                    Color.White.copy(alpha = 0.1f)
+                                )
+                            ),
+                            shape = RoundedCornerShape(AppleTokens.CardCornerMedium)
+                        )
+                        .padding(14.dp)
                 ) {
-                    Column {
-                        Text(
-                            text = dailyDiscover.recommendation.title,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.White
-                        )
-                        Text(
-                            text = buildString {
-                                if (song != null) {
-                                    append(song.artists.joinToString(", ") { it.name })
-                                    if (playCount > 0) {
-                                        append(" • $playCount $playsString")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 12.dp)
+                        ) {
+                            Text(
+                                text = dailyDiscover.recommendation.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                color = Color.White,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = buildString {
+                                    if (song != null) {
+                                        append(song.artists.joinToString(", ") { it.name })
+                                        if (playCount > 0) {
+                                            append(" • $playCount $playsString")
+                                        }
+                                    } else if (album != null) {
+                                        append("Album")
+                                        val albumArtists = album.artists?.joinToString(", ") { it.name }
+                                        if (!albumArtists.isNullOrEmpty()) {
+                                            append(" • $albumArtists")
+                                        }
                                     }
-                                } else if (album != null) {
-                                    append("Album")
-                                    val albumArtists = album.artists?.joinToString(", ") { it.name }
-                                    if (!albumArtists.isNullOrEmpty()) {
-                                        append(" • $albumArtists")
-                                    }
-                                    if (album.year != null) {
-                                        append(" • ${album.year}")
-                                    }
-                                }
-                            },
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                    }
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.8f),
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = stringResource(messageRes, "${dailyDiscover.seed.title} • ${dailyDiscover.seed.artists.joinToString(", ") { it.name }}"),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                                color = Color.White.copy(alpha = 0.6f),
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
+                        }
 
-                    val messages = listOf(
-                        R.string.daily_discover_sounds_like,
-                        R.string.daily_discover_because_you_listen_to,
-                        R.string.daily_discover_similar_to,
-                        R.string.daily_discover_based_on,
-                        R.string.daily_discover_for_fans_of
-                    )
-                    val messageRes = remember(dailyDiscover.seed.id) {
-                        messages[kotlin.math.abs(dailyDiscover.seed.id.hashCode()) % messages.size]
+                        // Frosted Liquid Glass Play Circle
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.25f))
+                                .border(1.dp, Color.White.copy(alpha = 0.45f), CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_widget_play),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
-
-                    Text(
-                        text = stringResource(messageRes, "${dailyDiscover.seed.title} • ${dailyDiscover.seed.artists.joinToString(", ") { it.name }}"),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
-                        color = Color.White.copy(alpha = 0.6f),
-                        maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
-                    )
                 }
             }
         }

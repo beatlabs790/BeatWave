@@ -271,7 +271,7 @@ fun SettingsScreen(
         item(key = "recommendations_section") {
             SettingsSection {
                 SettingsNavItem(
-                    icon = painterResource(R.drawable.music),
+                    icon = painterResource(R.drawable.sparks),
                     iconTint = Color(0xFFFF2D55),
                     title = "Recommendation Engine / Style",
                     onClick = { navController.navigate("settings/recommendations") },

@@ -92,17 +92,17 @@ class YouTubeQueue(
 
         val db = database ?: return items
         
-        val history = kotlinx.coroutines.flow.firstOrNull(db.events()) ?: emptyList()
-        val likedTracks = kotlinx.coroutines.flow.firstOrNull(db.likedSongsByRowIdAsc()) ?: emptyList()
+        val history = db.events().firstOrNull() ?: emptyList()
+        val likedTracks = db.likedSongsByRowIdAsc().firstOrNull() ?: emptyList()
         
-        val userArtists = (history.flatMap { it.song.artists.map { a -> a.name } } + 
-                           likedTracks.flatMap { it.artists.map { a -> a.name } }).toSet()
+        val userArtists = (history.flatMap { eventWithSong -> eventWithSong.song.artists.map { a -> a.name } } + 
+                           likedTracks.flatMap { song -> song.artists.map { a -> a.name } }).toSet()
 
         if (recommendationStyle == RecommendationEngineStyle.SPOTIFY) {
             // Sort by whether the artist is in user's history
             return items.sortedByDescending { mediaItem ->
                  val artistName = mediaItem.mediaMetadata.artist?.toString()
-                 if (artistName != null && userArtists.any { it.contains(artistName, ignoreCase = true) || artistName.contains(it, ignoreCase = true) }) 1 else 0
+                 if (artistName != null && userArtists.any { userArtist -> userArtist.contains(artistName, ignoreCase = true) || artistName.contains(userArtist, ignoreCase = true) }) 1 else 0
             }
         }
 
@@ -110,7 +110,7 @@ class YouTubeQueue(
             // Interleave
             val personalized = items.filter { mediaItem ->
                  val artistName = mediaItem.mediaMetadata.artist?.toString()
-                 artistName != null && userArtists.any { it.contains(artistName, ignoreCase = true) || artistName.contains(it, ignoreCase = true) }
+                 artistName != null && userArtists.any { userArtist -> userArtist.contains(artistName, ignoreCase = true) || artistName.contains(userArtist, ignoreCase = true) }
             }
             val generic = items - personalized.toSet()
             val hybrid = mutableListOf<MediaItem>()

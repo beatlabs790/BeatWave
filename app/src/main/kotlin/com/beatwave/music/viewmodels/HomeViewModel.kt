@@ -350,10 +350,9 @@ class HomeViewModel @Inject constructor(
                     artists = listOf(com.beatwave.music.db.entities.ArtistEntity(id = "artist", name = "Recommended for You"))
                 )
 
-                // Suggest both Songs and Albums from Spotify recommendations
+                // Suggest direct playable songs from Spotify recommendations
                 kotlinx.coroutines.coroutineScope {
-                    // 1. Suggest Songs
-                    spotifyRecs.take(24).map { spTrack ->
+                    spotifyRecs.take(30).map { spTrack ->
                         launch(Dispatchers.IO) {
                             val query = "${spTrack.name} ${spTrack.artists.firstOrNull()?.name.orEmpty()}"
                             val searchResult = YouTube.search(query, YouTube.SearchFilter.FILTER_SONG).getOrNull()
@@ -361,26 +360,6 @@ class HomeViewModel @Inject constructor(
                             if (ytItem != null && (!hideVideoSongs || !ytItem.isVideoSong) && !ytItem.explicit) {
                                 val seed = if (seeds.isNotEmpty()) seeds.random() else defaultSeed
                                 items.add(DailyDiscoverItem(seed, ytItem, null))
-                            }
-                        }
-                    }.forEach { it.join() }
-
-                    // 2. Suggest Albums at the same time
-                    val uniqueAlbums = spotifyRecs.mapNotNull { it.album }
-                        .filter { it.name.isNotBlank() }
-                        .distinctBy { it.name.lowercase() }
-                        .take(6)
-
-                    uniqueAlbums.map { spAlbum ->
-                        launch(Dispatchers.IO) {
-                            val matchingTrack = spotifyRecs.firstOrNull { it.album?.id == spAlbum.id || it.name == spAlbum.name }
-                            val artistName = matchingTrack?.artists?.firstOrNull()?.name.orEmpty()
-                            val albumQuery = "${spAlbum.name} $artistName".trim()
-                            val albumSearch = YouTube.search(albumQuery, YouTube.SearchFilter.FILTER_ALBUM).getOrNull()
-                            val albumItem = albumSearch?.items?.firstOrNull() as? AlbumItem
-                            if (albumItem != null) {
-                                val seed = if (seeds.isNotEmpty()) seeds.random() else defaultSeed
-                                items.add(DailyDiscoverItem(seed, albumItem, null))
                             }
                         }
                     }.forEach { it.join() }
@@ -405,15 +384,10 @@ class HomeViewModel @Inject constructor(
                                         }
                                         .shuffled()
 
-                                    songRecs.take(5).forEach { recommendation ->
+                                    songRecs.take(6).forEach { recommendation ->
                                         if (recommendation.id != seed.id) {
                                             items.add(DailyDiscoverItem(seed, recommendation, endpoint))
                                         }
-                                    }
-
-                                    // Also include distinct album suggestions from YouTube Related page
-                                    page.albums.shuffled().take(2).forEach { albumRec ->
-                                        items.add(DailyDiscoverItem(seed, albumRec, endpoint))
                                     }
                                 }
                             }
@@ -421,17 +395,13 @@ class HomeViewModel @Inject constructor(
                     }.forEach { it.join() }
                 }
             } else {
-                // If user is brand new with no local songs at all, fetch Explore page new releases & charts
-                val explore = YouTube.explore().getOrNull()
+                // If user is brand new with no local songs at all, fetch top trending songs
                 val defaultSeed = Song(
-                    song = com.beatwave.music.db.entities.SongEntity(id = "new", title = "New Releases", duration = 0),
+                    song = com.beatwave.music.db.entities.SongEntity(id = "new", title = "Top Hits", duration = 0),
                     artists = listOf(com.beatwave.music.db.entities.ArtistEntity(id = "artist", name = "Featured"))
                 )
-                explore?.newReleaseAlbums?.shuffled()?.take(6)?.forEach { album ->
-                    items.add(DailyDiscoverItem(defaultSeed, album, null))
-                }
                 val hits = YouTube.search("top songs", YouTube.SearchFilter.FILTER_SONG).getOrNull()
-                hits?.items?.filterIsInstance<SongItem>()?.shuffled()?.take(20)?.forEach { songItem ->
+                hits?.items?.filterIsInstance<SongItem>()?.shuffled()?.take(25)?.forEach { songItem ->
                     if (!hideVideoSongs || !songItem.isVideoSong) {
                         items.add(DailyDiscoverItem(defaultSeed, songItem, null))
                     }

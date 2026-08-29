@@ -8,6 +8,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
@@ -366,5 +368,85 @@ object Spotify {
             limit = limit,
             offset = offset,
         )
+    }
+
+    suspend fun getGuestToken(): Result<String> = runCatching {
+        val response = gqlClient.get("https://open.spotify.com/get_access_token?reason=transport&productType=web_player")
+        val responseText = response.bodyAsText()
+        val jsonResponse = json.parseToJsonElement(responseText).jsonObject
+        jsonResponse.str("accessToken") ?: throw SpotifyException(401, "No guest token found")
+    }
+
+    suspend fun searchTrack(query: String): Result<String?> = runCatching {
+        val token = accessToken ?: getGuestToken().getOrThrow()
+        val response = gqlClient.get("https://api.spotify.com/v1/search") {
+            header("Authorization", "Bearer $token")
+            parameter("q", query)
+            parameter("type", "track")
+            parameter("limit", "1")
+        }
+        val responseJson = json.parseToJsonElement(response.bodyAsText()).jsonObject
+        val tracks = responseJson.obj("tracks")?.arr("items")
+        tracks?.firstOrNull()?.jsonObject?.str("id")
+    }
+
+    suspend fun getRecommendations(
+        seedTracks: List<String>,
+        limit: Int = 20
+    ): Result<List<SpotifyTrack>> = runCatching {
+        // Use logged in token if available, otherwise fetch a guest token
+        val token = accessToken ?: getGuestToken().getOrThrow()
+        
+        val seeds = seedTracks.take(5).joinToString(",")
+        val response = gqlClient.get("https://api.spotify.com/v1/recommendations") {
+            header("Authorization", "Bearer $token")
+            parameter("seed_tracks", seeds)
+            parameter("limit", limit.toString())
+        }
+        
+        if (response.status.value !in 200..299) {
+            throw SpotifyException(response.status.value, "Recommendations error: ${response.bodyAsText()}")
+        }
+        
+        val responseJson = json.parseToJsonElement(response.bodyAsText()).jsonObject
+        val tracksArray = responseJson.arr("tracks") ?: return@runCatching emptyList()
+        
+        tracksArray.mapNotNull { elem ->
+            val trackObj = elem.jsonObject
+            val trackId = trackObj.str("id") ?: return@mapNotNull null
+            val trackName = trackObj.str("name") ?: ""
+            val durationMs = trackObj.int("duration_ms") ?: 0
+            
+            val artists = trackObj.arr("artists")?.mapNotNull { artistElem ->
+                val aObj = artistElem.jsonObject
+                SpotifySimpleArtist(
+                    id = aObj.str("id") ?: "",
+                    name = aObj.str("name") ?: "",
+                    uri = aObj.str("uri") ?: ""
+                )
+            } ?: emptyList()
+            
+            val albumObj = trackObj.obj("album")
+            val albumId = albumObj?.str("id") ?: ""
+            val albumName = albumObj?.str("name") ?: ""
+            val imagesObj = albumObj?.arr("images")
+            val images = imagesObj?.mapNotNull { imgElem ->
+                val iObj = imgElem.jsonObject
+                SpotifyImage(
+                    url = iObj.str("url") ?: "",
+                    width = iObj.int("width"),
+                    height = iObj.int("height")
+                )
+            } ?: emptyList()
+            
+            SpotifyTrack(
+                id = trackId,
+                name = trackName,
+                artists = artists,
+                album = SpotifySimpleAlbum(id = albumId, name = albumName, images = images, uri = null),
+                durationMs = durationMs,
+                uri = "spotify:track:$trackId"
+            )
+        }
     }
 }

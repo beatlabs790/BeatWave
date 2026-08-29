@@ -423,63 +423,139 @@ object Spotify {
         tracks?.mapNotNull { it.jsonObject.str("id") } ?: emptyList()
     }.getOrDefault(emptyList())
 
+    val CURATED_SPOTIFY_PLAYLISTS = listOf(
+        "37i9dQZF1DXcBWIGoYBM5M", // Today's Top Hits
+        "37i9dQZEVXbMDoHDwVN2tF", // Top 50 - Global
+        "37i9dQZEVXbLiRSasKsNU9", // Viral 50 - Global
+        "37i9dQZF1DWUa8ZRTfalHk", // Pop Rising
+        "37i9dQZF1DX4WYpdgoIcn6", // Chill Hits
+        "37i9dQZF1DX0XUsuxWHRQd", // RapCaviar
+        "37i9dQZF1DX4dyzvuaRJ0n", // Dance Hits
+        "37i9dQZF1DX2Nc3B70tvx0", // Ultimate Indie
+        "37i9dQZF1DX0XUfTFmZeZw", // Bollywood Butter
+        "37i9dQZF1DX5cZuAHLNjGz", // Punjabi 101
+        "37i9dQZF1DWXRqgorJj26U"  // Rock Classics
+    )
+
+    suspend fun fetchPlaylistEmbedTracks(playlistId: String): Result<List<SpotifyTrack>> = runCatching {
+        val response = gqlClient.get("https://open.spotify.com/embed/playlist/$playlistId")
+        val html = response.bodyAsText()
+        val regex = Regex("""<script id="__NEXT_DATA__"[^>]*>(.*?)</script>""")
+        val matchResult = regex.find(html) ?: throw SpotifyException(500, "Could not parse Spotify embed data")
+        val jsonStr = matchResult.groupValues[1]
+
+        val jsonElement = json.parseToJsonElement(jsonStr)
+        val entity = jsonElement.jsonObject.obj("props")
+            ?.obj("pageProps")
+            ?.obj("state")
+            ?.obj("data")
+            ?.obj("entity") ?: throw SpotifyException(500, "Invalid Spotify embed entity")
+
+        val trackList = entity.arr("trackList") ?: emptyList()
+        val coverUrl = entity.obj("coverArt")?.arr("sources")?.firstOrNull()?.jsonObject?.str("url") ?: ""
+
+        trackList.mapNotNull { trackElement ->
+            val trackObj = trackElement.jsonObject
+            val title = trackObj.str("title") ?: return@mapNotNull null
+            val subtitle = trackObj.str("subtitle") ?: "Unknown Artist"
+            val durationMs = trackObj.int("duration") ?: 0
+            val uri = trackObj.str("uri") ?: ""
+            val trackId = uri.substringAfterLast(":")
+
+            val artists = subtitle.split(",").map { name ->
+                SpotifySimpleArtist(id = "", name = name.trim())
+            }
+
+            SpotifyTrack(
+                id = trackId.ifBlank { title.hashCode().toString() },
+                name = title,
+                artists = artists,
+                album = SpotifySimpleAlbum(
+                    id = "",
+                    name = title,
+                    images = listOf(SpotifyImage(url = coverUrl))
+                ),
+                durationMs = durationMs,
+                uri = uri.ifEmpty { null }
+            )
+        }
+    }
+
     suspend fun getRecommendations(
-        seedTracks: List<String>,
+        seedTracks: List<String> = emptyList(),
         limit: Int = 20
     ): Result<List<SpotifyTrack>> = runCatching {
-        // Use logged in token if available, otherwise fetch a guest token
-        val token = accessToken ?: getGuestToken().getOrThrow()
-        
-        val seeds = seedTracks.take(5).joinToString(",")
-        val response = gqlClient.get("https://api.spotify.com/v1/recommendations") {
-            header("Authorization", "Bearer $token")
-            parameter("seed_tracks", seeds)
-            parameter("limit", limit.toString())
+        // 1. If user is logged in, try direct API recommendations
+        val token = accessToken
+        if (token != null && seedTracks.isNotEmpty()) {
+            val seeds = seedTracks.take(5).joinToString(",")
+            val response = gqlClient.get("https://api.spotify.com/v1/recommendations") {
+                header("Authorization", "Bearer $token")
+                parameter("seed_tracks", seeds)
+                parameter("limit", limit.toString())
+            }
+
+            if (response.status.value in 200..299) {
+                val responseJson = json.parseToJsonElement(response.bodyAsText()).jsonObject
+                val tracksArray = responseJson.arr("tracks")
+                if (tracksArray != null && tracksArray.isNotEmpty()) {
+                    return@runCatching tracksArray.mapNotNull { elem ->
+                        val trackObj = elem.jsonObject
+                        val trackId = trackObj.str("id") ?: return@mapNotNull null
+                        val trackName = trackObj.str("name") ?: ""
+                        val durationMs = trackObj.int("duration_ms") ?: 0
+
+                        val artists = trackObj.arr("artists")?.mapNotNull { artistElem ->
+                            val aObj = artistElem.jsonObject
+                            SpotifySimpleArtist(
+                                id = aObj.str("id") ?: "",
+                                name = aObj.str("name") ?: "",
+                                uri = aObj.str("uri") ?: ""
+                            )
+                        } ?: emptyList()
+
+                        val albumObj = trackObj.obj("album")
+                        val albumId = albumObj?.str("id") ?: ""
+                        val albumName = albumObj?.str("name") ?: ""
+                        val imagesObj = albumObj?.arr("images")
+                        val images = imagesObj?.mapNotNull { imgElem ->
+                            val iObj = imgElem.jsonObject
+                            SpotifyImage(
+                                url = iObj.str("url") ?: "",
+                                width = iObj.int("width"),
+                                height = iObj.int("height")
+                            )
+                        } ?: emptyList()
+
+                        SpotifyTrack(
+                            id = trackId,
+                            name = trackName,
+                            artists = artists,
+                            album = SpotifySimpleAlbum(id = albumId, name = albumName, images = images, uri = null),
+                            durationMs = durationMs,
+                            uri = "spotify:track:$trackId"
+                        )
+                    }
+                }
+            }
         }
-        
-        if (response.status.value !in 200..299) {
-            throw SpotifyException(response.status.value, "Recommendations error: ${response.bodyAsText()}")
+
+        // 2. Fetch fresh tracks from Spotify algorithmic and editorial playlists
+        val randomPlaylists = CURATED_SPOTIFY_PLAYLISTS.shuffled().take(3)
+        val allTracks = mutableListOf<SpotifyTrack>()
+
+        for (pId in randomPlaylists) {
+            fetchPlaylistEmbedTracks(pId).onSuccess { tracks ->
+                allTracks.addAll(tracks)
+            }
         }
-        
-        val responseJson = json.parseToJsonElement(response.bodyAsText()).jsonObject
-        val tracksArray = responseJson.arr("tracks") ?: return@runCatching emptyList()
-        
-        tracksArray.mapNotNull { elem ->
-            val trackObj = elem.jsonObject
-            val trackId = trackObj.str("id") ?: return@mapNotNull null
-            val trackName = trackObj.str("name") ?: ""
-            val durationMs = trackObj.int("duration_ms") ?: 0
-            
-            val artists = trackObj.arr("artists")?.mapNotNull { artistElem ->
-                val aObj = artistElem.jsonObject
-                SpotifySimpleArtist(
-                    id = aObj.str("id") ?: "",
-                    name = aObj.str("name") ?: "",
-                    uri = aObj.str("uri") ?: ""
-                )
-            } ?: emptyList()
-            
-            val albumObj = trackObj.obj("album")
-            val albumId = albumObj?.str("id") ?: ""
-            val albumName = albumObj?.str("name") ?: ""
-            val imagesObj = albumObj?.arr("images")
-            val images = imagesObj?.mapNotNull { imgElem ->
-                val iObj = imgElem.jsonObject
-                SpotifyImage(
-                    url = iObj.str("url") ?: "",
-                    width = iObj.int("width"),
-                    height = iObj.int("height")
-                )
-            } ?: emptyList()
-            
-            SpotifyTrack(
-                id = trackId,
-                name = trackName,
-                artists = artists,
-                album = SpotifySimpleAlbum(id = albumId, name = albumName, images = images, uri = null),
-                durationMs = durationMs,
-                uri = "spotify:track:$trackId"
-            )
+
+        if (allTracks.isNotEmpty()) {
+            allTracks.distinctBy { "${it.name.lowercase()}_${it.artists.firstOrNull()?.name?.lowercase()}" }
+                .shuffled()
+                .take(limit)
+        } else {
+            emptyList()
         }
     }
 }

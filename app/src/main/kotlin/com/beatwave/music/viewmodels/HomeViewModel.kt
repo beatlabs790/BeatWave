@@ -343,55 +343,47 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
-            // If user has no listening history seeds or none matched, fetch Spotify's top global chart seeds
-            if (spotifySeedIds.isEmpty()) {
-                val topSeeds = com.music.spotify.Spotify.getTopSeedTrackIds()
-                spotifySeedIds.addAll(topSeeds)
-            }
+            val spotifyRecs = com.music.spotify.Spotify.getRecommendations(spotifySeedIds.toList(), limit = 15).getOrNull()
+            if (!spotifyRecs.isNullOrEmpty()) {
+                val defaultSeed = seeds.firstOrNull() ?: Song(
+                    song = com.beatwave.music.db.entities.SongEntity(id = "seed", title = "Spotify Discovery", duration = 0),
+                    artists = listOf(com.beatwave.music.db.entities.ArtistEntity(id = "artist", name = "Recommended for You"))
+                )
 
-            if (spotifySeedIds.isNotEmpty()) {
-                val spotifyRecs = com.music.spotify.Spotify.getRecommendations(spotifySeedIds.toList(), limit = 15).getOrNull()
-                if (!spotifyRecs.isNullOrEmpty()) {
-                    val defaultSeed = seeds.firstOrNull() ?: Song(
-                        song = com.beatwave.music.db.entities.SongEntity(id = "seed", title = "Spotify Discovery", duration = 0),
-                        artists = listOf(com.beatwave.music.db.entities.ArtistEntity(id = "artist", name = "Recommended for You"))
-                    )
-
-                    // Suggest both Songs and Albums from Spotify recommendations
-                    kotlinx.coroutines.coroutineScope {
-                        // 1. Suggest Songs
-                        spotifyRecs.take(10).map { spTrack ->
-                            launch(Dispatchers.IO) {
-                                val query = "${spTrack.name} ${spTrack.artists.firstOrNull()?.name.orEmpty()}"
-                                val searchResult = YouTube.search(query, YouTube.SearchFilter.FILTER_SONG).getOrNull()
-                                val ytItem = searchResult?.items?.firstOrNull() as? SongItem
-                                if (ytItem != null && (!hideVideoSongs || !ytItem.isVideoSong) && !ytItem.explicit) {
-                                    val seed = if (seeds.isNotEmpty()) seeds.random() else defaultSeed
-                                    items.add(DailyDiscoverItem(seed, ytItem, null))
-                                }
+                // Suggest both Songs and Albums from Spotify recommendations
+                kotlinx.coroutines.coroutineScope {
+                    // 1. Suggest Songs
+                    spotifyRecs.take(10).map { spTrack ->
+                        launch(Dispatchers.IO) {
+                            val query = "${spTrack.name} ${spTrack.artists.firstOrNull()?.name.orEmpty()}"
+                            val searchResult = YouTube.search(query, YouTube.SearchFilter.FILTER_SONG).getOrNull()
+                            val ytItem = searchResult?.items?.firstOrNull() as? SongItem
+                            if (ytItem != null && (!hideVideoSongs || !ytItem.isVideoSong) && !ytItem.explicit) {
+                                val seed = if (seeds.isNotEmpty()) seeds.random() else defaultSeed
+                                items.add(DailyDiscoverItem(seed, ytItem, null))
                             }
-                        }.forEach { it.join() }
+                        }
+                    }.forEach { it.join() }
 
-                        // 2. Suggest Albums at the same time
-                        val uniqueAlbums = spotifyRecs.mapNotNull { it.album }
-                            .filter { it.name.isNotBlank() }
-                            .distinctBy { it.name.lowercase() }
-                            .take(5)
+                    // 2. Suggest Albums at the same time
+                    val uniqueAlbums = spotifyRecs.mapNotNull { it.album }
+                        .filter { it.name.isNotBlank() }
+                        .distinctBy { it.name.lowercase() }
+                        .take(4)
 
-                        uniqueAlbums.map { spAlbum ->
-                            launch(Dispatchers.IO) {
-                                val matchingTrack = spotifyRecs.firstOrNull { it.album?.id == spAlbum.id }
-                                val artistName = matchingTrack?.artists?.firstOrNull()?.name.orEmpty()
-                                val albumQuery = "${spAlbum.name} $artistName".trim()
-                                val albumSearch = YouTube.search(albumQuery, YouTube.SearchFilter.FILTER_ALBUM).getOrNull()
-                                val albumItem = albumSearch?.items?.firstOrNull() as? AlbumItem
-                                if (albumItem != null) {
-                                    val seed = if (seeds.isNotEmpty()) seeds.random() else defaultSeed
-                                    items.add(DailyDiscoverItem(seed, albumItem, null))
-                                }
+                    uniqueAlbums.map { spAlbum ->
+                        launch(Dispatchers.IO) {
+                            val matchingTrack = spotifyRecs.firstOrNull { it.album?.id == spAlbum.id || it.name == spAlbum.name }
+                            val artistName = matchingTrack?.artists?.firstOrNull()?.name.orEmpty()
+                            val albumQuery = "${spAlbum.name} $artistName".trim()
+                            val albumSearch = YouTube.search(albumQuery, YouTube.SearchFilter.FILTER_ALBUM).getOrNull()
+                            val albumItem = albumSearch?.items?.firstOrNull() as? AlbumItem
+                            if (albumItem != null) {
+                                val seed = if (seeds.isNotEmpty()) seeds.random() else defaultSeed
+                                items.add(DailyDiscoverItem(seed, albumItem, null))
                             }
-                        }.forEach { it.join() }
-                    }
+                        }
+                    }.forEach { it.join() }
                 }
             }
         }
@@ -417,8 +409,8 @@ class HomeViewModel @Inject constructor(
                                         items.add(DailyDiscoverItem(seed, recommendation, endpoint))
                                     }
 
-                                    // Also include album suggestions from YouTube Related page!
-                                    page.albums.firstOrNull()?.let { albumRec ->
+                                    // Also include distinct album suggestions from YouTube Related page
+                                    page.albums.shuffled().firstOrNull()?.let { albumRec ->
                                         items.add(DailyDiscoverItem(seed, albumRec, endpoint))
                                     }
                                 }
@@ -433,11 +425,11 @@ class HomeViewModel @Inject constructor(
                     song = com.beatwave.music.db.entities.SongEntity(id = "new", title = "New Releases", duration = 0),
                     artists = listOf(com.beatwave.music.db.entities.ArtistEntity(id = "artist", name = "Featured"))
                 )
-                explore?.newReleaseAlbums?.take(5)?.forEach { album ->
+                explore?.newReleaseAlbums?.shuffled()?.take(2)?.forEach { album ->
                     items.add(DailyDiscoverItem(defaultSeed, album, null))
                 }
                 val hits = YouTube.search("top songs", YouTube.SearchFilter.FILTER_SONG).getOrNull()
-                hits?.items?.filterIsInstance<SongItem>()?.take(10)?.forEach { songItem ->
+                hits?.items?.filterIsInstance<SongItem>()?.shuffled()?.take(8)?.forEach { songItem ->
                     if (!hideVideoSongs || !songItem.isVideoSong) {
                         items.add(DailyDiscoverItem(defaultSeed, songItem, null))
                     }
@@ -466,32 +458,30 @@ class HomeViewModel @Inject constructor(
                         // SPOTIFY ALGORITHM
                         val query = "${recentSong.title} ${recentSong.artists.firstOrNull()?.name.orEmpty()}"
                         val spotifySeedId = com.music.spotify.Spotify.searchTrack(query).getOrNull()
-                            ?: com.music.spotify.Spotify.getTopSeedTrackIds().firstOrNull()
-                        if (spotifySeedId != null) {
-                            val spotifyRecs = com.music.spotify.Spotify.getRecommendations(listOf(spotifySeedId), limit = 10).getOrNull()
-                            if (spotifyRecs != null) {
-                                val ytSimilarSongsSync = java.util.Collections.synchronizedList(ytSimilarSongs)
-                                kotlinx.coroutines.coroutineScope {
-                                    spotifyRecs.map { spTrack ->
-                                        launch(Dispatchers.IO) {
-                                            val sQuery = "${spTrack.name} ${spTrack.artists.firstOrNull()?.name.orEmpty()}"
-                                            val searchResult = YouTube.search(sQuery, YouTube.SearchFilter.FILTER_SONG).getOrNull()
-                                            val ytItem = searchResult?.items?.firstOrNull() as? SongItem
-                                            if (ytItem != null && (!hideVideoSongs || !ytItem.isVideoSong) && !ytItem.explicit) {
-                                                val localSong = database.song(ytItem.id).first() ?: Song(
-                                                    song = com.beatwave.music.db.entities.SongEntity(
-                                                        id = ytItem.id,
-                                                        title = ytItem.title,
-                                                        duration = ytItem.duration ?: 0,
-                                                        thumbnailUrl = ytItem.thumbnail
-                                                    ),
-                                                    artists = ytItem.artists.map { com.beatwave.music.db.entities.ArtistEntity(id = it.id.orEmpty(), name = it.name) }
-                                                )
-                                                ytSimilarSongsSync.add(localSong)
-                                            }
+                        val seedsList = listOfNotNull(spotifySeedId)
+                        val spotifyRecs = com.music.spotify.Spotify.getRecommendations(seedsList, limit = 10).getOrNull()
+                        if (!spotifyRecs.isNullOrEmpty()) {
+                            val ytSimilarSongsSync = java.util.Collections.synchronizedList(ytSimilarSongs)
+                            kotlinx.coroutines.coroutineScope {
+                                spotifyRecs.map { spTrack ->
+                                    launch(Dispatchers.IO) {
+                                        val sQuery = "${spTrack.name} ${spTrack.artists.firstOrNull()?.name.orEmpty()}"
+                                        val searchResult = YouTube.search(sQuery, YouTube.SearchFilter.FILTER_SONG).getOrNull()
+                                        val ytItem = searchResult?.items?.firstOrNull() as? SongItem
+                                        if (ytItem != null && (!hideVideoSongs || !ytItem.isVideoSong) && !ytItem.explicit) {
+                                            val localSong = database.song(ytItem.id).first() ?: Song(
+                                                song = com.beatwave.music.db.entities.SongEntity(
+                                                    id = ytItem.id,
+                                                    title = ytItem.title,
+                                                    duration = ytItem.duration ?: 0,
+                                                    thumbnailUrl = ytItem.thumbnail
+                                                ),
+                                                artists = ytItem.artists.map { com.beatwave.music.db.entities.ArtistEntity(id = it.id.orEmpty(), name = it.name) }
+                                            )
+                                            ytSimilarSongsSync.add(localSong)
                                         }
-                                    }.forEach { it.join() }
-                                }
+                                    }
+                                }.forEach { it.join() }
                             }
                         }
                     }

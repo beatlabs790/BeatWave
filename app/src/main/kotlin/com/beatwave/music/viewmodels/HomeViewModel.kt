@@ -41,6 +41,7 @@ import com.beatwave.music.constants.RecommendationEngineKey
 import com.beatwave.music.constants.ShowWrappedCardKey
 import com.beatwave.music.constants.SongSortType
 import com.beatwave.music.constants.WrappedSeenKey
+import com.beatwave.music.constants.WrappedIntervalDaysKey
 import com.beatwave.music.db.MusicDatabase
 import com.beatwave.music.db.entities.Album
 import com.beatwave.music.db.entities.LocalItem
@@ -864,7 +865,8 @@ class HomeViewModel @Inject constructor(
             showWrappedCard.collect { shouldShow ->
                 if (shouldShow && !wrappedManager.state.value.isDataReady) {
                     try {
-                        wrappedManager.prepare()
+                        val intervalDays = context.dataStore.get(WrappedIntervalDaysKey, 30)
+                        wrappedManager.prepare(days = intervalDays)
                         val state = wrappedManager.state.first { it.isDataReady }
                         val trackMap = state.trackMap
                         if (trackMap.isNotEmpty()) {

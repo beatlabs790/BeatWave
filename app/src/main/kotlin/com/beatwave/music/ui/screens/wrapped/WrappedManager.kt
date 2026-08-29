@@ -179,17 +179,16 @@ class WrappedManager(
         }
     }
 
-    suspend fun prepare() {
-        if (_state.value.isDataReady) return
-        Timber.tag("WrappedManager").d("Starting Wrapped data preparation")
+    suspend fun prepare(forceRefresh: Boolean = false, days: Int? = null) {
+        if (_state.value.isDataReady && !forceRefresh) return
+        Timber.tag("WrappedManager").d("Starting Wrapped data preparation for days=$days, forceRefresh=$forceRefresh")
 
-        val fromTimestamp = Calendar.getInstance().apply {
-            set(WrappedConstants.YEAR, Calendar.JANUARY, 1, 0, 0, 0)
-        }.timeInMillis
-
-        val toTimestamp = Calendar.getInstance().apply {
-            set(WrappedConstants.YEAR, Calendar.DECEMBER, 31, 23, 59, 59)
-        }.timeInMillis
+        val toTimestamp = System.currentTimeMillis()
+        val fromTimestamp = if (days != null && days > 0) {
+            toTimestamp - (days.toLong() * 24L * 60L * 60L * 1000L)
+        } else {
+            0L
+        }
 
         withContext(Dispatchers.IO) {
             val accountInfoDeferred = async { YouTube.accountInfo().getOrNull() }
@@ -213,11 +212,32 @@ class WrappedManager(
             )
 
             @Suppress("UNCHECKED_CAST")
-            val topSongsResult = results[1] as List<SongWithStats>
+            var topSongsResult = results[1] as List<SongWithStats>
             @Suppress("UNCHECKED_CAST")
-            val topAlbumsResult = results[3] as List<com.beatwave.music.db.entities.Album>
+            var topAlbumsResult = results[3] as List<com.beatwave.music.db.entities.Album>
             @Suppress("UNCHECKED_CAST")
-            val topArtistsResult = results[2] as List<Artist>
+            var topArtistsResult = results[2] as List<Artist>
+            var totalMinutes = (results[7] as Long) / 1000 / 60
+
+            // If no data in the exact short window, fallback gracefully to all-time stats so Wrapped looks full and beautiful
+            if (topSongsResult.isEmpty() && fromTimestamp > 0L) {
+                topSongsResult = databaseDao.mostPlayedSongsStats(0L, limit = 30).first()
+                topArtistsResult = databaseDao.mostPlayedArtists(0L, limit = 5).first()
+                topAlbumsResult = databaseDao.mostPlayedAlbums(0L, limit = 5).first()
+                totalMinutes = (databaseDao.getTotalPlayTimeInRange(0L, toTimestamp).first() ?: 0L) / 1000 / 60
+            }
+
+            val periodLabel = when (days) {
+                3 -> "Past 3 Days"
+                7 -> "Weekly Wrapped"
+                14 -> "Bi-Weekly Wrapped"
+                30 -> "Monthly Wrapped"
+                60 -> "Past 2 Months"
+                90 -> "Past 3 Months"
+                365 -> "BeatWave ${WrappedConstants.YEAR}"
+                else -> "BeatWave ${WrappedConstants.YEAR}"
+            }
+
             _state.update {
                 it.copy(
                     accountInfo = results[0] as AccountInfo?,
@@ -225,10 +245,11 @@ class WrappedManager(
                     topArtists = topArtistsResult,
                     top5Albums = topAlbumsResult,
                     topAlbum = topAlbumsResult.firstOrNull(),
-                    uniqueSongCount = results[4] as Int,
-                    uniqueArtistCount = results[5] as Int,
-                    totalAlbums = results[6] as Int,
-                    totalMinutes = (results[7] as Long) / 1000 / 60
+                    uniqueSongCount = (results[4] as Int).coerceAtLeast(topSongsResult.size),
+                    uniqueArtistCount = (results[5] as Int).coerceAtLeast(topArtistsResult.size),
+                    totalAlbums = (results[6] as Int).coerceAtLeast(topAlbumsResult.size),
+                    totalMinutes = totalMinutes,
+                    periodTitle = periodLabel
                 )
             }
         }

@@ -21,6 +21,7 @@ data class WrappedState(
     val uniqueArtistCount: Int = 0,
     val totalAlbums: Int = 0,
     val isDataReady: Boolean = false,
+    val periodTitle: String = "BeatWave Wrapped",
     val trackMap: Map<WrappedScreenType, String?> = emptyMap(),
     val playlistCreationState: PlaylistCreationState = PlaylistCreationState.Idle
 )

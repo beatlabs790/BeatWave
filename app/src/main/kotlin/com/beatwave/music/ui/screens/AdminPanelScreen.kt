@@ -27,8 +27,13 @@ import com.beatwave.music.SuggestionRow
 import com.beatwave.music.BugReportRow
 import com.beatwave.music.api.SupabaseService
 import com.beatwave.music.ui.component.IconButton
-import com.beatwave.music.ui.utils.appTopBarWindowInsets
-import kotlinx.coroutines.launch
+import com.beatwave.music.LocalDatabase
+import com.beatwave.music.constants.ShowWrappedCardKey
+import com.beatwave.music.constants.WrappedSeenKey
+import com.beatwave.music.constants.WrappedIntervalDaysKey
+import com.beatwave.music.ui.screens.wrapped.provideWrappedManager
+import com.beatwave.music.utils.dataStore
+import com.beatwave.music.utils.put
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +44,7 @@ fun AdminPanelScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Publish Update", "Publish News", "Suggestions", "Bug Reports")
+    val tabs = listOf("Publish Update", "Publish News", "Test Wrapped", "Suggestions", "Bug Reports")
 
     Scaffold(
         topBar = {
@@ -60,7 +65,10 @@ fun AdminPanelScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            TabRow(selectedTabIndex = selectedTab) {
+            ScrollableTabRow(
+                selectedTabIndex = selectedTab,
+                edgePadding = 16.dp
+            ) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
                         selected = selectedTab == index,
@@ -74,7 +82,8 @@ fun AdminPanelScreen(
                 when (selectedTab) {
                     0 -> PublishUpdateTab(navController)
                     1 -> PublishNewsTab(navController)
-                    2 -> SuggestionsTab()
+                    2 -> TestWrappedTab(navController)
+                    3 -> SuggestionsTab()
                     else -> BugReportsTab()
                 }
             }
@@ -647,3 +656,170 @@ fun BugReportItemCard(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+fun TestWrappedTab(navController: NavController) {
+    val context = LocalContext.current
+    val database = LocalDatabase.current
+    val coroutineScope = rememberCoroutineScope()
+    val wrappedManager = remember { provideWrappedManager(context) }
+
+    val intervalOptions = listOf(
+        3 to "3 Days",
+        7 to "7 Days (Weekly)",
+        14 to "14 Days",
+        30 to "30 Days (Monthly)",
+        60 to "60 Days",
+        90 to "90 Days",
+        365 to "365 Days (Yearly)",
+        0 to "All Time"
+    )
+
+    var selectedDays by remember { mutableStateOf(30) }
+    var isPreparing by remember { mutableStateOf(false) }
+
+    val fromTimestamp = remember(selectedDays) {
+        if (selectedDays > 0) {
+            System.currentTimeMillis() - (selectedDays.toLong() * 24L * 60L * 60L * 1000L)
+        } else {
+            0L
+        }
+    }
+
+    val mostPlayedSongs by database.mostPlayedSongsStats(fromTimestamp, limit = 5).collectAsState(initial = emptyList())
+    val mostPlayedArtists by database.mostPlayedArtists(fromTimestamp, limit = 3).collectAsState(initial = emptyList())
+    val totalPlayTimeMs by database.getTotalPlayTimeInRange(fromTimestamp, System.currentTimeMillis()).collectAsState(initial = 0L)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+        ) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "🎉 Admin Wrapped Testing Suite",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Generate and preview Spotify-style Wrapped stories from your actual listening history across custom time windows.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        Text(
+            text = "Select Time Range to Test:",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold
+        )
+
+        // Interval chips
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            intervalOptions.forEach { (days, label) ->
+                FilterChip(
+                    selected = selectedDays == days,
+                    onClick = { selectedDays = days },
+                    label = { Text(label) }
+                )
+            }
+        }
+
+        // Live stats preview card
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+        ) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    text = "📊 Admin Listening Stats (${intervalOptions.find { it.first == selectedDays }?.second}):",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                val totalMinutes = (totalPlayTimeMs ?: 0L) / 1000 / 60
+                val totalHours = totalMinutes / 60
+                val remMinutes = totalMinutes % 60
+                val timeString = if (totalHours > 0) "${totalHours}h ${remMinutes}m" else "${totalMinutes} mins"
+
+                Text(
+                    text = "• Total Listening Time: $timeString",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "• Top Song: ${mostPlayedSongs.firstOrNull()?.song?.title ?: "None logged yet"}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "• Top Artist: ${mostPlayedArtists.firstOrNull()?.name ?: "None logged yet"}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "• Unique Songs Played: ${mostPlayedSongs.size}+",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+
+        // Action Buttons
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    isPreparing = true
+                    try {
+                        wrappedManager.prepare(forceRefresh = true, days = selectedDays)
+                        navController.navigate("wrapped")
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    } finally {
+                        isPreparing = false
+                    }
+                }
+            },
+            enabled = !isPreparing,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            if (isPreparing) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("Generating Wrapped...")
+            } else {
+                Text("🚀 Launch & Test Interactive Wrapped")
+            }
+        }
+
+        OutlinedButton(
+            onClick = {
+                coroutineScope.launch {
+                    context.dataStore.put(ShowWrappedCardKey, true)
+                    context.dataStore.put(WrappedSeenKey, false)
+                    context.dataStore.put(WrappedIntervalDaysKey, if (selectedDays > 0) selectedDays else 30)
+                    Toast.makeText(context, "Wrapped card forced visible on Home Screen!", Toast.LENGTH_SHORT).show()
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text("📌 Force Show Wrapped Card on Home Screen")
+        }
+    }
+}
+

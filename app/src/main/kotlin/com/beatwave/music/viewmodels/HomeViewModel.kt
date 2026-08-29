@@ -319,9 +319,11 @@ class HomeViewModel @Inject constructor(
         val recEngine = context.dataStore.get(RecommendationEngineKey, RecommendationEngine.YOUTUBE.name)
         val likedSongs = database.likedSongsByCreateDateAsc().first()
         val spotifyPlaylistSongs = if (recEngine == RecommendationEngine.SPOTIFY.name) {
-            database.playlistsWithSongs().first()
+            val spotifyPlaylists = database.playlistsByNameAsc().first()
                 .filter { it.playlist.id.startsWith("SPOTIFY_") }
-                .flatMap { it.songs }
+            spotifyPlaylists.flatMap { pl ->
+                database.playlistSongs(pl.playlist.id).first().map { it.song }
+            }
         } else emptyList()
 
         val candidateSeeds = if (spotifyPlaylistSongs.isNotEmpty()) {

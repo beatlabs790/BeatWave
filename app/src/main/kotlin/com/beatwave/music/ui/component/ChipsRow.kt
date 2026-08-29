@@ -120,14 +120,7 @@ fun <E> ChipsRow(
                     null
                 },
                 shape = RoundedCornerShape(cornerRadius),
-                border = FilterChipDefaults.filterChipBorder(
-                    enabled = true,
-                    selected = isSelected,
-                    borderColor = Color.White.copy(alpha = 0.12f),
-                    selectedBorderColor = Color.White.copy(alpha = 0.45f),
-                    borderWidth = 1.dp,
-                    selectedBorderWidth = 1.2.dp,
-                ),
+                border = null,
                 modifier = Modifier.animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,

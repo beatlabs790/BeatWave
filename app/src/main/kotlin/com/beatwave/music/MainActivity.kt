@@ -2293,6 +2293,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             com.beatwave.music.ui.component.DonationPromptHost()
+                            com.beatwave.music.ui.component.WhatsNewPromptHost(navController)
 
                             // Both float OVER the full-width NavHost, exactly as the
                             // bottom bar does on a phone: nothing reserves layout

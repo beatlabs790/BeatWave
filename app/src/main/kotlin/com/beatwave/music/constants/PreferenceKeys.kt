@@ -22,6 +22,7 @@ val IsFirstRunKey = booleanPreferencesKey("isFirstRun")
 val FirstLaunchTimestampKey = longPreferencesKey("firstLaunchTimestamp")
 val DonationPromptLastShownKey = longPreferencesKey("donationPromptLastShown")
 val DonationPromptDismissedKey = booleanPreferencesKey("donationPromptDismissed")
+val LastSeenChangelogVersionKey = stringPreferencesKey("lastSeenChangelogVersion")
 val AppIconKey = stringPreferencesKey("appIcon")
 
 /** JSON map of player-control slot -> user-supplied glyph. See ui/player/customize/PlayerIcons.kt. */

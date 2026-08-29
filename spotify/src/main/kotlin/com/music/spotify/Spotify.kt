@@ -426,15 +426,15 @@ object Spotify {
     val CURATED_SPOTIFY_PLAYLISTS = listOf(
         "37i9dQZF1DXcBWIGoYBM5M", // Today's Top Hits
         "37i9dQZEVXbMDoHDwVN2tF", // Top 50 - Global
-        "37i9dQZEVXbLiRSasKsNU9", // Viral 50 - Global
         "37i9dQZF1DWUa8ZRTfalHk", // Pop Rising
         "37i9dQZF1DX4WYpdgoIcn6", // Chill Hits
         "37i9dQZF1DX0XUsuxWHRQd", // RapCaviar
         "37i9dQZF1DX4dyzvuaRJ0n", // Dance Hits
         "37i9dQZF1DX2Nc3B70tvx0", // Ultimate Indie
-        "37i9dQZF1DX0XUfTFmZeZw", // Bollywood Butter
         "37i9dQZF1DX5cZuAHLNjGz", // Punjabi 101
-        "37i9dQZF1DWXRqgorJj26U"  // Rock Classics
+        "37i9dQZF1DWXRqgorJj26U", // Rock Classics
+        "37i9dQZF1DX4sWSpwq3LiO", // Peaceful Piano
+        "37i9dQZF1DX10zKzsJ2jva"  // Viva Latino
     )
 
     suspend fun fetchPlaylistEmbedTracks(playlistId: String): Result<List<SpotifyTrack>> = runCatching {

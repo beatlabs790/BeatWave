@@ -240,10 +240,12 @@ fun MoodAndGenresButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val backgroundColor = if (stripeColor != null) {
-        Color(stripeColor).copy(alpha = 0.25f)
-    } else {
-        MaterialTheme.colorScheme.surfaceContainer
+    val colors = remember(title) {
+        val hue = ((title.hashCode() % 360) + 360) % 360
+        listOf(
+            Color.hsl(hue.toFloat(), 0.85f, 0.48f),
+            Color.hsl(((hue + 35) % 360).toFloat(), 0.90f, 0.35f),
+        )
     }
     
     Box(
@@ -251,8 +253,8 @@ fun MoodAndGenresButton(
         modifier =
         modifier
             .height(MoodAndGenresButtonHeight)
-            .clip(RoundedCornerShape(12.dp))
-            .background(backgroundColor)
+            .clip(RoundedCornerShape(14.dp))
+            .background(Brush.linearGradient(colors))
             .bounceClick(onClick = onClick)
             .padding(horizontal = 16.dp),
     ) {
@@ -260,6 +262,7 @@ fun MoodAndGenresButton(
             text = title,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
+            color = Color.White,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

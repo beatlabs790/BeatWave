@@ -2957,8 +2957,8 @@ private fun MoodCard(
     val colors = remember(title) {
         val hue = ((title.hashCode() % 360) + 360) % 360
         listOf(
-            Color.hsl(hue.toFloat(), 0.55f, 0.42f),
-            Color.hsl(((hue + 40) % 360).toFloat(), 0.60f, 0.26f),
+            Color.hsl(hue.toFloat(), 0.85f, 0.48f),
+            Color.hsl(((hue + 35) % 360).toFloat(), 0.90f, 0.35f),
         )
     }
     Box(

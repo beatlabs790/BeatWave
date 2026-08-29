@@ -424,6 +424,10 @@ object Spotify {
     }.getOrDefault(emptyList())
 
     val CURATED_SPOTIFY_PLAYLISTS = listOf(
+        "37i9dQZF1DWXtlo6ENS92N", // Bollywood Central
+        "37i9dQZF1DX5q67ZpWyRrZ", // Indie India
+        "37i9dQZF1DX5cZuAHLNjGz", // Punjabi 101
+        "37i9dQZF1DX0b1hHYQtJjp", // Just Good Music
         "37i9dQZF1DXcBWIGoYBM5M", // Today's Top Hits
         "37i9dQZEVXbMDoHDwVN2tF", // Top 50 - Global
         "37i9dQZF1DWUa8ZRTfalHk", // Pop Rising
@@ -431,8 +435,8 @@ object Spotify {
         "37i9dQZF1DX0XUsuxWHRQd", // RapCaviar
         "37i9dQZF1DX4dyzvuaRJ0n", // Dance Hits
         "37i9dQZF1DX2Nc3B70tvx0", // Ultimate Indie
-        "37i9dQZF1DX5cZuAHLNjGz", // Punjabi 101
         "37i9dQZF1DWXRqgorJj26U", // Rock Classics
+        "37i9dQZF1DWWQRwui0ExPn", // Lofi Beats
         "37i9dQZF1DX4sWSpwq3LiO", // Peaceful Piano
         "37i9dQZF1DX10zKzsJ2jva"  // Viva Latino
     )

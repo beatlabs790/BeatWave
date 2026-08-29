@@ -107,6 +107,10 @@ import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.ui.utils.backToMain
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.rememberPreference
+import com.beatwave.music.constants.RecommendationEngine
+import com.beatwave.music.constants.RecommendationEngineKey
+import com.beatwave.music.ui.component.GlassSwitchCompat as Switch
+import com.beatwave.music.utils.rememberEnumPreference
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.viewmodels.SpotifyImportViewModel
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
@@ -126,6 +130,10 @@ fun SpotifyScreen(
     var showSpotifyLogin by remember { mutableStateOf(false) }
     var showPlaylistsSheet by remember { mutableStateOf(false) }
     var playlistLink by rememberSaveable { mutableStateOf("") }
+    val (recommendationEngine, onRecommendationEngineChange) = rememberEnumPreference(
+        key = RecommendationEngineKey,
+        defaultValue = RecommendationEngine.YOUTUBE
+    )
     val importProgress by viewModel.importProgress.collectAsStateWithLifecycle()
 
     val refreshEnabled = state.isAuthenticated && !state.isLoading
@@ -319,6 +327,36 @@ fun SpotifyScreen(
                     },
                     enabled = refreshEnabled,
                     onClick = { viewModel.loadSources() }
+                )
+            )
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Material3SettingsGroup(
+            title = "Music Recommendations",
+            items = listOf(
+                Material3SettingsItem(
+                    title = { Text("Use Spotify Recommendations") },
+                    description = {
+                        Text("Power Daily Discover, Quick Picks & Radio with Spotify recommendation algorithm")
+                    },
+                    icon = painterResource(R.drawable.spotify),
+                    trailingContent = {
+                        Switch(
+                            checked = recommendationEngine == RecommendationEngine.SPOTIFY,
+                            onCheckedChange = { isChecked ->
+                                onRecommendationEngineChange(
+                                    if (isChecked) RecommendationEngine.SPOTIFY else RecommendationEngine.YOUTUBE
+                                )
+                            }
+                        )
+                    },
+                    onClick = {
+                        onRecommendationEngineChange(
+                            if (recommendationEngine == RecommendationEngine.SPOTIFY) RecommendationEngine.YOUTUBE else RecommendationEngine.SPOTIFY
+                        )
+                    }
                 )
             )
         )

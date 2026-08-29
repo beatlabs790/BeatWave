@@ -30,6 +30,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -678,8 +684,8 @@ fun PlayerMenu(
                         )
                         add(
                             Material3MenuItemData(
-                                title = { Text(text = stringResource(R.string.advanced)) },
-                                description = { Text(text = stringResource(R.string.advanced_desc)) },
+                                title = { Text(text = "Music Presets & Tempo") },
+                                description = { Text(text = "Nightcore, Sped Up, Slowed, Daycore, Pitch & Speed") },
                                 icon = {
                                     Icon(
                                         painter = painterResource(R.drawable.tune),
@@ -741,6 +747,23 @@ fun PlayerMenu(
     }
 }
 
+enum class MusicPreset(
+    val title: String,
+    val description: String,
+    val speed: Float,
+    val transpose: Int,
+    val badge: String,
+) {
+    NORMAL("Normal", "1.0x Original", 1.0f, 0, "⚡"),
+    SPED_UP("Sped Up", "1.25x Speed", 1.25f, 0, "🚀"),
+    NIGHTCORE("Nightcore", "1.25x + Pitch Up", 1.25f, 3, "🌙"),
+    SLOWED("Slowed", "0.85x + Deep", 0.85f, -2, "☕"),
+    DAYCORE("Daycore", "0.80x + Pitch Down", 0.80f, -3, "🌊"),
+    VAPORWAVE("Vaporwave", "0.75x Chill Retro", 0.75f, -4, "📼"),
+    DOUBLE_SPEED("2x Fast", "2.0x Speed", 2.0f, 0, "⏩"),
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TempoPitchDialog(onDismiss: () -> Unit) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -761,7 +784,18 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
         properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = onDismiss,
         title = {
-            Text(stringResource(R.string.tempo_and_pitch))
+            Column {
+                Text(
+                    text = "Music Presets & Tempo",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = "SoundCloud-style speed & pitch effects",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         },
         dismissButton = {
             TextButton(
@@ -782,7 +816,69 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
             }
         },
         text = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Preset Chips Section
+                Text(
+                    text = "SoundCloud-Style Presets",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    MusicPreset.values().forEach { preset ->
+                        val isSelected = !isInRoom &&
+                                kotlin.math.abs(tempo - preset.speed) < 0.01f &&
+                                transposeValue == preset.transpose
+
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = {
+                                if (!isInRoom) {
+                                    tempo = preset.speed
+                                    transposeValue = preset.transpose
+                                    updatePlaybackParameters()
+                                }
+                            },
+                            label = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text(preset.badge)
+                                    Text(
+                                        preset.title,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                }
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        )
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                Text(
+                    text = "Fine-Tune Tempo & Pitch",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.SemiBold
+                )
+
                 if (!isInRoom) {
                     ValueAdjuster(
                         icon = R.drawable.speed,

@@ -644,8 +644,8 @@ fun OldPlayerMenu(
 
                     add(
                         Material3MenuItemData(
-                            title = { Text(text = stringResource(R.string.advanced)) },
-                            description = { Text(text = stringResource(R.string.advanced_desc)) },
+                            title = { Text(text = "Music Presets & Tempo") },
+                            description = { Text(text = "Nightcore, Sped Up, Slowed, Daycore, Pitch & Speed") },
                             icon = {
                                 Icon(
                                     painter = painterResource(R.drawable.tune),

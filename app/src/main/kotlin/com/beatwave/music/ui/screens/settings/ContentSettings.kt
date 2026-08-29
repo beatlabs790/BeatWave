@@ -142,6 +142,8 @@ import com.beatwave.music.constants.SYSTEM_DEFAULT
 import com.beatwave.music.constants.ShowArtistBackgroundVideoKey
 import com.beatwave.music.constants.ShowArtistDescriptionKey
 import com.beatwave.music.constants.ShowArtistSubscriberCountKey
+import com.beatwave.music.constants.RecommendationEngine
+import com.beatwave.music.constants.RecommendationEngineKey
 import com.beatwave.music.constants.ShowArtistVideoKey
 import com.beatwave.music.constants.ShowHomeMoodFiltersKey
 import com.beatwave.music.constants.ShowMonthlyListenersKey
@@ -239,6 +241,10 @@ fun ContentSettings(
     )
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
+    val (recommendationEngine, onRecommendationEngineChange) = rememberEnumPreference(
+        key = RecommendationEngineKey,
+        defaultValue = RecommendationEngine.YOUTUBE
+    )
     val (showWrappedCard, onShowWrappedCardChange) = rememberPreference(key = ShowWrappedCardKey, defaultValue = false)
     val (showMoodFilters, onShowMoodFiltersChange) = rememberPreference(
         key = ShowHomeMoodFiltersKey,
@@ -610,6 +616,29 @@ fun ContentSettings(
                 when (it) {
                     QuickPicks.QUICK_PICKS -> stringResource(R.string.quick_picks)
                     QuickPicks.LAST_LISTEN -> stringResource(R.string.last_song_listened)
+                }
+            }
+        )
+    }
+
+    var showRecommendationEngineDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showRecommendationEngineDialog) {
+        EnumDialog(
+            onDismiss = { showRecommendationEngineDialog = false },
+            onSelect = {
+                onRecommendationEngineChange(it)
+                showRecommendationEngineDialog = false
+            },
+            title = "Recommendation Engine",
+            current = recommendationEngine,
+            values = RecommendationEngine.values().toList(),
+            valueText = {
+                when (it) {
+                    RecommendationEngine.YOUTUBE -> "YouTube Music (Default)"
+                    RecommendationEngine.SPOTIFY -> "Spotify Algorithm"
                 }
             }
         )
@@ -1352,6 +1381,19 @@ fun ContentSettings(
                         )
                     },
                     onClick = { showQuickPicksDialog = true }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(if (recommendationEngine == RecommendationEngine.SPOTIFY) R.drawable.spotify else R.drawable.discover_tune),
+                    title = { Text("Recommendation Engine") },
+                    description = {
+                        Text(
+                            when (recommendationEngine) {
+                                RecommendationEngine.YOUTUBE -> "YouTube Music (Default)"
+                                RecommendationEngine.SPOTIFY -> "Spotify (Algorithm & taste-matching)"
+                            }
+                        )
+                    },
+                    onClick = { showRecommendationEngineDialog = true }
                 )
             )
         )

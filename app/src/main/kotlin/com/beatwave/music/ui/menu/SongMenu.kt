@@ -209,6 +209,16 @@ fun SongMenu(
         mutableStateOf(false)
     }
 
+    var showMusicPresetsDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showMusicPresetsDialog) {
+        TempoPitchDialog(
+            onDismiss = { showMusicPresetsDialog = false }
+        )
+    }
+
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onGetSong = { playlist ->
@@ -490,7 +500,20 @@ fun SongMenu(
                                 playerConnection.addToQueue(song.toMediaItem())
                             }
                         )
-                    } else null
+                    } else null,
+                    Material3MenuItemData(
+                        title = { Text(text = "Music Presets & Audio Effects") },
+                        description = { Text(text = "Nightcore, Sped Up, Slowed, Daycore, Speed & Pitch") },
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.tune),
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {
+                            showMusicPresetsDialog = true
+                        }
+                    )
                 )
             )
         }

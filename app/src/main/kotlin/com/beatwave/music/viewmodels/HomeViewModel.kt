@@ -36,6 +36,8 @@ import com.beatwave.music.constants.LocalSongSortTypeKey
 import com.beatwave.music.constants.PlaylistSortType
 import com.beatwave.music.constants.QuickPicks
 import com.beatwave.music.constants.QuickPicksKey
+import com.beatwave.music.constants.RecommendationEngine
+import com.beatwave.music.constants.RecommendationEngineKey
 import com.beatwave.music.constants.ShowWrappedCardKey
 import com.beatwave.music.constants.SongSortType
 import com.beatwave.music.constants.WrappedSeenKey
@@ -314,10 +316,21 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun getDailyDiscover() {
         val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false) || context.dataStore.get(DataSaverEnabledKey, false)
+        val recEngine = context.dataStore.get(RecommendationEngineKey, RecommendationEngine.YOUTUBE.name)
         val likedSongs = database.likedSongsByCreateDateAsc().first()
-        if (likedSongs.isEmpty()) return
+        val spotifyPlaylistSongs = if (recEngine == RecommendationEngine.SPOTIFY.name) {
+            database.playlistsWithSongs().first()
+                .filter { it.playlist.id.startsWith("SPOTIFY_") }
+                .flatMap { it.songs }
+        } else emptyList()
 
-        val seeds = likedSongs.shuffled().distinctBy { it.id }.take(5)
+        val candidateSeeds = if (spotifyPlaylistSongs.isNotEmpty()) {
+            (spotifyPlaylistSongs + likedSongs).distinctBy { it.id }
+        } else likedSongs
+
+        if (candidateSeeds.isEmpty()) return
+
+        val seeds = candidateSeeds.shuffled().distinctBy { it.id }.take(5)
 
         // Use a synchronized list to collect results safely from concurrent coroutines
         val items = java.util.Collections.synchronizedList(mutableListOf<DailyDiscoverItem>())

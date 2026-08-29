@@ -260,6 +260,7 @@ val CachedSupabaseJwksUrlKey = stringPreferencesKey("cachedSupabaseJwksUrl")
 val DisableScreenshotKey = booleanPreferencesKey("disableScreenshot")
 val SubmittedSuggestionIdsKey = stringPreferencesKey("submittedSuggestionIds")
 val SubmittedBugReportIdsKey = stringPreferencesKey("submittedBugReportIds")
+val RecommendationEngineKey = stringPreferencesKey("recommendationEngine")
 
 val DiscordTokenKey = stringPreferencesKey("discordToken")
 val DiscordInfoDismissedKey = booleanPreferencesKey("discordInfoDismissed")
@@ -427,6 +428,11 @@ enum class PlaylistSongSortType {
     NAME,
     ARTIST,
     PLAY_TIME,
+}
+
+enum class RecommendationEngine {
+    YOUTUBE,
+    SPOTIFY,
 }
 
 enum class AutoPlaylistSongSortType {

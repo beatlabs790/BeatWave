@@ -131,6 +131,8 @@ import com.beatwave.music.constants.PauseListenHistoryKey
 import com.beatwave.music.constants.PauseOnMute
 import com.beatwave.music.constants.PersistentQueueKey
 import com.beatwave.music.constants.PersistentShuffleAcrossQueuesKey
+import com.beatwave.music.constants.RecommendationEngineStyle
+import com.beatwave.music.constants.RecommendationEngineStyleKey
 import com.beatwave.music.constants.PlayerVolumeKey
 import com.beatwave.music.constants.RememberShuffleAndRepeatKey
 import com.beatwave.music.constants.RepeatModeKey
@@ -1564,6 +1566,10 @@ class MusicService :
         }
 
         currentQueue = queue
+        if (queue is YouTubeQueue) {
+            queue.recommendationStyle = dataStore.get(RecommendationEngineStyleKey, RecommendationEngineStyle.HYBRID.name).let { RecommendationEngineStyle.valueOf(it) }
+            queue.database = database
+        }
         queueTitle = null
         val persistShuffleAcrossQueues = dataStore.get(PersistentShuffleAcrossQueuesKey, false)
         val previousShuffleEnabled = player.shuffleModeEnabled

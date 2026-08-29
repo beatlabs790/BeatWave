@@ -789,6 +789,20 @@ enum class SearchSource {
         }
 }
 
+enum class RecommendationEngineStyle {
+    SPOTIFY,
+    YOUTUBE_MUSIC,
+    HYBRID;
+
+    fun toLabel() = when(this) {
+        SPOTIFY -> "Spotify Style"
+        YOUTUBE_MUSIC -> "YouTube Music Style"
+        HYBRID -> "Beatwave Hybrid"
+    }
+}
+
+val RecommendationEngineStyleKey = stringPreferencesKey("recommendationEngineStyle")
+
 val VisitorDataKey = stringPreferencesKey("visitorData")
 val DataSyncIdKey = stringPreferencesKey("dataSyncId")
 val InnerTubeCookieKey = stringPreferencesKey("innerTubeCookie")

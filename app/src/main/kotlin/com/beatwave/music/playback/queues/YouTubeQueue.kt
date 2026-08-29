@@ -10,13 +10,18 @@ import com.music.innertube.YouTube
 import com.music.innertube.models.WatchEndpoint
 import com.beatwave.music.extensions.toMediaItem
 import com.beatwave.music.models.MediaMetadata
+import com.beatwave.music.constants.RecommendationEngineStyle
+import com.beatwave.music.db.MusicDatabase
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.firstOrNull
 
 class YouTubeQueue(
     private var endpoint: WatchEndpoint,
     override val preloadItem: MediaMetadata? = null,
+    var recommendationStyle: RecommendationEngineStyle = RecommendationEngineStyle.HYBRID
 ) : Queue {
+    var database: MusicDatabase? = null
     private var continuation: String? = null
     private var retryCount = 0
     private val maxRetries = 3
@@ -32,9 +37,12 @@ class YouTubeQueue(
                     endpoint = nextResult.endpoint
                     continuation = nextResult.continuation
                     retryCount = 0
+                    
+                    val tailoredItems = tailorRecommendations(nextResult.items.map { it.toMediaItem() })
+                    
                     return@withContext Queue.Status(
                         title = nextResult.title,
-                        items = nextResult.items.map { it.toMediaItem() },
+                        items = tailoredItems,
                         mediaItemIndex = nextResult.currentIndex ?: 0,
                     )
                 } catch (e: Exception) {
@@ -64,7 +72,7 @@ class YouTubeQueue(
                     endpoint = nextResult.endpoint
                     continuation = nextResult.continuation
                     retryCount = 0
-                    return@withContext nextResult.items.map { it.toMediaItem() }
+                    return@withContext tailorRecommendations(nextResult.items.map { it.toMediaItem() })
                 } catch (e: Exception) {
                     lastException = e
                     retryCount++
@@ -75,6 +83,47 @@ class YouTubeQueue(
             }
             throw lastException ?: Exception("Failed to get next page")
         }
+    }
+
+    private suspend fun tailorRecommendations(items: List<MediaItem>): List<MediaItem> {
+        if (recommendationStyle == RecommendationEngineStyle.YOUTUBE_MUSIC) {
+            return items
+        }
+
+        val db = database ?: return items
+        
+        val history = kotlinx.coroutines.flow.firstOrNull(db.events()) ?: emptyList()
+        val likedTracks = kotlinx.coroutines.flow.firstOrNull(db.likedSongsByRowIdAsc()) ?: emptyList()
+        
+        val userArtists = (history.flatMap { it.song.artists.map { a -> a.name } } + 
+                           likedTracks.flatMap { it.artists.map { a -> a.name } }).toSet()
+
+        if (recommendationStyle == RecommendationEngineStyle.SPOTIFY) {
+            // Sort by whether the artist is in user's history
+            return items.sortedByDescending { mediaItem ->
+                 val artistName = mediaItem.mediaMetadata.artist?.toString()
+                 if (artistName != null && userArtists.any { it.contains(artistName, ignoreCase = true) || artistName.contains(it, ignoreCase = true) }) 1 else 0
+            }
+        }
+
+        if (recommendationStyle == RecommendationEngineStyle.HYBRID) {
+            // Interleave
+            val personalized = items.filter { mediaItem ->
+                 val artistName = mediaItem.mediaMetadata.artist?.toString()
+                 artistName != null && userArtists.any { it.contains(artistName, ignoreCase = true) || artistName.contains(it, ignoreCase = true) }
+            }
+            val generic = items - personalized.toSet()
+            val hybrid = mutableListOf<MediaItem>()
+            var pIndex = 0
+            var gIndex = 0
+            while(pIndex < personalized.size || gIndex < generic.size) {
+                if (pIndex < personalized.size) hybrid.add(personalized[pIndex++])
+                if (gIndex < generic.size) hybrid.add(generic[gIndex++])
+            }
+            return hybrid
+        }
+
+        return items
     }
 
     companion object {

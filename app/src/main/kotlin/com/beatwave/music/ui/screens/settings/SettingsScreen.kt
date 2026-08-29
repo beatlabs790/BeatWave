@@ -264,6 +264,21 @@ fun SettingsScreen(
             }
         }
 
+        item(key = "spacer_recommendations") { Spacer(Modifier.height(24.dp)) }
+
+        // Section: Recommendations
+        item(key = "recommendations_header") { SettingsSectionHeader("MUSIC DISCOVERY & RECOMMENDATIONS") }
+        item(key = "recommendations_section") {
+            SettingsSection {
+                SettingsNavItem(
+                    icon = painterResource(R.drawable.music),
+                    iconTint = Color(0xFFFF2D55),
+                    title = "Recommendation Engine / Style",
+                    onClick = { navController.navigate("settings/recommendations") },
+                )
+            }
+        }
+
         item(key = "spacer_2") { Spacer(Modifier.height(24.dp)) }
 
         // Section: Content

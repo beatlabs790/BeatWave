@@ -487,7 +487,7 @@ object Spotify {
 
     suspend fun getRecommendations(
         seedTracks: List<String> = emptyList(),
-        limit: Int = 20
+        limit: Int = 35
     ): Result<List<SpotifyTrack>> = runCatching {
         // 1. If user is logged in, try direct API recommendations
         val token = accessToken
@@ -545,7 +545,7 @@ object Spotify {
         }
 
         // 2. Fetch fresh tracks from Spotify algorithmic and editorial playlists
-        val randomPlaylists = CURATED_SPOTIFY_PLAYLISTS.shuffled().take(3)
+        val randomPlaylists = CURATED_SPOTIFY_PLAYLISTS.shuffled().take(5)
         val allTracks = mutableListOf<SpotifyTrack>()
 
         for (pId in randomPlaylists) {

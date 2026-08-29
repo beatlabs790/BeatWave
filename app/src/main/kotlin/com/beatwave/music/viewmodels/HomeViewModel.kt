@@ -343,7 +343,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
-            val spotifyRecs = com.music.spotify.Spotify.getRecommendations(spotifySeedIds.toList(), limit = 15).getOrNull()
+            val spotifyRecs = com.music.spotify.Spotify.getRecommendations(spotifySeedIds.toList(), limit = 35).getOrNull()
             if (!spotifyRecs.isNullOrEmpty()) {
                 val defaultSeed = seeds.firstOrNull() ?: Song(
                     song = com.beatwave.music.db.entities.SongEntity(id = "seed", title = "Spotify Discovery", duration = 0),
@@ -353,7 +353,7 @@ class HomeViewModel @Inject constructor(
                 // Suggest both Songs and Albums from Spotify recommendations
                 kotlinx.coroutines.coroutineScope {
                     // 1. Suggest Songs
-                    spotifyRecs.take(10).map { spTrack ->
+                    spotifyRecs.take(24).map { spTrack ->
                         launch(Dispatchers.IO) {
                             val query = "${spTrack.name} ${spTrack.artists.firstOrNull()?.name.orEmpty()}"
                             val searchResult = YouTube.search(query, YouTube.SearchFilter.FILTER_SONG).getOrNull()
@@ -369,7 +369,7 @@ class HomeViewModel @Inject constructor(
                     val uniqueAlbums = spotifyRecs.mapNotNull { it.album }
                         .filter { it.name.isNotBlank() }
                         .distinctBy { it.name.lowercase() }
-                        .take(4)
+                        .take(6)
 
                     uniqueAlbums.map { spAlbum ->
                         launch(Dispatchers.IO) {
@@ -405,12 +405,14 @@ class HomeViewModel @Inject constructor(
                                         }
                                         .shuffled()
 
-                                    songRecs.firstOrNull { rec -> rec.id != seed.id }?.let { recommendation ->
-                                        items.add(DailyDiscoverItem(seed, recommendation, endpoint))
+                                    songRecs.take(5).forEach { recommendation ->
+                                        if (recommendation.id != seed.id) {
+                                            items.add(DailyDiscoverItem(seed, recommendation, endpoint))
+                                        }
                                     }
 
                                     // Also include distinct album suggestions from YouTube Related page
-                                    page.albums.shuffled().firstOrNull()?.let { albumRec ->
+                                    page.albums.shuffled().take(2).forEach { albumRec ->
                                         items.add(DailyDiscoverItem(seed, albumRec, endpoint))
                                     }
                                 }
@@ -425,11 +427,11 @@ class HomeViewModel @Inject constructor(
                     song = com.beatwave.music.db.entities.SongEntity(id = "new", title = "New Releases", duration = 0),
                     artists = listOf(com.beatwave.music.db.entities.ArtistEntity(id = "artist", name = "Featured"))
                 )
-                explore?.newReleaseAlbums?.shuffled()?.take(2)?.forEach { album ->
+                explore?.newReleaseAlbums?.shuffled()?.take(6)?.forEach { album ->
                     items.add(DailyDiscoverItem(defaultSeed, album, null))
                 }
                 val hits = YouTube.search("top songs", YouTube.SearchFilter.FILTER_SONG).getOrNull()
-                hits?.items?.filterIsInstance<SongItem>()?.shuffled()?.take(8)?.forEach { songItem ->
+                hits?.items?.filterIsInstance<SongItem>()?.shuffled()?.take(20)?.forEach { songItem ->
                     if (!hideVideoSongs || !songItem.isVideoSong) {
                         items.add(DailyDiscoverItem(defaultSeed, songItem, null))
                     }
@@ -459,7 +461,7 @@ class HomeViewModel @Inject constructor(
                         val query = "${recentSong.title} ${recentSong.artists.firstOrNull()?.name.orEmpty()}"
                         val spotifySeedId = com.music.spotify.Spotify.searchTrack(query).getOrNull()
                         val seedsList = listOfNotNull(spotifySeedId)
-                        val spotifyRecs = com.music.spotify.Spotify.getRecommendations(seedsList, limit = 10).getOrNull()
+                        val spotifyRecs = com.music.spotify.Spotify.getRecommendations(seedsList, limit = 25).getOrNull()
                         if (!spotifyRecs.isNullOrEmpty()) {
                             val ytSimilarSongsSync = java.util.Collections.synchronizedList(ytSimilarSongs)
                             kotlinx.coroutines.coroutineScope {
@@ -491,7 +493,7 @@ class HomeViewModel @Inject constructor(
                         val endpoint = YouTube.next(WatchEndpoint(videoId = recentSong.id)).getOrNull()?.relatedEndpoint
                         if (endpoint != null) {
                             YouTube.related(endpoint).onSuccess { page ->
-                                page.songs.take(10).forEach { ytSong ->
+                                page.songs.take(20).forEach { ytSong ->
                                     val localSong = database.song(ytSong.id).first() ?: Song(
                                         song = com.beatwave.music.db.entities.SongEntity(
                                             id = ytSong.id,
@@ -513,14 +515,14 @@ class HomeViewModel @Inject constructor(
                 val combined = (relatedSongs + forgotten + ytSimilarSongs)
                     .distinctBy { it.id }
                     .shuffled()
-                    .take(20)
+                    .take(35)
 
-                quickPicks.value = combined.ifEmpty { relatedSongs.shuffled().take(20) }
+                quickPicks.value = combined.ifEmpty { relatedSongs.shuffled().take(35) }
             }
             QuickPicks.LAST_LISTEN -> {
                 val song = database.events().first().firstOrNull()?.song
                 if (song != null && database.hasRelatedSongs(song.id)) {
-                    quickPicks.value = database.getRelatedSongs(song.id).first().filterVideoSongs(hideVideoSongs).shuffled().take(20)
+                    quickPicks.value = database.getRelatedSongs(song.id).first().filterVideoSongs(hideVideoSongs).shuffled().take(30)
                 }
             }
         }

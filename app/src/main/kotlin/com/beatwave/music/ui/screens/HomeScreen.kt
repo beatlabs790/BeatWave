@@ -10,6 +10,7 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -608,7 +609,7 @@ fun DailyDiscoverCard(
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .padding(12.dp)
-                        .clip(RoundedCornerShape(AppleTokens.CardCornerMedium))
+                        .clip(RoundedCornerShape(AppleTokens.CardCorner))
                         .background(Color.White.copy(alpha = 0.14f))
                         .border(
                             width = 1.dp,
@@ -618,7 +619,7 @@ fun DailyDiscoverCard(
                                     Color.White.copy(alpha = 0.1f)
                                 )
                             ),
-                            shape = RoundedCornerShape(AppleTokens.CardCornerMedium)
+                            shape = RoundedCornerShape(AppleTokens.CardCorner)
                         )
                         .padding(14.dp)
                 ) {

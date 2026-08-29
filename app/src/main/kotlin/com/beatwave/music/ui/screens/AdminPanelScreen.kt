@@ -26,14 +26,15 @@ import com.beatwave.music.R
 import com.beatwave.music.SuggestionRow
 import com.beatwave.music.BugReportRow
 import com.beatwave.music.api.SupabaseService
-import com.beatwave.music.ui.component.IconButton
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.constants.ShowWrappedCardKey
 import com.beatwave.music.constants.WrappedSeenKey
 import com.beatwave.music.constants.WrappedIntervalDaysKey
 import com.beatwave.music.ui.screens.wrapped.provideWrappedManager
+import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.dataStore
-import com.beatwave.music.utils.put
+import androidx.datastore.preferences.core.edit
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -760,11 +761,11 @@ fun TestWrappedTab(navController: NavController) {
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "• Top Song: ${mostPlayedSongs.firstOrNull()?.song?.title ?: "None logged yet"}",
+                    text = "• Top Song: ${mostPlayedSongs.firstOrNull()?.title ?: "None logged yet"}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "• Top Artist: ${mostPlayedArtists.firstOrNull()?.name ?: "None logged yet"}",
+                    text = "• Top Artist: ${mostPlayedArtists.firstOrNull()?.title ?: "None logged yet"}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
@@ -809,9 +810,11 @@ fun TestWrappedTab(navController: NavController) {
         OutlinedButton(
             onClick = {
                 coroutineScope.launch {
-                    context.dataStore.put(ShowWrappedCardKey, true)
-                    context.dataStore.put(WrappedSeenKey, false)
-                    context.dataStore.put(WrappedIntervalDaysKey, if (selectedDays > 0) selectedDays else 30)
+                    context.dataStore.edit {
+                        it[ShowWrappedCardKey] = true
+                        it[WrappedSeenKey] = false
+                        it[WrappedIntervalDaysKey] = if (selectedDays > 0) selectedDays else 30
+                    }
                     Toast.makeText(context, "Wrapped card forced visible on Home Screen!", Toast.LENGTH_SHORT).show()
                 }
             },

@@ -370,11 +370,31 @@ object Spotify {
         )
     }
 
+    @Volatile
+    private var cachedGuestToken: String? = null
+    @Volatile
+    private var guestTokenExpiry: Long = 0L
+
     suspend fun getGuestToken(): Result<String> = runCatching {
-        val response = gqlClient.get("https://open.spotify.com/get_access_token?reason=transport&productType=web_player")
-        val responseText = response.bodyAsText()
-        val jsonResponse = json.parseToJsonElement(responseText).jsonObject
-        jsonResponse.str("accessToken") ?: throw SpotifyException(401, "No guest token found")
+        val now = System.currentTimeMillis()
+        val currentCached = cachedGuestToken
+        if (currentCached != null && now < guestTokenExpiry) {
+            return@runCatching currentCached
+        }
+
+        val token = SpotifyAuth.fetchAnonymousToken().map { 
+            guestTokenExpiry = it.accessTokenExpirationTimestampMs - 60_000L
+            it.accessToken 
+        }.getOrElse {
+            val response = gqlClient.get("https://open.spotify.com/get_access_token?reason=transport&productType=web_player")
+            val responseText = response.bodyAsText()
+            val jsonResponse = json.parseToJsonElement(responseText).jsonObject
+            val exp = jsonResponse.obj("accessTokenExpirationTimestampMs")?.jsonPrimitive?.longOrNull ?: (now + 3600_000L)
+            guestTokenExpiry = exp - 60_000L
+            jsonResponse.str("accessToken") ?: throw SpotifyException(401, "No guest token found")
+        }
+        cachedGuestToken = token
+        token
     }
 
     suspend fun searchTrack(query: String): Result<String?> = runCatching {
@@ -389,6 +409,19 @@ object Spotify {
         val tracks = responseJson.obj("tracks")?.arr("items")
         tracks?.firstOrNull()?.jsonObject?.str("id")
     }
+
+    suspend fun getTopSeedTrackIds(): List<String> = runCatching {
+        val token = accessToken ?: getGuestToken().getOrThrow()
+        val response = gqlClient.get("https://api.spotify.com/v1/search") {
+            header("Authorization", "Bearer $token")
+            parameter("q", "top hits 2026")
+            parameter("type", "track")
+            parameter("limit", "5")
+        }
+        val responseJson = json.parseToJsonElement(response.bodyAsText()).jsonObject
+        val tracks = responseJson.obj("tracks")?.arr("items")
+        tracks?.mapNotNull { it.jsonObject.str("id") } ?: emptyList()
+    }.getOrDefault(emptyList())
 
     suspend fun getRecommendations(
         seedTracks: List<String>,

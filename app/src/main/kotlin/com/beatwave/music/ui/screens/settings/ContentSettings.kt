@@ -243,7 +243,7 @@ fun ContentSettings(
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
     val (recommendationEngine, onRecommendationEngineChange) = rememberEnumPreference(
         key = RecommendationEngineKey,
-        defaultValue = RecommendationEngine.YOUTUBE
+        defaultValue = RecommendationEngine.SPOTIFY
     )
     val (showWrappedCard, onShowWrappedCardChange) = rememberPreference(key = ShowWrappedCardKey, defaultValue = false)
     val (showMoodFilters, onShowMoodFiltersChange) = rememberPreference(

@@ -528,6 +528,7 @@ fun DailyDiscoverCard(
     val haptic = LocalHapticFeedback.current
 
     val song = dailyDiscover.recommendation as? SongItem
+    val album = dailyDiscover.recommendation as? AlbumItem
     val playsString = stringResource(R.string.plays)
 
     Card(
@@ -542,6 +543,14 @@ fun DailyDiscoverCard(
                         menuState.show {
                             YouTubeSongMenu(
                                 song = song,
+                                navController = navController,
+                                onDismiss = { menuState.dismiss() }
+                            )
+                        }
+                    } else if (album != null) {
+                        menuState.show {
+                            YouTubeAlbumMenu(
+                                albumItem = album,
                                 navController = navController,
                                 onDismiss = { menuState.dismiss() }
                             )
@@ -587,9 +596,20 @@ fun DailyDiscoverCard(
                         )
                         Text(
                             text = buildString {
-                                append((dailyDiscover.recommendation as? SongItem)?.artists?.joinToString(", ") { it.name } ?: "")
-                                if (playCount > 0) {
-                                    append(" • $playCount $playsString")
+                                if (song != null) {
+                                    append(song.artists.joinToString(", ") { it.name })
+                                    if (playCount > 0) {
+                                        append(" • $playCount $playsString")
+                                    }
+                                } else if (album != null) {
+                                    append("Album")
+                                    val albumArtists = album.artists?.joinToString(", ") { it.name }
+                                    if (!albumArtists.isNullOrEmpty()) {
+                                        append(" • $albumArtists")
+                                    }
+                                    if (album.year != null) {
+                                        append(" • ${album.year}")
+                                    }
                                 }
                             },
                             style = MaterialTheme.typography.bodyMedium,
@@ -2310,14 +2330,17 @@ private fun LazyListScope.dailyDiscoverSection(
                         dailyDiscover = item,
                         onClick = {
                             val song = item.recommendation as? SongItem
-                            val mediaMetadata = song?.toMediaMetadata()
-                            if (mediaMetadata != null) {
+                            val album = item.recommendation as? AlbumItem
+                            if (song != null) {
+                                val mediaMetadata = song.toMediaMetadata()
                                 deps.playerConnection.playQueue(
                                     YouTubeQueue(
                                         song.endpoint ?: WatchEndpoint(videoId = song.id),
                                         mediaMetadata
                                     )
                                 )
+                            } else if (album != null) {
+                                deps.navController.navigate("album/${album.id}")
                             }
                         },
                         navController = deps.navController,

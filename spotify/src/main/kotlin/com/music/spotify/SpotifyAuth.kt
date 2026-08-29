@@ -78,6 +78,35 @@ object SpotifyAuth {
         token
     }
 
+    suspend fun fetchAnonymousToken(): Result<SpotifyInternalToken> = runCatching {
+        val nuance = fetchNuance()
+        val serverTimeSec = fetchServerTime()
+        val totp = generateTotp(nuance.s, serverTimeSec)
+
+        val tokenUrl = buildString {
+            append(TOKEN_URL)
+            append("?reason=transport")
+            append("&productType=web-player")
+            append("&totp=$totp")
+            append("&totpServer=$totp")
+            append("&totpVer=${nuance.v}")
+        }
+
+        val body = withContext(Dispatchers.IO) {
+            httpGet(tokenUrl, emptyMap())
+        }
+
+        val token = json.decodeFromString<SpotifyInternalToken>(body)
+        if (token.accessToken.isBlank()) {
+            throw Spotify.SpotifyException(
+                401,
+                "Empty anonymous token returned",
+            )
+        }
+
+        token
+    }
+
     private suspend fun fetchNuance(): Nuance = withContext(Dispatchers.IO) {
         val body = try {
             httpGet(NUANCE_GIST_URL, emptyMap())

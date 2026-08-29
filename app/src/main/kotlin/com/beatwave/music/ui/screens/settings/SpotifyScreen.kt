@@ -132,7 +132,7 @@ fun SpotifyScreen(
     var playlistLink by rememberSaveable { mutableStateOf("") }
     val (recommendationEngine, onRecommendationEngineChange) = rememberEnumPreference(
         key = RecommendationEngineKey,
-        defaultValue = RecommendationEngine.YOUTUBE
+        defaultValue = RecommendationEngine.SPOTIFY
     )
     val importProgress by viewModel.importProgress.collectAsStateWithLifecycle()
 

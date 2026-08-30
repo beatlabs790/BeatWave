@@ -57,10 +57,37 @@ fun HeroTintedContent(
     // be re-applied here because this MaterialTheme rebuilds the scheme from scratch.
     val scheme = remember(base, tint, onDark, appTextColorInt) {
         val tinted = base.accentText(tint, onDark)
-        if (appTextColorInt != 0) tinted.flatText(Color(appTextColorInt)) else tinted
+        if (appTextColorInt != 0) {
+            val picked = Color(appTextColorInt)
+            val textIsLight = picked.luminance() > 0.5f
+            val adapted = when {
+                onDark && !textIsLight -> Color(0xFFF5F5F7)
+                !onDark && textIsLight -> Color(0xFF1C1C1E)
+                else -> picked
+            }
+            tinted.flatText(adapted)
+        } else tinted
     }
-    val contentColor = if (appTextColorInt != 0) Color(appTextColorInt) else AppleTokens.onColor(tint)
-    val headingColor = if (appTextColorInt != 0) Color(appTextColorInt) else AppleTokens.onColorHeading(tint)
+
+    val contentColor = if (appTextColorInt != 0) {
+        val picked = Color(appTextColorInt)
+        val textIsLight = picked.luminance() > 0.5f
+        when {
+            onDark && !textIsLight -> Color(0xFFF5F5F7)
+            !onDark && textIsLight -> Color(0xFF1C1C1E)
+            else -> picked
+        }
+    } else AppleTokens.onColor(tint)
+
+    val headingColor = if (appTextColorInt != 0) {
+        val picked = Color(appTextColorInt)
+        val textIsLight = picked.luminance() > 0.5f
+        when {
+            onDark && !textIsLight -> Color.White
+            !onDark && textIsLight -> Color(0xFF111111)
+            else -> picked
+        }
+    } else AppleTokens.onColorHeading(tint)
 
     if (tint.isHueless()) {
         androidx.compose.runtime.CompositionLocalProvider(

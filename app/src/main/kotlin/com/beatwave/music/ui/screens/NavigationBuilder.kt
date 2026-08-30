@@ -22,6 +22,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -210,7 +213,16 @@ fun NavGraphBuilder.navigationBuilder(
             fadeOut(tween(200))
         },
     ) {
-        OnlineSearchResult(navController)
+        val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+        val isSystemDark = isSystemInDarkTheme()
+        val useDarkTheme = remember(darkTheme, isSystemDark) {
+            if (darkTheme == DarkMode.AUTO) isSystemDark else darkTheme == DarkMode.ON
+        }
+        val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
+        val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
+            pureBlackEnabled && useDarkTheme
+        }
+        OnlineSearchResult(navController, pureBlack = pureBlack)
     }
 
     sharedComposable(

@@ -139,7 +139,7 @@ fun LibraryPlaylistsScreen(
     )
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
     
-    val (libraryIconsOnly) = rememberPreference(LibraryIconsOnlyKey, defaultValue = true)
+    val (libraryIconsOnly) = rememberPreference(LibraryIconsOnlyKey, defaultValue = false)
 
     val playlists by viewModel.allPlaylists.collectAsState()
 
@@ -441,6 +441,7 @@ fun LibraryPlaylistsScreen(
                                 menuState = menuState,
                                 coroutineScope = coroutineScope,
                                 playlist = playlist,
+                                showIconOnly = libraryIconsOnly,
                                 modifier = Modifier.animateItem()
                             )
                         }
@@ -579,6 +580,7 @@ fun LibraryPlaylistsScreen(
                                 menuState = menuState,
                                 coroutineScope = coroutineScope,
                                 playlist = playlist,
+                                showIconOnly = libraryIconsOnly,
                                 modifier = Modifier.animateItem()
                             )
                         }

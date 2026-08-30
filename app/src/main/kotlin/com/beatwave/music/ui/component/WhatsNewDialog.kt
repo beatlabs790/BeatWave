@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BeatWave Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
  */
@@ -115,32 +115,44 @@ fun WhatsNewPromptHost(
             ) {
                 ChangelogHighlightItem(
                     emoji = "🎵",
-                    title = "Spotify Recommendation Engine",
-                    description = "Live algorithmic discovery feeds bringing fresh, personalized music without requiring any logins or API keys."
+                    title = "Spotify Recommendation Algorithm",
+                    description = "Smart algorithmic discovery feeds delivering real-time trending tracks, curated mixes, and personalized suggestions. (Suggested by Sandeep)"
+                )
+
+                ChangelogHighlightItem(
+                    emoji = "🎛️",
+                    title = "SoundCloud-Style Music Presets",
+                    description = "Dynamic audio presets tailored for deep bass, crisp highs, electronic drops, and studio acoustics. (Suggested by Zaid)"
+                )
+
+                ChangelogHighlightItem(
+                    emoji = "✨",
+                    title = "Revamped UI & Brand Typography",
+                    description = "Elevated geometric Outfit font, two-tone BeatWave wordmark, ambient glow aura, and official About logo badge."
+                )
+
+                ChangelogHighlightItem(
+                    emoji = "📡",
+                    title = "Google Cast in Player Menu",
+                    description = "One-tap Chromecast discovery and streaming directly from the player menu with live volume control."
+                )
+
+                ChangelogHighlightItem(
+                    emoji = "🖼️",
+                    title = "Library Playlist Thumbnails",
+                    description = "Playlists in Library now display dynamic cover art and thumbnails by default for intuitive visual navigation."
+                )
+
+                ChangelogHighlightItem(
+                    emoji = "👁️",
+                    title = "Adaptive Font Contrast & Dark Search UI",
+                    description = "Font colors seamlessly adapt to background luminance across all views, ensuring high readability and fixing white-on-white text in search results."
                 )
 
                 ChangelogHighlightItem(
                     emoji = "⚡",
-                    title = "Instant Song Cards",
-                    description = "1-tap direct playback for all Daily Discover cards and Quick Picks right from your home screen."
-                )
-
-                ChangelogHighlightItem(
-                    emoji = "🎨",
-                    title = "Vibrant Moods & Genres",
-                    description = "Unified dynamic gradient palette with rich contrast across Home and Explore sections."
-                )
-
-                ChangelogHighlightItem(
-                    emoji = "💎",
-                    title = "Liquid Glass UI Polish",
-                    description = "Enhanced frosted glass cards, subtle refraction highlights, and smooth spring physics."
-                )
-
-                ChangelogHighlightItem(
-                    emoji = "🚀",
-                    title = "Performance Improvements",
-                    description = "Smoother scrolling, optimized database queries, and faster app startup."
+                    title = "Direct 1-Tap Playback",
+                    description = "Instant playback for all Daily Discover cards and Quick Picks with liquid glass aesthetics."
                 )
             }
         },

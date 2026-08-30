@@ -31,6 +31,7 @@ import com.beatwave.music.constants.ShowWrappedCardKey
 import com.beatwave.music.constants.WrappedSeenKey
 import com.beatwave.music.constants.WrappedIntervalDaysKey
 import com.beatwave.music.ui.screens.wrapped.provideWrappedManager
+import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.ui.utils.appTopBarWindowInsets
 import com.beatwave.music.utils.dataStore
 import androidx.datastore.preferences.core.edit
@@ -79,13 +80,14 @@ fun AdminPanelScreen(
                 }
             }
 
+            val playerBottomPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
             Box(modifier = Modifier.fillMaxSize()) {
                 when (selectedTab) {
-                    0 -> PublishUpdateTab(navController)
-                    1 -> PublishNewsTab(navController)
-                    2 -> TestWrappedTab(navController)
-                    3 -> SuggestionsTab()
-                    else -> BugReportsTab()
+                    0 -> PublishUpdateTab(navController, playerBottomPadding)
+                    1 -> PublishNewsTab(navController, playerBottomPadding)
+                    2 -> TestWrappedTab(navController, playerBottomPadding)
+                    3 -> SuggestionsTab(playerBottomPadding)
+                    else -> BugReportsTab(playerBottomPadding)
                 }
             }
         }
@@ -93,7 +95,7 @@ fun AdminPanelScreen(
 }
 
 @Composable
-fun PublishUpdateTab(navController: NavController) {
+fun PublishUpdateTab(navController: NavController, bottomPadding: androidx.compose.ui.unit.Dp = 0.dp) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -108,7 +110,7 @@ fun PublishUpdateTab(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
@@ -213,7 +215,7 @@ fun PublishUpdateTab(navController: NavController) {
 }
 
 @Composable
-fun SuggestionsTab() {
+fun SuggestionsTab(bottomPadding: androidx.compose.ui.unit.Dp = 0.dp) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var suggestions by remember { mutableStateOf<List<SuggestionRow>>(emptyList()) }
@@ -248,7 +250,7 @@ fun SuggestionsTab() {
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(suggestions, key = { it.id ?: 0L }) { item ->
@@ -404,7 +406,7 @@ fun StatusBadge(status: String) {
 }
 
 @Composable
-fun PublishNewsTab(navController: NavController) {
+fun PublishNewsTab(navController: NavController, bottomPadding: androidx.compose.ui.unit.Dp = 0.dp) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -417,7 +419,7 @@ fun PublishNewsTab(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
@@ -493,7 +495,7 @@ fun PublishNewsTab(navController: NavController) {
 }
 
 @Composable
-fun BugReportsTab() {
+fun BugReportsTab(bottomPadding: androidx.compose.ui.unit.Dp = 0.dp) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var bugReports by remember { mutableStateOf<List<BugReportRow>>(emptyList()) }
@@ -528,7 +530,7 @@ fun BugReportsTab() {
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(bugReports, key = { it.id ?: 0L }) { item ->
@@ -660,7 +662,7 @@ fun BugReportItemCard(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun TestWrappedTab(navController: NavController) {
+fun TestWrappedTab(navController: NavController, bottomPadding: androidx.compose.ui.unit.Dp = 0.dp) {
     val context = LocalContext.current
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
@@ -696,7 +698,7 @@ fun TestWrappedTab(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Card(

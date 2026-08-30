@@ -73,6 +73,7 @@ import coil3.request.allowHardware
 import com.beatwave.music.ui.utils.bounceClick
 import com.beatwave.music.ui.utils.combinedBounceClick
 import com.beatwave.music.LocalPlayerConnection
+import com.beatwave.music.LocalPlayerAwareWindowInsets
 import com.beatwave.music.R
 import com.beatwave.music.constants.MiniPlayerBottomSpacing
 import com.beatwave.music.constants.MiniPlayerHeight
@@ -92,6 +93,7 @@ import com.beatwave.music.ui.component.rememberHeroTint
 import com.beatwave.music.ui.theme.AppleTokens
 import com.beatwave.music.ui.theme.HeroTintedContent
 import com.beatwave.music.ui.component.backdrop.backdrops.rememberLayerBackdrop
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
 import com.beatwave.music.ui.component.shimmer.ListItemPlaceHolder
 import com.beatwave.music.ui.component.shimmer.ShimmerHost
@@ -300,23 +302,33 @@ fun OnlineSearchResult(
                         .blur(150.dp)
                 )
             }
-            // Dark overlay for readability
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f))
-            )
-            // Primary-color wash at the bottom
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.55f to Color.Transparent,
-                            1f to MaterialTheme.colorScheme.primary.copy(alpha = 0.55f),
+            if (pureBlack) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black)
+                )
+            } else {
+                // Adaptive overlay: if the background tint is light (e.g. pale/white artwork),
+                // apply a stronger dark wash (0.75f) so the search area remains dark and high-contrast.
+                val darkOverlayAlpha = if (tint.luminance() > 0.35f) 0.75f else 0.45f
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = darkOverlayAlpha))
+                )
+                // Primary-color wash at the bottom
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                0.55f to Color.Transparent,
+                                1f to MaterialTheme.colorScheme.primary.copy(alpha = 0.55f),
+                            )
                         )
-                    )
-            )
+                )
+            }
         }
 
       HeroTintedContent(tint = tint, backdrop = heroBackdrop) {
@@ -365,7 +377,7 @@ fun OnlineSearchResult(
                     LazyColumn(
                         state = lazyListState,
                         overscrollEffect = heroZoom.listOverscroll(),
-                        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Bottom).asPaddingValues(),
+                        contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Bottom).asPaddingValues(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .heroPullZoom(heroZoom)

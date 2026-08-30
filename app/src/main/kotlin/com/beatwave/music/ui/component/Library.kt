@@ -175,7 +175,7 @@ fun LibraryPlaylistListItem(
     coroutineScope: CoroutineScope,
     playlist: Playlist,
     modifier: Modifier = Modifier,
-    showIconOnly: Boolean = true,
+    showIconOnly: Boolean = false,
 ) = PlaylistListItem(
     playlist = playlist,
     showIconOnly = showIconOnly,
@@ -244,7 +244,7 @@ fun LibraryPlaylistGridItem(
     coroutineScope: CoroutineScope,
     playlist: Playlist,
     modifier: Modifier = Modifier,
-    showIconOnly: Boolean = true,
+    showIconOnly: Boolean = false,
 ) = PlaylistGridItem(
     playlist = playlist,
     fillMaxWidth = true,

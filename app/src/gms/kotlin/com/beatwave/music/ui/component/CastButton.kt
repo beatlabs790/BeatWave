@@ -217,6 +217,61 @@ private fun updateRoutes(
     onUpdate(routes)
 }
 
+@Composable
+fun LiveCastPickerSheet(
+    context: android.content.Context,
+    castHandler: com.beatwave.music.playback.CastConnectionHandler,
+    onDismiss: () -> Unit,
+) {
+    var availableRoutes by remember { mutableStateOf<List<MediaRouter.RouteInfo>>(emptyList()) }
+    val isConnecting by castHandler.isConnecting.collectAsState()
+    val isCasting by castHandler.isCasting.collectAsState()
+    val mediaRouter = remember { MediaRouter.getInstance(context) }
+    val routeSelector = remember {
+        MediaRouteSelector.Builder()
+            .addControlCategory(CastMediaControlIntent.categoryForCast(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID))
+            .build()
+    }
+
+    DisposableEffect(mediaRouter, routeSelector) {
+        val callback = object : MediaRouter.Callback() {
+            override fun onRouteAdded(router: MediaRouter, route: MediaRouter.RouteInfo) {
+                availableRoutes = router.routes.filter { it.matchesSelector(routeSelector) && !it.isDefault }
+            }
+            override fun onRouteRemoved(router: MediaRouter, route: MediaRouter.RouteInfo) {
+                availableRoutes = router.routes.filter { it.matchesSelector(routeSelector) && !it.isDefault }
+            }
+            override fun onRouteChanged(router: MediaRouter, route: MediaRouter.RouteInfo) {
+                availableRoutes = router.routes.filter { it.matchesSelector(routeSelector) && !it.isDefault }
+            }
+        }
+        mediaRouter.addCallback(routeSelector, callback, MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY)
+        availableRoutes = mediaRouter.routes.filter { it.matchesSelector(routeSelector) && !it.isDefault }
+
+        onDispose {
+            mediaRouter.removeCallback(callback)
+        }
+    }
+
+    val currentRoute = if (isCasting) {
+        mediaRouter.routes.find { it.matchesSelector(routeSelector) && it.isSelected }
+    } else null
+
+    CastPickerSheet(
+        routes = availableRoutes,
+        isConnecting = isConnecting,
+        currentlyConnectedRoute = currentRoute,
+        onRouteSelected = { route ->
+            castHandler.connectToRoute(route)
+            onDismiss()
+        },
+        onDisconnect = {
+            castHandler.disconnect()
+            onDismiss()
+        }
+    )
+}
+
 /**
  * Opens the Google Cast device picker sheet.
  * Can be called from PlayerMenu, OldPlayerMenu, or any screen.
@@ -227,38 +282,20 @@ fun openCastPicker(
     playerConnection: com.beatwave.music.playback.PlayerConnection?,
 ) {
     val castHandler = playerConnection?.service?.castConnectionHandler ?: return
+
+    if (playerConnection.mediaMetadata.value == null && !castHandler.isCasting.value) {
+        Toast.makeText(context, "Play a song first to cast", Toast.LENGTH_SHORT).show()
+        return
+    }
+
     try {
         CastContext.getSharedInstance(context.applicationContext)
-        val mediaRouter = MediaRouter.getInstance(context)
-        val routeSelector = MediaRouteSelector.Builder()
-            .addControlCategory(CastMediaControlIntent.categoryForCast(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID))
-            .build()
-        val isCasting = castHandler.isCasting.value
-        val isConnecting = castHandler.isConnecting.value
-
-        val routes = mediaRouter.routes.filter { route ->
-            route.matchesSelector(routeSelector) && !route.isDefault
-        }
-
-        val currentRoute = if (isCasting) {
-            mediaRouter.routes.find { route ->
-                route.matchesSelector(routeSelector) && route.isSelected
-            }
-        } else null
-
+        castHandler.initialize()
         menuState.show {
-            CastPickerSheet(
-                routes = routes,
-                isConnecting = isConnecting,
-                currentlyConnectedRoute = currentRoute,
-                onRouteSelected = { route ->
-                    castHandler.connectToRoute(route)
-                    menuState.dismiss()
-                },
-                onDisconnect = {
-                    castHandler.disconnect()
-                    menuState.dismiss()
-                }
+            LiveCastPickerSheet(
+                context = context,
+                castHandler = castHandler,
+                onDismiss = { menuState.dismiss() }
             )
         }
     } catch (e: Exception) {

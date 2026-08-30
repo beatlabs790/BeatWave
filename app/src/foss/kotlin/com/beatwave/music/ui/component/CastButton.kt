@@ -16,3 +16,11 @@ fun CastButton(
 ) {
     // No-op: Cast not available in FOSS build
 }
+
+fun openCastPicker(
+    context: android.content.Context,
+    menuState: MenuState,
+    playerConnection: com.beatwave.music.playback.PlayerConnection?,
+) {
+    // No-op: Cast not available in FOSS build
+}

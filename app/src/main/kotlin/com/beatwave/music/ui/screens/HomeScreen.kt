@@ -1219,13 +1219,27 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopStart
         ) {
-            // Flat fill behind everything — a no-op (matches the default
-            // Scaffold background) unless the user picked a specific custom
-            // theme color, in which case that becomes Home's actual background.
+            // Base fill with rich ambient atmospheric gradient aura
+            val homeBgBase = rememberAppBackgroundColor(MaterialTheme.colorScheme.background)
+            val globalAccent = rememberGlobalAccentColors().first
+            val tertiaryColor = MaterialTheme.colorScheme.tertiary
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .background(rememberAppBackgroundColor(MaterialTheme.colorScheme.background))
+                    .background(homeBgBase)
+            )
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        Brush.verticalGradient(
+                            0.0f to globalAccent.copy(alpha = 0.22f),
+                            0.20f to tertiaryColor.copy(alpha = 0.14f),
+                            0.45f to globalAccent.copy(alpha = 0.06f),
+                            0.75f to Color.Transparent,
+                            1.0f to Color.Transparent,
+                        )
+                    )
             )
             HomeImageBackground(contentLoaded = homePage != null)
 

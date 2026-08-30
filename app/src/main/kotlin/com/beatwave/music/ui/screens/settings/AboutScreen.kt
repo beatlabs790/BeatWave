@@ -25,7 +25,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
@@ -43,6 +45,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.beatwave.music.ui.theme.rememberBrandFontFamily
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,24 +107,69 @@ fun AboutScreen(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp),
     ) {
-        // Header
+        // Header with Official BeatWave Logo
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 32.dp),
+                .padding(top = 28.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // BeatWave Logo with glowing ambient backdrop and elevated container
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.padding(bottom = 18.dp)
+            ) {
+                // Ambient glow
+                Box(
+                    modifier = Modifier
+                        .size(104.dp)
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.32f),
+                                    Color.Transparent
+                                )
+                            ),
+                            shape = CircleShape
+                        )
+                )
+                // Elevated Logo Container
+                Surface(
+                    shape = RoundedCornerShape(26.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.7f),
+                    border = BorderStroke(
+                        1.5.dp,
+                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+                    ),
+                    shadowElevation = 8.dp,
+                    modifier = Modifier.size(92.dp)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.padding(14.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.beatwave_logo),
+                            contentDescription = stringResource(R.string.wrapped_logo_content_description),
+                            modifier = Modifier.size(64.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                }
+            }
+
             Text(
-                text = stringResource(R.string.vivi_music_title),
+                text = "BeatWave",
                 style = MaterialTheme.typography.displaySmall.copy(
+                    fontFamily = rememberBrandFontFamily(),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 48.sp,
-                    letterSpacing = 2.sp
+                    fontSize = 38.sp,
+                    letterSpacing = (-0.5).sp
                 ),
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             Row(
                 modifier = Modifier
@@ -135,7 +185,7 @@ fun AboutScreen(
                 Image(
                     painter = painterResource(R.drawable.beatwave_logo),
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(20.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                 )
 

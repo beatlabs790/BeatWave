@@ -14,10 +14,10 @@ import com.beatwave.music.R
 import com.beatwave.music.constants.BrandFontEnabledKey
 import com.beatwave.music.utils.rememberPreference
 
-/** The product wordmark, always set in caps. */
-const val BrandName = "BEATWAVE"
+/** The product wordmark. */
+const val BrandName = "BeatWave"
 
-/** Chillax — the display face used for the wordmark and artist names. */
+/** Chillax — display face for artist titles. */
 val ChillaxFontFamily = FontFamily(
     Font(R.font.chillax_light, FontWeight.Light),
     Font(R.font.chillax_regular, FontWeight.Normal),
@@ -27,12 +27,11 @@ val ChillaxFontFamily = FontFamily(
 )
 
 /**
- * Chillax while the display-font preference is on, otherwise null so the caller
- * falls through to whatever its text style already specifies. Returning null
- * rather than the app typeface keeps the off state exactly as it was.
+ * Outfit font family for the BeatWave brand wordmark and display headers.
+ * Falls back to null when brand font preference is disabled.
  */
 @Composable
 fun rememberBrandFontFamily(): FontFamily? {
     val enabled by rememberPreference(BrandFontEnabledKey, defaultValue = true)
-    return if (enabled) ChillaxFontFamily else null
+    return if (enabled) OutfitFontFamily else null
 }

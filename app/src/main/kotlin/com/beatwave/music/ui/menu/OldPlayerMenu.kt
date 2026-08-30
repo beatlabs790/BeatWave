@@ -48,12 +48,14 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
+import com.beatwave.music.BuildConfig
 import com.music.innertube.YouTube
 import com.beatwave.music.LocalDatabase
 import com.beatwave.music.LocalDownloadUtil
 import com.beatwave.music.LocalListenTogetherManager
 import com.beatwave.music.LocalPlayerConnection
 import com.beatwave.music.R
+import com.beatwave.music.constants.EnableGoogleCastKey
 import com.beatwave.music.constants.ListItemHeight
 import com.beatwave.music.extensions.toggleRepeatMode
 import com.beatwave.music.listentogether.RoomRole
@@ -61,11 +63,13 @@ import com.beatwave.music.models.MediaMetadata
 import com.beatwave.music.playback.ExoDownloadService
 import com.beatwave.music.ui.component.BottomSheetState
 import com.beatwave.music.ui.component.ListDialog
+import com.beatwave.music.ui.component.LocalMenuState
 import com.beatwave.music.ui.component.Material3MenuGroup
 import com.beatwave.music.ui.component.Material3MenuItemData
 import com.beatwave.music.ui.component.NewAction
 import com.beatwave.music.ui.component.NewActionGrid
 import com.beatwave.music.ui.component.VolumeSlider
+import com.beatwave.music.ui.component.openCastPicker
 import com.beatwave.music.ui.theme.rememberGlobalAccentColors
 import com.beatwave.music.constants.EnableSaavnStreamingKey
 import com.beatwave.music.utils.rememberPreference
@@ -82,6 +86,8 @@ fun OldPlayerMenu(
 ) {
     mediaMetadata ?: return
     val context = LocalContext.current
+    val menuState = LocalMenuState.current
+    val (enableGoogleCast) = rememberPreference(EnableGoogleCastKey, defaultValue = true)
     val ringtoneViewModel = com.beatwave.music.LocalRingtoneViewModel.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -180,27 +186,38 @@ fun OldPlayerMenu(
             .padding(horizontal = 24.dp)
             .padding(top = 24.dp, bottom = 6.dp),
     ) {
-        // Show Cast indicator when casting
+        // Show Cast indicator when casting (interactive pill to open Cast picker)
         if (isCasting && castDeviceName != null) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+            androidx.compose.material3.Surface(
+                onClick = { openCastPicker(context, menuState, playerConnection) },
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.cast),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = stringResource(R.string.casting_to, castDeviceName ?: ""),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.cast_connected),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(R.string.casting_to, castDeviceName ?: ""),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
 
@@ -561,10 +578,41 @@ fun OldPlayerMenu(
 
         item { Spacer(modifier = Modifier.height(12.dp)) }
 
-        // Listen together
+        // Listen together & Google Cast
         item {
             Material3MenuGroup(
                 items = buildList {
+                    if (BuildConfig.CAST_AVAILABLE && enableGoogleCast) {
+                        add(
+                            Material3MenuItemData(
+                                title = { Text(text = stringResource(R.string.google_cast)) },
+                                description = {
+                                    Text(
+                                        text = if (isCasting && castDeviceName != null) {
+                                            stringResource(R.string.casting_to, castDeviceName ?: "")
+                                        } else {
+                                            stringResource(R.string.google_cast_description)
+                                        },
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(
+                                            if (isCasting) R.drawable.cast_connected else R.drawable.cast
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp),
+                                        tint = if (isCasting) MaterialTheme.colorScheme.primary else androidx.compose.material3.LocalContentColor.current
+                                    )
+                                },
+                                onClick = {
+                                    openCastPicker(context, menuState, playerConnection)
+                                }
+                            )
+                        )
+                    }
                     add(
                         Material3MenuItemData(
                             title = { Text(text = stringResource(R.string.listen_together)) },

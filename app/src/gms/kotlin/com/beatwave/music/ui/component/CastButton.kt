@@ -86,7 +86,7 @@ fun CastButton(
             return@LaunchedEffect
         }
         try {
-            CastContext.getSharedInstance(context)
+            CastContext.getSharedInstance(context.applicationContext)
             mediaRouter = MediaRouter.getInstance(context)
             routeSelector = MediaRouteSelector.Builder()
                 .addControlCategory(CastMediaControlIntent.categoryForCast(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID))
@@ -215,4 +215,53 @@ private fun updateRoutes(
         route.matchesSelector(selector) && !route.isDefault
     }
     onUpdate(routes)
+}
+
+/**
+ * Opens the Google Cast device picker sheet.
+ * Can be called from PlayerMenu, OldPlayerMenu, or any screen.
+ */
+fun openCastPicker(
+    context: android.content.Context,
+    menuState: MenuState,
+    playerConnection: com.beatwave.music.playback.PlayerConnection?,
+) {
+    val castHandler = playerConnection?.service?.castConnectionHandler ?: return
+    try {
+        CastContext.getSharedInstance(context.applicationContext)
+        val mediaRouter = MediaRouter.getInstance(context)
+        val routeSelector = MediaRouteSelector.Builder()
+            .addControlCategory(CastMediaControlIntent.categoryForCast(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID))
+            .build()
+        val isCasting = castHandler.isCasting.value
+        val isConnecting = castHandler.isConnecting.value
+
+        val routes = mediaRouter.routes.filter { route ->
+            route.matchesSelector(routeSelector) && !route.isDefault
+        }
+
+        val currentRoute = if (isCasting) {
+            mediaRouter.routes.find { route ->
+                route.matchesSelector(routeSelector) && route.isSelected
+            }
+        } else null
+
+        menuState.show {
+            CastPickerSheet(
+                routes = routes,
+                isConnecting = isConnecting,
+                currentlyConnectedRoute = currentRoute,
+                onRouteSelected = { route ->
+                    castHandler.connectToRoute(route)
+                    menuState.dismiss()
+                },
+                onDisconnect = {
+                    castHandler.disconnect()
+                    menuState.dismiss()
+                }
+            )
+        }
+    } catch (e: Exception) {
+        Timber.e(e, "Failed to open Cast picker")
+    }
 }

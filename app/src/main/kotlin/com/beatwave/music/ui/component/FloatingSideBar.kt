@@ -246,14 +246,24 @@ fun AppFloatingSideBar(
             horizontalArrangement = if (collapsed) Arrangement.Center else Arrangement.SpaceBetween,
         ) {
             if (!collapsed) {
-                Text(
-                    text = BrandName,
-                    fontFamily = rememberBrandFontFamily(),
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 22.sp,
-                    letterSpacing = 1.5.sp,
-                    color = glassConfig.textColor,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Beat",
+                        fontFamily = rememberBrandFontFamily(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        letterSpacing = (-0.3).sp,
+                        color = glassConfig.textColor,
+                    )
+                    Text(
+                        text = "Wave",
+                        fontFamily = rememberBrandFontFamily(),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 22.sp,
+                        letterSpacing = (-0.3).sp,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
             }
             Icon(
                 painter = painterResource(if (collapsed) R.drawable.chevron_right_px else R.drawable.chevron_leftpx),

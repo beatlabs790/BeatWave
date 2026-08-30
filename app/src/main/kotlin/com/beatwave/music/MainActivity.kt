@@ -1746,30 +1746,45 @@ class MainActivity : ComponentActivity() {
                                         }
                                         TopAppBar(
                                         title = {
-                                            // Home shows the wordmark; every other tab keeps
-                                            // its own title.
-                                            val isHome = effectiveRoute == Screens.Home.route
-                                            Text(
-                                                text = if (isHome) {
-                                                    BrandName
-                                                } else {
-                                                    currentTitleRes?.let { stringResource(it) } ?: ""
-                                                },
-                                                style = MaterialTheme.typography.titleLarge.copy(
-                                                    // Display face is for the wordmark only;
-                                                    // other tab titles keep the app typeface.
-                                                    fontFamily = if (isHome) rememberBrandFontFamily() else null,
-                                                    fontWeight = if (isHome) FontWeight.SemiBold else FontWeight.Bold,
-                                                    fontSize = 24.sp,
-                                                    letterSpacing = if (isHome) 1.5.sp else 0.sp,
-                                                ),
-                                                // The bar is a Scaffold slot outside the screen
-                                                // content, so this is the app-wide accent text
-                                                // colour, not any screen's hero tint.
-                                                color = LocalAccentTextColor.current,
-                                                modifier = Modifier.padding(start = 4.dp),
-                                            )
-                                        },
+                                             val isHome = effectiveRoute == Screens.Home.route
+                                             if (isHome) {
+                                                 Row(
+                                                     verticalAlignment = Alignment.CenterVertically,
+                                                     modifier = Modifier.padding(start = 4.dp)
+                                                 ) {
+                                                     Text(
+                                                         text = "Beat",
+                                                         style = MaterialTheme.typography.titleLarge.copy(
+                                                             fontFamily = rememberBrandFontFamily(),
+                                                             fontWeight = FontWeight.Bold,
+                                                             fontSize = 25.sp,
+                                                             letterSpacing = (-0.3).sp,
+                                                         ),
+                                                         color = LocalAccentTextColor.current,
+                                                     )
+                                                     Text(
+                                                         text = "Wave",
+                                                         style = MaterialTheme.typography.titleLarge.copy(
+                                                             fontFamily = rememberBrandFontFamily(),
+                                                             fontWeight = FontWeight.ExtraBold,
+                                                             fontSize = 25.sp,
+                                                             letterSpacing = (-0.3).sp,
+                                                         ),
+                                                         color = MaterialTheme.colorScheme.primary,
+                                                     )
+                                                 }
+                                             } else {
+                                                 Text(
+                                                     text = currentTitleRes?.let { stringResource(it) } ?: "",
+                                                     style = MaterialTheme.typography.titleLarge.copy(
+                                                         fontWeight = FontWeight.Bold,
+                                                         fontSize = 24.sp,
+                                                     ),
+                                                     color = LocalAccentTextColor.current,
+                                                     modifier = Modifier.padding(start = 4.dp),
+                                                 )
+                                             }
+                                         },
                                         actions = {
                                             // History/Stats/Together moved to Settings (see
                                             // SettingsScreen.kt's ACTIVITY section + the

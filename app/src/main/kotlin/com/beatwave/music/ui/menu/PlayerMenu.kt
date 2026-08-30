@@ -97,6 +97,12 @@ import com.beatwave.music.ui.component.BottomSheetState
 import com.beatwave.music.ui.component.ListDialog
 import com.beatwave.music.ui.component.Material3MenuGroup
 import com.beatwave.music.ui.component.Material3MenuItemData
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.LocalContentColor
+import com.beatwave.music.BuildConfig
+import com.beatwave.music.constants.EnableGoogleCastKey
+import com.beatwave.music.ui.component.LocalMenuState
+import com.beatwave.music.ui.component.openCastPicker
 import com.beatwave.music.ui.component.NewAction
 import com.beatwave.music.ui.component.NewActionGrid
 import com.beatwave.music.ui.component.VolumeSlider
@@ -120,6 +126,8 @@ fun PlayerMenu(
 ) {
     mediaMetadata ?: return
     val context = LocalContext.current
+    val menuState = LocalMenuState.current
+    val (enableGoogleCast) = rememberPreference(EnableGoogleCastKey, defaultValue = true)
     val ringtoneViewModel = com.beatwave.music.LocalRingtoneViewModel.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -238,27 +246,38 @@ fun PlayerMenu(
                 .padding(horizontal = 24.dp)
                 .padding(top = 24.dp, bottom = 6.dp),
         ) {
-            // Show Cast indicator when casting
+            // Show Cast indicator when casting (interactive pill to open Cast picker)
             if (isCasting && castDeviceName != null) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                Surface(
+                    onClick = { openCastPicker(context, menuState, playerConnection) },
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.cast),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(R.string.casting_to, castDeviceName ?: ""),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.cast_connected),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = stringResource(R.string.casting_to, castDeviceName ?: ""),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
             
@@ -571,6 +590,37 @@ fun PlayerMenu(
         item {
             Material3MenuGroup(
                 items = buildList {
+                    if (BuildConfig.CAST_AVAILABLE && enableGoogleCast) {
+                        add(
+                            Material3MenuItemData(
+                                title = { Text(text = stringResource(R.string.google_cast)) },
+                                description = {
+                                    Text(
+                                        text = if (isCasting && castDeviceName != null) {
+                                            stringResource(R.string.casting_to, castDeviceName ?: "")
+                                        } else {
+                                            stringResource(R.string.google_cast_description)
+                                        },
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(
+                                            if (isCasting) R.drawable.cast_connected else R.drawable.cast
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp),
+                                        tint = if (isCasting) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                                    )
+                                },
+                                onClick = {
+                                    openCastPicker(context, menuState, playerConnection)
+                                }
+                            )
+                        )
+                    }
                     add(
                         Material3MenuItemData(
                             title = { Text(text = stringResource(R.string.listen_together)) },

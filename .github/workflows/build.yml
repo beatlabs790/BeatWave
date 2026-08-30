@@ -14,7 +14,7 @@ on:
 
 jobs:
   build_debug:
-    name: Build Universal FOSS Release
+    name: Build Universal GMS Release
     runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]'
     steps:
@@ -54,10 +54,10 @@ jobs:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-          ./gradlew assembleUniversalFossRelease --no-configuration-cache --console=plain --warning-mode summary -x lint
+          ./gradlew assembleUniversalGmsRelease --no-configuration-cache --console=plain --warning-mode summary -x lint
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-universal-foss-release
-          path: app/build/outputs/apk/universalFoss/release/*.apk
+          name: app-universal-gms-release
+          path: app/build/outputs/apk/universalGms/release/*.apk

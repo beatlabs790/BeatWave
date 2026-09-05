@@ -278,6 +278,8 @@ import com.beatwave.music.ui.component.NavBarSearchInputBar
 import com.beatwave.music.ui.component.NavSearchState
 import com.beatwave.music.ui.component.OverlayMenu
 import com.beatwave.music.ui.component.SideBarAccountRow
+import com.music.innertube.models.WatchEndpoint
+import com.music.innertube.utils.YouTubeUrlParser
 import com.beatwave.music.ui.component.SideBarCollapsedWidth
 import com.beatwave.music.ui.component.SideBarContentInset
 import com.beatwave.music.ui.component.SideBarLink
@@ -1081,22 +1083,37 @@ class MainActivity : ComponentActivity() {
                 // actual navigation call lands (see enterSearch/exitSearch below).
                 var searchVisualOverride by remember { mutableStateOf<Boolean?>(null) }
 
-                val onSearch: (String) -> Unit = remember(localOnlyMode, navController, onQueryChange) {
+                val onSearch: (String) -> Unit = remember(localOnlyMode, navController, onQueryChange, playerConnection) {
                     { searchQuery ->
                         if (searchQuery == "admin00") {
+                            searchKeyboardActive = false
+                            searchOverlayOpen = false
                             onQueryChange(TextFieldValue())
                             navController.navigate("admin_panel")
                         } else if (searchQuery.isNotEmpty()) {
-                            // search/{query} is the YouTube results screen. In local-only
-                            // mode the results are already on screen (search_input renders
-                            // LocalSearchScreen live), so submitting just records history.
-                            if (!localOnlyMode) navController.navigate("search/${URLEncoder.encode(searchQuery, "UTF-8")}") {
-                                // No launchSingleTop: it compares destination id, not
-                                // resolved args, so re-submitting a new query while
-                                // already on search/{oldQuery} could get silently
-                                // treated as "already there" and dropped. popUpTo
-                                // below still prevents stacking a new entry per edit.
-                                popUpTo("search/{query}") { inclusive = true }
+                            searchKeyboardActive = false
+                            searchOverlayOpen = false
+                            when (val parsedUrl = YouTubeUrlParser.parse(searchQuery)) {
+                                is YouTubeUrlParser.ParsedUrl.Video -> {
+                                    playerConnection?.playQueue(
+                                        YouTubeQueue(WatchEndpoint(videoId = parsedUrl.id)),
+                                    )
+                                }
+                                is YouTubeUrlParser.ParsedUrl.Artist -> {
+                                    navController.navigate("artist/${parsedUrl.id}")
+                                }
+                                null -> {
+                                    if (!localOnlyMode) {
+                                        navController.navigate("search/${URLEncoder.encode(searchQuery, "UTF-8")}") {
+                                            // No launchSingleTop: it compares destination id, not
+                                            // resolved args, so re-submitting a new query while
+                                            // already on search/{oldQuery} could get silently
+                                            // treated as "already there" and dropped. popUpTo
+                                            // below still prevents stacking a new entry per edit.
+                                            popUpTo("search/{query}") { inclusive = true }
+                                        }
+                                    }
+                                }
                             }
 
                             if (dataStore[PauseSearchHistoryKey] != true) {
@@ -1116,6 +1133,9 @@ class MainActivity : ComponentActivity() {
                 }
                 LaunchedEffect(currentRoute) {
                     Timber.tag("Navigation").d("route -> $currentRoute")
+                    if (currentRoute != null && currentRoute !in TabRootRoutes) {
+                        searchOverlayOpen = false
+                    }
                 }
 
                 /**
@@ -1624,14 +1644,6 @@ class MainActivity : ComponentActivity() {
                     canToggleSource = !localOnlyMode,
                     onTapSearchIcon = enterSearch,
                     onTapBar = {
-                        if (inSearchScreen && !inSearchInputScreen) {
-                            // Tapping the bar again from a results screen (search/{query})
-                            // pops that screen and reopens the search overlay's keyboard
-                            // instead of trying to resubmit in place.
-                            if (navController.currentDestination?.route !in TabRootRoutes) {
-                                navController.popBackStack(navController.graph.startDestinationId, inclusive = false)
-                            }
-                        }
                         searchKeyboardActive = true
                     },
                     onExit = exitSearch,

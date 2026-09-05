@@ -207,7 +207,7 @@ fun AboutScreen(
                     description = { Text(stringResource(R.string.app_developer), color = MaterialTheme.colorScheme.primary) },
                     tintIcon = false,
                     iconShape = cookieShape,
-                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/beatlabs790") }
+                    onClick = { uriHandler.safeOpenUri(context, "https://github.com/vortexapps67") }
                 )
             )
         )
@@ -243,6 +243,12 @@ fun AboutScreen(
                     title = { Text(stringResource(R.string.support_upi)) },
                     description = { Text(DonationUpiId) },
                     onClick = { uriHandler.safeOpenUri(context, DonationUpiUri) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.book),
+                    title = { Text("Buy The Story Of BeatWave - The Book") },
+                    description = { Text("https://beatwavebook.vercel.app") },
+                    onClick = { uriHandler.safeOpenUri(context, "https://beatwavebook.vercel.app") }
                 ),
             )
         )

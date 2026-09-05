@@ -278,7 +278,6 @@ import com.beatwave.music.ui.component.NavBarSearchInputBar
 import com.beatwave.music.ui.component.NavSearchState
 import com.beatwave.music.ui.component.OverlayMenu
 import com.beatwave.music.ui.component.SideBarAccountRow
-import com.music.innertube.models.WatchEndpoint
 import com.music.innertube.utils.YouTubeUrlParser
 import com.beatwave.music.ui.component.SideBarCollapsedWidth
 import com.beatwave.music.ui.component.SideBarContentInset
@@ -1083,6 +1082,20 @@ class MainActivity : ComponentActivity() {
                 // actual navigation call lands (see enterSearch/exitSearch below).
                 var searchVisualOverride by remember { mutableStateOf<Boolean?>(null) }
 
+                /**
+                 * Search is an overlay drawn above the pager, not one of its pages.
+                 *
+                 * It was a page, at index 1 -- between Home and Library -- while the bar
+                 * has always drawn it as the standalone circle on the far right. Opening
+                 * search therefore slid the pager sideways past a tab, and every real tab
+                 * switch slid past search. Neither matched what the bar showed. Making it
+                 * a page at the END instead would have cost two intervening pages'
+                 * composition on the way there, so it is not a page at all: the pager is
+                 * exactly the three tabs the bar draws, and search opens in place over
+                 * them for zero page travel.
+                 */
+                var searchOverlayOpen by rememberSaveable { mutableStateOf(openSearchOnLaunch) }
+
                 val onSearch: (String) -> Unit = remember(localOnlyMode, navController, onQueryChange, playerConnection) {
                     { searchQuery ->
                         if (searchQuery == "admin00") {
@@ -1137,20 +1150,6 @@ class MainActivity : ComponentActivity() {
                         searchOverlayOpen = false
                     }
                 }
-
-                /**
-                 * Search is an overlay drawn above the pager, not one of its pages.
-                 *
-                 * It was a page, at index 1 -- between Home and Library -- while the bar
-                 * has always drawn it as the standalone circle on the far right. Opening
-                 * search therefore slid the pager sideways past a tab, and every real tab
-                 * switch slid past search. Neither matched what the bar showed. Making it
-                 * a page at the END instead would have cost two intervening pages'
-                 * composition on the way there, so it is not a page at all: the pager is
-                 * exactly the three tabs the bar draws, and search opens in place over
-                 * them for zero page travel.
-                 */
-                var searchOverlayOpen by rememberSaveable { mutableStateOf(openSearchOnLaunch) }
 
                 // Home/Library/Settings are real NavHost destinations again, so
                 // currentRoute already IS the tab route -- no pager-page lookup needed.
